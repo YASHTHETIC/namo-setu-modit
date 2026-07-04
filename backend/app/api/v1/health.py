@@ -1,25 +1,25 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.core.database import get_db
-from backend.app.core.redis import get_redis
+from backend.app.core.database import AsyncSessionLocal
+from backend.app.core.redis import get_redis_client
 
 router = APIRouter()
 
 
 @router.get("/healthz")
-async def healthz(db: AsyncSession = Depends(get_db)) -> dict[str, object]:
-    redis_client = await get_redis()
+async def healthz() -> dict[str, object]:
     db_status = True
     redis_status = True
 
     try:
-        await db.execute(text("SELECT 1"))
+        async with AsyncSessionLocal() as session:
+            await session.execute(text("SELECT 1"))
     except Exception:
         db_status = False
 
     try:
+        redis_client = get_redis_client()
         await redis_client.ping()
     except Exception:
         redis_status = False
