@@ -3,10 +3,10 @@
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "pip install --no-cache-dir -r requirements.txt",
-    "watchPatterns": ["backend/**", "package-lock.json", "package.json"]
+    "watchPatterns": ["backend/**"]
   },
   "deploy": {
-    "startCommand": "chmod +x railway-start.sh && ./railway-start.sh",
+    "startCommand": "PYTHONPATH=. alembic -c backend/alembic.ini upgrade head && PYTHONPATH=. python -m backend.seeds.runner && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT",
     "healthcheckPath": "/api/v1/healthz",
     "healthcheckTimeout": 120,
     "restartPolicyType": "ON_FAILURE",
