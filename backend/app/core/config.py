@@ -1,6 +1,5 @@
 from functools import lru_cache
 from typing import Any
-from urllib.parse import parse_qs, urlparse, urlunparse
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -44,15 +43,10 @@ class Settings(BaseSettings):
             for key in ("database_url", "redis_url", "celery_broker_url", "celery_result_backend"):
                 val = data.get(key)
                 if isinstance(val, str):
+                    import re
                     val = val.strip()
+                    val = re.sub(r'[\r\n\t]+', '', val)
                     data[key] = val
-            db_url = data.get("database_url", "")
-            if "sslmode=" in db_url:
-                parsed = urlparse(db_url)
-                params = parse_qs(parsed.query)
-                params.pop("sslmode", None)
-                new_query = "&".join(f"{k}={v[0]}" for k, v in params.items())
-                data["database_url"] = urlunparse(parsed._replace(query=new_query))
             if isinstance(data.get("backend_cors_origins"), str):
                 import json
                 raw = data["backend_cors_origins"].strip()

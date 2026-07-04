@@ -1,5 +1,5 @@
+import re
 from collections.abc import AsyncGenerator
-from urllib.parse import parse_qs, urlparse, urlunparse
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -9,14 +9,11 @@ from backend.app.core.config import get_settings
 
 settings = get_settings()
 
-db_url = settings.database_url.strip().strip('"').strip("'").rstrip("\r\n").rstrip("\n").rstrip("\r")
-
-parsed = urlparse(db_url)
-params = parse_qs(parsed.query)
-if "sslmode" in params:
-    params.pop("sslmode")
-    new_query = "&".join(f"{k}={v[0]}" for k, v in params.items())
-    db_url = urlunparse(parsed._replace(query=new_query))
+db_url = settings.database_url
+db_url = re.sub(r'[?"\']', '', db_url.strip())
+db_url = re.sub(r'[\r\n\t]+', '', db_url)
+db_url = re.sub(r'[?&]sslmode=[^&]*', '?', db_url)
+db_url = re.sub(r'\?$', '', db_url)
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
@@ -30,7 +27,7 @@ engine = create_async_engine(
     db_url,
     echo=False,
     pool_pre_ping=True,
-    connect_args={"ssl": "require"},
+    connect_args={"ssl": True},
 )
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base(metadata=MetaData(naming_convention=NAMING_CONVENTION))
