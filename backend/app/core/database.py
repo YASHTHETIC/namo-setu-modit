@@ -9,13 +9,12 @@ from backend.app.core.config import get_settings
 
 settings = get_settings()
 
-db_url = settings.database_url
-if "sslmode=" in db_url:
-    parsed = urlparse(db_url)
-    params = parse_qs(parsed.query)
-    ssl_mode = params.pop("sslmode", [None])[0]
-    if ssl_mode in ("require", "prefer", "allow"):
-        params["ssl"] = ["true"]
+db_url = settings.database_url.strip().strip('"').strip("'").rstrip("\r\n").rstrip("\n").rstrip("\r")
+
+parsed = urlparse(db_url)
+params = parse_qs(parsed.query)
+if "sslmode" in params:
+    params.pop("sslmode")
     new_query = "&".join(f"{k}={v[0]}" for k, v in params.items())
     db_url = urlunparse(parsed._replace(query=new_query))
 
@@ -27,7 +26,12 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s",
 }
 
-engine = create_async_engine(db_url, echo=False, pool_pre_ping=True)
+engine = create_async_engine(
+    db_url,
+    echo=False,
+    pool_pre_ping=True,
+    connect_args={"ssl": "require"},
+)
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base(metadata=MetaData(naming_convention=NAMING_CONVENTION))
 

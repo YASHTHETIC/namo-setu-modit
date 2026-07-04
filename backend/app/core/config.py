@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Any
+from urllib.parse import parse_qs, urlparse, urlunparse
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -47,12 +48,9 @@ class Settings(BaseSettings):
                     data[key] = val
             db_url = data.get("database_url", "")
             if "sslmode=" in db_url:
-                from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
                 parsed = urlparse(db_url)
                 params = parse_qs(parsed.query)
-                ssl_mode = params.pop("sslmode", [None])[0]
-                if ssl_mode == "require":
-                    params["ssl"] = ["true"]
+                params.pop("sslmode", None)
                 new_query = "&".join(f"{k}={v[0]}" for k, v in params.items())
                 data["database_url"] = urlunparse(parsed._replace(query=new_query))
             if isinstance(data.get("backend_cors_origins"), str):
