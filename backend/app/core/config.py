@@ -39,16 +39,20 @@ class Settings(BaseSettings):
     @model_validator(mode="before")
     @classmethod
     def parse_cors_origins(cls, data: Any) -> Any:
-        if isinstance(data, dict) and isinstance(data.get("backend_cors_origins"), str):
-            import json
-            raw = data["backend_cors_origins"]
-            raw = raw.strip()
-            if raw.startswith("["):
-                data["backend_cors_origins"] = json.loads(raw)
-            elif "," in raw:
-                data["backend_cors_origins"] = [o.strip() for o in raw.split(",") if o.strip()]
-            else:
-                data["backend_cors_origins"] = [raw] if raw else []
+        if isinstance(data, dict):
+            for key in ("database_url", "redis_url", "celery_broker_url", "celery_result_backend"):
+                val = data.get(key)
+                if isinstance(val, str):
+                    data[key] = val.strip()
+            if isinstance(data.get("backend_cors_origins"), str):
+                import json
+                raw = data["backend_cors_origins"].strip()
+                if raw.startswith("["):
+                    data["backend_cors_origins"] = json.loads(raw)
+                elif "," in raw:
+                    data["backend_cors_origins"] = [o.strip() for o in raw.split(",") if o.strip()]
+                else:
+                    data["backend_cors_origins"] = [raw] if raw else []
         return data
 
 
