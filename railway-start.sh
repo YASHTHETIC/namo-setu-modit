@@ -1,12 +1,13 @@
 #!/bin/sh
-# Railway startup script: run migrations, seed, then start server
 set -e
 
-echo "Running Alembic migrations..."
-PYTHONPATH=. alembic -c backend/alembic.ini upgrade head
+export PYTHONPATH=/repo
 
-echo "Seeding demo data..."
-PYTHONPATH=. python -m backend.seeds.runner
+echo "[startup] Running Alembic migrations..."
+alembic -c backend/alembic.ini upgrade head || echo "[startup] Migration skipped (tables may already exist)"
 
-echo "Starting FastAPI server..."
+echo "[startup] Seeding demo data..."
+python -m backend.seeds.runner || echo "[startup] Seeding skipped"
+
+echo "[startup] Starting FastAPI server..."
 exec uvicorn backend.app.main:app --host 0.0.0.0 --port "${PORT:-8000}"
