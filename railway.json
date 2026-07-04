@@ -3,7 +3,7 @@
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "pip install --no-cache-dir -r requirements.txt",
-    "watchPatterns": ["backend/**"]
+    "watchPatterns": ["backend/**", "package-lock.json", "package.json"]
   },
   "deploy": {
     "startCommand": "chmod +x railway-start.sh && ./railway-start.sh",
