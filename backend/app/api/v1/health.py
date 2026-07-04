@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get("/healthz")
-async def healthz() -> dict[str, object]:
+async def healthz():
     db_status = True
     redis_status = True
 

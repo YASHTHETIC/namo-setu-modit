@@ -48,8 +48,10 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 FROM backend-base AS backend-runtime
 ENV PYTHONPATH=/repo
+ENV PYTHONUNBUFFERED=1
 COPY backend ./backend
 COPY backend/alembic.ini ./alembic.ini
 COPY pyproject.toml ./pyproject.toml
+RUN python -c "from backend.app.main import app; print(f'Routes: {len(app.routes)}')"
 EXPOSE 8000
-CMD uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+CMD ["/bin/sh", "-c", "uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
