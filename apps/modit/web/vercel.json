@@ -1,7 +1,7 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build --workspace @modit/web",
-  "outputDirectory": "apps/modit/web/.next",
+  "installCommand": "cd ../../.. && npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["sin1"],
   "github": {
