@@ -64,6 +64,7 @@ def create_app() -> FastAPI:
         except Exception as e:
             redis_ok = False
             redis_err = str(e)[:200]
+        from backend.app.core.database import db_url as engine_url
         return {
             "status": "ok" if db_ok and redis_ok else "degraded",
             "database": db_ok,
@@ -72,6 +73,7 @@ def create_app() -> FastAPI:
             "redis_error": redis_err,
             "db_url_set": bool(settings.database_url),
             "redis_url_set": bool(settings.redis_url),
+            "engine_url_suffix": engine_url[-60:] if engine_url else "",
         }
 
     try:
