@@ -43,7 +43,18 @@ class Settings(BaseSettings):
             for key in ("database_url", "redis_url", "celery_broker_url", "celery_result_backend"):
                 val = data.get(key)
                 if isinstance(val, str):
-                    data[key] = val.strip()
+                    val = val.strip()
+                    data[key] = val
+            db_url = data.get("database_url", "")
+            if "sslmode=" in db_url:
+                from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+                parsed = urlparse(db_url)
+                params = parse_qs(parsed.query)
+                ssl_mode = params.pop("sslmode", [None])[0]
+                if ssl_mode == "require":
+                    params["ssl"] = ["true"]
+                new_query = "&".join(f"{k}={v[0]}" for k, v in params.items())
+                data["database_url"] = urlunparse(parsed._replace(query=new_query))
             if isinstance(data.get("backend_cors_origins"), str):
                 import json
                 raw = data["backend_cors_origins"].strip()
