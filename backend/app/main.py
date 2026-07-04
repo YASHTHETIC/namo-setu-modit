@@ -74,8 +74,14 @@ def create_app() -> FastAPI:
             "redis_url_set": bool(settings.redis_url),
         }
 
-    from backend.app.api.v1.router import api_router
-    app.include_router(api_router, prefix=settings.api_v1_prefix)
+    try:
+        from backend.app.api.v1.router import api_router
+        app.include_router(api_router, prefix=settings.api_v1_prefix)
+        print(f"[startup] Router loaded. Total routes: {len(app.routes)}", file=sys.stderr)
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Failed to load router: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
 
     return app
 
