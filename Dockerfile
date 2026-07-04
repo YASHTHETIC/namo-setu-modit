@@ -4,6 +4,7 @@ FROM python:3.12-slim AS backend-base
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /repo
+ARG CACHEBUST=1
 RUN apt-get update \
   && apt-get install -y --no-install-recommends build-essential libpq-dev gcc \
   && rm -rf /var/lib/apt/lists/*

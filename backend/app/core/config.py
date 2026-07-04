@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Any
 
-from pydantic import Field, field_validator
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -36,14 +36,20 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    @field_validator("backend_cors_origins", mode="before")
+    @model_validator(mode="before")
     @classmethod
-    def parse_cors_origins(cls, value: Any) -> list[str]:
-        if value is None:
-            return []
-        if isinstance(value, str):
-            return [origin.strip() for origin in value.split(",") if origin.strip()]
-        return list(value)
+    def parse_cors_origins(cls, data: Any) -> Any:
+        if isinstance(data, dict) and isinstance(data.get("backend_cors_origins"), str):
+            import json
+            raw = data["backend_cors_origins"]
+            raw = raw.strip()
+            if raw.startswith("["):
+                data["backend_cors_origins"] = json.loads(raw)
+            elif "," in raw:
+                data["backend_cors_origins"] = [o.strip() for o in raw.split(",") if o.strip()]
+            else:
+                data["backend_cors_origins"] = [raw] if raw else []
+        return data
 
 
 @lru_cache(maxsize=1)
