@@ -1,0 +1,10 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace @namo-setu/web",
+  "outputDirectory": "apps/namo-setu/web/.next",
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "github": {
+    "silent": true
+  }
+}

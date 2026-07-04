@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment (secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Backend
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/__pycache__/
+backend/backend_err.log
+backend/backend.log
+backend/storage/
+
+# Frontend
+frontend/.next/
+apps/namo-setu/web/.next/
+apps/modit/web/.next/
+apps/modit/web/modit.log
+apps/modit/web/modit_err.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+storage/
+
+# Temp
+start-backend.py
+start-modit.py

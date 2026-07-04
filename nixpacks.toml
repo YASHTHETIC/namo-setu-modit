@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python312", "gcc", "libpq-dev"]
+
+[phases.install]
+cmds = ["pip install --no-cache-dir -r requirements.txt"]
+
+[phases.build]
+cmds = []
+
+[phases.start]
+cmd = "chmod +x railway-start.sh && ./railway-start.sh"
