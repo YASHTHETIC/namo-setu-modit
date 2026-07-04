@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { DashboardAnalytics } from '@/components/dashboard-analytics';
-import { CompactPanel, PageFrame, Button, MetricTile, Skeleton } from '@/components/namo-ui';
+import { CompactPanel, PageFrame, Button, MetricTile } from '@/components/namo-ui';
 import { usePopularTemples, useAnalyticsSummary } from '@/lib/namo-api';
 import { ErrorState, LoadingState } from '@/components/async-state';
 

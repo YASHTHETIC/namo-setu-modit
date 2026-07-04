@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { MapPin, Star, Users, Bed, Calendar, ArrowLeft, Wifi, Car, Coffee } from 'lucide-react';
+import { MapPin, Users, Bed, ArrowLeft, Wifi, Car, Coffee } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
 import { CompactPanel, SectionHeader, PageFrame, Field, inputClass, Button, Card } from '@/components/namo-ui';

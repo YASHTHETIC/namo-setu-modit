@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, LocateFixed, Search, Star, MapPin, ChevronRight, Sparkles, Compass } from "lucide-react";
+import { LocateFixed, Search, Star, MapPin, ChevronRight, Sparkles, Compass } from "lucide-react";
 
 import { useNearbyTemples, useTempleSearch } from "@/lib/namo-api";
 

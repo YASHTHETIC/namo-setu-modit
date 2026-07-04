@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { MapPin, Users, Star, Route, Calendar, Compass, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
+import { Users, Star, Route, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { AiAssistantPanel } from '@/components/ai-assistant';
 import { ErrorState, LoadingState } from '@/components/async-state';

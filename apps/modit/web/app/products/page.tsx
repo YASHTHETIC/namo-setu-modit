@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProducts, useCategories, useBrands, useCreateProduct, useDeleteProduct } from "@/lib/modit-api";
 import { Search, Plus, Trash2, Package, X, AlertCircle, RefreshCw } from "lucide-react";
-import { Button, Input, Select, Card, Badge, EmptyState, LoadingSpinner, FormRow } from "@/lib/modit-ui";
+import { Button, Input, Select, Card, EmptyState, LoadingSpinner, FormRow } from "@/lib/modit-ui";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, Mic, Sparkles, Send, Calendar, MessageCircle, MapPin, Search, HelpCircle } from "lucide-react";
+import { Bot, Mic, Sparkles, Send, Calendar, MapPin, Search, HelpCircle } from "lucide-react";
 
 import { useAiAssistant, useFestivalReminders, useTripPlanner } from "@/lib/namo-api";
 
-import { CompactPanel, Field, inputClass, Button } from "./namo-ui";
+import { Field, inputClass, Button } from "./namo-ui";
 import { ErrorState, LoadingState } from "./async-state";
 
 type AiMode = "recommendation" | "spiritual" | "voice" | "faq" | "nearby";

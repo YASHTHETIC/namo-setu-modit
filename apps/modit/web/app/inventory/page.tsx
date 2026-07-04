@@ -3,9 +3,8 @@
 import { motion } from "framer-motion";
 import { useInventory, useInventoryAlerts, useWarehouses } from "@/lib/modit-api";
 import { Box, AlertTriangle, Package, AlertCircle, RefreshCw } from "lucide-react";
-import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, MetricTile, Table, TableHead, TableBody, TableRow, TableCell, TableHeaderCell, StatusPill, Badge } from "@/lib/modit-ui";
+import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, MetricTile, Table, TableHead, TableBody, TableRow, TableCell, TableHeaderCell, StatusPill } from "@/lib/modit-ui";
 
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function InventoryPage() {

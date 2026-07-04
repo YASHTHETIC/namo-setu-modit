@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import { env } from "@/lib/env";
 import { getAccessToken } from "@/lib/auth";
-import { Settings, Package, Users, FolderOpen, Activity, ExternalLink, BarChart3, ShoppingCart, FileText, Box } from "lucide-react";
+import { Package, Users, FolderOpen, Activity, ExternalLink, BarChart3, ShoppingCart, FileText } from "lucide-react";
 import { Card, CardHeader, CardContent, LoadingSpinner } from "@/lib/modit-ui";
 
 interface HealthResponse { status?: string; [key: string]: unknown; }

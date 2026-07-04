@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
-  ArrowRight, Bot, CalendarCheck, HeartHandshake, MapPin, Search, TicketCheck,
-  Clock, Star, Users, Compass, Shield, Download, Phone, MessageCircle,
+  Bot, HeartHandshake, MapPin, Search, TicketCheck,
+  Clock, Users, Compass, Shield, Download, Phone, MessageCircle,
   ChevronRight, Sparkles, Map, Hotel, Car, Utensils, AlertCircle,
   Flame, Mountain, Flower2, CircleDot, Circle, Landmark
 } from "lucide-react";

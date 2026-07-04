@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSuppliers, useCreateSupplier } from "@/lib/modit-api";
-import { Plus, Search, CheckCircle, Users, X, AlertCircle, RefreshCw } from "lucide-react";
+import { Plus, Search, Users, X, AlertCircle, RefreshCw } from "lucide-react";
 import { Button, Input, Card, EmptyState, LoadingSpinner, FormRow, StatusPill, Avatar } from "@/lib/modit-ui";
 
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };

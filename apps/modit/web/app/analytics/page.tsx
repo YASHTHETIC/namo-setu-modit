@@ -2,10 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useModitAnalyticsSummary } from "@/lib/modit-api";
-import { BarChart3, TrendingUp, Package, Users, FileText, FolderOpen, AlertTriangle, Building } from "lucide-react";
+import { BarChart3, TrendingUp, Package, Users, FileText, FolderOpen } from "lucide-react";
 import { MetricTile, Card, CardHeader, CardContent, EmptyState, LoadingSpinner } from "@/lib/modit-ui";
 
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function AnalyticsPage() {

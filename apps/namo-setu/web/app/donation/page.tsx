@@ -4,10 +4,10 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Download, Share2, CheckCircle, Receipt, MapPin, IndianRupee, ArrowLeft, CreditCard, Gift } from 'lucide-react';
+import { Heart, CheckCircle, IndianRupee, ArrowLeft, CreditCard, Gift } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
-import { SectionHeader, CompactPanel, FormRow, PageFrame, Field, inputClass, Button, Card } from '@/components/namo-ui';
+import { SectionHeader, CompactPanel, FormRow, PageFrame, Field, inputClass, Button } from '@/components/namo-ui';
 import { useDonate, useTemple, usePopularTemples } from '@/lib/namo-api';
 
 function TempleSelector({ onSelect }: { onSelect: (id: string) => void }) {

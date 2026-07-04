@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export function LoadingState({ label = "Loading..." }: { label?: string }) {
   return (

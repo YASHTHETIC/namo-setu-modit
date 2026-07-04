@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Calendar, MapPin, Heart, Settings, Download, ChevronRight, Star, ArrowUpRight, Users } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
-import { MetricTile, CompactPanel, PageFrame, SectionHeader, StatusPill, Button, Card } from '@/components/namo-ui';
+import { MetricTile, CompactPanel, PageFrame, SectionHeader, StatusPill, Button } from '@/components/namo-ui';
 import { useCancelDarshanBooking, useMyDarshanBookings, useMyDonations } from '@/lib/namo-api';
 
 export default function ProfilePage() {

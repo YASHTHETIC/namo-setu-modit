@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MapPin, Clock, Calendar, Star, Heart, Share2, 
   ChevronRight, Image as ImageIcon, Users, UserRound,
-  ArrowLeft, ExternalLink, Phone, Globe, Bookmark
+  ArrowLeft, Phone, Bookmark
 } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { AiAssistantPanel } from '@/components/ai-assistant';

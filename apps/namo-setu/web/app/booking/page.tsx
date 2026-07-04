@@ -5,13 +5,12 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Calendar, Clock, Users, QrCode, Download, Share2, 
-  CheckCircle, XCircle, ChevronRight, MapPin, ArrowLeft,
-  CreditCard, Ticket
+  Calendar, Clock, Users, QrCode, CheckCircle, 
+  ChevronRight, MapPin, ArrowLeft, CreditCard, Ticket
 } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
-import { SectionHeader, CompactPanel, FormRow, PageFrame, Field, inputClass, Button, Card } from '@/components/namo-ui';
+import { SectionHeader, CompactPanel, FormRow, PageFrame, Field, inputClass, Button } from '@/components/namo-ui';
 import { useBookDarshan, useDarshanSlots, useTemple, usePopularTemples } from '@/lib/namo-api';
 
 const steps = [

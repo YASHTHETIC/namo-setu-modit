@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, Search, Filter, MapPin, Star, Calendar, Users, BarChart3, X, ChevronRight } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Filter, MapPin, Star, Calendar, Users, BarChart3, X } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
-import { CompactPanel, MetricTile, PageFrame, Field, inputClass, SectionHeader, StatusPill, Button, Card } from '@/components/namo-ui';
+import { CompactPanel, MetricTile, PageFrame, Field, inputClass, SectionHeader, StatusPill, Button } from '@/components/namo-ui';
 import {
   useAdminUsers,
   useAnalyticsSummary,

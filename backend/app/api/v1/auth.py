@@ -20,7 +20,6 @@ from backend.app.core.security import (
 )
 from backend.app.models.shared import UserSession
 from backend.app.models.user import Permission, RefreshToken, Role, User
-from backend.app.repositories.base import BaseRepository
 from backend.app.schemas.auth import (
     LoginRequest,
     LogoutRequest,

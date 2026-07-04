@@ -3,13 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useProducts, useOrders, useRFQs, useProjects, useSuppliers } from "@/lib/modit-api";
-import { Package, Users, FileText, ShoppingCart, FolderOpen, TrendingUp, ArrowRight, AlertCircle, RefreshCw } from "lucide-react";
+import { Package, Users, FileText, ShoppingCart, FolderOpen, ArrowRight, AlertCircle, RefreshCw } from "lucide-react";
 import { MetricTile, Card, CardHeader, CardContent, StatusPill, LoadingSpinner, EmptyState } from "@/lib/modit-ui";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
 
 const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },

@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  ArrowRight, Truck, Shield, CreditCard, MapPin, Search, Phone,
-  Star, ChevronRight, Package, Users, TrendingUp, Download, CheckCircle,
+  ArrowRight, Truck, Shield, MapPin, Search, Phone,
+  Star, ChevronRight, Package, Users, CheckCircle,
   Zap, ShieldCheck, Headphones, BarChart3, Box, FileText, ShoppingCart,
-  LayoutDashboard, Menu, X, Warehouse, Clock, Award, Building2, HardHat,
-  Brain, Upload, MessageSquare, Bell, RefreshCw, Mic, FileBarChart,
-  GitCompareArrows, TruckIcon, Store,
+  LayoutDashboard, Menu, X, Building2,
+  Brain, Upload, MessageSquare, RefreshCw, Mic, FileBarChart,
+  GitCompareArrows, Store,
 } from "lucide-react";
 
 const categories = [
