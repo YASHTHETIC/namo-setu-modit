@@ -9,13 +9,14 @@ from backend.app.core.config import get_settings
 
 settings = get_settings()
 
-db_url = settings.database_url.strip()
-db_url = re.sub(r'[\r\n\t\x00-\x1f]+', '', db_url)
+db_url = settings.database_url
+db_url = re.sub(r'[\r\n\r\t\x00-\x08\x0b\x0c\x0e-\x1f\x7f]+', '', db_url)
+db_url = db_url.strip()
 
 if 'postgresql' in db_url or 'postgres' in db_url:
-    db_url = re.sub(r'sslmode=[^&\s]*', 'sslmode=require', db_url)
-    if '?' not in db_url:
-        db_url = f"{db_url}?sslmode=require"
+    db_url = re.sub(r'\?sslmode=[^&\s]*', '', db_url)
+    db_url = re.sub(r'&sslmode=[^&\s]*', '', db_url)
+    db_url = f"{db_url}?sslmode=require"
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
