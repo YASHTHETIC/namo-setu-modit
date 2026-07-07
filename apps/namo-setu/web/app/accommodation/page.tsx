@@ -3,7 +3,6 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { MapPin, Users, Bed, ArrowLeft, Wifi, Car, Coffee } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
@@ -72,10 +71,7 @@ function AccommodationContent() {
   return (
     <PageFrame>
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <div className="animate-[fadeIn_0.4s_ease-out]">
         <CompactPanel>
           <div className="flex items-center gap-6 p-8">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-100 to-amber-100">
@@ -87,14 +83,10 @@ function AccommodationContent() {
             </div>
           </div>
         </CompactPanel>
-      </motion.div>
+      </div>
 
       {/* Date Picker */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
+      <div className="animate-[fadeIn_0.4s_ease-out_0.1s_both]">
         <CompactPanel>
           <div className="p-8">
             <div className="grid md:grid-cols-2 gap-5">
@@ -107,27 +99,16 @@ function AccommodationContent() {
             </div>
           </div>
         </CompactPanel>
-      </motion.div>
+      </div>
 
       {/* Available Stays */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="animate-[fadeIn_0.6s_ease-out_0.15s_both]">
         <SectionHeader label="Stays" title="Available Stays" subtitle={`Properties near ${temple.name}`} />
         {accommodationQuery.isLoading && <LoadingState label="Loading stays..." />}
         {accommodationQuery.isError && <ErrorState message={accommodationQuery.error.message} onRetry={() => accommodationQuery.refetch()} />}
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {(accommodationQuery.data ?? []).map((stay, i) => (
-            <motion.div
-              key={stay.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
+            <div key={stay.id} className="animate-[fadeIn_0.4s_ease-out]">
               <Card className="overflow-hidden">
                 <div className="p-8">
                   <div className="flex items-start gap-5">
@@ -159,29 +140,18 @@ function AccommodationContent() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       {/* Available Rooms */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="animate-[fadeIn_0.6s_ease-out_0.2s_both]">
         <SectionHeader label="Rooms" title="Available Rooms" subtitle="Room inventory from the platform" />
         {roomsQuery.isLoading && <LoadingState label="Loading rooms..." />}
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {(roomsQuery.data ?? []).map((room, i) => (
-            <motion.div
-              key={room.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
+            <div key={room.id} className="animate-[fadeIn_0.4s_ease-out]">
               <Card className="overflow-hidden">
                 <div className="p-8">
                   <div className="flex items-start justify-between">
@@ -206,10 +176,10 @@ function AccommodationContent() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       <div className="flex justify-center">
         <Link href={`/temple/${temple.id}`}>

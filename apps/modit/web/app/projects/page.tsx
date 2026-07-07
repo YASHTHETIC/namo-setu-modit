@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useProjects, useCreateProject } from "@/lib/modit-api";
 import { FolderOpen, Plus, X, Calendar, IndianRupee } from "lucide-react";
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
-
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function ProjectsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -43,9 +39,9 @@ export default function ProjectsPage() {
       {isLoading ? <LoadingSpinner /> : projectList.length === 0 ? (
         <EmptyState icon={<FolderOpen className="h-8 w-8" />} title="No projects yet" description="Create your first construction project to get started" action={<Button onClick={() => setShowCreateModal(true)}>Create Project</Button>} />
       ) : (
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projectList.map((project) => (
-            <motion.div key={project.id} variants={fadeUp} whileHover={{ y: -2 }}>
+            <div key={project.id} className="animate-[fadeIn_0.4s_ease-out] transition-all hover:-translate-y-0.5">
               <Card className="p-6 h-full">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-semibold text-[var(--text-primary)]">{project.name ?? `#${project.id.slice(0, 8)}`}</h3>
@@ -66,38 +62,36 @@ export default function ProjectsPage() {
                   <span className="text-xs text-[var(--text-muted)]">Code: {project.project_code}</span>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
 
-      <AnimatePresence>
-        {showCreateModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowCreateModal(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-h4 text-[var(--text-primary)]">New Project</h2>
-                <button onClick={() => setShowCreateModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
-              </div>
-              <div className="space-y-4">
-                <FormRow label="Name" required>
-                  <Input value={newProject.name} onChange={(e) => setNewProject({ ...newProject, name: e.target.value })} placeholder="e.g. Commercial Building" />
-                </FormRow>
-                <FormRow label="Notes">
-                  <Textarea rows={3} value={newProject.notes} onChange={(e) => setNewProject({ ...newProject, notes: e.target.value })} />
-                </FormRow>
-                <FormRow label="Budget (₹)">
-                  <Input type="number" value={newProject.budget_amount} onChange={(e) => setNewProject({ ...newProject, budget_amount: e.target.value })} placeholder="0" />
-                </FormRow>
-              </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancel</Button>
-                <Button onClick={handleCreateProject} disabled={createProject.isPending}>{createProject.isPending ? "Creating..." : "Create Project"}</Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]" onClick={() => setShowCreateModal(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)] animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-h4 text-[var(--text-primary)]">New Project</h2>
+              <button onClick={() => setShowCreateModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="space-y-4">
+              <FormRow label="Name" required>
+                <Input value={newProject.name} onChange={(e) => setNewProject({ ...newProject, name: e.target.value })} placeholder="e.g. Commercial Building" />
+              </FormRow>
+              <FormRow label="Notes">
+                <Textarea rows={3} value={newProject.notes} onChange={(e) => setNewProject({ ...newProject, notes: e.target.value })} />
+              </FormRow>
+              <FormRow label="Budget (₹)">
+                <Input type="number" value={newProject.budget_amount} onChange={(e) => setNewProject({ ...newProject, budget_amount: e.target.value })} placeholder="0" />
+              </FormRow>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancel</Button>
+              <Button onClick={handleCreateProject} disabled={createProject.isPending}>{createProject.isPending ? "Creating..." : "Create Project"}</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

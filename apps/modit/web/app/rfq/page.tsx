@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useRFQs, useCreateRFQ } from "@/lib/modit-api";
 import { Plus, FileText, Calendar, X } from "lucide-react";
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
-
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function RFQPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -39,9 +35,9 @@ export default function RFQPage() {
       {isLoading ? <LoadingSpinner /> : rfqList.length === 0 ? (
         <EmptyState icon={<FileText className="h-8 w-8" />} title="No RFQs yet" description="Create your first RFQ to start sourcing materials" action={<Button onClick={() => setShowCreateModal(true)}>Create RFQ</Button>} />
       ) : (
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {rfqList.map((rfq) => (
-            <motion.div key={rfq.id} variants={fadeUp} whileHover={{ y: -2 }}>
+            <div key={rfq.id} className="animate-[fadeIn_0.4s_ease-out] transition-all hover:-translate-y-0.5">
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-[var(--text-primary)]">{rfq.rfq_number ?? `#${rfq.id.slice(0, 8)}`}</h3>
@@ -57,38 +53,36 @@ export default function RFQPage() {
                   Created: {rfq.created_at ? new Date(rfq.created_at).toLocaleDateString() : "—"}
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
 
-      <AnimatePresence>
-        {showCreateModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowCreateModal(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-h4 text-[var(--text-primary)]">Create RFQ</h2>
-                <button onClick={() => setShowCreateModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
-              </div>
-              <div className="space-y-4">
-                <FormRow label="Title" required>
-                  <Input value={newRFQ.title} onChange={(e) => setNewRFQ({ ...newRFQ, title: e.target.value })} placeholder="e.g. Steel and Cement for Project A" />
-                </FormRow>
-                <FormRow label="Notes">
-                  <Textarea rows={3} value={newRFQ.description} onChange={(e) => setNewRFQ({ ...newRFQ, description: e.target.value })} placeholder="Additional notes..." />
-                </FormRow>
-                <FormRow label="Due Date">
-                  <Input type="date" value={newRFQ.due_date} onChange={(e) => setNewRFQ({ ...newRFQ, due_date: e.target.value })} />
-                </FormRow>
-              </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancel</Button>
-                <Button onClick={handleCreateRFQ} disabled={createRFQ.isPending}>{createRFQ.isPending ? "Creating..." : "Create RFQ"}</Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]" onClick={() => setShowCreateModal(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)] animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-h4 text-[var(--text-primary)]">Create RFQ</h2>
+              <button onClick={() => setShowCreateModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="space-y-4">
+              <FormRow label="Title" required>
+                <Input value={newRFQ.title} onChange={(e) => setNewRFQ({ ...newRFQ, title: e.target.value })} placeholder="e.g. Steel and Cement for Project A" />
+              </FormRow>
+              <FormRow label="Notes">
+                <Textarea rows={3} value={newRFQ.description} onChange={(e) => setNewRFQ({ ...newRFQ, description: e.target.value })} placeholder="Additional notes..." />
+              </FormRow>
+              <FormRow label="Due Date">
+                <Input type="date" value={newRFQ.due_date} onChange={(e) => setNewRFQ({ ...newRFQ, due_date: e.target.value })} />
+              </FormRow>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancel</Button>
+              <Button onClick={handleCreateRFQ} disabled={createRFQ.isPending}>{createRFQ.isPending ? "Creating..." : "Create RFQ"}</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,19 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useProducts, useCategories, useBrands, useCreateProduct, useDeleteProduct } from "@/lib/modit-api";
 import { Search, Plus, Trash2, Package, X } from "lucide-react";
 import { Button, Input, Select, Card, EmptyState, LoadingSpinner, FormRow } from "@/lib/modit-ui";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.08 } },
-};
 
 export default function ProductsPage() {
   const [search, setSearch] = useState("");
@@ -112,14 +102,9 @@ export default function ProductsPage() {
           action={<Button onClick={() => setShowAddModal(true)}><Plus className="h-4 w-4" /> Add first product</Button>}
         />
       ) : (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((product) => (
-            <motion.div key={product.id} variants={fadeUp} whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}>
+            <div key={product.id} className="animate-[fadeIn_0.4s_ease-out] transition-all hover:-translate-y-1 hover:shadow-lg">
               <Card className="overflow-hidden h-full">
                 <div className="flex h-36 items-center justify-center bg-[var(--bg-subtle)]">
                   <Package className="h-12 w-12 text-[var(--text-muted)]" />
@@ -140,59 +125,50 @@ export default function ProductsPage() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
 
       {/* Add Product Modal */}
-      <AnimatePresence>
-        {showAddModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-            onClick={() => setShowAddModal(false)}
+      {showAddModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]"
+          onClick={() => setShowAddModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)] animate-[scaleIn_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-h4 text-[var(--text-primary)]">Add Product</h2>
-                <button onClick={() => setShowAddModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <div className="space-y-4">
-                <FormRow label="Name" required>
-                  <Input value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} placeholder="Product name" />
-                </FormRow>
-                <FormRow label="SKU" required>
-                  <Input value={newProduct.sku} onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })} placeholder="SKU code" />
-                </FormRow>
-                <FormRow label="Description">
-                  <Input value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} placeholder="Description" />
-                </FormRow>
-                <FormRow label="List Price (₹)">
-                  <Input type="number" value={newProduct.list_price} onChange={(e) => setNewProduct({ ...newProduct, list_price: e.target.value })} placeholder="0.00" />
-                </FormRow>
-              </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <Button variant="secondary" onClick={() => setShowAddModal(false)}>Cancel</Button>
-                <Button onClick={handleAddProduct} disabled={createProduct.isPending}>
-                  {createProduct.isPending ? "Adding..." : "Add Product"}
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-h4 text-[var(--text-primary)]">Add Product</h2>
+              <button onClick={() => setShowAddModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <FormRow label="Name" required>
+                <Input value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} placeholder="Product name" />
+              </FormRow>
+              <FormRow label="SKU" required>
+                <Input value={newProduct.sku} onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })} placeholder="SKU code" />
+              </FormRow>
+              <FormRow label="Description">
+                <Input value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} placeholder="Description" />
+              </FormRow>
+              <FormRow label="List Price (₹)">
+                <Input type="number" value={newProduct.list_price} onChange={(e) => setNewProduct({ ...newProduct, list_price: e.target.value })} placeholder="0.00" />
+              </FormRow>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setShowAddModal(false)}>Cancel</Button>
+              <Button onClick={handleAddProduct} disabled={createProduct.isPending}>
+                {createProduct.isPending ? "Adding..." : "Add Product"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

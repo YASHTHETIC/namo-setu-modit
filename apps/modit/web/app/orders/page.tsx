@@ -1,11 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useOrders } from "@/lib/modit-api";
 import { ShoppingCart, Package } from "lucide-react";
 import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, Table, TableHead, TableBody, TableRow, TableCell, TableHeaderCell, StatusPill } from "@/lib/modit-ui";
-
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
 export default function OrdersPage() {
   const { data: orders, isLoading, isError } = useOrders();
@@ -27,7 +24,7 @@ export default function OrdersPage() {
       {isLoading ? <LoadingSpinner /> : orderList.length === 0 ? (
         <EmptyState icon={<ShoppingCart className="h-8 w-8" />} title="No orders yet" description="Orders will appear here once you purchase products" />
       ) : (
-        <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+        <div className="animate-[fadeIn_0.4s_ease-out]">
           <Card>
             <Table>
               <TableHead>
@@ -55,7 +52,7 @@ export default function OrdersPage() {
               </TableBody>
             </Table>
           </Card>
-        </motion.div>
+        </div>
       )}
     </div>
   );

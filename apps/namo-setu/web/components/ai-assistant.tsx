@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Bot, Mic, Sparkles, Send, Calendar, MapPin, Search, HelpCircle } from "lucide-react";
 
 import { useAiAssistant, useFestivalReminders, useTripPlanner } from "@/lib/namo-api";
@@ -40,26 +39,24 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
             <p className="text-sm text-slate-500 mt-1">Powered by intelligent algorithms</p>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-2 mb-5">
           {modes.map((item) => {
             const Icon = item.icon;
             return (
-              <motion.button
+              <button
                 key={item.id}
                 type="button"
                 onClick={() => setMode(item.id)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                   mode === item.id
                     ? "bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-lg shadow-teal-500/25"
                     : "bg-stone-100 text-slate-600 hover:bg-stone-200"
                 }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
                 <Icon className="h-4 w-4" />
                 {item.label}
-              </motion.button>
+              </button>
             );
           })}
         </div>
@@ -72,7 +69,7 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
             placeholder={active.placeholder}
           />
         </Field>
-        
+
         <div className="flex flex-wrap gap-3 mt-4">
           <Button
             onClick={() => ai.mutate({ message, templeId })}
@@ -100,69 +97,48 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
           </Button>
         </div>
 
-        <AnimatePresence>
-          {ai.isPending && (
-            <motion.div
-              className="mt-5"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <LoadingState label="Consulting pilgrimage guide..." />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
+        {ai.isPending && (
+          <div className="mt-5 animate-[fadeIn_0.3s_ease-out]">
+            <LoadingState label="Consulting pilgrimage guide..." />
+          </div>
+        )}
+
         {ai.isError && (
           <div className="mt-5">
             <ErrorState message={ai.error.message} onRetry={() => ai.mutate({ message, templeId })} />
           </div>
         )}
-        
-        <AnimatePresence>
-          {ai.data && (
-            <motion.div
-              className="mt-5 rounded-2xl border border-teal-200/60 bg-gradient-to-br from-teal-50 to-emerald-50 p-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-5 w-5 text-teal-600" />
-                <span className="text-sm font-bold text-teal-700">AI Response</span>
+
+        {ai.data && (
+          <div className="mt-5 rounded-2xl border border-teal-200/60 bg-gradient-to-br from-teal-50 to-emerald-50 p-6 animate-[fadeIn_0.4s_ease-out]">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="h-5 w-5 text-teal-600" />
+              <span className="text-sm font-bold text-teal-700">AI Response</span>
+            </div>
+            <p className="text-sm leading-relaxed text-slate-700">{ai.data.answer}</p>
+            {ai.data.suggested_actions.length > 0 && (
+              <div className="mt-5 space-y-2">
+                {ai.data.suggested_actions.map((action) => (
+                  <div key={action} className="flex items-center gap-3 rounded-xl bg-white/80 px-4 py-3 text-sm text-slate-700">
+                    <div className="h-2 w-2 rounded-full bg-teal-500 shrink-0" />
+                    {action}
+                  </div>
+                ))}
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">{ai.data.answer}</p>
-              {ai.data.suggested_actions.length > 0 && (
-                <div className="mt-5 space-y-2">
-                  {ai.data.suggested_actions.map((action) => (
-                    <div key={action} className="flex items-center gap-3 rounded-xl bg-white/80 px-4 py-3 text-sm text-slate-700">
-                      <div className="h-2 w-2 rounded-full bg-teal-500 shrink-0" />
-                      {action}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        <AnimatePresence>
-          {planner.data && (
-            <motion.div
-              className="mt-5 rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 to-amber-50 p-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <Bot className="h-5 w-5 text-orange-600" />
-                <span className="text-sm font-bold text-orange-700">Trip Plan</span>
-              </div>
-              <p className="text-sm font-medium text-slate-800">{planner.data.summary}</p>
-              <p className="mt-3 text-sm text-slate-600">Estimated budget: ₹{planner.data.estimated_budget.toLocaleString("en-IN")}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </div>
+        )}
+
+        {planner.data && (
+          <div className="mt-5 rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 to-amber-50 p-6 animate-[fadeIn_0.4s_ease-out]">
+            <div className="flex items-center gap-2 mb-4">
+              <Bot className="h-5 w-5 text-orange-600" />
+              <span className="text-sm font-bold text-orange-700">Trip Plan</span>
+            </div>
+            <p className="text-sm font-medium text-slate-800">{planner.data.summary}</p>
+            <p className="mt-3 text-sm text-slate-600">Estimated budget: ₹{planner.data.estimated_budget.toLocaleString("en-IN")}</p>
+          </div>
+        )}
       </div>
 
       <div>
@@ -179,13 +155,9 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
         {reminders.data?.length ? (
           <div className="space-y-3">
             {reminders.data.slice(0, 5).map((item, i) => (
-              <motion.div
+              <div
                 key={item.festival_id}
-                className="flex items-center gap-4 rounded-2xl border border-stone-200/60 bg-white p-5 transition-all hover:shadow-lg hover:-translate-y-1"
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 rounded-2xl border border-stone-200/60 bg-white p-5 transition-all hover:shadow-lg hover:-translate-y-1 animate-[fadeIn_0.4s_ease-out]"
               >
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100">
                   <Calendar className="h-5 w-5 text-orange-600" />
@@ -194,7 +166,7 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
                   <div className="font-bold text-slate-900 truncate">{item.title}</div>
                   <div className="text-xs text-slate-500 mt-1 truncate">{item.reminder_text}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
@@ -204,13 +176,9 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
               { title: "Navratri", date: "Mar 19, 2026", desc: "Nine nights of devotion to Goddess Durga" },
               { title: "Diwali", date: "Oct 20, 2026", desc: "Festival of lights celebrating prosperity" },
             ].map((item, i) => (
-              <motion.div
+              <div
                 key={item.title}
-                className="flex items-center gap-4 rounded-2xl border border-stone-200/60 bg-white p-5 transition-all hover:shadow-lg hover:-translate-y-1"
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 rounded-2xl border border-stone-200/60 bg-white p-5 transition-all hover:shadow-lg hover:-translate-y-1 animate-[fadeIn_0.4s_ease-out]"
               >
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100">
                   <Calendar className="h-5 w-5 text-orange-600" />
@@ -219,7 +187,7 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
                   <div className="font-bold text-slate-900 truncate">{item.title}</div>
                   <div className="text-xs text-slate-500 mt-1 truncate">{item.desc} &middot; {item.date}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

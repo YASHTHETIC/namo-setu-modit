@@ -1,11 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useInventory, useInventoryAlerts, useWarehouses } from "@/lib/modit-api";
 import { Box, AlertTriangle, Package } from "lucide-react";
 import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, MetricTile, Table, TableHead, TableBody, TableRow, TableCell, TableHeaderCell, StatusPill } from "@/lib/modit-ui";
-
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function InventoryPage() {
   const { data: inventory, isLoading, isError } = useInventory();
@@ -35,15 +32,15 @@ export default function InventoryPage() {
         <p className="text-[var(--text-secondary)]">Manage stock across warehouses</p>
       </div>
 
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-[fadeIn_0.4s_ease-out]">
         <MetricTile label="Total Items" value={inventoryList.length} icon={<Package className="h-5 w-5" />} />
         <MetricTile label="Warehouses" value={warehouseList.length} icon={<Box className="h-5 w-5" />} />
         <MetricTile label="Low Stock" value={lowStock.length} icon={<AlertTriangle className="h-5 w-5" />} />
         <MetricTile label="Out of Stock" value={outOfStock.length} icon={<Package className="h-5 w-5" />} />
-      </motion.div>
+      </div>
 
       {alertList.length > 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 animate-[fadeIn_0.4s_ease-out]">
           <div className="mb-2 flex items-center gap-2 font-medium text-amber-800">
             <AlertTriangle className="h-4 w-4" /> Inventory Alerts
           </div>
@@ -54,7 +51,7 @@ export default function InventoryPage() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {isLoading ? <LoadingSpinner /> : inventoryList.length === 0 ? (

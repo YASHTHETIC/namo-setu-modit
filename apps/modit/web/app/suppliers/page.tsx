@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useSuppliers, useCreateSupplier } from "@/lib/modit-api";
 import { Plus, Search, Users, X } from "lucide-react";
 import { Button, Input, Card, EmptyState, LoadingSpinner, FormRow, StatusPill, Avatar } from "@/lib/modit-ui";
-
-const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function SuppliersPage() {
   const [search, setSearch] = useState("");
@@ -50,9 +46,9 @@ export default function SuppliersPage() {
       {isLoading ? <LoadingSpinner /> : filtered.length === 0 ? (
         <EmptyState icon={<Users className="h-8 w-8" />} title="No suppliers found" description={search ? "Try a different search term" : "Add your first supplier to get started"} action={<Button onClick={() => setShowAddModal(true)}>Add Supplier</Button>} />
       ) : (
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((supplier) => (
-            <motion.div key={supplier.id} variants={fadeUp} whileHover={{ y: -2 }}>
+            <div key={supplier.id} className="animate-[fadeIn_0.4s_ease-out] transition-all hover:-translate-y-0.5">
               <Card className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -68,30 +64,28 @@ export default function SuppliersPage() {
                   Created: {supplier.created_at ? new Date(supplier.created_at).toLocaleDateString() : "—"}
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
 
-      <AnimatePresence>
-        {showAddModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowAddModal(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)]" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-h4 text-[var(--text-primary)]">Add Supplier</h2>
-                <button onClick={() => setShowAddModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
-              </div>
-              <FormRow label="Supplier Code" required>
-                <Input value={newSupplier.supplier_code} onChange={(e) => setNewSupplier({ ...newSupplier, supplier_code: e.target.value })} placeholder="e.g. SUP-001" />
-              </FormRow>
-              <div className="mt-6 flex justify-end gap-3">
-                <Button variant="secondary" onClick={() => setShowAddModal(false)}>Cancel</Button>
-                <Button onClick={handleAddSupplier} disabled={createSupplier.isPending}>{createSupplier.isPending ? "Adding..." : "Add Supplier"}</Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]" onClick={() => setShowAddModal(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)] animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-h4 text-[var(--text-primary)]">Add Supplier</h2>
+              <button onClick={() => setShowAddModal(false)} className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"><X className="h-5 w-5" /></button>
+            </div>
+            <FormRow label="Supplier Code" required>
+              <Input value={newSupplier.supplier_code} onChange={(e) => setNewSupplier({ ...newSupplier, supplier_code: e.target.value })} placeholder="e.g. SUP-001" />
+            </FormRow>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setShowAddModal(false)}>Cancel</Button>
+              <Button onClick={handleAddSupplier} disabled={createSupplier.isPending}>{createSupplier.isPending ? "Adding..." : "Add Supplier"}</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

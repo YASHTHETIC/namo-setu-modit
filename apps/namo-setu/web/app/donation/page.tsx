@@ -3,7 +3,6 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, CheckCircle, IndianRupee, ArrowLeft, CreditCard, Gift } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { ErrorState, LoadingState } from '@/components/async-state';
@@ -100,28 +99,14 @@ function DonationContent() {
   if (step === 'success' && donationReceipt) {
     return (
       <PageFrame>
-        <motion.div
-          className="max-w-2xl mx-auto text-center"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <motion.div
-            className="mb-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <motion.div
-              className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 shadow-2xl shadow-orange-500/30"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-            >
+        <div className="max-w-2xl mx-auto text-center animate-[scaleIn_0.5s_ease-out]">
+          <div className="mb-10 animate-[fadeIn_0.4s_ease-out_0.2s_both]">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 shadow-2xl shadow-orange-500/30 animate-[scaleIn_0.3s_ease-out_0.3s_both]">
               <Heart className="h-12 w-12 text-white fill-white" />
-            </motion.div>
+            </div>
             <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-900">Thank You for Your Donation!</h1>
             <p className="mt-3 text-lg text-slate-500">Your generosity supports sacred temple operations</p>
-          </motion.div>
+          </div>
           <CompactPanel className="mb-8">
             <div className="p-8 space-y-0">
               <FormRow label="Donation ID" value={donationReceipt.receipt_number ?? '—'} />
@@ -137,7 +122,7 @@ function DonationContent() {
               <Button variant="outline">Back to Home</Button>
             </Link>
           </div>
-        </motion.div>
+        </div>
       </PageFrame>
     );
   }
@@ -145,10 +130,7 @@ function DonationContent() {
   return (
     <PageFrame>
       {/* Temple Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <div className="animate-[fadeIn_0.4s_ease-out]">
         <CompactPanel>
           <div className="flex items-center gap-6 p-8">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-100 to-amber-100">
@@ -160,171 +142,147 @@ function DonationContent() {
             </div>
           </div>
         </CompactPanel>
-      </motion.div>
+      </div>
 
-      <AnimatePresence mode="wait">
-        {step === 'select' && (
-          <motion.div
-            key="select"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-8"
-          >
-            <SectionHeader title="Select Donation Amount" subtitle="Choose a preset amount or enter your own" />
-            
-            {/* Preset Amounts */}
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-              {presetAmounts.map((value) => (
-                <motion.button
-                  key={value}
-                  type="button"
-                  onClick={() => { setSelectedAmount(value); setCustomAmount(''); }}
-                  className={`flex flex-col items-center gap-2 p-6 rounded-2xl border-2 transition-all ${
-                    selectedAmount === value
-                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10'
-                      : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-md'
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <IndianRupee className={`h-6 w-6 ${selectedAmount === value ? 'text-orange-500' : 'text-slate-400'}`} />
-                  <span className={`text-xl font-bold ${selectedAmount === value ? 'text-orange-700' : 'text-slate-900'}`}>
-                    {Number(value).toLocaleString('en-IN')}
-                  </span>
-                </motion.button>
-              ))}
+      {step === 'select' && (
+        <div className="space-y-8 animate-[fadeIn_0.4s_ease-out]">
+          <SectionHeader title="Select Donation Amount" subtitle="Choose a preset amount or enter your own" />
+
+          {/* Preset Amounts */}
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+            {presetAmounts.map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => { setSelectedAmount(value); setCustomAmount(''); }}
+                className={`flex flex-col items-center gap-2 p-6 rounded-2xl border-2 transition-all hover:scale-[1.05] active:scale-[0.95] ${
+                  selectedAmount === value
+                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10'
+                    : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-md'
+                }`}
+              >
+                <IndianRupee className={`h-6 w-6 ${selectedAmount === value ? 'text-orange-500' : 'text-slate-400'}`} />
+                <span className={`text-xl font-bold ${selectedAmount === value ? 'text-orange-700' : 'text-slate-900'}`}>
+                  {Number(value).toLocaleString('en-IN')}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Custom Amount */}
+          <Field label="Or enter a custom amount">
+            <div className="relative">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl font-semibold text-slate-400">₹</span>
+              <input
+                type="number"
+                value={customAmount}
+                onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(''); }}
+                className={`${inputClass} pl-12 text-xl font-semibold`}
+                placeholder="Enter amount"
+              />
             </div>
+          </Field>
 
-            {/* Custom Amount */}
-            <Field label="Or enter a custom amount">
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl font-semibold text-slate-400">₹</span>
-                <input
-                  type="number"
-                  value={customAmount}
-                  onChange={(e) => { setCustomAmount(e.target.value); setSelectedAmount(''); }}
-                  className={`${inputClass} pl-12 text-xl font-semibold`}
-                  placeholder="Enter amount"
-                />
-              </div>
-            </Field>
-
-            {/* Donation Purpose */}
-            <SectionHeader title="Donation Purpose" subtitle="Choose where your contribution goes" />
-            <div className="grid md:grid-cols-2 gap-4">
-              {donationPurposes.map((purpose) => (
-                <motion.button
-                  key={purpose.id}
-                  type="button"
-                  onClick={() => setDonationPurpose(purpose.id)}
-                  className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                    donationPurpose === purpose.id
-                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10'
-                      : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-md'
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${
-                      donationPurpose === purpose.id ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25' : 'bg-stone-100 text-slate-500'
-                    }`}>
-                      <Gift className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-slate-900">{purpose.label}</div>
-                      <div className="text-sm text-slate-500 mt-1">{purpose.desc}</div>
-                    </div>
+          {/* Donation Purpose */}
+          <SectionHeader title="Donation Purpose" subtitle="Choose where your contribution goes" />
+          <div className="grid md:grid-cols-2 gap-4">
+            {donationPurposes.map((purpose) => (
+              <button
+                key={purpose.id}
+                type="button"
+                onClick={() => setDonationPurpose(purpose.id)}
+                className={`p-6 rounded-2xl border-2 text-left transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  donationPurpose === purpose.id
+                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10'
+                    : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-md'
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${
+                    donationPurpose === purpose.id ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/25' : 'bg-stone-100 text-slate-500'
+                  }`}>
+                    <Gift className="h-6 w-6" />
                   </div>
-                </motion.button>
-              ))}
-            </div>
-
-            <div className="flex justify-end">
-              <Button onClick={() => setStep('details')} disabled={!amount} size="lg">
-                Continue
-              </Button>
-            </div>
-          </motion.div>
-        )}
-
-        {step === 'details' && (
-          <motion.div
-            key="details"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <SectionHeader title="Donor Information" subtitle="Provide your details for receipt generation" />
-            
-            <label className="flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-5 cursor-pointer transition-all hover:shadow-md group">
-              <input type="checkbox" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} className="h-5 w-5 rounded border-slate-300 text-orange-500 focus:ring-orange-500" />
-              <div>
-                <span className="font-bold text-slate-900 group-hover:text-orange-600 transition-colors">Make this donation anonymous</span>
-                <p className="text-sm text-slate-500 mt-1">Your name will not appear in public records</p>
-              </div>
-            </label>
-
-            {!isAnonymous && (
-              <CompactPanel>
-                <div className="space-y-5 p-8">
-                  <Field label="Full Name">
-                    <input type="text" value={donorDetails.name} onChange={(e) => setDonorDetails({ ...donorDetails, name: e.target.value })} className={inputClass} placeholder="Enter your full name" />
-                  </Field>
-                  <Field label="Email Address">
-                    <input type="email" value={donorDetails.email} onChange={(e) => setDonorDetails({ ...donorDetails, email: e.target.value })} className={inputClass} placeholder="your@email.com" />
-                  </Field>
-                  <Field label="Phone Number">
-                    <input type="tel" value={donorDetails.phone} onChange={(e) => setDonorDetails({ ...donorDetails, phone: e.target.value })} className={inputClass} placeholder="+91 XXXXX XXXXX" />
-                  </Field>
+                  <div>
+                    <div className="font-bold text-slate-900">{purpose.label}</div>
+                    <div className="text-sm text-slate-500 mt-1">{purpose.desc}</div>
+                  </div>
                 </div>
-              </CompactPanel>
-            )}
+              </button>
+            ))}
+          </div>
 
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep('select')}>
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </Button>
-              <Button onClick={() => setStep('payment')} disabled={!isAnonymous && (!donorDetails.name || !donorDetails.email || !donorDetails.phone)}>
-                Proceed to Payment
-              </Button>
+          <div className="flex justify-end">
+            <Button onClick={() => setStep('details')} disabled={!amount} size="lg">
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {step === 'details' && (
+        <div className="space-y-8 animate-[fadeIn_0.4s_ease-out]">
+          <SectionHeader title="Donor Information" subtitle="Provide your details for receipt generation" />
+
+          <label className="flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-5 cursor-pointer transition-all hover:shadow-md group">
+            <input type="checkbox" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} className="h-5 w-5 rounded border-slate-300 text-orange-500 focus:ring-orange-500" />
+            <div>
+              <span className="font-bold text-slate-900 group-hover:text-orange-600 transition-colors">Make this donation anonymous</span>
+              <p className="text-sm text-slate-500 mt-1">Your name will not appear in public records</p>
             </div>
-          </motion.div>
-        )}
+          </label>
 
-        {step === 'payment' && (
-          <motion.div
-            key="payment"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <SectionHeader title="Payment Details" subtitle="Review and complete your donation" />
-            <CompactPanel title="Donation Summary">
-              <div className="p-8 space-y-0">
-                <FormRow label="Temple" value={temple.name} />
-                <FormRow label="Purpose" value={donationPurposes.find(p => p.id === donationPurpose)?.label ?? donationPurpose} />
-                <FormRow label="Amount" value={`₹${amount.toLocaleString('en-IN')}`} />
+          {!isAnonymous && (
+            <CompactPanel>
+              <div className="space-y-5 p-8">
+                <Field label="Full Name">
+                  <input type="text" value={donorDetails.name} onChange={(e) => setDonorDetails({ ...donorDetails, name: e.target.value })} className={inputClass} placeholder="Enter your full name" />
+                </Field>
+                <Field label="Email Address">
+                  <input type="email" value={donorDetails.email} onChange={(e) => setDonorDetails({ ...donorDetails, email: e.target.value })} className={inputClass} placeholder="your@email.com" />
+                </Field>
+                <Field label="Phone Number">
+                  <input type="tel" value={donorDetails.phone} onChange={(e) => setDonorDetails({ ...donorDetails, phone: e.target.value })} className={inputClass} placeholder="+91 XXXXX XXXXX" />
+                </Field>
               </div>
             </CompactPanel>
-            {donateMutation.isError && <ErrorState message={donateMutation.error.message} />}
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep('details')}>
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </Button>
-              <Button onClick={handleDonation} disabled={donateMutation.isPending} size="lg">
-                <CreditCard className="h-4 w-4" />
-                {donateMutation.isPending ? 'Processing...' : `Pay ₹${amount.toLocaleString('en-IN')}`}
-              </Button>
+          )}
+
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={() => setStep('select')}>
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <Button onClick={() => setStep('payment')} disabled={!isAnonymous && (!donorDetails.name || !donorDetails.email || !donorDetails.phone)}>
+              Proceed to Payment
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {step === 'payment' && (
+        <div className="space-y-8 animate-[fadeIn_0.4s_ease-out]">
+          <SectionHeader title="Payment Details" subtitle="Review and complete your donation" />
+          <CompactPanel title="Donation Summary">
+            <div className="p-8 space-y-0">
+              <FormRow label="Temple" value={temple.name} />
+              <FormRow label="Purpose" value={donationPurposes.find(p => p.id === donationPurpose)?.label ?? donationPurpose} />
+              <FormRow label="Amount" value={`₹${amount.toLocaleString('en-IN')}`} />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </CompactPanel>
+          {donateMutation.isError && <ErrorState message={donateMutation.error.message} />}
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={() => setStep('details')}>
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <Button onClick={handleDonation} disabled={donateMutation.isPending} size="lg">
+              <CreditCard className="h-4 w-4" />
+              {donateMutation.isPending ? 'Processing...' : `Pay ₹${amount.toLocaleString('en-IN')}`}
+            </Button>
+          </div>
+        </div>
+      )}
     </PageFrame>
   );
 }

@@ -1,11 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useModitAnalyticsSummary } from "@/lib/modit-api";
 import { BarChart3, TrendingUp, Package, Users, FileText, FolderOpen } from "lucide-react";
 import { MetricTile, Card, CardHeader, CardContent, EmptyState, LoadingSpinner } from "@/lib/modit-ui";
-
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function AnalyticsPage() {
   const { data: analytics, isLoading } = useModitAnalyticsSummary();
@@ -29,12 +26,12 @@ export default function AnalyticsPage() {
 
       {isLoading ? <LoadingSpinner /> : analyticsData ? (
         <>
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-[fadeIn_0.4s_ease-out]">
             <MetricTile label="Total Revenue" value={`₹${(analyticsData.total_revenue ?? 0).toLocaleString()}`} icon={<TrendingUp className="h-5 w-5" />} delta={12} deltaLabel="vs last month" />
             <MetricTile label="Products" value={analyticsData.total_products ?? 0} icon={<Package className="h-5 w-5" />} delta={8} deltaLabel="new this month" />
             <MetricTile label="Suppliers" value={analyticsData.total_suppliers ?? 0} icon={<Users className="h-5 w-5" />} delta={5} deltaLabel="verified" />
             <MetricTile label="Pending RFQs" value={analyticsData.pending_rfqs ?? 0} icon={<FileText className="h-5 w-5" />} delta={-3} deltaLabel="vs last month" />
-          </motion.div>
+          </div>
 
           <div className="grid gap-4 lg:grid-cols-3">
             <Card>

@@ -1,14 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useProducts, useOrders, useRFQs, useProjects, useSuppliers } from "@/lib/modit-api";
 import { Package, Users, FileText, ShoppingCart, FolderOpen, ArrowRight } from "lucide-react";
 import { MetricTile, Card, CardHeader, CardContent, StatusPill, LoadingSpinner, EmptyState } from "@/lib/modit-ui";
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.08 } },
-};
 
 export default function DashboardPage() {
   const productsQuery = useProducts({ page: 1 });
@@ -68,11 +63,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Metric tiles */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={stagger}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
+      <div
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 animate-[fadeIn_0.4s_ease-out]"
       >
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.link}>
@@ -85,7 +77,7 @@ export default function DashboardPage() {
             />
           </Link>
         ))}
-      </motion.div>
+      </div>
 
       {/* Recent Orders & RFQs */}
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -108,11 +100,9 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {orders.slice(0, 5).map((order) => (
-                  <motion.div
+                  <div
                     key={order.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center justify-between rounded-xl py-3 border-b border-[var(--border-subtle)] last:border-0"
+                    className="flex items-center justify-between rounded-xl py-3 border-b border-[var(--border-subtle)] last:border-0 animate-[fadeIn_0.4s_ease-out]"
                   >
                     <div>
                       <div className="font-medium text-[var(--text-primary)]">{order.order_number ?? `#${order.id.slice(0, 8)}`}</div>
@@ -121,7 +111,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <StatusPill status={order.status ?? "placed"} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}
@@ -147,18 +137,16 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {rfqs.slice(0, 5).map((rfq) => (
-                  <motion.div
+                  <div
                     key={rfq.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center justify-between rounded-xl py-3 border-b border-[var(--border-subtle)] last:border-0"
+                    className="flex items-center justify-between rounded-xl py-3 border-b border-[var(--border-subtle)] last:border-0 animate-[fadeIn_0.4s_ease-out]"
                   >
                     <div>
                       <div className="font-medium text-[var(--text-primary)]">{rfq.rfq_number ?? `#${rfq.id.slice(0, 8)}`}</div>
                       <div className="text-xs text-[var(--text-muted)]">Due: {rfq.due_date ?? "N/A"}</div>
                     </div>
                     <StatusPill status={rfq.status ?? "open"} />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}

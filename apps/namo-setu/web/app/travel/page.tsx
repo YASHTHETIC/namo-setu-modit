@@ -3,7 +3,6 @@
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Users, Star, Route, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { NamoShell } from '@/components/namo-shell';
 import { AiAssistantPanel } from '@/components/ai-assistant';
@@ -74,11 +73,7 @@ function TravelContent() {
   return (
     <PageFrame>
       {/* AI Trip Planner */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+      <div className="animate-[fadeIn_0.6s_ease-out]">
         <CompactPanel className="overflow-hidden">
           <div className="relative p-8 lg:p-10">
             <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50/50" />
@@ -114,11 +109,7 @@ function TravelContent() {
                 </div>
               </div>
               {planner.data && (
-                <motion.div
-                  className="mt-8 rounded-2xl border border-orange-200/60 bg-white p-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <div className="mt-8 rounded-2xl border border-orange-200/60 bg-white p-6 animate-[fadeIn_0.4s_ease-out]">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="h-5 w-5 text-orange-500" />
                     <span className="text-sm font-bold text-orange-700">AI Generated Plan</span>
@@ -127,32 +118,21 @@ function TravelContent() {
                   <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700">
                     Budget: ₹{planner.data.estimated_budget.toLocaleString('en-IN')}
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
           </div>
         </CompactPanel>
-      </motion.div>
+      </div>
 
       {/* Travel Packages */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="animate-[fadeIn_0.6s_ease-out_0.1s_both]">
         <SectionHeader label="Packages" title="Travel Packages" subtitle={`Curated packages for ${temple.name}`} />
         {packagesQuery.isLoading && <LoadingState label="Loading packages..." />}
         {packagesQuery.isError && <ErrorState message={packagesQuery.error.message} onRetry={() => packagesQuery.refetch()} />}
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {(packagesQuery.data ?? []).map((pkg, i) => (
-            <motion.div
-              key={pkg.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
+            <div key={pkg.id} className="animate-[fadeIn_0.4s_ease-out]">
               <Card className="overflow-hidden">
                 <div className="p-8">
                   <div className="flex items-start justify-between">
@@ -173,29 +153,18 @@ function TravelContent() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       {/* Local Guides */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="animate-[fadeIn_0.6s_ease-out_0.2s_both]">
         <SectionHeader label="Guides" title="Local Guides" subtitle="Expert guides from the platform" />
         {guidesQuery.isLoading && <LoadingState label="Loading guides..." />}
         <div className="grid md:grid-cols-3 gap-6 mt-8">
           {(guidesQuery.data ?? []).map((guide, i) => (
-            <motion.div
-              key={guide.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
+            <div key={guide.id} className="animate-[fadeIn_0.4s_ease-out]">
               <Card className="overflow-hidden">
                 <div className="p-8 text-center">
                   <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-100 to-amber-100">
@@ -208,21 +177,15 @@ function TravelContent() {
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       {/* AI Assistant */}
-      <motion.section
-        className="rounded-3xl border border-stone-200/60 bg-white p-8 shadow-sm"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="rounded-3xl border border-stone-200/60 bg-white p-8 shadow-sm animate-[fadeIn_0.6s_ease-out_0.3s_both]">
         <AiAssistantPanel templeId={temple.id} />
-      </motion.section>
+      </section>
     </PageFrame>
   );
 }
