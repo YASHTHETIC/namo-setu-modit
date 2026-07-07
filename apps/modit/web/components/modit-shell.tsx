@@ -45,7 +45,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               M
             </motion.div>
             <div className="min-w-0">
-              <span className="block text-sm font-semibold text-[var(--text-primary)] tracking-tight">MODIT</span>
+              <span className="block text-sm font-bold text-[var(--text-primary)] tracking-tight font-display">MODIT</span>
               <span className="block text-[10px] text-[var(--text-muted)] tracking-wide uppercase">Construction Procurement</span>
             </div>
           </Link>

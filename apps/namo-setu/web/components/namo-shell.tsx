@@ -24,7 +24,7 @@ export function NamoShell({ children }: { children: React.ReactNode }) {
                 <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="text-[15px] font-bold tracking-tight text-[var(--text-primary)] whitespace-nowrap">Namo Setu</span>
+            <span className="font-display text-[15px] font-normal tracking-tight text-[var(--text-primary)] whitespace-nowrap">Namo Setu</span>
           </Link>
 
           <nav className="hidden items-center gap-0.5 lg:flex">
