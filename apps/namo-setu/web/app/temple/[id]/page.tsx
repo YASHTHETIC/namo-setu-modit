@@ -21,6 +21,7 @@ export default function TempleDetailsPage() {
   const { data: temple, isLoading, isError, error, refetch } = useTemple(templeId);
   const [activeTab, setActiveTab] = useState<'overview' | 'timings' | 'festivals' | 'events' | 'attractions' | 'reviews'>('overview');
   const [liked, setLiked] = useState(false);
+  const [toast, setToast] = useState('');
 
   if (isLoading) {
     return (
@@ -125,10 +126,10 @@ export default function TempleDetailsPage() {
                   >
                     <Heart className={`h-5 w-5 ${liked ? 'fill-current' : ''}`} />
                   </button>
-                  <button type="button" onClick={() => alert(liked ? 'Temple removed from saved list' : 'Temple saved to your list')} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
+                  <button type="button" onClick={() => { setLiked(!liked); setToast(liked ? 'Temple removed from saved list' : 'Temple saved to your list'); setTimeout(() => setToast(''), 3000); }} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
                     <Bookmark className="h-5 w-5" />
                   </button>
-                  <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard'); }} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
+                  <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); setToast('Link copied to clipboard'); setTimeout(() => setToast(''), 3000); }} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
                     <Share2 className="h-5 w-5" />
                   </button>
                 </div>
@@ -341,6 +342,13 @@ export default function TempleDetailsPage() {
           <AiAssistantPanel templeId={templeData.id} />
         </motion.section>
       </PageFrame>
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-[var(--text-primary)] px-5 py-3 text-sm font-medium text-white shadow-xl animate-[slideUp_0.3s_ease-out]">
+          {toast}
+        </div>
+      )}
     </NamoShell>
   );
 }

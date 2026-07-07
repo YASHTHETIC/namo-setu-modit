@@ -4,8 +4,6 @@
  * Philosophy: Every pilgrimage begins with a single step — make that step sacred.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,6 +15,7 @@
   --brand-dark: #B84E0F;
   --brand-rgb: 212, 98, 27;
   --brand-bg: #FDF6EE;
+  --brand-color: #D4621B;
 
   --gold: #C4883A;
   --gold-light: #DAA960;

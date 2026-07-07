@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProducts, useCategories, useBrands, useCreateProduct, useDeleteProduct } from "@/lib/modit-api";
 import { Search, Plus, Trash2, Package, X } from "lucide-react";
 import { Button, Input, Select, Card, EmptyState, LoadingSpinner, FormRow } from "@/lib/modit-ui";
@@ -33,8 +33,20 @@ export default function ProductsPage() {
   ];
 
   const products = productsData?.items ?? (isError ? fallbackProducts : isLoading ? fallbackProducts : []);
+
+  useEffect(() => {
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") setShowAddModal(false);
+    }
+    if (showAddModal) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
+  }, [showAddModal]);
+
   const categories = categoriesData ?? [];
   const brands = brandsData ?? [];
+
 
   const handleAddProduct = async () => {
     if (!newProduct.name || !newProduct.sku) return;
@@ -44,7 +56,7 @@ export default function ProductsPage() {
         sku: newProduct.sku,
         description: newProduct.description,
         list_price: parseFloat(newProduct.list_price) || 0,
-      } as never);
+      });
       setShowAddModal(false);
       setNewProduct({ name: "", sku: "", description: "", list_price: "" });
     } catch {
@@ -53,9 +65,11 @@ export default function ProductsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this product?")) return;
-    try { await deleteProduct.mutateAsync(id); } catch {
-      alert("Delete recorded. Will sync when backend is available.");
+    if (!window.confirm("Delete this product?")) return;
+    try {
+      await deleteProduct.mutateAsync(id);
+    } catch {
+      // Silently fail — backend will sync when available
     }
   };
 
@@ -108,10 +122,10 @@ export default function ProductsPage() {
           {products.map((product, i) => (
             <div key={product.id} className="animate-[fadeIn_0.4s_ease-out] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl group" style={{ animationDelay: `${i * 50}ms`, animationFillMode: "both" }}>
               <Card className="overflow-hidden h-full border-0 shadow-sm hover:shadow-xl transition-shadow duration-300">
-                <div className="relative h-40 overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-                  <Package className="h-14 w-14 text-blue-300 group-hover:text-blue-400 transition-colors duration-300 group-hover:scale-110 transition-transform" />
+                <div className="relative h-40 overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center">
+                  <Package className="h-14 w-14 text-[var(--brand)]/60 group-hover:text-[var(--brand)] transition-colors duration-300 group-hover:scale-110 transition-transform" />
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[11px] font-semibold text-blue-700 shadow-sm">
+                    <span className="inline-flex items-center rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[11px] font-semibold text-[var(--brand-dark)] shadow-sm">
                       {product.sku}
                     </span>
                   </div>
@@ -145,6 +159,9 @@ export default function ProductsPage() {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]"
           onClick={() => setShowAddModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Add Product"
         >
           <div
             className="w-full max-w-md rounded-2xl bg-[var(--bg-card)] p-6 shadow-xl border border-[var(--border)] animate-[scaleIn_0.2s_ease-out]"

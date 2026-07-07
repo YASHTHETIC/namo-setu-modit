@@ -1,7 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, ButtonHTMLAttributes } from "react";
 import { isValidElement } from "react";
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -220,6 +221,8 @@ export function Button({
   className = "",
   disabled,
   onClick,
+  type = "button",
+  ...rest
 }: {
   children: ReactNode;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
@@ -227,7 +230,8 @@ export function Button({
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
-}) {
+  type?: "button" | "submit" | "reset";
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "onClick" | "disabled">) {
   const variants = {
     primary: "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-500/25 hover:shadow-md hover:shadow-orange-500/30",
     secondary: "bg-slate-900 text-white hover:bg-slate-800",
@@ -244,6 +248,7 @@ export function Button({
 
   return (
     <button
+      type={type}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
@@ -254,6 +259,7 @@ export function Button({
       )}
       disabled={disabled}
       onClick={onClick}
+      {...rest}
     >
       {children}
     </button>
@@ -287,7 +293,7 @@ export function LinkButton({
   };
 
   return (
-    <a
+    <Link
       href={href}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150",
@@ -299,7 +305,7 @@ export function LinkButton({
       )}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 

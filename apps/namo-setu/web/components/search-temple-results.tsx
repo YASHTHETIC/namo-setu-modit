@@ -46,6 +46,7 @@ export function SearchTempleResults() {
   const [latitude, setLatitude] = useState("25.3109");
   const [longitude, setLongitude] = useState("83.0107");
   const [nearbyEnabled, setNearbyEnabled] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
 
   const debouncedQuery = useDebounce(query, 200);
   const debouncedCategory = useDebounce(category, 200);
@@ -55,6 +56,22 @@ export function SearchTempleResults() {
 
   const apiTemples = nearbyEnabled ? (nearby.data ?? []) : (search.data?.items ?? []);
   const hasApiData = apiTemples.length > 0;
+  const isLoading = search.isLoading || nearby.isLoading;
+
+  const handleUseLocation = () => {
+    if (!navigator.geolocation) return;
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLatitude(pos.coords.latitude.toFixed(4));
+        setLongitude(pos.coords.longitude.toFixed(4));
+        setNearbyEnabled(true);
+        setIsLocating(false);
+      },
+      () => setIsLocating(false),
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
 
   const filteredFallback = useMemo(() => {
     let result = fallbackTemples;
@@ -117,51 +134,74 @@ export function SearchTempleResults() {
         </Panel>
       </div>
 
-      <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
-        <div className="grid gap-5">
-          {temples.map((temple, i) => (
-            <div key={temple.id} className="animate-[fadeIn_0.3s_ease-out]">
-              <Link href={`/temple/${temple.id}`}>
-                <Card className="overflow-hidden group">
-                  <div className="grid gap-0 md:grid-cols-[260px_1fr]">
-                    <div className="h-56 bg-gradient-to-br from-orange-100 via-amber-50 to-orange-100 md:h-full" />
-                    <div className="p-6">
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
-                            {temple.name}
-                          </h3>
-                          <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-                            <MapPin className="h-4 w-4" />
-                            {temple.deity_name ?? "Temple"} · {temple.address_line1}
-                          </div>
+          <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
+            <div className="grid gap-5">
+              {isLoading && (
+                <div className="space-y-5">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="animate-pulse rounded-2xl border border-stone-200/60 bg-white p-6">
+                      <div className="grid gap-0 md:grid-cols-[260px_1fr]">
+                        <div className="h-56 bg-stone-200/60 md:h-full" />
+                        <div className="p-6 space-y-4">
+                          <div className="h-6 w-48 bg-stone-200/60 rounded" />
+                          <div className="h-4 w-32 bg-stone-200/60 rounded" />
+                          <div className="h-4 w-full bg-stone-200/60 rounded" />
+                          <div className="h-4 w-3/4 bg-stone-200/60 rounded" />
                         </div>
-                        <StatusPill tone="teal">{temple.temple_type}</StatusPill>
-                      </div>
-                      <p className="mt-4 text-sm leading-relaxed text-slate-600 line-clamp-2">{temple.description}</p>
-                      <div className="mt-5 flex items-center gap-4">
-                        <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2">
-                          <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                          <span className="text-sm font-bold text-amber-700">{temple.rating_avg}</span>
-                        </div>
-                        <span className="text-sm text-slate-400">{temple.review_count.toLocaleString()} reviews</span>
-                        <ChevronRight className="ml-auto h-5 w-5 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </Link>
-            </div>
-          ))}
+                  ))}
+                </div>
+              )}
 
-          {!search.isLoading && temples.length === 0 && (
-            <div className="text-center py-20">
-              <Compass className="mx-auto h-16 w-16 text-slate-300" />
-              <p className="mt-6 text-lg font-semibold text-slate-500">No temples found</p>
-              <p className="mt-2 text-sm text-slate-400">Try a different search or category</p>
+              {!isLoading && temples.map((temple, i) => (
+                <div key={temple.id} className="animate-[fadeIn_0.3s_ease-out]">
+                  <Link href={`/temple/${temple.id}`}>
+                    <Card className="overflow-hidden group hover-lift">
+                      <div className="grid gap-0 md:grid-cols-[260px_1fr]">
+                        <div className="relative h-56 bg-gradient-to-br from-orange-100 via-amber-50 to-orange-100 md:h-full overflow-hidden">
+                          <div className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80)` }} />
+                          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-lg bg-black/30 backdrop-blur-sm px-2.5 py-1 text-xs font-medium text-white">
+                            <MapPin className="h-3 w-3" /> {temple.address_line1?.split(",").pop()?.trim() ?? "India"}
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                              <h3 className="text-xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
+                                {temple.name}
+                              </h3>
+                              <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
+                                <MapPin className="h-4 w-4" />
+                                {temple.deity_name ?? "Temple"} · {temple.address_line1}
+                              </div>
+                            </div>
+                            <StatusPill tone="teal">{temple.temple_type}</StatusPill>
+                          </div>
+                          <p className="mt-4 text-sm leading-relaxed text-slate-600 line-clamp-2">{temple.description}</p>
+                          <div className="mt-5 flex items-center gap-4">
+                            <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2">
+                              <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+                              <span className="text-sm font-bold text-amber-700">{temple.rating_avg}</span>
+                            </div>
+                            <span className="text-sm text-slate-400">{(temple.review_count ?? 0).toLocaleString()} reviews</span>
+                            <ChevronRight className="ml-auto h-5 w-5 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </Link>
+                </div>
+              ))}
+
+              {!isLoading && temples.length === 0 && (
+                <div className="text-center py-20">
+                  <Compass className="mx-auto h-16 w-16 text-slate-300" />
+                  <p className="mt-6 text-lg font-semibold text-slate-500">No temples found</p>
+                  <p className="mt-2 text-sm text-slate-400">Try a different search or category</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
         <aside className="grid gap-5 self-start">
           <div>
@@ -176,18 +216,27 @@ export function SearchTempleResults() {
                     <p className="text-xs text-slate-500">Find temples within a radius</p>
                   </div>
                 </div>
-                <div className="grid gap-4">
+              <div className="grid gap-4">
+                <div className="rounded-xl bg-[var(--bg-subtle)] px-4 py-3 text-xs text-slate-500">
+                  Find temples near your current location or a specific coordinate.
+                </div>
+                <Button onClick={handleUseLocation} className="w-full" disabled={isLocating}>
+                  <LocateFixed className="h-4 w-4" />
+                  {isLocating ? "Locating..." : "Use My Location"}
+                </Button>
+                <div className="grid grid-cols-2 gap-3">
                   <Field label="Latitude">
                     <input className={inputClass} value={latitude} onChange={(e) => setLatitude(e.target.value)} />
                   </Field>
                   <Field label="Longitude">
                     <input className={inputClass} value={longitude} onChange={(e) => setLongitude(e.target.value)} />
                   </Field>
-                  <Button onClick={() => setNearbyEnabled(true)} className="w-full">
-                    <LocateFixed className="h-4 w-4" />
-                    Find Nearby
-                  </Button>
                 </div>
+                <Button onClick={() => setNearbyEnabled(true)} variant="outline" className="w-full">
+                  <LocateFixed className="h-4 w-4" />
+                  Find Nearby
+                </Button>
+              </div>
               </div>
             </Panel>
           </div>

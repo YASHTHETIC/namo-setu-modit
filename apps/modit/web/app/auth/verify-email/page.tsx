@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
@@ -41,11 +41,11 @@ function VerifyEmailForm() {
     },
   });
 
-  useState(() => {
+  useEffect(() => {
     if (token) {
       verifyMutation.mutate();
     }
-  });
+  }, [token]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-4">

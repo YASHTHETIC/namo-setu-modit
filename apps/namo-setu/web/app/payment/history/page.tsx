@@ -22,6 +22,7 @@ import {
   EmptyState,
   Skeleton,
 } from "@/components/namo-ui";
+import { NamoShell } from "@/components/namo-shell";
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 
@@ -76,6 +77,7 @@ export default function PaymentHistoryPage() {
     payments?.items?.reduce((sum, p) => (p.status === "captured" ? sum + p.amount : sum), 0) ?? 0;
 
   return (
+    <NamoShell>
     <PageFrame>
       <SectionHeader
         label="Donations"
@@ -185,5 +187,6 @@ export default function PaymentHistoryPage() {
         </div>
       </Panel>
     </PageFrame>
+    </NamoShell>
   );
 }

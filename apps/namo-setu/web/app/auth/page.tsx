@@ -95,7 +95,11 @@ export default function LoginPage() {
                   </div>
                 </Field>
 
-                <div className="flex items-center justify-end">
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                    <input type="checkbox" className="h-4 w-4 rounded border-[var(--border)] text-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20" />
+                    Remember me
+                  </label>
                   <Link
                     href="/auth/forgot-password"
                     className="text-sm font-semibold text-orange-600 hover:text-orange-700"
@@ -105,10 +109,10 @@ export default function LoginPage() {
                 </div>
 
                 <Button
+                  type="submit"
                   variant="primary"
                   className="w-full"
                   disabled={login.isPending}
-                  onClick={() => {}}
                 >
                   {login.isPending ? 'Signing in...' : 'Sign In'}
                 </Button>

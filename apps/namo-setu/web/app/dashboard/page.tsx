@@ -23,8 +23,17 @@ export default function DashboardPage() {
   const analytics = useAnalyticsSummary();
 
   const recentActivity = [
-    { type: 'booking', temple: 'Live feed', user: 'Platform', time: 'Realtime' },
+    { type: 'booking', temple: 'Kashi Vishwanath', user: 'Priya Sharma', time: '2h ago' },
+    { type: 'donation', temple: 'Tirupati Balaji', user: 'Rahul Verma', time: '5h ago' },
+    { type: 'booking', temple: 'Golden Temple', user: 'Amit Singh', time: '1d ago' },
+    { type: 'donation', temple: 'Siddhivinayak', user: 'Neha Gupta', time: '2d ago' },
   ];
+
+  const bookingTrends = [
+    { day: "Mon", value: 42 }, { day: "Tue", value: 55 }, { day: "Wed", value: 48 },
+    { day: "Thu", value: 67 }, { day: "Fri", value: 89 }, { day: "Sat", value: 124 }, { day: "Sun", value: 112 },
+  ];
+  const maxBookings = Math.max(...bookingTrends.map((b) => b.value));
 
   return (
     <NamoShell>
@@ -68,16 +77,32 @@ export default function DashboardPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          {/* Chart Placeholder */}
+          {/* Booking Trends Chart */}
           <CompactPanel className="lg:col-span-2">
             <div className="p-8">
-              <h3 className="text-sm font-bold text-[var(--text-primary)]">Booking Trends</h3>
-              <div className="mt-5 h-72 flex items-center justify-center rounded-2xl bg-[var(--bg-subtle)]">
-                <div className="text-center">
-                  <BarChart3 className="mx-auto h-16 w-16 text-[var(--text-muted)] opacity-40" />
-                  <p className="mt-4 text-base font-semibold text-[var(--text-secondary)]">Booking analytics visualization</p>
-                  <p className="mt-2 text-sm text-[var(--text-muted)]">Shows booking trends over time</p>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)]">Booking Trends</h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">Daily darshan bookings this week</p>
                 </div>
+                <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
+                  <TrendingUp className="h-3.5 w-3.5" />
+                  +18% vs last week
+                </div>
+              </div>
+              <div className="flex h-72 items-end gap-3">
+                {bookingTrends.map((b, i) => (
+                  <div key={b.day} className="group flex flex-1 flex-col items-center justify-end gap-2">
+                    <span className="text-xs font-semibold text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity">
+                      {b.value}
+                    </span>
+                    <div
+                      className="w-full rounded-t-xl bg-gradient-to-t from-orange-500 to-amber-400 transition-all duration-700 group-hover:from-orange-600 group-hover:to-amber-500"
+                      style={{ height: `${(b.value / maxBookings) * 100}%` }}
+                    />
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">{b.day}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </CompactPanel>

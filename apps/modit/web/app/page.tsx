@@ -13,17 +13,17 @@ import {
 
 const categories = [
   { name: "Cement", desc: "OPC, PPC, Ready Mix", icon: Package, color: "from-slate-500 to-gray-600", bg: "bg-[var(--bg-subtle)]", href: "/products?category=cement" },
-  { name: "Steel & TMT", desc: "Bars, Rods, Structural", icon: Zap, color: "from-blue-600 to-indigo-600", bg: "bg-blue-100", href: "/products?category=steel" },
+  { name: "Steel & TMT", desc: "Bars, Rods, Structural", icon: Zap, color: "from-orange-600 to-amber-600", bg: "bg-orange-100", href: "/products?category=steel" },
   { name: "Sand & Aggregate", desc: "M Sand, River Sand, Gravel", icon: Building2, color: "from-amber-500 to-orange-500", bg: "bg-amber-100", href: "/products?category=sand" },
   { name: "Bricks & Blocks", desc: "Fly Ash, AAC, Red Bricks", icon: Package, color: "from-red-500 to-rose-600", bg: "bg-red-100", href: "/products?category=bricks" },
   { name: "Tiles & Ceramics", desc: "Floor, Wall, Parking", icon: CheckCircle, color: "from-emerald-500 to-green-600", bg: "bg-emerald-100", href: "/products?category=tiles" },
-  { name: "Sanitary & Bath", desc: "Faucets, Toilets, Basins", icon: Shield, color: "from-cyan-500 to-blue-500", bg: "bg-cyan-100", href: "/products?category=sanitary" },
+  { name: "Sanitary & Bath", desc: "Faucets, Toilets, Basins", icon: Shield, color: "from-teal-500 to-emerald-500", bg: "bg-teal-100", href: "/products?category=sanitary" },
   { name: "Paint", desc: "Interior, Exterior, Primer", icon: Star, color: "from-purple-500 to-violet-600", bg: "bg-purple-100", href: "/products?category=paint" },
   { name: "Electrical", desc: "Wires, Switches, MCB", icon: Zap, color: "from-yellow-500 to-amber-500", bg: "bg-yellow-100", href: "/products?category=electrical" },
   { name: "Plumbing", desc: "Pipes, Fittings, Tanks", icon: ShieldCheck, color: "from-teal-500 to-emerald-500", bg: "bg-teal-100", href: "/products?category=plumbing" },
   { name: "Plywood & Boards", desc: "Plywood, MDF, HDHMR", icon: Package, color: "from-amber-600 to-orange-600", bg: "bg-amber-100", href: "/products?category=plywood" },
   { name: "Hardware", desc: "Hinges, Locks, Fittings", icon: Package, color: "from-slate-500 to-gray-600", bg: "bg-[var(--bg-subtle)]", href: "/products?category=hardware" },
-  { name: "Glass & Windows", desc: "Float, Toughened, Mirror", icon: Shield, color: "from-sky-500 to-blue-500", bg: "bg-sky-100", href: "/products?category=glass" },
+  { name: "Glass & Windows", desc: "Float, Toughened, Mirror", icon: Shield, color: "from-sky-500 to-cyan-500", bg: "bg-sky-100", href: "/products?category=glass" },
 ];
 
 const deals = [
@@ -50,7 +50,7 @@ const navItems = [
 ];
 
 const aiFeatures = [
-  { icon: Brain, title: "AI Material Advisor", desc: "Tell us your project type — residential, commercial, industrial — and our AI recommends the right materials, quantities, and brands.", color: "from-blue-500 to-indigo-600" },
+  { icon: Brain, title: "AI Material Advisor", desc: "Tell us your project type — residential, commercial, industrial — and our AI recommends the right materials, quantities, and brands.", color: "from-[var(--brand)] to-[var(--brand-dark)]" },
   { icon: Upload, title: "AI BOQ/BOM Reader", desc: "Upload your bill of quantities or material requirement document. AI extracts items, suggests suppliers, and generates instant quotes.", color: "from-emerald-500 to-green-600" },
   { icon: GitCompareArrows, title: "Smart Price Comparison", desc: "Compare real-time prices across 50+ verified suppliers in Delhi NCR. AI factors in delivery distance, bulk discounts, and quality ratings.", color: "from-amber-500 to-orange-600" },
   { icon: MessageSquare, title: "AI Negotiation Assistant", desc: "Our AI negotiates bulk prices on your behalf. It analyzes market rates, supplier history, and order volume to get you the best deal.", color: "from-purple-500 to-violet-600" },
@@ -93,13 +93,20 @@ const deliveryAreas = [
 
 export default function Page() {
   const [pincode, setPincode] = useState("");
+  const [deliveryMessage, setDeliveryMessage] = useState("");
+  const [cartMessage, setCartMessage] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const checkDelivery = () => {
     if (pincode.length === 6) {
-      alert(`Delivery available to ${pincode}! Estimated time: 24-48 hours`);
+      setDeliveryMessage(`Delivery available to ${pincode}! Estimated time: 24-48 hours`);
     }
+  };
+
+  const handleAddToCart = (name: string) => {
+    setCartMessage(`${name} added to cart`);
+    setTimeout(() => setCartMessage(""), 3000);
   };
 
   return (
@@ -132,10 +139,15 @@ export default function Page() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5">
-              <MapPin className="h-3.5 w-3.5 text-[var(--text-muted)]" />
-              <input type="text" placeholder="Enter pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} className="w-20 border-none bg-transparent text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none" maxLength={6} />
-              <button onClick={checkDelivery} className="text-xs font-semibold text-[var(--brand)] hover:text-[var(--brand-dark)]">Check</button>
+            <div className="hidden md:block">
+              <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5">
+                <MapPin className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+                <input type="text" placeholder="Enter pincode" value={pincode} onChange={(e) => { setPincode(e.target.value); setDeliveryMessage(""); }} className="w-20 border-none bg-transparent text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none" maxLength={6} />
+                <button onClick={checkDelivery} className="text-xs font-semibold text-[var(--brand)] hover:text-[var(--brand-dark)]">Check</button>
+              </div>
+              {deliveryMessage && (
+                <p className="mt-1.5 text-xs font-medium text-emerald-600 animate-[fadeIn_0.3s_ease-out]">{deliveryMessage}</p>
+              )}
             </div>
             <div className="relative hidden sm:block">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
@@ -167,21 +179,21 @@ export default function Page() {
       )}
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--slate-deep)] via-[var(--iron)] to-[var(--slate-deep)]">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }} />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px]" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[100px]" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--brand)]/15 rounded-full blur-[128px]" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--brand-light)]/10 rounded-full blur-[100px]" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300 mb-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-3 py-1 text-xs font-semibold text-orange-300 mb-6">
                 <Truck className="h-3 w-3" /> Delhi NCR&apos;s #1 Building Material Platform
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.08]">
                 Building Materials,
-                <span className="block text-blue-400">Delivered Fast</span>
+                <span className="block text-[var(--brand-light)]">Delivered Fast</span>
               </h1>
 
               <p className="mt-5 text-lg text-slate-300 max-w-xl leading-relaxed">
@@ -189,7 +201,7 @@ export default function Page() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/products" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/30">
+                <Link href="/products" className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)] hover:shadow-lg hover:shadow-[var(--brand)]/30">
                   Browse Products <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link href="/rfq" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/10">
@@ -211,7 +223,7 @@ export default function Page() {
                   <div className="flex gap-3">
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <input type="text" placeholder="What do you need?" onKeyDown={(e) => { if (e.key === 'Enter' && (e.target as HTMLInputElement).value.trim()) window.location.href = `/products?search=${encodeURIComponent((e.target as HTMLInputElement).value.trim())}`; }} className="w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-blue-400 outline-none" />
+                      <input type="text" placeholder="What do you need?" onKeyDown={(e) => { if (e.key === 'Enter' && (e.target as HTMLInputElement).value.trim()) window.location.href = `/products?search=${encodeURIComponent((e.target as HTMLInputElement).value.trim())}`; }} className="w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-[var(--brand-light)] outline-none" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -261,8 +273,8 @@ export default function Page() {
         </div>
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
           {categories.map((cat, i) => (
-            <Link key={cat.name} href={cat.href} className="group flex flex-col items-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 text-center transition-all duration-300 hover:border-blue-200 hover:shadow-lg hover:-translate-y-1 animate-slide-up" style={{ animationDelay: `${i * 0.04}s`, animationFillMode: "both" }}>
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cat.bg} text-[var(--text-secondary)] transition-all duration-300 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:scale-110`}>
+            <Link key={cat.name} href={cat.href} className="group flex flex-col items-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 text-center transition-all duration-300 hover:border-orange-200 hover:shadow-lg hover:-translate-y-1 animate-slide-up" style={{ animationDelay: `${i * 0.04}s`, animationFillMode: "both" }}>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cat.bg} text-[var(--text-secondary)] transition-all duration-300 group-hover:bg-orange-50 group-hover:text-[var(--brand)] group-hover:scale-110`}>
                 <cat.icon className="h-6 w-6" />
               </div>
               <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{cat.name}</div>
@@ -280,7 +292,7 @@ export default function Page() {
               <h2 className="text-h2 text-[var(--text-primary)]">Deals of the Week</h2>
               <p className="mt-2 text-[var(--text-secondary)]">Lowest prices on top-selling materials. Limited time offers.</p>
             </div>
-            <Link href="/products" className="hidden items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 sm:flex">
+            <Link href="/products" className="hidden items-center gap-1 text-sm font-semibold text-[var(--brand)] hover:text-[var(--brand-dark)] sm:flex">
               View All <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -300,9 +312,9 @@ export default function Page() {
                   <span className="text-sm text-[var(--text-muted)] line-through">₹{deal.original.toLocaleString()}</span>
                 </div>
                 <div className="mt-1 text-xs text-[var(--text-secondary)]">{deal.unit}</div>
-                <div className="mt-2 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700">{deal.bulk}</div>
+                <div className="mt-2 rounded-lg bg-orange-50 px-3 py-1.5 text-xs font-medium text-[var(--brand-dark)]">{deal.bulk}</div>
                 <div className="mt-3 flex gap-2">
-                  <button onClick={() => alert(`${deal.name} added to cart`)} className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700">Add to Cart</button>
+                  <button onClick={() => handleAddToCart(deal.name)} className="flex-1 rounded-xl bg-[var(--brand)] py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)]">Add to Cart</button>
                   <Link href="/rfq" className="flex items-center justify-center rounded-xl border border-[var(--border)] px-3 py-2.5 text-[var(--text-secondary)] transition-all hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]">
                     <FileText className="h-4 w-4" />
                   </Link>
@@ -322,8 +334,8 @@ export default function Page() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {howItWorks.map((step, i) => (
             <div key={i} className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 text-center animate-slide-up" style={{ animationDelay: `${i * 0.1}s`, animationFillMode: "both" }}>
-              <div className="absolute -top-3 left-6 rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white">{step.step}</div>
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+              <div className="absolute -top-3 left-6 rounded-full bg-[var(--brand)] px-3 py-1 text-xs font-bold text-white">{step.step}</div>
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-[var(--brand)]">
                 <step.icon className="h-7 w-7" />
               </div>
               <h3 className="text-base font-semibold text-[var(--text-primary)]">{step.title}</h3>
@@ -337,7 +349,7 @@ export default function Page() {
       <section className="bg-slate-900 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="mb-10 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300 mb-4">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-3 py-1 text-xs font-semibold text-orange-300 mb-4">
               <Brain className="h-3 w-3" /> Agentic AI
             </span>
             <h2 className="text-h2">AI-Powered Procurement</h2>
@@ -362,7 +374,7 @@ export default function Page() {
         <h2 className="mb-8 text-center text-h2 text-[var(--text-primary)]">Trusted Brands</h2>
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
           {brands.map((brand, i) => (
-            <Link key={brand} href={`/products?search=${brand}`} className="flex h-16 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 transition-all duration-300 hover:border-blue-200 hover:shadow-sm hover:-translate-y-0.5 animate-slide-up" style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}>
+            <Link key={brand} href={`/products?search=${brand}`} className="flex h-16 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 transition-all duration-300 hover:border-orange-200 hover:shadow-sm hover:-translate-y-0.5 animate-slide-up" style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}>
               <span className="text-sm font-semibold text-[var(--text-secondary)]">{brand}</span>
             </Link>
           ))}
@@ -370,7 +382,7 @@ export default function Page() {
       </section>
 
       {/* For Suppliers */}
-      <section className="bg-blue-50">
+      <section className="bg-[var(--bg-subtle)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="mb-10 text-center">
             <h2 className="text-h2 text-[var(--text-primary)]">For Suppliers & Vendors</h2>
@@ -378,8 +390,8 @@ export default function Page() {
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {supplierFeatures.map((feat, i) => (
-              <div key={i} className="rounded-2xl border border-blue-100 bg-[var(--bg-card)] p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-slide-up" style={{ animationDelay: `${i * 0.1}s`, animationFillMode: "both" }}>
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+              <div key={i} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-slide-up" style={{ animationDelay: `${i * 0.1}s`, animationFillMode: "both" }}>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 text-[var(--brand)]">
                   <feat.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-base font-semibold text-[var(--text-primary)]">{feat.title}</h3>
@@ -388,7 +400,7 @@ export default function Page() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Link href="/suppliers" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-md">
+            <Link href="/suppliers" className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)] hover:shadow-md">
               Register as Supplier <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -421,14 +433,14 @@ export default function Page() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 p-8 sm:p-12 text-center text-white">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-dark)] p-8 sm:p-12 text-center text-white">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-[80px]" />
           <div className="relative">
             <h2 className="text-2xl sm:text-3xl font-bold">Start Building Smarter Today</h2>
-            <p className="mt-3 text-blue-100 max-w-lg mx-auto">Join 10,000+ construction professionals who save time and money with MODIT</p>
+            <p className="mt-3 text-orange-100 max-w-lg mx-auto">Join 10,000+ construction professionals who save time and money with MODIT</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/products" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition-all hover:bg-blue-50 hover:shadow-lg">
+              <Link href="/products" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[var(--brand-dark)] transition-all hover:bg-orange-50 hover:shadow-lg">
                 <ShoppingCart className="h-4 w-4" /> Start Shopping
               </Link>
               <Link href="/rfq" className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10">
@@ -445,7 +457,7 @@ export default function Page() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">M</div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand)] text-sm font-bold text-white">M</div>
                 <span className="font-bold text-[var(--text-primary)]">MODIT</span>
               </div>
               <p className="mt-3 text-sm text-[var(--text-secondary)] max-w-xs leading-relaxed">Delhi NCR&apos;s trusted building material procurement platform. Compare, order, and manage materials with AI-powered intelligence.</p>
@@ -457,31 +469,31 @@ export default function Page() {
             <div>
               <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Products</h4>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <Link href="/products?category=cement" className="block hover:text-blue-600 transition-colors">Cement</Link>
-                <Link href="/products?category=steel" className="block hover:text-blue-600 transition-colors">Steel & TMT</Link>
-                <Link href="/products?category=tiles" className="block hover:text-blue-600 transition-colors">Tiles</Link>
-                <Link href="/products?category=paint" className="block hover:text-blue-600 transition-colors">Paint</Link>
-                <Link href="/products?category=electrical" className="block hover:text-blue-600 transition-colors">Electrical</Link>
-                <Link href="/products?category=plumbing" className="block hover:text-blue-600 transition-colors">Plumbing</Link>
+                <Link href="/products?category=cement" className="block hover:text-[var(--brand)] transition-colors">Cement</Link>
+                <Link href="/products?category=steel" className="block hover:text-[var(--brand)] transition-colors">Steel & TMT</Link>
+                <Link href="/products?category=tiles" className="block hover:text-[var(--brand)] transition-colors">Tiles</Link>
+                <Link href="/products?category=paint" className="block hover:text-[var(--brand)] transition-colors">Paint</Link>
+                <Link href="/products?category=electrical" className="block hover:text-[var(--brand)] transition-colors">Electrical</Link>
+                <Link href="/products?category=plumbing" className="block hover:text-[var(--brand)] transition-colors">Plumbing</Link>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Services</h4>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <Link href="/rfq" className="block hover:text-blue-600 transition-colors">Request Quote</Link>
-                <Link href="/orders" className="block hover:text-blue-600 transition-colors">Track Order</Link>
-                <Link href="/inventory" className="block hover:text-blue-600 transition-colors">Check Stock</Link>
-                <Link href="/suppliers" className="block hover:text-blue-600 transition-colors">Find Suppliers</Link>
-                <Link href="/projects" className="block hover:text-blue-600 transition-colors">Project Planner</Link>
+                <Link href="/rfq" className="block hover:text-[var(--brand)] transition-colors">Request Quote</Link>
+                <Link href="/orders" className="block hover:text-[var(--brand)] transition-colors">Track Order</Link>
+                <Link href="/inventory" className="block hover:text-[var(--brand)] transition-colors">Check Stock</Link>
+                <Link href="/suppliers" className="block hover:text-[var(--brand)] transition-colors">Find Suppliers</Link>
+                <Link href="/projects" className="block hover:text-[var(--brand)] transition-colors">Project Planner</Link>
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Company</h4>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <Link href="/analytics" className="block hover:text-blue-600 transition-colors">Analytics</Link>
-                <Link href="/admin" className="block hover:text-blue-600 transition-colors">Admin</Link>
-                <Link href="/dashboard/profile" className="block hover:text-blue-600 transition-colors">Profile</Link>
-                <Link href="/auth" className="block hover:text-blue-600 transition-colors">Sign In</Link>
+                <Link href="/analytics" className="block hover:text-[var(--brand)] transition-colors">Analytics</Link>
+                <Link href="/admin" className="block hover:text-[var(--brand)] transition-colors">Admin</Link>
+                <Link href="/dashboard/profile" className="block hover:text-[var(--brand)] transition-colors">Profile</Link>
+                <Link href="/auth" className="block hover:text-[var(--brand)] transition-colors">Sign In</Link>
               </div>
             </div>
           </div>
@@ -494,6 +506,14 @@ export default function Page() {
           </div>
         </div>
       </footer>
+
+      {/* Toast */}
+      {cartMessage && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-[var(--text-primary)] px-5 py-3 text-sm font-medium text-white shadow-xl animate-[slideUp_0.3s_ease-out] flex items-center gap-2">
+          <CheckCircle className="h-4 w-4 text-emerald-400" />
+          {cartMessage}
+        </div>
+      )}
     </div>
   );
 }

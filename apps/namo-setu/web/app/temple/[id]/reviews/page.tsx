@@ -15,6 +15,7 @@ import {
 } from "@/components/namo-ui";
 import { ReviewForm } from "@/components/review-form";
 import { ReviewList } from "@/components/review-list";
+import { NamoShell } from "@/components/namo-shell";
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 
@@ -65,6 +66,7 @@ export default function TempleReviewsPage({
   const maxCount = stats ? Math.max(...stats.distribution.map((d) => d.count), 1) : 1;
 
   return (
+    <NamoShell>
     <PageFrame>
       <SectionHeader
         label="Community"
@@ -161,5 +163,6 @@ export default function TempleReviewsPage({
         </div>
       </div>
     </PageFrame>
+    </NamoShell>
   );
 }
