@@ -40,11 +40,15 @@ def uid():
 
 
 def get_sync_url(settings):
+    import re
     url = settings.database_url
     if "asyncpg" in url:
         url = url.replace("postgresql+asyncpg", "postgresql+psycopg2")
     elif "psycopg2" not in url:
         url = url.replace("postgresql", "postgresql+psycopg2")
+    url = re.sub(r'\?ssl=require', '?sslmode=require', url)
+    url = re.sub(r'&ssl=require', '&sslmode=require', url)
+    url = re.sub(r'\?sslmode=require', '?sslmode=require', url)
     return url
 
 
