@@ -20,7 +20,7 @@ function TempleSelector({ onSelect }: { onSelect: (id: string) => void }) {
     { id: "t5", name: "Meenakshi Temple", address_line1: "Madurai, Tamil Nadu" },
     { id: "t6", name: "Somnath Jyotirlinga", address_line1: "Prabhas Patan, Veraval, Gujarat" },
   ];
-  const temples = Array.isArray(popularQuery.data) ? popularQuery.data : (popularQuery.isError ? fallbackTemples : []);
+  const temples = Array.isArray(popularQuery.data) && popularQuery.data.length > 0 ? popularQuery.data : fallbackTemples;
   return (
     <PageFrame>
       <SectionHeader title="Select a Temple" subtitle="Choose a temple to plan your pilgrimage" />

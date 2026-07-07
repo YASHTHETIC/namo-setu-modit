@@ -1,14 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LocateFixed, Search, Star, MapPin, ChevronRight, Sparkles, Compass } from "lucide-react";
 
 import { useNearbyTemples, useTempleSearch } from "@/lib/namo-api";
 
-import { Field, Panel, PanelHeader, StatusPill, inputClass, Card, Button } from "./namo-ui";
-import { ErrorState, LoadingState } from "./async-state";
+import { Field, Panel, StatusPill, inputClass, Card, Button } from "./namo-ui";
+
+const fallbackTemples = [
+  { id: "t1", name: "Kashi Vishwanath", temple_type: "Jyotirlinga", deity_name: "Lord Shiva", address_line1: "Vishwanath Gali, Varanasi", description: "One of the twelve Jyotirlingas and most sacred Hindu temples on the western bank of the Ganges.", rating_avg: 4.9, review_count: 2340 },
+  { id: "t2", name: "Tirupati Balaji", temple_type: "Vaishnavite", deity_name: "Lord Venkateswara", address_line1: "Tirumala, Tirupati", description: "The richest and most visited temple in the world, dedicated to Lord Venkateswara.", rating_avg: 4.9, review_count: 5120 },
+  { id: "t3", name: "Golden Temple", temple_type: "Sikh", deity_name: "Guru Granth Sahib", address_line1: "Amritsar, Punjab", description: "The holiest Gurdwara of Sikhism, famous for its stunning gold-plated architecture.", rating_avg: 4.9, review_count: 4800 },
+  { id: "t4", name: "Kedarnath Temple", temple_type: "Char Dham", deity_name: "Lord Shiva", address_line1: "Kedarnath, Uttarakhand", description: "One of the Panch Kedar and Char Dham temples at 3,583 meters altitude.", rating_avg: 4.7, review_count: 1890 },
+  { id: "t5", name: "Meenakshi Amman Temple", temple_type: "Shakti Peeth", deity_name: "Goddess Meenakshi", address_line1: "Madurai, Tamil Nadu", description: "Historic Hindu temple with stunning Dravidian architecture and 14 colorful gopurams.", rating_avg: 4.8, review_count: 3200 },
+  { id: "t6", name: "Somnath Temple", temple_type: "Jyotirlinga", deity_name: "Lord Shiva", address_line1: "Somnath, Gujarat", description: "First among the twelve Jyotirlingas. The eternal shrine has been rebuilt multiple times.", rating_avg: 4.8, review_count: 2100 },
+  { id: "t7", name: "Dwarkadhish Temple", temple_type: "Char Dham", deity_name: "Lord Krishna", address_line1: "Dwarka, Gujarat", description: "One of the Char Dham pilgrimage sites, believed to be the original residence of Lord Krishna.", rating_avg: 4.7, review_count: 1950 },
+  { id: "t8", name: "Badrinath Temple", temple_type: "Char Dham", deity_name: "Lord Vishnu", address_line1: "Badrinath, Uttarakhand", description: "One of the four Char Dham pilgrimage sites at 3,133 meters altitude.", rating_avg: 4.8, review_count: 2400 },
+  { id: "t9", name: "Jagannath Temple", temple_type: "Heritage", deity_name: "Lord Jagannath", address_line1: "Puri, Odisha", description: "One of the Char Dham sites, famous for the annual Rath Yatra chariot festival.", rating_avg: 4.8, review_count: 3100 },
+  { id: "t10", name: "Mahakaleshwar Jyotirlinga", temple_type: "Jyotirlinga", deity_name: "Lord Shiva", address_line1: "Ujjain, Madhya Pradesh", description: "One of the twelve Jyotirlingas where the lingam is believed to be self-manifested.", rating_avg: 4.8, review_count: 2800 },
+  { id: "t11", name: "Siddhivinayak Temple", temple_type: "Hindu", deity_name: "Lord Ganesha", address_line1: "Prabhadevi, Mumbai", description: "One of the most famous Ganesha temples in Mumbai, visited by millions annually.", rating_avg: 4.7, review_count: 3500 },
+  { id: "t12", name: "Vaishno Devi", temple_type: "Shakti Peeth", deity_name: "Goddess Vaishno Devi", address_line1: "Katra, Jammu & Kashmir", description: "One of the most visited religious sites in India, nestled in the Trikuta Mountains.", rating_avg: 4.8, review_count: 4200 },
+  { id: "t13", name: "Brihadeeswarar Temple", temple_type: "Heritage", deity_name: "Lord Shiva", address_line1: "Thanjavur, Tamil Nadu", description: "UNESCO World Heritage Site, masterpiece of Chola dynasty Dravidian architecture.", rating_avg: 4.7, review_count: 1600 },
+  { id: "t14", name: "Konark Sun Temple", temple_type: "Heritage", deity_name: "Sun God", address_line1: "Konark, Odisha", description: "UNESCO World Heritage Site shaped as a giant chariot with 24 wheels.", rating_avg: 4.7, review_count: 2200 },
+  { id: "t15", name: "Ram Mandir", temple_type: "Hindu", deity_name: "Lord Rama", address_line1: "Ayodhya, Uttar Pradesh", description: "The newly constructed grand temple at the birthplace of Lord Rama, inaugurated in 2024.", rating_avg: 4.9, review_count: 5000 },
+  { id: "t16", name: "Amarnath Cave", temple_type: "Hindu", deity_name: "Lord Shiva", address_line1: "Amarnath, Jammu & Kashmir", description: "Sacred cave shrine with a natural ice lingam, one of the most important pilgrimage sites.", rating_avg: 4.8, review_count: 1800 },
+  { id: "t17", name: "Khajuraho Temples", temple_type: "Heritage", deity_name: "Various deities", address_line1: "Khajuraho, Madhya Pradesh", description: "UNESCO World Heritage Site famous for Nagara-style architecture and intricate sculptures.", rating_avg: 4.6, review_count: 1500 },
+  { id: "t18", name: "Basilica of Bom Jesus", temple_type: "Church", deity_name: "St. Francis Xavier", address_line1: "Old Goa, Goa", description: "UNESCO World Heritage Site housing the mortal remains of St. Francis Xavier.", rating_avg: 4.6, review_count: 1700 },
+  { id: "t19", name: "Lakshmi Narayan Temple", temple_type: "Hindu", deity_name: "Goddess Lakshmi", address_line1: "Jaipur, Rajasthan", description: "Beautiful marble temple built by the Birla family, known for stunning architecture.", rating_avg: 4.5, review_count: 1200 },
+  { id: "t20", name: "Chamundeshwari Temple", temple_type: "Hindu", deity_name: "Goddess Chamundeshwari", address_line1: "Chamundi Hills, Mysore", description: "Historic temple atop Chamundi Hills, patron deity of the Mysore royal family.", rating_avg: 4.6, review_count: 1400 },
+];
 
 export function SearchTempleResults() {
   const [query, setQuery] = useState("Shiva");
@@ -20,10 +42,30 @@ export function SearchTempleResults() {
   const search = useTempleSearch({ q: query, category: category || undefined });
   const nearby = useNearbyTemples(Number(latitude), Number(longitude), nearbyEnabled);
 
-  const temples = nearbyEnabled ? (nearby.data ?? []) : (search.data?.items ?? []);
+  const apiTemples = nearbyEnabled ? (nearby.data ?? []) : (search.data?.items ?? []);
+  const hasApiData = apiTemples.length > 0;
+
+  const filteredFallback = useMemo(() => {
+    let result = fallbackTemples;
+    if (category) {
+      result = result.filter((t) => t.temple_type.toLowerCase().includes(category.toLowerCase()));
+    }
+    if (query) {
+      const q = query.toLowerCase();
+      result = result.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.deity_name.toLowerCase().includes(q) ||
+          t.address_line1.toLowerCase().includes(q) ||
+          t.temple_type.toLowerCase().includes(q) ||
+          t.description.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [query, category]);
+
+  const temples = hasApiData ? apiTemples : filteredFallback;
   const loading = nearbyEnabled ? nearby.isLoading : search.isLoading;
-  const error = nearbyEnabled ? nearby.error : search.error;
-  const refetch = nearbyEnabled ? nearby.refetch : search.refetch;
 
   return (
     <>
@@ -50,7 +92,9 @@ export function SearchTempleResults() {
                 <option value="">All Categories</option>
                 <option value="Jyotirlinga">Jyotirlinga</option>
                 <option value="Shakti">Shakti Peeth</option>
+                <option value="Char Dham">Char Dham</option>
                 <option value="Heritage">Heritage</option>
+                <option value="Hindu">Hindu</option>
               </select>
             </Field>
             <Button
@@ -69,20 +113,21 @@ export function SearchTempleResults() {
 
       <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <div className="grid gap-5">
-          <AnimatePresence mode="wait">
-            {loading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <LoadingState label="Searching temples..." />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
-          {error && <ErrorState message="Search is connecting. Showing popular temples." onRetry={() => refetch()} />}
-          
+          {loading && (
+            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-orange-200 border-t-orange-600" />
+              <p className="mt-3 text-sm text-slate-500">Searching temples...</p>
+            </div>
+          )}
+
+          {!loading && temples.length === 0 && (
+            <div className="text-center py-20">
+              <Compass className="mx-auto h-16 w-16 text-slate-300" />
+              <p className="mt-6 text-lg font-semibold text-slate-500">No temples found</p>
+              <p className="mt-2 text-sm text-slate-400">Try a different search or category</p>
+            </div>
+          )}
+
           <AnimatePresence>
             {temples.map((temple, i) => (
               <motion.div
@@ -124,18 +169,6 @@ export function SearchTempleResults() {
               </motion.div>
             ))}
           </AnimatePresence>
-          
-          {!loading && !error && temples.length === 0 && (
-            <motion.div
-              className="text-center py-20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <Compass className="mx-auto h-16 w-16 text-slate-300" />
-              <p className="mt-6 text-lg font-semibold text-slate-500">No temples found</p>
-              <p className="mt-2 text-sm text-slate-400">Try a different search or category</p>
-            </motion.div>
-          )}
         </div>
 
         <aside className="grid gap-5 self-start">
@@ -170,7 +203,7 @@ export function SearchTempleResults() {
               </div>
             </Panel>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -189,23 +222,21 @@ export function SearchTempleResults() {
                 </div>
                 <div className="grid gap-3">
                   {[
-                    { label: "Popular temples", icon: Star },
-                    { label: "Festival active", icon: Sparkles },
-                    { label: "Senior support", icon: Compass },
-                    { label: "AI recommended", icon: Sparkles },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.label}
-                        type="button"
-                        className="inline-flex h-12 items-center justify-between rounded-xl border border-stone-200 bg-white px-4 text-left text-sm font-medium text-slate-700 transition-all hover:border-orange-200 hover:bg-orange-50/50 hover:shadow-sm group"
-                      >
-                        <span>{item.label}</span>
-                        <Icon className="h-4 w-4 text-slate-400 group-hover:text-orange-500 transition-colors" />
-                      </button>
-                    );
-                  })}
+                    { label: "Jyotirlinga temples", filter: () => { setCategory("Jyotirlinga"); setQuery(""); } },
+                    { label: "Char Dham circuit", filter: () => { setCategory("Char Dham"); setQuery(""); } },
+                    { label: "Heritage sites", filter: () => { setCategory("Heritage"); setQuery(""); } },
+                    { label: "Show all temples", filter: () => { setCategory(""); setQuery(""); } },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={item.filter}
+                      className="inline-flex h-12 items-center justify-between rounded-xl border border-stone-200 bg-white px-4 text-left text-sm font-medium text-slate-700 transition-all hover:border-orange-200 hover:bg-orange-50/50 hover:shadow-sm group"
+                    >
+                      <span>{item.label}</span>
+                      <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-orange-500 transition-colors" />
+                    </button>
+                  ))}
                 </div>
               </div>
             </Panel>
