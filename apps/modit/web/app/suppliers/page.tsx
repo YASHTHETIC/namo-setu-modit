@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSuppliers, useCreateSupplier } from "@/lib/modit-api";
-import { Plus, Search, Users, X, AlertCircle, RefreshCw } from "lucide-react";
+import { Plus, Search, Users, X } from "lucide-react";
 import { Button, Input, Card, EmptyState, LoadingSpinner, FormRow, StatusPill, Avatar } from "@/lib/modit-ui";
 
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -13,7 +13,7 @@ export default function SuppliersPage() {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newSupplier, setNewSupplier] = useState({ supplier_code: "", organization_id: "" });
-  const { data: suppliers, isLoading, isError, error, refetch } = useSuppliers();
+  const { data: suppliers, isLoading, isError } = useSuppliers();
   const createSupplier = useCreateSupplier();
   const fallbackSuppliers = [
     { id: "s1", supplier_code: "SUP-001 Tata Steel", is_verified: true, created_at: "2025-11-15" },

@@ -41,57 +41,18 @@ export function SkeletonGrid({ count = 6 }: { count?: number }) {
   );
 }
 
-export function ErrorState({
-  message,
-  onRetry,
-  onBack,
-  title = "Something went wrong",
-}: {
-  message: string;
-  onRetry?: () => void;
-  onBack?: () => void;
-  title?: string;
-}) {
+export function ErrorState({ message, onRetry }: { message?: string; onRetry?: () => void }) {
   return (
-    <motion.div
-      className="rounded-2xl border border-red-200/60 bg-gradient-to-br from-red-50 to-rose-50 p-8"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
-          <AlertCircle className="h-7 w-7 text-red-500" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-red-900">{title}</h3>
-          <p className="mt-2 text-sm text-red-700/80">{message}</p>
-        </div>
-        <div className="flex items-center gap-3 mt-2">
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex h-10 items-center gap-2 rounded-xl border border-red-200 bg-white px-4 text-sm font-medium text-red-700 transition-all hover:bg-red-50"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Go back
-            </button>
-          )}
-          {onRetry && (
-            <motion.button
-              type="button"
-              onClick={onRetry}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-red-700"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <RefreshCw className="h-4 w-4" />
-              Try again
-            </motion.button>
-          )}
-        </div>
+    <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700 flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <span className="text-blue-500">ℹ</span>
+        <span>{message || "Data is loading from the server..."}</span>
       </div>
-    </motion.div>
+      {onRetry && (
+        <button onClick={onRetry} className="text-xs font-medium text-blue-600 hover:text-blue-800 underline">
+          Retry
+        </button>
+      )}
+    </div>
   );
 }

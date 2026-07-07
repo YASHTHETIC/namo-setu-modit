@@ -8,7 +8,7 @@ import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, Table, Table
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
 export default function OrdersPage() {
-  const { data: orders, isLoading, isError, error, refetch } = useOrders();
+  const { data: orders, isLoading, isError } = useOrders();
   const fallbackOrders = [
     { id: "o1", order_number: "ORD-2026-0451", status: "delivered", placed_at: "2026-06-28", created_at: "2026-06-27" },
     { id: "o2", order_number: "ORD-2026-0452", status: "shipped", placed_at: "2026-07-01", created_at: "2026-06-30" },

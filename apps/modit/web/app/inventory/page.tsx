@@ -8,7 +8,7 @@ import { Card, CardHeader, CardContent, EmptyState, LoadingSpinner, MetricTile, 
 const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function InventoryPage() {
-  const { data: inventory, isLoading, isError, error, refetch } = useInventory();
+  const { data: inventory, isLoading, isError } = useInventory();
   const { data: alerts } = useInventoryAlerts();
   const { data: warehouses } = useWarehouses();
   const fallbackInventory = [

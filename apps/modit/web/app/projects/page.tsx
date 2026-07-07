@@ -12,7 +12,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 export default function ProjectsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: "", notes: "", budget_amount: "" });
-  const { data: projects, isLoading, isError, error, refetch } = useProjects();
+  const { data: projects, isLoading, isError } = useProjects();
   const createProject = useCreateProject();
   const fallbackProjects = [
     { id: "pr1", name: "Skyline Residency Phase 2", project_code: "SKY-2026-P2", status: "active", notes: "Premium 48-unit residential complex with modern amenities", budget_amount: 12000000, start_date: "2026-01-15" },

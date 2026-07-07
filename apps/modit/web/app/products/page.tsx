@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProducts, useCategories, useBrands, useCreateProduct, useDeleteProduct } from "@/lib/modit-api";
-import { Search, Plus, Trash2, Package, X, AlertCircle, RefreshCw } from "lucide-react";
+import { Search, Plus, Trash2, Package, X } from "lucide-react";
 import { Button, Input, Select, Card, EmptyState, LoadingSpinner, FormRow } from "@/lib/modit-ui";
 
 const fadeUp = {
@@ -22,7 +22,7 @@ export default function ProductsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({ name: "", sku: "", description: "", list_price: "" });
 
-  const { data: productsData, isLoading, isError, error, refetch } = useProducts({
+  const { data: productsData, isLoading, isError } = useProducts({
     search: search || undefined,
     category_id: selectedCategory || undefined,
     brand_id: selectedBrand || undefined,

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRFQs, useCreateRFQ } from "@/lib/modit-api";
-import { Plus, FileText, Calendar, X, AlertCircle, RefreshCw } from "lucide-react";
+import { Plus, FileText, Calendar, X } from "lucide-react";
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
 
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -12,7 +12,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 export default function RFQPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newRFQ, setNewRFQ] = useState({ title: "", description: "", due_date: "" });
-  const { data: rfqs, isLoading, isError, error, refetch } = useRFQs();
+  const { data: rfqs, isLoading, isError } = useRFQs();
   const createRFQ = useCreateRFQ();
   const fallbackRFQs = [
     { id: "r1", rfq_number: "RFQ-2026-001", status: "open", notes: "TMT steel bars and cement for Phase 2 of Skyline Residency project", due_date: "2026-07-20", created_at: "2026-07-01" },
