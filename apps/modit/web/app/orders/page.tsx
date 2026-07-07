@@ -12,7 +12,7 @@ export default function OrdersPage() {
     { id: "o3", order_number: "ORD-2026-0453", status: "placed", placed_at: "2026-07-03", created_at: "2026-07-03" },
     { id: "o4", order_number: "ORD-2026-0454", status: "processing", placed_at: "2026-07-04", created_at: "2026-07-04" },
   ];
-  const orderList = orders ?? (isError ? fallbackOrders : []);
+  const orderList = orders ?? fallbackOrders;
 
   return (
     <div>
@@ -21,7 +21,7 @@ export default function OrdersPage() {
         <p className="text-[var(--text-secondary)]">Track and manage your orders</p>
       </div>
 
-      {isLoading ? <LoadingSpinner /> : orderList.length === 0 ? (
+      {orderList.length === 0 ? (
         <EmptyState icon={<ShoppingCart className="h-8 w-8" />} title="No orders yet" description="Orders will appear here once you purchase products" />
       ) : (
         <div className="animate-[fadeIn_0.4s_ease-out]">

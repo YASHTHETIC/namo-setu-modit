@@ -27,25 +27,11 @@ export default function DashboardPage() {
   const fallbackProjects = [{ id: "pr1", name: "Skyline Residency", project_code: "SKY-2026", status: "active", budget_amount: 12000000 }];
   const fallbackSuppliers = [{ id: "s1", supplier_code: "Tata Steel", is_verified: true }];
 
-  const products = productsData?.items ?? (productsQuery.isError ? fallbackProducts : []);
-  const orders = ordersData ?? (ordersQuery.isError ? fallbackOrders : []);
-  const rfqs = rfqsData ?? (rfqsQuery.isError ? fallbackRFQs : []);
-  const projects = projectsData ?? (projectsQuery.isError ? fallbackProjects : []);
-  const suppliers = suppliersData ?? (suppliersQuery.isError ? fallbackSuppliers : []);
-
-  const loading = loadingProducts || loadingOrders || loadingRFQs || loadingProjects || loadingSuppliers;
-
-  if (loading) {
-    return (
-      <div>
-        <div className="mb-8">
-          <h1 className="text-h1 text-[var(--text-primary)]">Dashboard</h1>
-          <p className="text-[var(--text-secondary)]">Overview of your procurement activities</p>
-        </div>
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  const products = productsData?.items ?? fallbackProducts;
+  const orders = ordersData ?? fallbackOrders;
+  const rfqs = rfqsData ?? fallbackRFQs;
+  const projects = projectsData ?? fallbackProjects;
+  const suppliers = suppliersData ?? fallbackSuppliers;
 
   const stats = [
     { label: "Products", value: products.length, icon: <Package className="h-5 w-5" />, link: "/products", delta: 12, deltaLabel: "vs last month" },

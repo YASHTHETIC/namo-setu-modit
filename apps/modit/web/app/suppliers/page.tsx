@@ -18,7 +18,7 @@ export default function SuppliersPage() {
     { id: "s4", supplier_code: "SUP-004 Ambuja Cements", is_verified: true, created_at: "2026-02-20" },
     { id: "s5", supplier_code: "SUP-005 JSW Steel", is_verified: true, created_at: "2026-03-05" },
   ];
-  const supplierList = suppliers ?? (isError ? fallbackSuppliers : []);
+  const supplierList = suppliers ?? fallbackSuppliers;
   const filtered = search ? supplierList.filter((s) => s.supplier_code?.toLowerCase().includes(search.toLowerCase())) : supplierList;
 
   const handleAddSupplier = async () => {
@@ -43,7 +43,7 @@ export default function SuppliersPage() {
         </div>
       </div>
 
-      {isLoading ? <LoadingSpinner /> : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <EmptyState icon={<Users className="h-8 w-8" />} title="No suppliers found" description={search ? "Try a different search term" : "Add your first supplier to get started"} action={<Button onClick={() => setShowAddModal(true)}>Add Supplier</Button>} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -19,7 +19,7 @@ export default function InventoryPage() {
     { alert_type: "Low Stock", product_name: "Red Clay Bricks", warehouse_name: "Warehouse B", current_stock: 45, reorder_level: 100 },
     { alert_type: "Out of Stock", product_name: "MS Pipes ERW 2 inch", warehouse_name: "Warehouse A", current_stock: 0, reorder_level: 30 },
   ];
-  const inventoryList = inventory ?? (isError ? fallbackInventory : []);
+  const inventoryList = inventory ?? fallbackInventory;
   const alertList = alerts ?? fallbackAlerts;
   const warehouseList = warehouses ?? fallbackWarehouses;
   const lowStock = inventoryList.filter((item) => item.quantity_on_hand > 0 && item.quantity_on_hand <= item.reorder_level);
@@ -54,7 +54,7 @@ export default function InventoryPage() {
         </div>
       )}
 
-      {isLoading ? <LoadingSpinner /> : inventoryList.length === 0 ? (
+      {inventoryList.length === 0 ? (
         <EmptyState icon={<Box className="h-8 w-8" />} title="No inventory data" description="Inventory records will appear here once stock is added" />
       ) : (
         <Card>

@@ -6,13 +6,10 @@ import { MapPin, Star, TrendingUp, Users, Calendar, Heart, ChevronRight } from "
 import { useAnalyticsSummary, useFestivalReminders } from "@/lib/namo-api";
 
 import { CompactPanel, MetricTile } from "./namo-ui";
-import { ErrorState, LoadingState } from "./async-state";
 
 export function DashboardAnalytics() {
   const analytics = useAnalyticsSummary();
   const festivals = useFestivalReminders({ days_ahead: 90 });
-
-  if (analytics.isLoading) return <LoadingState label="Loading dashboard analytics..." />;
 
   const fallbackData = { temples: 500, darshan_bookings: 1240, puja_bookings: 890, donations: 4560, donation_amount: 2340000, accommodation_bookings: 320, travel_bookings: 180, reviews: 3200 };
   const analyticsData = analytics.data ?? (analytics.isError ? fallbackData : null);
@@ -47,7 +44,6 @@ export function DashboardAnalytics() {
               <h3 className="text-sm font-bold text-slate-900">Upcoming Festivals</h3>
               <Calendar className="h-5 w-5 text-slate-400" />
             </div>
-            {festivals.isLoading && <LoadingState label="Loading festivals..." />}
             {festivals.data?.length ? (
               <div className="space-y-4">
                 {festivals.data.slice(0, 5).map((festival, i) => (

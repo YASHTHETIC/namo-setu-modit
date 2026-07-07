@@ -64,28 +64,19 @@ def create_app() -> FastAPI:
 
         db_ok = True
         redis_ok = True
-        db_err = ""
-        redis_err = ""
         try:
             async with AsyncSessionLocal() as session:
                 await session.execute(text("SELECT 1"))
-        except Exception as e:
+        except Exception:
             db_ok = False
-            db_err = str(e)[:200]
         try:
             rc = get_redis_client()
             await rc.ping()
-        except Exception as e:
+        except Exception:
             redis_ok = False
-            redis_err = str(e)[:200]
         return {
             "status": "ok" if db_ok and redis_ok else "degraded",
-            "database": db_ok,
-            "redis": redis_ok,
-            "db_error": db_err,
-            "redis_error": redis_err,
-            "db_url_set": bool(settings.database_url),
-            "redis_url_set": bool(settings.redis_url),
+            "dependencies": {"database": db_ok, "redis": redis_ok},
         }
 
     try:

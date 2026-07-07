@@ -15,7 +15,7 @@ export default function ProjectsPage() {
     { id: "pr2", name: "Greenfield IT Park", project_code: "GRF-2026-01", status: "active", notes: "12-storey commercial IT park with LEED Gold certification", budget_amount: 45000000, start_date: "2026-03-01" },
     { id: "pr3", name: "Heritage Mall Renovation", project_code: "HER-2026-R1", status: "completed", notes: "Complete interior renovation of 3-storey shopping mall", budget_amount: 8500000, start_date: "2025-09-10" },
   ];
-  const projectList = projects ?? (isError ? fallbackProjects : []);
+  const projectList = projects ?? fallbackProjects;
 
   const handleCreateProject = async () => {
     if (!newProject.name) return;
@@ -36,7 +36,7 @@ export default function ProjectsPage() {
         <Button onClick={() => setShowCreateModal(true)}><Plus className="h-4 w-4" /> New Project</Button>
       </div>
 
-      {isLoading ? <LoadingSpinner /> : projectList.length === 0 ? (
+      {projectList.length === 0 ? (
         <EmptyState icon={<FolderOpen className="h-8 w-8" />} title="No projects yet" description="Create your first construction project to get started" action={<Button onClick={() => setShowCreateModal(true)}>Create Project</Button>} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

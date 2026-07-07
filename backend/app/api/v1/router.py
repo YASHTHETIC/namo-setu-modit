@@ -1,8 +1,7 @@
 from backend.app.api.base import BaseAPIRouter
-from backend.app.api.v1 import admin, audit, auth, health, identity, media, modit, namo, notifications, organizations
+from backend.app.api.v1 import admin, audit, auth, identity, media, modit, namo, notifications, organizations
 
 api_router = BaseAPIRouter()
-api_router.include_router(health.router, tags=["health"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(identity.router, tags=["identity"])
 api_router.include_router(organizations.router, tags=["organizations"])

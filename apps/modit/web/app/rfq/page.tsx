@@ -15,7 +15,7 @@ export default function RFQPage() {
     { id: "r2", rfq_number: "RFQ-2026-002", status: "awarded", notes: "White marble tiles for commercial complex lobby renovation", due_date: "2026-07-15", created_at: "2026-06-28" },
     { id: "r3", rfq_number: "RFQ-2026-003", status: "open", notes: "Electrical wiring and conduit pipes for 48 residential units", due_date: "2026-08-01", created_at: "2026-07-03" },
   ];
-  const rfqList = rfqs ?? (isError ? fallbackRFQs : []);
+  const rfqList = rfqs ?? fallbackRFQs;
 
   const handleCreateRFQ = async () => {
     if (!newRFQ.title) return;
@@ -32,7 +32,7 @@ export default function RFQPage() {
         <Button onClick={() => setShowCreateModal(true)}><Plus className="h-4 w-4" /> Create RFQ</Button>
       </div>
 
-      {isLoading ? <LoadingSpinner /> : rfqList.length === 0 ? (
+      {rfqList.length === 0 ? (
         <EmptyState icon={<FileText className="h-8 w-8" />} title="No RFQs yet" description="Create your first RFQ to start sourcing materials" action={<Button onClick={() => setShowCreateModal(true)}>Create RFQ</Button>} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

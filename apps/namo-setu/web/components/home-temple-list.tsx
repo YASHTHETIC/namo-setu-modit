@@ -16,26 +16,7 @@ const fallbackTemples = [
 ];
 
 export function HomeTempleList() {
-  const { data, isLoading } = usePopularTemples();
-
-  if (isLoading) {
-    return (
-      <Panel>
-        <PanelHeader title="Priority Temple Flow" detail="Live catalog from Namo Setu API with availability and ratings." />
-        <div className="grid gap-4 p-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse rounded-lg border border-slate-200 p-3 md:grid-cols-[160px_1fr_auto] grid gap-4">
-              <div className="h-28 rounded-lg bg-slate-100" />
-              <div className="space-y-2">
-                <div className="h-5 w-48 rounded bg-slate-100" />
-                <div className="h-4 w-64 rounded bg-slate-100" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Panel>
-    );
-  }
+  const { data } = usePopularTemples();
 
   const temples = data?.length ? data : fallbackTemples;
 

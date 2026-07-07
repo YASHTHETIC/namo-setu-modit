@@ -151,7 +151,6 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
             <p className="text-xs text-slate-500">Upcoming celebrations</p>
           </div>
         </div>
-        {reminders.isLoading && <LoadingState label="Loading festival reminders..." />}
         {reminders.data?.length ? (
           <div className="space-y-3">
             {reminders.data.slice(0, 5).map((item, i) => (

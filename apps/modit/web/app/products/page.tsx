@@ -32,7 +32,7 @@ export default function ProductsPage() {
     { id: "p6", name: "White Marble Tiles 2x2", sku: "TLS-MRB-2x2", list_price: 85, description: "Premium white marble floor tiles polished finish" },
   ];
 
-  const products = productsData?.items ?? (isError ? fallbackProducts : []);
+  const products = productsData?.items ?? (isError ? fallbackProducts : isLoading ? fallbackProducts : []);
   const categories = categoriesData ?? [];
   const brands = brandsData ?? [];
 
@@ -92,9 +92,7 @@ export default function ProductsPage() {
         </Select>
       </div>
 
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : products.length === 0 ? (
+      {products.length === 0 ? (
         <EmptyState
           icon={<Package className="h-8 w-8" />}
           title="No products found"
@@ -102,23 +100,31 @@ export default function ProductsPage() {
           action={<Button onClick={() => setShowAddModal(true)}><Plus className="h-4 w-4" /> Add first product</Button>}
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product) => (
-            <div key={product.id} className="animate-[fadeIn_0.4s_ease-out] transition-all hover:-translate-y-1 hover:shadow-lg">
-              <Card className="overflow-hidden h-full">
-                <div className="flex h-36 items-center justify-center bg-[var(--bg-subtle)]">
-                  <Package className="h-12 w-12 text-[var(--text-muted)]" />
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product, i) => (
+            <div key={product.id} className="animate-[fadeIn_0.4s_ease-out] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl group" style={{ animationDelay: `${i * 50}ms`, animationFillMode: "both" }}>
+              <Card className="overflow-hidden h-full border-0 shadow-sm hover:shadow-xl transition-shadow duration-300">
+                <div className="relative h-40 overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+                  <Package className="h-14 w-14 text-blue-300 group-hover:text-blue-400 transition-colors duration-300 group-hover:scale-110 transition-transform" />
+                  <div className="absolute top-3 right-3">
+                    <span className="inline-flex items-center rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[11px] font-semibold text-blue-700 shadow-sm">
+                      {product.sku}
+                    </span>
+                  </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-[var(--text-primary)] line-clamp-1">{product.name}</h3>
-                  <p className="mt-1 text-sm text-[var(--text-muted)]">SKU: {product.sku}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-xl font-bold text-[var(--text-primary)]">
-                      ₹{(product.list_price ?? 0).toLocaleString()}
-                    </span>
+                  <h3 className="font-bold text-[var(--text-primary)] line-clamp-1 text-[15px]">{product.name}</h3>
+                  <p className="mt-1.5 text-[13px] text-[var(--text-muted)] line-clamp-2 leading-relaxed">{product.description}</p>
+                  <div className="mt-4 flex items-center justify-between pt-3 border-t border-[var(--border-subtle)]">
+                    <div>
+                      <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wider">Price</span>
+                      <div className="text-lg font-extrabold text-[var(--brand)]">
+                        ₹{(product.list_price ?? 0).toLocaleString()}
+                      </div>
+                    </div>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="rounded-lg p-2 text-[var(--text-muted)] hover:bg-red-50 hover:text-red-500 transition-colors"
+                      className="rounded-xl p-2.5 text-[var(--text-muted)] hover:bg-red-50 hover:text-red-500 transition-all duration-200 opacity-0 group-hover:opacity-100"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
