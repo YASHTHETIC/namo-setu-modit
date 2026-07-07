@@ -77,19 +77,21 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => alert("Search coming soon")}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] transition-colors"
             >
               <Search className="h-4 w-4" />
             </button>
             <button
               type="button"
+              onClick={() => alert("No new notifications")}
               className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] transition-colors"
             >
               <Bell className="h-4 w-4" />
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[var(--brand)]" />
             </button>
             <Link
-              href="/"
+              href="/dashboard"
               className="hidden rounded-xl bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--brand-dark)] transition-colors shadow-sm sm:inline-flex"
             >
               Sign In

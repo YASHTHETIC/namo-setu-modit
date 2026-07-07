@@ -49,14 +49,16 @@ export function NamoShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              aria-label="Search"
+            <Link
+              href="/search"
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-all duration-200 hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
+              aria-label="Search"
             >
               <Search className="h-4 w-4" />
-            </button>
+            </Link>
             <button
               aria-label="Notifications"
+              onClick={() => alert("No new notifications")}
               className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-all duration-200 hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
             >
               <Bell className="h-4 w-4" />

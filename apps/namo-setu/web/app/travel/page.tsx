@@ -24,7 +24,6 @@ function TempleSelector({ onSelect }: { onSelect: (id: string) => void }) {
   return (
     <PageFrame>
       <SectionHeader title="Select a Temple" subtitle="Choose a temple to plan your pilgrimage" />
-      {popularQuery.isLoading && <LoadingState label="Loading temples..." />}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {temples.map((t: any) => (
           <button
