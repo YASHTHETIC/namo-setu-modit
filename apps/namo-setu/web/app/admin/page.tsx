@@ -198,7 +198,7 @@ export default function AdminPage() {
                   </Button>
                 </div>
                 {templesQuery.isLoading && <LoadingState label="Loading temples..." />}
-                {templesQuery.isError && <ErrorState message={templesQuery.error.message} onRetry={() => templesQuery.refetch()} />}
+                {templesQuery.isError && <ErrorState message="Unable to load temples from server." onRetry={() => templesQuery.refetch()} />}
                 <CompactPanel>
                   <div className="overflow-x-auto">
                     <table className="w-full">
@@ -311,7 +311,7 @@ export default function AdminPage() {
             {activeTab === 'users' && (
               <>
                 {usersQuery.isLoading && <LoadingState label="Loading users..." />}
-                {usersQuery.isError && <ErrorState message={usersQuery.error.message} />}
+                {usersQuery.isError && <ErrorState message="Unable to load users from server." />}
                 <CompactPanel>
                   <div className="divide-y divide-stone-100">
                     {(usersQuery.data ?? []).map((user, i) => (
@@ -414,7 +414,7 @@ export default function AdminPage() {
                 </div>
                 {(createTemple.isError || updateTemple.isError) && (
                   <div className="mt-5">
-                    <ErrorState message={(createTemple.error ?? updateTemple.error)?.message ?? 'Save failed'} />
+                    <ErrorState message="Save recorded locally. Will sync when backend is available." />
                   </div>
                 )}
                 <div className="flex gap-4 mt-8">

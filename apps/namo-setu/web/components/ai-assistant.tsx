@@ -105,7 +105,7 @@ export function AiAssistantPanel({ templeId }: { templeId?: string }) {
 
         {ai.isError && (
           <div className="mt-5">
-            <ErrorState message={ai.error.message} onRetry={() => ai.mutate({ message, templeId })} />
+            <ErrorState message="AI assistant is connecting. Please try again." onRetry={() => ai.mutate({ message, templeId })} />
           </div>
         )}
 

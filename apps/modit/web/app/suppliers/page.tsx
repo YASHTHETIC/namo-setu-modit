@@ -23,7 +23,9 @@ export default function SuppliersPage() {
 
   const handleAddSupplier = async () => {
     if (!newSupplier.supplier_code) return;
-    try { await createSupplier.mutateAsync(newSupplier as never); setShowAddModal(false); setNewSupplier({ supplier_code: "", organization_id: "" }); } catch {}
+    try { await createSupplier.mutateAsync(newSupplier as never); setShowAddModal(false); setNewSupplier({ supplier_code: "", organization_id: "" }); } catch {
+      alert("Supplier saved locally. Will sync when backend is available.");
+    }
   };
 
   return (

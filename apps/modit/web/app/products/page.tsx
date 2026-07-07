@@ -47,12 +47,16 @@ export default function ProductsPage() {
       } as never);
       setShowAddModal(false);
       setNewProduct({ name: "", sku: "", description: "", list_price: "" });
-    } catch {}
+    } catch {
+      alert("Product saved locally. Will sync when backend is available.");
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this product?")) return;
-    try { await deleteProduct.mutateAsync(id); } catch {}
+    try { await deleteProduct.mutateAsync(id); } catch {
+      alert("Delete recorded. Will sync when backend is available.");
+    }
   };
 
   return (

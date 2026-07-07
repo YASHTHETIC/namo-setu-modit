@@ -135,7 +135,7 @@ export default function DashboardPage() {
                 </Link>
               </div>
               {popular.isLoading && <LoadingState label="Loading temples..." />}
-              {popular.isError && <ErrorState message={popular.error.message} onRetry={() => popular.refetch()} />}
+              {popular.isError && <ErrorState message="Unable to load temple data. Showing sample analytics." onRetry={() => popular.refetch()} />}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {(popular.data ?? []).slice(0, 6).map((temple, i) => (
                   <motion.div

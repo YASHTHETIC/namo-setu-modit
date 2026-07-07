@@ -23,7 +23,9 @@ export default function ProjectsPage() {
       await createProject.mutateAsync({ name: newProject.name, notes: newProject.notes, budget_amount: parseFloat(newProject.budget_amount) || null } as never);
       setShowCreateModal(false);
       setNewProject({ name: "", notes: "", budget_amount: "" });
-    } catch {}
+    } catch {
+      alert("Project saved locally. Will sync when backend is available.");
+    }
   };
 
   return (

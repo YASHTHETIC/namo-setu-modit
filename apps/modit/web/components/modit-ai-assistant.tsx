@@ -17,6 +17,17 @@ export function ModitAIAssistant() {
   const voiceOrder = useAIVoiceOrder();
   const smartReorder = useAISmartReorder();
 
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  const handleAICall = async (fn: () => Promise<any>, fallbackMessage: string) => {
+    setAiError(null);
+    try {
+      await fn();
+    } catch {
+      setAiError(fallbackMessage);
+    }
+  };
+
   const tabs = [
     { id: "assistant" as const, label: "Procurement Assistant" },
     { id: "recommendation" as const, label: "Material Recommendation" },
@@ -61,12 +72,17 @@ export function ModitAIAssistant() {
               />
             </div>
             <button
-              onClick={() => aiAssistant.mutate({ message } as any)}
+              onClick={() => handleAICall(() => aiAssistant.mutateAsync({ message } as any), "AI assistant is currently unavailable. Please try again later.")}
               disabled={aiAssistant.isPending || !message}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {aiAssistant.isPending ? "Processing..." : "Ask"}
             </button>
+            {aiError && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {aiAssistant.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Response</h4>
@@ -109,12 +125,17 @@ export function ModitAIAssistant() {
               />
             </div>
             <button
-              onClick={() => materialRecommendation.mutate({ project_type: "residential", budget: 1000000, requirements: "Cement and steel" } as any)}
+              onClick={() => handleAICall(() => materialRecommendation.mutateAsync({ project_type: "residential", budget: 1000000, requirements: "Cement and steel" } as any), "Material recommendation is currently unavailable.")}
               disabled={materialRecommendation.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {materialRecommendation.isPending ? "Analyzing..." : "Get Recommendations"}
             </button>
+            {aiError && activeTab === "recommendation" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {materialRecommendation.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Recommended Materials</h4>
@@ -154,12 +175,17 @@ export function ModitAIAssistant() {
               />
             </div>
             <button
-              onClick={() => boqReader.mutate({ file_url: "https://example.com/boq.pdf", project_id: projectId } as any)}
+              onClick={() => handleAICall(() => boqReader.mutateAsync({ file_url: "https://example.com/boq.pdf", project_id: projectId } as any), "BOQ reader is currently unavailable.")}
               disabled={boqReader.isPending || !projectId}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {boqReader.isPending ? "Processing..." : "Read BOQ"}
             </button>
+            {aiError && activeTab === "boq" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {boqReader.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Extracted Items</h4>
@@ -195,12 +221,17 @@ export function ModitAIAssistant() {
               />
             </div>
             <button
-              onClick={() => quoteComparison.mutate(rfqId)}
+              onClick={() => handleAICall(() => quoteComparison.mutateAsync(rfqId), "Quote comparison is currently unavailable.")}
               disabled={quoteComparison.isPending || !rfqId}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {quoteComparison.isPending ? "Comparing..." : "Compare Quotes"}
             </button>
+            {aiError && activeTab === "quote" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {quoteComparison.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Quote Comparison</h4>
@@ -235,12 +266,17 @@ export function ModitAIAssistant() {
               <input type="text" placeholder="City, State" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <button
-              onClick={() => vendorMatching.mutate({ product_id: "prod-1", quantity: 100, location: "Mumbai" } as any)}
+              onClick={() => handleAICall(() => vendorMatching.mutateAsync({ product_id: "prod-1", quantity: 100, location: "Mumbai" } as any), "Vendor matching is currently unavailable.")}
               disabled={vendorMatching.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {vendorMatching.isPending ? "Matching..." : "Find Vendors"}
             </button>
+            {aiError && activeTab === "vendor" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {vendorMatching.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Matched Vendors</h4>
@@ -269,12 +305,17 @@ export function ModitAIAssistant() {
               />
             </div>
             <button
-              onClick={() => voiceOrder.mutate({ transcript: "Order 50 bags of cement", organization_id: "org-1" } as any)}
+              onClick={() => handleAICall(() => voiceOrder.mutateAsync({ transcript: "Order 50 bags of cement", organization_id: "org-1" } as any), "Voice order processing is currently unavailable.")}
               disabled={voiceOrder.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {voiceOrder.isPending ? "Processing..." : "Process Order"}
             </button>
+            {aiError && activeTab === "voice" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {voiceOrder.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Order Items</h4>
@@ -302,12 +343,17 @@ export function ModitAIAssistant() {
               <input type="text" placeholder="Enter organization ID" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <button
-              onClick={() => smartReorder.mutate({ organization_id: "org-1" } as any)}
+              onClick={() => handleAICall(() => smartReorder.mutateAsync({ organization_id: "org-1" } as any), "Smart reorder is currently unavailable.")}
               disabled={smartReorder.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {smartReorder.isPending ? "Analyzing..." : "Get Reorder Suggestions"}
             </button>
+            {aiError && activeTab === "reorder" && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                {aiError}
+              </div>
+            )}
             {smartReorder.data && (
               <div className="rounded-lg bg-slate-50 p-4">
                 <h4 className="mb-2 font-semibold text-slate-900">Reorder Suggestions</h4>

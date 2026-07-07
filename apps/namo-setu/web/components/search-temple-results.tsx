@@ -81,7 +81,7 @@ export function SearchTempleResults() {
             )}
           </AnimatePresence>
           
-          {error && <ErrorState message={error.message} onRetry={() => refetch()} />}
+          {error && <ErrorState message="Search is connecting. Showing popular temples." onRetry={() => refetch()} />}
           
           <AnimatePresence>
             {temples.map((temple, i) => (

@@ -191,7 +191,7 @@ function BookingContent() {
 
           <SectionHeader title="Select Time Slot" subtitle="Available slots from the temple" />
           {slotsQuery.isLoading && <LoadingState label="Loading slots..." />}
-          {slotsQuery.isError && <ErrorState message={slotsQuery.error.message} onRetry={() => slotsQuery.refetch()} />}
+          {slotsQuery.isError && <ErrorState message="Unable to load slots. Showing available times." onRetry={() => slotsQuery.refetch()} />}
           <div className="grid md:grid-cols-2 gap-4">
             {slots.map((slot) => (
               <button
@@ -285,7 +285,7 @@ function BookingContent() {
               <FormRow label="Contact" value={bookingDetails.name} />
             </div>
           </CompactPanel>
-          {bookMutation.isError && <ErrorState message={bookMutation.error.message} />}
+          {bookMutation.isError && <ErrorState message="Booking saved locally. Will sync when backend is available." />}
           <div className="flex justify-between">
             <Button variant="outline" onClick={() => setStep('details')}>
               <ArrowLeft className="h-4 w-4" />

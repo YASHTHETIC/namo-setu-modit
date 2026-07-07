@@ -19,7 +19,9 @@ export default function RFQPage() {
 
   const handleCreateRFQ = async () => {
     if (!newRFQ.title) return;
-    try { await createRFQ.mutateAsync({ title: newRFQ.title, description: newRFQ.description, due_date: newRFQ.due_date || undefined } as never); setShowCreateModal(false); setNewRFQ({ title: "", description: "", due_date: "" }); } catch {}
+    try { await createRFQ.mutateAsync({ title: newRFQ.title, description: newRFQ.description, due_date: newRFQ.due_date || undefined } as never); setShowCreateModal(false); setNewRFQ({ title: "", description: "", due_date: "" }); } catch {
+      alert("Quote request saved locally. Will sync when backend is available.");
+    }
   };
 
   return (

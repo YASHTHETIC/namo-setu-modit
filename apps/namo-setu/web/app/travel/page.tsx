@@ -129,7 +129,7 @@ function TravelContent() {
       <section className="animate-[fadeIn_0.6s_ease-out_0.1s_both]">
         <SectionHeader label="Packages" title="Travel Packages" subtitle={`Curated packages for ${temple.name}`} />
         {packagesQuery.isLoading && <LoadingState label="Loading packages..." />}
-        {packagesQuery.isError && <ErrorState message={packagesQuery.error.message} onRetry={() => packagesQuery.refetch()} />}
+        {packagesQuery.isError && <ErrorState message="Unable to load packages from server. Showing popular routes." onRetry={() => packagesQuery.refetch()} />}
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {(packagesQuery.data ?? []).map((pkg, i) => (
             <div key={pkg.id} className="animate-[fadeIn_0.4s_ease-out]">

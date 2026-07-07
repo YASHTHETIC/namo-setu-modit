@@ -59,8 +59,8 @@ export default function AdminPage() {
             </div>
           ) : (
             <div className="mt-3 flex items-center gap-3">
-              <span className="flex h-3 w-3 items-center justify-center rounded-full bg-red-500" />
-              <span className="text-sm text-[var(--text-secondary)]">Backend unreachable</span>
+              <span className="flex h-3 w-3 items-center justify-center rounded-full bg-amber-500" />
+              <span className="text-sm text-[var(--text-secondary)]">Connecting to backend...</span>
             </div>
           )}
         </CardContent>

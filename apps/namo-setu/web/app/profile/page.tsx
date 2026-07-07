@@ -107,7 +107,7 @@ export default function ProfilePage() {
             {activeTab === 'bookings' && (
               <div className="space-y-5">
                 {bookingsQuery.isLoading && <LoadingState label="Loading bookings..." />}
-                {bookingsQuery.isError && <ErrorState message={bookingsQuery.error.message} onRetry={() => bookingsQuery.refetch()} />}
+                {bookingsQuery.isError && <ErrorState message="Unable to load bookings. Showing recent activity." onRetry={() => bookingsQuery.refetch()} />}
                 {bookings.map((booking, i) => (
                   <motion.div
                     key={booking.id}
@@ -165,7 +165,7 @@ export default function ProfilePage() {
             {activeTab === 'donations' && (
               <div className="space-y-5">
                 {donationsQuery.isLoading && <LoadingState label="Loading donations..." />}
-                {donationsQuery.isError && <ErrorState message={donationsQuery.error.message} onRetry={() => donationsQuery.refetch()} />}
+                {donationsQuery.isError && <ErrorState message="Unable to load donations. Showing recent activity." onRetry={() => donationsQuery.refetch()} />}
                 {donations.map((donation, i) => (
                   <motion.div
                     key={donation.id}

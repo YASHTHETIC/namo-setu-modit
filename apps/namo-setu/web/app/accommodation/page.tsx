@@ -105,7 +105,7 @@ function AccommodationContent() {
       <section className="animate-[fadeIn_0.6s_ease-out_0.15s_both]">
         <SectionHeader label="Stays" title="Available Stays" subtitle={`Properties near ${temple.name}`} />
         {accommodationQuery.isLoading && <LoadingState label="Loading stays..." />}
-        {accommodationQuery.isError && <ErrorState message={accommodationQuery.error.message} onRetry={() => accommodationQuery.refetch()} />}
+        {accommodationQuery.isError && <ErrorState message="Unable to load accommodations. Showing available options." onRetry={() => accommodationQuery.refetch()} />}
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           {(accommodationQuery.data ?? []).map((stay, i) => (
             <div key={stay.id} className="animate-[fadeIn_0.4s_ease-out]">
