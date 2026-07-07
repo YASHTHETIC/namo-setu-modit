@@ -1,6 +1,5 @@
 import re
 from collections.abc import AsyncGenerator
-from urllib.parse import urlparse, urlunparse
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -10,13 +9,13 @@ from backend.app.core.config import get_settings
 
 settings = get_settings()
 
-raw_url = settings.database_url.strip()
-parsed = urlparse(raw_url)
-clean_query = "&".join(
-    kv for kv in parsed.query.split("&")
-    if kv.strip() and not kv.strip().lower().startswith("sslmode=")
-)
-db_url = urlunparse(parsed._replace(query=clean_query))
+db_url = settings.database_url.strip()
+db_url = re.sub(r'\r|\n|\t', '', db_url)
+db_url = re.sub(r'[?&]sslmode=[^&]*', '', db_url)
+db_url = re.sub(r'\?$', '', db_url)
+db_url = re.sub(r'\?&', '?', db_url)
+
+print(f"[database] URL prefix: {db_url[:30]}... sslmode removed: {'sslmode' not in db_url}", flush=True)
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
