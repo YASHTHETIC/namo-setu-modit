@@ -10,12 +10,12 @@ from backend.app.core.config import get_settings
 settings = get_settings()
 
 db_url = settings.database_url.strip()
-db_url = re.sub(r'\r|\n|\t', '', db_url)
-db_url = re.sub(r'[?&]sslmode=[^&]*', '', db_url)
-db_url = re.sub(r'\?$', '', db_url)
-db_url = re.sub(r'\?&', '?', db_url)
+db_url = re.sub(r'[\r\n\t\x00-\x1f]+', '', db_url)
+db_url = re.sub(r'sslmode=[^&\s]*', 'sslmode=require', db_url)
 
-print(f"[database] URL prefix: {db_url[:30]}... sslmode removed: {'sslmode' not in db_url}", flush=True)
+if 'sslmode=' not in db_url:
+    sep = '&' if '?' in db_url else '?'
+    db_url = f"{db_url}{sep}sslmode=require"
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
@@ -29,7 +29,6 @@ engine = create_async_engine(
     db_url,
     echo=False,
     pool_pre_ping=True,
-    connect_args={"ssl": True},
 )
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base(metadata=MetaData(naming_convention=NAMING_CONVENTION))
