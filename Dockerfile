@@ -17,5 +17,6 @@ ENV PYTHONPATH=/repo
 COPY backend ./backend
 COPY backend/alembic.ini ./alembic.ini
 COPY pyproject.toml ./pyproject.toml
+COPY railway-start.sh ./railway-start.sh
 EXPOSE 8000
 CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
