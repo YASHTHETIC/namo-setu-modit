@@ -47,6 +47,9 @@ class Settings(BaseSettings):
                     val = val.strip()
                     val = re.sub(r'[\r\n\t]+', '', val)
                     data[key] = val
+            redis_url = data.get("redis_url", "")
+            if isinstance(redis_url, str) and "localhost" not in redis_url and redis_url.startswith("redis://"):
+                data["redis_url"] = "rediss://" + redis_url[len("redis://"):]
             if isinstance(data.get("backend_cors_origins"), str):
                 import json
                 raw = data["backend_cors_origins"].strip()
