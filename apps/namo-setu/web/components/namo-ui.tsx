@@ -2,27 +2,19 @@
 
 import type { ReactNode } from "react";
 import { isValidElement } from "react";
-import { motion, type HTMLMotionProps } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type PanelProps = HTMLMotionProps<"section"> & { children: ReactNode };
-
-export function Panel({ className, children, ...props }: PanelProps) {
+export function Panel({ className, children }: { className?: string; children: ReactNode }) {
   return (
-    <motion.section
+    <section
       className={cn(
-        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-300",
+        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-200 hover:shadow-md",
         className
       )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, boxShadow: "0 20px 40px -15px rgb(0 0 0 / 0.08)" }}
-      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      {...props}
     >
       {children}
-    </motion.section>
+    </section>
   );
 }
 
@@ -30,9 +22,7 @@ export function PanelHeader({ title, detail }: { title: string; detail?: string 
   return (
     <div className="border-b border-stone-100 px-6 py-5">
       <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
-      {detail && (
-        <p className="mt-1 text-xs text-slate-500">{detail}</p>
-      )}
+      {detail && <p className="mt-1 text-xs text-slate-500">{detail}</p>}
     </div>
   );
 }
@@ -43,14 +33,11 @@ export function CompactPanel({
   className = "",
 }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <motion.section
+    <section
       className={cn(
-        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-300",
+        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-200 hover:shadow-md",
         className
       )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2, boxShadow: "0 12px 24px -10px rgb(0 0 0 / 0.06)" }}
     >
       {title && (
         <div className="border-b border-stone-100 px-6 py-4">
@@ -58,7 +45,7 @@ export function CompactPanel({
         </div>
       )}
       <div className="p-6">{children}</div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -70,20 +57,15 @@ function renderMetricIcon(icon: LucideIcon | ReactNode) {
 
 interface MetricTileProps {
   label: string;
-  value: string;
-  delta?: string;
+  value: string | number;
+  delta?: string | number;
+  deltaLabel?: string;
   icon: LucideIcon | ReactNode;
 }
 
-export function MetricTile({ label, value, delta, icon }: MetricTileProps) {
+export function MetricTile({ label, value, delta, deltaLabel, icon }: MetricTileProps) {
   return (
-    <motion.div
-      className="rounded-2xl border border-stone-200/60 bg-white p-5 shadow-sm transition-all duration-300"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, boxShadow: "0 16px 32px -12px rgb(0 0 0 / 0.08)" }}
-      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
+    <div className="rounded-2xl border border-stone-200/60 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="flex items-center justify-between gap-3">
         <span className="text-sm font-medium text-slate-500">{label}</span>
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-orange-50 to-amber-50 text-orange-600">
@@ -91,26 +73,14 @@ export function MetricTile({ label, value, delta, icon }: MetricTileProps) {
         </span>
       </div>
       <div className="mt-4 flex items-end justify-between gap-3">
-        <motion.strong
-          className="text-2xl font-bold tracking-tight text-slate-900"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          {value}
-        </motion.strong>
-        {delta && (
-          <motion.span
-            className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.3 }}
-          >
-            {delta}
-          </motion.span>
+        <strong className="text-2xl font-bold tracking-tight text-slate-900">{value}</strong>
+        {delta !== undefined && (
+          <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", Number(delta) >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700")}>
+            {Number(delta) >= 0 ? "+" : ""}{delta}{deltaLabel ? ` ${deltaLabel}` : ""}
+          </span>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -161,13 +131,7 @@ export function Badge({
 }
 
 export function Skeleton({ className = "" }: { className?: string }) {
-  return (
-    <motion.div
-      className={cn("skeleton", className)}
-      animate={{ opacity: [1, 0.5, 1] }}
-      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-    />
-  );
+  return <div className={cn("animate-pulse rounded-lg bg-slate-200", className)} />;
 }
 
 export function PageFrame({ children }: { children: ReactNode }) {
@@ -193,47 +157,20 @@ export function SectionHeader({
 }) {
   const description = subtitle ?? detail;
   return (
-    <motion.div
-      className="flex flex-wrap items-end justify-between gap-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
+    <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
         {label && (
-          <motion.p
-            className="text-xs font-semibold uppercase tracking-[0.14em] text-orange-600"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            {label}
-          </motion.p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-orange-600">{label}</p>
         )}
-        <motion.h2
-          className={cn(
-            label ? "mt-1.5" : "",
-            "text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
-          )}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
+        <h2 className={cn(label ? "mt-1.5" : "", "text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl")}>
           {title}
-        </motion.h2>
+        </h2>
         {description && (
-          <motion.p
-            className="mt-2 max-w-lg text-base leading-relaxed text-slate-500"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {description}
-          </motion.p>
+          <p className="mt-2 max-w-lg text-base leading-relaxed text-slate-500">{description}</p>
         )}
       </div>
       {action}
-    </motion.div>
+    </div>
   );
 }
 
@@ -248,17 +185,14 @@ export function FormRow({ label, value }: { label: string; value: string }) {
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <motion.div
+    <div
       className={cn(
-        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-300",
+        "rounded-2xl border border-stone-200/60 bg-white shadow-sm transition-all duration-200 hover:shadow-md",
         className
       )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, boxShadow: "0 20px 40px -15px rgb(0 0 0 / 0.08)" }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -309,23 +243,20 @@ export function Button({
   };
 
   return (
-    <motion.button
+    <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
-        "disabled:opacity-50 disabled:cursor-not-allowed",
-        "active:scale-[0.98]",
+        "disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]",
         variants[variant],
         sizes[size],
         className
       )}
-      whileHover={disabled ? undefined : { scale: 1.02 }}
-      whileTap={disabled ? undefined : { scale: 0.98 }}
       disabled={disabled}
       onClick={onClick}
     >
       {children}
-    </motion.button>
+    </button>
   );
 }
 
@@ -356,21 +287,19 @@ export function LinkButton({
   };
 
   return (
-    <motion.a
+    <a
       href={href}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
         "active:scale-[0.98]",
         variants[variant],
         sizes[size],
         className
       )}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
     >
       {children}
-    </motion.a>
+    </a>
   );
 }
 
@@ -378,36 +307,21 @@ export function Input({
   className = "",
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      className={cn(inputClass, className)}
-      {...props}
-    />
-  );
+  return <input className={cn(inputClass, className)} {...props} />;
 }
 
 export function Textarea({
   className = "",
   ...props
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return (
-    <textarea
-      className={cn(inputClass, "min-h-[100px] resize-y", className)}
-      {...props}
-    />
-  );
+  return <textarea className={cn(inputClass, "min-h-[100px] resize-y", className)} {...props} />;
 }
 
 export function Select({
   className = "",
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select
-      className={cn(inputClass, className)}
-      {...props}
-    />
-  );
+  return <select className={cn(inputClass, className)} {...props} />;
 }
 
 export function Separator({ className = "" }: { className?: string }) {
@@ -468,12 +382,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <motion.div
-      className="flex flex-col items-center justify-center gap-4 py-16 text-center"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-subtle)] text-[var(--text-muted)]">
         {renderMetricIcon(icon)}
       </div>
@@ -482,7 +391,7 @@ export function EmptyState({
         <p className="mt-1 text-sm text-[var(--text-secondary)]">{description}</p>
       </div>
       {action && <div className="mt-2">{action}</div>}
-    </motion.div>
+    </div>
   );
 }
 

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { LocateFixed, Search, Star, MapPin, ChevronRight, Sparkles, Compass } from "lucide-react";
 
 import { useNearbyTemples, useTempleSearch } from "@/lib/namo-api";
@@ -32,6 +31,15 @@ const fallbackTemples = [
   { id: "t20", name: "Chamundeshwari Temple", temple_type: "Hindu", deity_name: "Goddess Chamundeshwari", address_line1: "Chamundi Hills, Mysore", description: "Historic temple atop Chamundi Hills, patron deity of the Mysore royal family.", rating_avg: 4.6, review_count: 1400 },
 ];
 
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
 export function SearchTempleResults() {
   const [query, setQuery] = useState("Shiva");
   const [category, setCategory] = useState("");
@@ -39,7 +47,10 @@ export function SearchTempleResults() {
   const [longitude, setLongitude] = useState("83.0107");
   const [nearbyEnabled, setNearbyEnabled] = useState(false);
 
-  const search = useTempleSearch({ q: query, category: category || undefined });
+  const debouncedQuery = useDebounce(query, 200);
+  const debouncedCategory = useDebounce(category, 200);
+
+  const search = useTempleSearch({ q: debouncedQuery || undefined, category: debouncedCategory || undefined });
   const nearby = useNearbyTemples(Number(latitude), Number(longitude), nearbyEnabled);
 
   const apiTemples = nearbyEnabled ? (nearby.data ?? []) : (search.data?.items ?? []);
@@ -47,11 +58,11 @@ export function SearchTempleResults() {
 
   const filteredFallback = useMemo(() => {
     let result = fallbackTemples;
-    if (category) {
-      result = result.filter((t) => t.temple_type.toLowerCase().includes(category.toLowerCase()));
+    if (debouncedCategory) {
+      result = result.filter((t) => t.temple_type.toLowerCase().includes(debouncedCategory.toLowerCase()));
     }
-    if (query) {
-      const q = query.toLowerCase();
+    if (debouncedQuery) {
+      const q = debouncedQuery.toLowerCase();
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(q) ||
@@ -62,18 +73,13 @@ export function SearchTempleResults() {
       );
     }
     return result;
-  }, [query, category]);
+  }, [debouncedQuery, debouncedCategory]);
 
   const temples = hasApiData ? apiTemples : filteredFallback;
-  const loading = nearbyEnabled ? nearby.isLoading : search.isLoading;
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
+      <div>
         <Panel className="p-6">
           <div className="grid gap-5 md:grid-cols-[1.3fr_0.8fr_auto]">
             <Field label="Search Temples">
@@ -109,74 +115,56 @@ export function SearchTempleResults() {
             </Button>
           </div>
         </Panel>
-      </motion.div>
+      </div>
 
       <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <div className="grid gap-5">
-          {loading && (
-            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-orange-200 border-t-orange-600" />
-              <p className="mt-3 text-sm text-slate-500">Searching temples...</p>
+          {temples.map((temple, i) => (
+            <div key={temple.id} className="animate-[fadeIn_0.3s_ease-out]">
+              <Link href={`/temple/${temple.id}`}>
+                <Card className="overflow-hidden group">
+                  <div className="grid gap-0 md:grid-cols-[260px_1fr]">
+                    <div className="h-56 bg-gradient-to-br from-orange-100 via-amber-50 to-orange-100 md:h-full" />
+                    <div className="p-6">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
+                            {temple.name}
+                          </h3>
+                          <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
+                            <MapPin className="h-4 w-4" />
+                            {temple.deity_name ?? "Temple"} · {temple.address_line1}
+                          </div>
+                        </div>
+                        <StatusPill tone="teal">{temple.temple_type}</StatusPill>
+                      </div>
+                      <p className="mt-4 text-sm leading-relaxed text-slate-600 line-clamp-2">{temple.description}</p>
+                      <div className="mt-5 flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2">
+                          <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+                          <span className="text-sm font-bold text-amber-700">{temple.rating_avg}</span>
+                        </div>
+                        <span className="text-sm text-slate-400">{temple.review_count.toLocaleString()} reviews</span>
+                        <ChevronRight className="ml-auto h-5 w-5 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
             </div>
-          )}
+          ))}
 
-          {!loading && temples.length === 0 && (
+          {!search.isLoading && temples.length === 0 && (
             <div className="text-center py-20">
               <Compass className="mx-auto h-16 w-16 text-slate-300" />
               <p className="mt-6 text-lg font-semibold text-slate-500">No temples found</p>
               <p className="mt-2 text-sm text-slate-400">Try a different search or category</p>
             </div>
           )}
-
-          <AnimatePresence>
-            {temples.map((temple, i) => (
-              <motion.div
-                key={temple.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <Link href={`/temple/${temple.id}`}>
-                  <Card className="overflow-hidden group">
-                    <div className="grid gap-0 md:grid-cols-[260px_1fr]">
-                      <div className="h-56 bg-gradient-to-br from-orange-100 via-amber-50 to-orange-100 md:h-full" />
-                      <div className="p-6">
-                        <div className="flex flex-wrap items-start justify-between gap-4">
-                          <div>
-                            <h3 className="text-xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
-                              {temple.name}
-                            </h3>
-                            <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-                              <MapPin className="h-4 w-4" />
-                              {temple.deity_name ?? "Temple"} · {temple.address_line1}
-                            </div>
-                          </div>
-                          <StatusPill tone="teal">{temple.temple_type}</StatusPill>
-                        </div>
-                        <p className="mt-4 text-sm leading-relaxed text-slate-600 line-clamp-2">{temple.description}</p>
-                        <div className="mt-5 flex items-center gap-4">
-                          <div className="flex items-center gap-1.5 rounded-xl bg-amber-50 px-4 py-2">
-                            <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                            <span className="text-sm font-bold text-amber-700">{temple.rating_avg}</span>
-                          </div>
-                          <span className="text-sm text-slate-400">{temple.review_count.toLocaleString()} reviews</span>
-                          <ChevronRight className="ml-auto h-5 w-5 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </AnimatePresence>
         </div>
 
         <aside className="grid gap-5 self-start">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
+          <div>
             <Panel className="overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-5">
@@ -202,13 +190,9 @@ export function SearchTempleResults() {
                 </div>
               </div>
             </Panel>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+          <div>
             <Panel className="overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-5">
@@ -240,7 +224,7 @@ export function SearchTempleResults() {
                 </div>
               </div>
             </Panel>
-          </motion.div>
+          </div>
         </aside>
       </section>
     </>

@@ -1,25 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
+import { RefreshCw, ArrowLeft } from "lucide-react";
 
 export function LoadingState({ label = "Loading..." }: { label?: string }) {
   return (
-    <motion.div
-      className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-8 py-16 text-center shadow-[var(--shadow-sm)]"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="relative">
-        <motion.div
-          className="h-10 w-10 rounded-full border-[3px] border-[var(--border)] border-t-[var(--brand-color,#F97316)]"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
+    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-8 py-16 text-center shadow-[var(--shadow-sm)]">
+      <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[var(--border)] border-t-[var(--brand-color,#F97316)]" />
       <p className="text-sm font-medium text-[var(--text-muted)]">{label}</p>
-    </motion.div>
+    </div>
   );
 }
 
