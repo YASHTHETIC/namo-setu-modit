@@ -139,7 +139,7 @@ export default function Page() {
             </div>
             <div className="relative hidden sm:block">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input type="text" placeholder="Search cement, steel, tiles..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-9 w-56 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all" />
+              <input type="text" placeholder="Search cement, steel, tiles..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchQuery.trim()) window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`; }} className="h-9 w-56 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all" />
             </div>
             <Link href="/dashboard" className="hidden items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)] hover:shadow-md sm:inline-flex">
               Dashboard
@@ -211,7 +211,7 @@ export default function Page() {
                   <div className="flex gap-3">
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <input type="text" placeholder="What do you need?" className="w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-blue-400 outline-none" />
+                      <input type="text" placeholder="What do you need?" onKeyDown={(e) => { if (e.key === 'Enter' && (e.target as HTMLInputElement).value.trim()) window.location.href = `/products?search=${encodeURIComponent((e.target as HTMLInputElement).value.trim())}`; }} className="w-full rounded-xl border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-blue-400 outline-none" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -302,10 +302,10 @@ export default function Page() {
                 <div className="mt-1 text-xs text-[var(--text-secondary)]">{deal.unit}</div>
                 <div className="mt-2 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700">{deal.bulk}</div>
                 <div className="mt-3 flex gap-2">
-                  <button className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700">Add to Cart</button>
-                  <button className="rounded-xl border border-[var(--border)] px-3 py-2.5 text-[var(--text-secondary)] transition-all hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]">
+                  <button onClick={() => alert(`${deal.name} added to cart`)} className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700">Add to Cart</button>
+                  <Link href="/rfq" className="flex items-center justify-center rounded-xl border border-[var(--border)] px-3 py-2.5 text-[var(--text-secondary)] transition-all hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]">
                     <FileText className="h-4 w-4" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -481,16 +481,16 @@ export default function Page() {
                 <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">Dashboard</Link>
                 <Link href="/analytics" className="block hover:text-blue-600 transition-colors">Analytics</Link>
                 <Link href="/admin" className="block hover:text-blue-600 transition-colors">Admin</Link>
-                <span className="block text-[var(--text-muted)]">About Us</span>
-                <span className="block text-[var(--text-muted)]">Contact</span>
+                <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">About Us</Link>
+                <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">Contact</Link>
               </div>
             </div>
           </div>
           <div className="mt-10 border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-[var(--text-muted)]">&copy; 2026 MODIT. All rights reserved.</div>
             <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-              <span className="hover:text-[var(--text-secondary)] cursor-pointer">Privacy Policy</span>
-              <span className="hover:text-[var(--text-secondary)] cursor-pointer">Terms of Service</span>
+              <Link href="/dashboard" className="hover:text-[var(--text-secondary)] transition-colors">Privacy Policy</Link>
+              <Link href="/dashboard" className="hover:text-[var(--text-secondary)] transition-colors">Terms of Service</Link>
             </div>
           </div>
         </div>

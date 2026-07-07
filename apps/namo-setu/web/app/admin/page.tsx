@@ -232,7 +232,7 @@ export default function AdminPage() {
                                 <button type="button" onClick={() => openEdit(temple)} className="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--text-muted)] transition-all hover:bg-orange-50 hover:text-orange-600">
                                   <Edit className="h-4 w-4" />
                                 </button>
-                                <button type="button" onClick={() => deleteTemple.mutate(temple.id)} className="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--text-muted)] transition-all hover:bg-red-50 hover:text-red-600">
+                                <button type="button" onClick={() => { if (window.confirm(`Delete "${temple.name}"? This cannot be undone.`)) deleteTemple.mutate(temple.id); }} className="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--text-muted)] transition-all hover:bg-red-50 hover:text-red-600">
                                   <Trash2 className="h-4 w-4" />
                                 </button>
                               </div>

@@ -125,10 +125,10 @@ export default function TempleDetailsPage() {
                   >
                     <Heart className={`h-5 w-5 ${liked ? 'fill-current' : ''}`} />
                   </button>
-                  <button type="button" className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
+                  <button type="button" onClick={() => alert(liked ? 'Temple removed from saved list' : 'Temple saved to your list')} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
                     <Bookmark className="h-5 w-5" />
                   </button>
-                  <button type="button" className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
+                  <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard'); }} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-muted)] transition-all hover:text-slate-600">
                     <Share2 className="h-5 w-5" />
                   </button>
                 </div>

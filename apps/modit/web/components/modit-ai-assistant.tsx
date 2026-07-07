@@ -8,6 +8,15 @@ export function ModitAIAssistant() {
   const [message, setMessage] = useState("");
   const [projectId, setProjectId] = useState("");
   const [rfqId, setRfqId] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [budget, setBudget] = useState("");
+  const [requirements, setRequirements] = useState("");
+  const [boqFileUrl, setBoqFileUrl] = useState("");
+  const [vendorProductId, setVendorProductId] = useState("");
+  const [vendorQuantity, setVendorQuantity] = useState("");
+  const [vendorLocation, setVendorLocation] = useState("");
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [reorderOrgId, setReorderOrgId] = useState("");
 
   const aiAssistant = useAIProcurementAssistant();
   const materialRecommendation = useAIMaterialRecommendation();
@@ -108,24 +117,28 @@ export function ModitAIAssistant() {
               <label className="mb-2 block text-sm font-medium text-slate-900">Project Type</label>
               <input
                 type="text"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
                 placeholder="e.g., residential, commercial"
                 className="w-full rounded-lg border px-4 py-2"
               />
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Budget (₹)</label>
-              <input type="number" placeholder="1000000" className="w-full rounded-lg border px-4 py-2" />
+              <input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="1000000" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Requirements</label>
               <textarea
+                value={requirements}
+                onChange={(e) => setRequirements(e.target.value)}
                 placeholder="Describe your material requirements..."
                 className="w-full rounded-lg border px-4 py-2"
                 rows={3}
               />
             </div>
             <button
-              onClick={() => handleAICall(() => materialRecommendation.mutateAsync({ project_type: "residential", budget: 1000000, requirements: "Cement and steel" } as any), "Material recommendation is currently unavailable.")}
+              onClick={() => handleAICall(() => materialRecommendation.mutateAsync({ project_type: projectType || "residential", budget: Number(budget) || 1000000, requirements: requirements || "Cement and steel" } as any), "Material recommendation is currently unavailable.")}
               disabled={materialRecommendation.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
@@ -170,12 +183,14 @@ export function ModitAIAssistant() {
               <label className="mb-2 block text-sm font-medium text-slate-900">BOQ File URL</label>
               <input
                 type="url"
+                value={boqFileUrl}
+                onChange={(e) => setBoqFileUrl(e.target.value)}
                 placeholder="https://example.com/boq.pdf"
                 className="w-full rounded-lg border px-4 py-2"
               />
             </div>
             <button
-              onClick={() => handleAICall(() => boqReader.mutateAsync({ file_url: "https://example.com/boq.pdf", project_id: projectId } as any), "BOQ reader is currently unavailable.")}
+              onClick={() => handleAICall(() => boqReader.mutateAsync({ file_url: boqFileUrl || "https://example.com/boq.pdf", project_id: projectId } as any), "BOQ reader is currently unavailable.")}
               disabled={boqReader.isPending || !projectId}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
@@ -255,18 +270,18 @@ export function ModitAIAssistant() {
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Product ID</label>
-              <input type="text" placeholder="Enter product ID" className="w-full rounded-lg border px-4 py-2" />
+              <input type="text" value={vendorProductId} onChange={(e) => setVendorProductId(e.target.value)} placeholder="Enter product ID" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Quantity</label>
-              <input type="number" placeholder="100" className="w-full rounded-lg border px-4 py-2" />
+              <input type="number" value={vendorQuantity} onChange={(e) => setVendorQuantity(e.target.value)} placeholder="100" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Location</label>
-              <input type="text" placeholder="City, State" className="w-full rounded-lg border px-4 py-2" />
+              <input type="text" value={vendorLocation} onChange={(e) => setVendorLocation(e.target.value)} placeholder="City, State" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <button
-              onClick={() => handleAICall(() => vendorMatching.mutateAsync({ product_id: "prod-1", quantity: 100, location: "Mumbai" } as any), "Vendor matching is currently unavailable.")}
+              onClick={() => handleAICall(() => vendorMatching.mutateAsync({ product_id: vendorProductId || "prod-1", quantity: Number(vendorQuantity) || 100, location: vendorLocation || "Mumbai" } as any), "Vendor matching is currently unavailable.")}
               disabled={vendorMatching.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
@@ -299,14 +314,16 @@ export function ModitAIAssistant() {
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Voice Order</label>
               <textarea
+                value={voiceTranscript}
+                onChange={(e) => setVoiceTranscript(e.target.value)}
                 placeholder="Speak or type your order..."
                 className="w-full rounded-lg border px-4 py-2"
                 rows={3}
               />
             </div>
             <button
-              onClick={() => handleAICall(() => voiceOrder.mutateAsync({ transcript: "Order 50 bags of cement", organization_id: "org-1" } as any), "Voice order processing is currently unavailable.")}
-              disabled={voiceOrder.isPending}
+              onClick={() => handleAICall(() => voiceOrder.mutateAsync({ transcript: voiceTranscript || "Order 50 bags of cement", organization_id: "org-1" } as any), "Voice order processing is currently unavailable.")}
+              disabled={voiceOrder.isPending || !voiceTranscript}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {voiceOrder.isPending ? "Processing..." : "Process Order"}
@@ -340,10 +357,10 @@ export function ModitAIAssistant() {
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-900">Organization ID</label>
-              <input type="text" placeholder="Enter organization ID" className="w-full rounded-lg border px-4 py-2" />
+              <input type="text" value={reorderOrgId} onChange={(e) => setReorderOrgId(e.target.value)} placeholder="Enter organization ID" className="w-full rounded-lg border px-4 py-2" />
             </div>
             <button
-              onClick={() => handleAICall(() => smartReorder.mutateAsync({ organization_id: "org-1" } as any), "Smart reorder is currently unavailable.")}
+              onClick={() => handleAICall(() => smartReorder.mutateAsync({ organization_id: reorderOrgId || "org-1" } as any), "Smart reorder is currently unavailable.")}
               disabled={smartReorder.isPending}
               className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-600 disabled:opacity-50"
             >

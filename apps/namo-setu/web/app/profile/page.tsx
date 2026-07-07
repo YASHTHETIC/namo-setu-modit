@@ -11,6 +11,16 @@ import { useCancelDarshanBooking, useMyDarshanBookings, useMyDonations } from '@
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'donations' | 'settings'>('overview');
+  const [prefs, setPrefs] = useState([
+    { label: 'Booking confirmations', description: 'Receive email and push notifications for booking updates', enabled: true },
+    { label: 'Festival reminders', description: 'Get notified about upcoming festivals at your saved temples', enabled: true },
+    { label: 'Donation receipts', description: 'Automatic receipt delivery for all donations', enabled: true },
+    { label: 'Marketing emails', description: 'Receive offers and promotions from Namo Setu', enabled: false },
+  ]);
+  const settingsPrefs = prefs;
+  const toggleSetting = (label: string) => {
+    setPrefs((prev) => prev.map((p) => (p.label === label ? { ...p, enabled: !p.enabled } : p)));
+  };
   const bookingsQuery = useMyDarshanBookings();
   const donationsQuery = useMyDonations();
   const cancelBooking = useCancelDarshanBooking();
@@ -246,20 +256,20 @@ export default function ProfilePage() {
                   <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3">Notification Preferences</h3>
                   <p className="text-sm text-[var(--text-secondary)]">Festival reminders and booking confirmations are managed via Namo Setu notifications API.</p>
                   <div className="mt-8 space-y-5">
-                    {[
-                      { label: 'Booking confirmations', description: 'Receive email and push notifications for booking updates', enabled: true },
-                      { label: 'Festival reminders', description: 'Get notified about upcoming festivals at your saved temples', enabled: true },
-                      { label: 'Donation receipts', description: 'Automatic receipt delivery for all donations', enabled: true },
-                      { label: 'Marketing emails', description: 'Receive offers and promotions from Namo Setu', enabled: false },
-                    ].map((pref) => (
+                    {settingsPrefs.map((pref) => (
                       <div key={pref.label} className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-5 transition-all hover:shadow-md">
                         <div>
                           <div className="font-bold text-[var(--text-primary)]">{pref.label}</div>
                           <div className="text-xs text-[var(--text-secondary)] mt-1">{pref.description}</div>
                         </div>
-                        <div className={`relative inline-flex h-7 w-12 cursor-pointer rounded-full transition-colors ${pref.enabled ? 'bg-orange-500' : 'bg-slate-200'}`}>
+                        <button
+                          type="button"
+                          onClick={() => toggleSetting(pref.label)}
+                          className={`relative inline-flex h-7 w-12 cursor-pointer rounded-full transition-colors ${pref.enabled ? 'bg-orange-500' : 'bg-slate-200'}`}
+                          aria-label={`Toggle ${pref.label}`}
+                        >
                           <span className={`inline-block h-6 w-6 transform rounded-full bg-[var(--bg-card)] shadow-md transition-transform mt-0.5 ${pref.enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                        </div>
+                        </button>
                       </div>
                     ))}
                   </div>

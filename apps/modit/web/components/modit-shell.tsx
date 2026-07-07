@@ -77,7 +77,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => alert("Search coming soon")}
+              onClick={() => {
+                const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+                if (input) input.focus();
+              }}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] transition-colors"
             >
               <Search className="h-4 w-4" />
