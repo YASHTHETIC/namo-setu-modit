@@ -28,6 +28,21 @@ class Settings(BaseSettings):
     faiss_index_path: str = "/data/faiss"
     celery_broker_url: str = "redis://localhost:6379/1"
     celery_result_backend: str = "redis://localhost:6379/2"
+    smtp_host: str = "localhost"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_email: str = "noreply@foundation.com"
+    stripe_secret_key: str = ""
+    stripe_publishable_key: str = ""
+    stripe_webhook_secret: str = ""
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    google_maps_api_key: str = ""
+    cloudinary_cloud_name: str = ""
+    cloudinary_api_key: str = ""
+    cloudinary_api_secret: str = ""
+    frontend_url: str = "http://localhost:3000"
 
     model_config = SettingsConfigDict(
         env_file=".env",

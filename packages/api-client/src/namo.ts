@@ -185,6 +185,67 @@ export interface UserRead {
   is_verified: boolean;
 }
 
+export interface AuthLoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
+export interface AuthRegisterPayload {
+  email: string;
+  password: string;
+  full_name: string;
+}
+
+export interface AuthForgotPasswordResponse {
+  message: string;
+}
+
+export interface AuthResetPasswordPayload {
+  token: string;
+  new_password: string;
+}
+
+export interface AuthVerifyEmailResponse {
+  message: string;
+}
+
+export interface SessionRead {
+  id: string;
+  device_info: string | null;
+  ip_address: string | null;
+  last_active: string;
+  is_current: boolean;
+}
+
+export interface NotificationRead {
+  id: string;
+  title: string;
+  body: string;
+  channel: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface NotificationListResponse {
+  items: NotificationRead[];
+  total: number;
+  page: number;
+  page_size: number;
+  pages: number;
+  unread_count: number;
+}
+
+export interface TwoFactorSetupResponse {
+  secret: string;
+  qr_code_url: string;
+  recovery_codes: string[];
+}
+
+export interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+}
+
 export function createNamoApi(client: ApiClient) {
   const base = "/namo";
 
@@ -368,6 +429,102 @@ export function createNamoApi(client: ApiClient) {
 
     adminUsers() {
       return client.request<UserRead[]>("/admin/users");
+    },
+
+    // Auth
+    login(email: string, password: string) {
+      return client.request<AuthLoginResponse>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+    },
+
+    register(payload: AuthRegisterPayload) {
+      return client.request<AuthLoginResponse>("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
+
+    forgotPassword(email: string) {
+      return client.request<AuthForgotPasswordResponse>("/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+    },
+
+    resetPassword(payload: AuthResetPasswordPayload) {
+      return client.request<{ message: string }>("/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
+
+    verifyEmail(token: string) {
+      return client.request<AuthVerifyEmailResponse>(`/auth/verify-email?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+      });
+    },
+
+    // Sessions
+    listSessions() {
+      return client.request<SessionRead[]>("/auth/sessions");
+    },
+
+    revokeSession(sessionId: string) {
+      return client.request<{ message: string }>(`/auth/sessions/${sessionId}`, {
+        method: "DELETE",
+      });
+    },
+
+    revokeAllOtherSessions() {
+      return client.request<{ message: string }>("/auth/sessions", {
+        method: "DELETE",
+      });
+    },
+
+    // Notifications
+    listNotifications(params?: { page?: number; page_size?: number; channel?: string; unread_only?: boolean }) {
+      const query = new URLSearchParams();
+      if (params?.page) query.set("page", String(params.page));
+      if (params?.page_size) query.set("page_size", String(params.page_size));
+      if (params?.channel) query.set("channel", params.channel);
+      if (params?.unread_only) query.set("unread_only", String(params.unread_only));
+      const qs = query.toString();
+      return client.request<NotificationListResponse>(`/notifications${qs ? `?${qs}` : ""}`);
+    },
+
+    markNotificationRead(notificationId: string) {
+      return client.request<{ message: string }>(`/notifications/${notificationId}/read`, {
+        method: "POST",
+      });
+    },
+
+    markAllNotificationsRead() {
+      return client.request<{ message: string }>("/notifications/read-all", {
+        method: "POST",
+      });
+    },
+
+    // Security
+    changePassword(payload: ChangePasswordPayload) {
+      return client.request<{ message: string }>("/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
+
+    enableTwoFactor() {
+      return client.request<TwoFactorSetupResponse>("/auth/2fa/enable", {
+        method: "POST",
+      });
+    },
+
+    disableTwoFactor(code: string) {
+      return client.request<{ message: string }>("/auth/2fa/disable", {
+        method: "POST",
+        body: JSON.stringify({ code }),
+      });
     },
   };
 }

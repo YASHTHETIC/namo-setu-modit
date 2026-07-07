@@ -362,6 +362,10 @@ class Review(BaseModel):
     body: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
+    likes = relationship("ReviewLike", back_populates="review", cascade="all, delete-orphan")
+    comments = relationship("ReviewComment", back_populates="review", cascade="all, delete-orphan")
+    user = relationship("User")
+
 
 class Rating(BaseModel):
     __tablename__ = "ratings"
@@ -376,3 +380,35 @@ class Rating(BaseModel):
     target_id: Mapped[str] = mapped_column(String(36), nullable=False)
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     remark: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+
+class ReviewLike(BaseModel):
+    __tablename__ = "review_likes"
+    __table_args__ = (UniqueConstraint("user_id", "review_id", name="uq_review_likes_user_review"),)
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    review_id: Mapped[str] = mapped_column(ForeignKey("reviews.id", ondelete="CASCADE"), nullable=False)
+
+    user = relationship("User")
+    review = relationship("Review", back_populates="likes")
+
+
+class ReviewComment(BaseModel):
+    __tablename__ = "review_comments"
+    __table_args__ = (Index("ix_review_comments_review_created", "review_id", "created_at"),)
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    review_id: Mapped[str] = mapped_column(ForeignKey("reviews.id", ondelete="CASCADE"), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+
+    user = relationship("User")
+    review = relationship("Review", back_populates="comments")
+
+
+class ReviewReport(BaseModel):
+    __tablename__ = "review_reports"
+
+    review_id: Mapped[str] = mapped_column(ForeignKey("reviews.id", ondelete="CASCADE"), nullable=False)
+    reporter_user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    reason: Mapped[str] = mapped_column(String(100), nullable=False)
+    details: Mapped[str | None] = mapped_column(Text, nullable=True)

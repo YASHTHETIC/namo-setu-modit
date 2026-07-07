@@ -34,6 +34,9 @@ export const namoKeys = {
   analytics: () => ["namo", "analytics"] as const,
   festivalReminders: (payload?: Record<string, unknown>) => ["namo", "festival-reminders", payload] as const,
   adminUsers: () => ["namo", "admin-users"] as const,
+  sessions: () => ["namo", "sessions"] as const,
+  notifications: (params?: Record<string, unknown>) => ["namo", "notifications", params] as const,
+  notificationsUnread: () => ["namo", "notifications", "unread"] as const,
 };
 
 export function useTemples(params?: { search?: string; category?: string; page?: number }) {
@@ -275,6 +278,118 @@ export function useAdminUsers() {
   return useQuery({
     queryKey: namoKeys.adminUsers(),
     queryFn: () => getNamoApi().adminUsers(),
+  });
+}
+
+// Auth hooks
+export function useLogin() {
+  return useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      getNamoApi().login(email, password),
+  });
+}
+
+export function useRegister() {
+  return useMutation({
+    mutationFn: getNamoApi().register,
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) => getNamoApi().forgotPassword(email),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: getNamoApi().resetPassword,
+  });
+}
+
+export function useVerifyEmail() {
+  return useMutation({
+    mutationFn: (token: string) => getNamoApi().verifyEmail(token),
+  });
+}
+
+// Session hooks
+export function useSessions() {
+  return useQuery({
+    queryKey: namoKeys.sessions(),
+    queryFn: () => getNamoApi().listSessions(),
+  });
+}
+
+export function useRevokeSession() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (sessionId: string) => getNamoApi().revokeSession(sessionId),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: namoKeys.sessions() }),
+  });
+}
+
+export function useRevokeAllOtherSessions() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => getNamoApi().revokeAllOtherSessions(),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: namoKeys.sessions() }),
+  });
+}
+
+// Notification hooks
+export function useNotifications(params?: { page?: number; page_size?: number; channel?: string; unread_only?: boolean }) {
+  return useQuery({
+    queryKey: namoKeys.notifications(params),
+    queryFn: () => getNamoApi().listNotifications(params),
+  });
+}
+
+export function useNotificationsUnread() {
+  return useQuery({
+    queryKey: namoKeys.notificationsUnread(),
+    queryFn: () => getNamoApi().listNotifications({ unread_only: true, page_size: 1 }),
+  });
+}
+
+export function useMarkNotificationRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (notificationId: string) => getNamoApi().markNotificationRead(notificationId),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: namoKeys.notifications() });
+      queryClient.invalidateQueries({ queryKey: namoKeys.notificationsUnread() });
+    },
+  });
+}
+
+export function useMarkAllNotificationsRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => getNamoApi().markAllNotificationsRead(),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: namoKeys.notifications() });
+      queryClient.invalidateQueries({ queryKey: namoKeys.notificationsUnread() });
+    },
+  });
+}
+
+// Security hooks
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: getNamoApi().changePassword,
+  });
+}
+
+export function useEnableTwoFactor() {
+  return useMutation({
+    mutationFn: () => getNamoApi().enableTwoFactor(),
+  });
+}
+
+export function useDisableTwoFactor() {
+  return useMutation({
+    mutationFn: (code: string) => getNamoApi().disableTwoFactor(code),
   });
 }
 

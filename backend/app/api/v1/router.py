@@ -1,13 +1,22 @@
 from backend.app.api.base import BaseAPIRouter
-from backend.app.api.v1 import admin, audit, auth, identity, media, modit, namo, notifications, organizations
+from backend.app.api.v1 import admin, admin_extended, ai, analytics, audit, auth, auth_extended, identity, media, modit, namo, notifications, organizations, payments, reviews, maps, search, security
 
 api_router = BaseAPIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
+api_router.include_router(auth_extended.router, prefix="/auth", tags=["auth-extended"])
+api_router.include_router(payments.router, prefix="/payments", tags=["payments"])
 api_router.include_router(identity.router, tags=["identity"])
 api_router.include_router(organizations.router, tags=["organizations"])
 api_router.include_router(media.router, tags=["media"])
 api_router.include_router(notifications.router, tags=["notifications"])
 api_router.include_router(audit.router, tags=["audit"])
 api_router.include_router(admin.router, tags=["admin"])
+api_router.include_router(admin_extended.router, tags=["admin-extended"])
+api_router.include_router(security.router, tags=["security"])
+api_router.include_router(ai.router)
+api_router.include_router(analytics.router, tags=["analytics"])
 api_router.include_router(namo.router)
 api_router.include_router(modit.router)
+api_router.include_router(reviews.router)
+api_router.include_router(maps.router)
+api_router.include_router(search.router)

@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Package, Users, FileText, ShoppingCart,
-  FolderOpen, BarChart3, Settings, Bell, Search, Menu, X, Box,
+  FolderOpen, BarChart3, Settings, Search, Menu, X, Box,
+  CreditCard, Shield, Bell, User,
 } from "lucide-react";
+import { NotificationCenter } from "@/components/notification-center";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +24,19 @@ const navItems = [
   { href: "/admin", label: "Admin", icon: Settings },
 ];
 
+const userLinks = [
+  { href: "/dashboard/profile", label: "My Profile", icon: User },
+  { href: "/payment/history", label: "Payment History", icon: CreditCard },
+  { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/admin/roles", label: "Roles & Permissions", icon: Shield },
+  { href: "/admin/audit", label: "Audit Logs", icon: FileText },
+  { href: "/admin/users", label: "User Management", icon: Users },
+];
+
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const isHome = pathname === "/";
 
   if (isHome) {
@@ -85,20 +97,42 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-4 w-4" />
             </button>
-            <button
-              type="button"
-              onClick={() => alert("No new notifications")}
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] transition-colors"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[var(--brand)]" />
-            </button>
+            <NotificationCenter />
             <Link
-              href="/dashboard"
+              href="/auth"
               className="hidden rounded-xl bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--brand-dark)] transition-colors shadow-sm sm:inline-flex"
             >
               Sign In
             </Link>
+            <div className="relative hidden sm:block">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] transition-colors"
+              >
+                <User className="h-4 w-4" />
+              </button>
+              {userMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                  <div className="absolute right-0 top-12 z-50 w-60 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] py-2 shadow-xl">
+                    {userLinks.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
             {/* Mobile menu toggle */}
             <button
               type="button"
@@ -132,6 +166,18 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   )}
                 >
                   {item.label}
+                </Link>
+              ))}
+            </div>
+            <div className="container-premium mt-3 flex flex-wrap gap-2 border-t border-[var(--border-subtle)] pt-3">
+              {userLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="shrink-0 rounded-xl bg-[var(--bg-subtle)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  {link.label}
                 </Link>
               ))}
             </div>

@@ -141,8 +141,8 @@ export default function Page() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
               <input type="text" placeholder="Search cement, steel, tiles..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchQuery.trim()) window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}`; }} className="h-9 w-56 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand)]/10 outline-none transition-all" />
             </div>
-            <Link href="/dashboard" className="hidden items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)] hover:shadow-md sm:inline-flex">
-              Dashboard
+            <Link href="/auth" className="hidden items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[var(--brand-dark)] hover:shadow-md sm:inline-flex">
+              Sign In
             </Link>
             <button onClick={() => setMobileOpen(!mobileOpen)} className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] text-[var(--text-secondary)] lg:hidden">
               {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -478,19 +478,18 @@ export default function Page() {
             <div>
               <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Company</h4>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">Dashboard</Link>
                 <Link href="/analytics" className="block hover:text-blue-600 transition-colors">Analytics</Link>
                 <Link href="/admin" className="block hover:text-blue-600 transition-colors">Admin</Link>
-                <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">About Us</Link>
-                <Link href="/dashboard" className="block hover:text-blue-600 transition-colors">Contact</Link>
+                <Link href="/dashboard/profile" className="block hover:text-blue-600 transition-colors">Profile</Link>
+                <Link href="/auth" className="block hover:text-blue-600 transition-colors">Sign In</Link>
               </div>
             </div>
           </div>
           <div className="mt-10 border-t border-[var(--border-subtle)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-[var(--text-muted)]">&copy; 2026 MODIT. All rights reserved.</div>
             <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-              <Link href="/dashboard" className="hover:text-[var(--text-secondary)] transition-colors">Privacy Policy</Link>
-              <Link href="/dashboard" className="hover:text-[var(--text-secondary)] transition-colors">Terms of Service</Link>
+              <Link href="/admin/audit" className="hover:text-[var(--text-secondary)] transition-colors">Privacy Policy</Link>
+              <Link href="/admin/audit" className="hover:text-[var(--text-secondary)] transition-colors">Terms of Service</Link>
             </div>
           </div>
         </div>

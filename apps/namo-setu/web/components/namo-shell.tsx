@@ -2,14 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, User, LogOut, CreditCard, Shield, Bell } from "lucide-react";
 import { useState } from "react";
 
 import { navItems } from "../lib/namo-data";
+import { NotificationCenter } from "./notification-center";
+
+const userLinks = [
+  { href: "/profile", label: "Profile", icon: User },
+  { href: "/profile/sessions", label: "Sessions", icon: Shield },
+  { href: "/profile/security", label: "Security", icon: Shield },
+  { href: "/payment/history", label: "Payments", icon: CreditCard },
+  { href: "/notifications", label: "Notifications", icon: Bell },
+];
 
 export function NamoShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -56,20 +66,42 @@ export function NamoShell({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-4 w-4" />
             </Link>
-            <button
-              aria-label="Notifications"
-              onClick={() => alert("No new notifications")}
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-all duration-200 hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[var(--brand-color,#F97316)] ring-2 ring-white" />
-            </button>
+            <NotificationCenter />
             <Link
-              href="/dashboard"
+              href="/auth"
               className="hidden items-center gap-2 rounded-xl gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-orange-500/25 transition-all duration-200 hover:shadow-md hover:shadow-orange-500/30 sm:inline-flex"
             >
-              Dashboard
+              Sign In
             </Link>
+            <div className="relative hidden sm:block">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-all duration-200 hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
+              >
+                <User className="h-4 w-4" />
+              </button>
+              {userMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                  <div className="absolute right-0 top-12 z-50 w-56 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] py-2 shadow-xl">
+                    {userLinks.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] lg:hidden"
@@ -106,6 +138,29 @@ export function NamoShell({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
+              <div className="my-2 border-t border-[var(--border-subtle)]" />
+              {userLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                );
+              })}
+              <div className="my-2 border-t border-[var(--border-subtle)]" />
+              <Link
+                href="/auth"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center gap-2 rounded-xl gradient-brand px-4 py-3 text-sm font-semibold text-white"
+              >
+                Sign In
+              </Link>
             </nav>
           </div>
         </div>

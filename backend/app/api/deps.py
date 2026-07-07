@@ -28,9 +28,16 @@ async def get_current_user(
     if not user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token subject")
 
+    from backend.app.models.shared import UserProfile
+
     result = await db.execute(
         select(User)
-        .options(selectinload(User.roles), selectinload(User.profile), selectinload(User.sessions), selectinload(User.addresses))
+        .options(
+            selectinload(User.roles),
+            selectinload(User.profile).selectinload(UserProfile.avatar_media),
+            selectinload(User.sessions),
+            selectinload(User.addresses),
+        )
         .where(User.id == user_id)
     )
     user = result.scalar_one_or_none()
