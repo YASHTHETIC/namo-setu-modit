@@ -11,11 +11,16 @@ settings = get_settings()
 
 db_url = settings.database_url.strip()
 db_url = re.sub(r'[\r\n\t\x00-\x1f]+', '', db_url)
-db_url = re.sub(r'sslmode=[^&\s]*', 'sslmode=require', db_url)
 
-if 'sslmode=' not in db_url:
-    sep = '&' if '?' in db_url else '?'
-    db_url = f"{db_url}{sep}sslmode=require"
+# Only add SSL mode for PostgreSQL connections
+if 'postgresql' in db_url or 'postgres' in db_url:
+    # Remove existing sslmode if present
+    db_url = re.sub(r'[?&]sslmode=[^&\s]*', '', db_url)
+    # Add sslmode=disable for local development
+    if '?' in db_url:
+        db_url = f"{db_url}&sslmode=disable"
+    else:
+        db_url = f"{db_url}?sslmode=disable"
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",

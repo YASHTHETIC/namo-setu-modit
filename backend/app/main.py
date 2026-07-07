@@ -8,6 +8,11 @@ from sqlalchemy import text
 from backend.app.core.config import get_settings
 from backend.app.core.exceptions import register_exception_handlers
 from backend.app.core.logging import configure_logging
+from backend.app.core.middleware import (
+    ValidationMiddleware,
+    ContentTypeMiddleware,
+    SecurityHeadersMiddleware,
+)
 
 settings = get_settings()
 
@@ -33,6 +38,8 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
+    
+    # CORS middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.backend_cors_origins,
@@ -40,6 +47,13 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+    # Custom middleware (order matters - first added is first executed)
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(ContentTypeMiddleware)
+    app.add_middleware(ValidationMiddleware)
+    
+    # Register exception handlers
     register_exception_handlers(app)
 
     @app.get("/healthz")
