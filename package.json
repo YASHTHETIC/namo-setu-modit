@@ -13,5 +13,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "pytest"
+  },
+  "dependencies": {
+    "next": "15.1.11"
   }
 }

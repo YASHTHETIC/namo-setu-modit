@@ -1,0 +1,11 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace=@modit/web",
+  "outputDirectory": "apps/modit/web/.next",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "github": {
+    "silent": true
+  },
+  "ignoreCommand": "npx -y turbo-ignore --filter=@modit/web"
+}

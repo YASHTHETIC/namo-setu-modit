@@ -659,3 +659,187 @@ export function TableHeaderCell({
     </th>
   );
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// STAR RATING
+// ═══════════════════════════════════════════════════════════════════
+
+export function StarRating({
+  rating,
+  count,
+  size = "sm",
+  showCount = true,
+}: {
+  rating: number;
+  count?: number;
+  size?: "sm" | "md";
+  showCount?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <svg
+            key={s}
+            className={cn(
+              size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4",
+              s <= Math.round(rating) ? "fill-[var(--brand)] text-[var(--brand)]" : "fill-gray-200 text-gray-200"
+            )}
+            viewBox="0 0 20 20"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
+      </div>
+      {showCount && count !== undefined && (
+        <span className={cn("text-[var(--text-muted)]", size === "sm" ? "text-xs" : "text-sm")}>
+          ({count.toLocaleString()})
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PRICE DISPLAY
+// ═══════════════════════════════════════════════════════════════════
+
+export function PriceDisplay({
+  price,
+  mrp,
+  discount,
+  bulkPrice,
+  bulkLabel,
+  unit,
+  size = "md",
+}: {
+  price: number;
+  mrp?: number;
+  discount?: number;
+  bulkPrice?: number | null;
+  bulkLabel?: string | null;
+  unit?: string;
+  size?: "sm" | "md" | "lg";
+}) {
+  return (
+    <div>
+      <div className="flex items-baseline gap-2">
+        <span
+          className={cn(
+            "font-extrabold text-[var(--brand)]",
+            size === "lg" ? "text-2xl" : size === "md" ? "text-lg" : "text-base"
+          )}
+        >
+          ₹{price.toLocaleString("en-IN", { minimumFractionDigits: price % 1 === 0 ? 0 : 2 })}
+        </span>
+        {mrp && mrp > price && (
+          <span className="text-sm text-[var(--text-muted)] line-through">
+            ₹{mrp.toLocaleString("en-IN")}
+          </span>
+        )}
+        {discount && discount > 0 && (
+          <Badge variant="success" className="text-[10px] font-bold">
+            {discount}% OFF
+          </Badge>
+        )}
+      </div>
+      {unit && (
+        <p className="text-xs text-[var(--text-muted)] mt-0.5">per {unit}</p>
+      )}
+      {bulkPrice && bulkLabel && (
+        <p className="text-xs font-medium text-emerald-600 mt-1">
+          {bulkLabel}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DELIVERY BADGE
+// ═══════════════════════════════════════════════════════════════════
+
+export function DeliveryBadge({
+  days,
+  freeDelivery,
+  className,
+}: {
+  days: number;
+  freeDelivery: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex items-center gap-1.5 text-xs", className)}>
+      {days <= 1 ? (
+        <span className="font-semibold text-emerald-600">Tomorrow</span>
+      ) : (
+        <span className="font-semibold text-[var(--text-primary)]">
+          {days} days
+        </span>
+      )}
+      {freeDelivery && (
+        <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
+          FREE
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// QUANTITY SELECTOR
+// ═══════════════════════════════════════════════════════════════════
+
+export function QuantitySelector({
+  quantity,
+  min = 1,
+  max = 999,
+  onChange,
+  size = "md",
+}: {
+  quantity: number;
+  min?: number;
+  max?: number;
+  onChange: (qty: number) => void;
+  size?: "sm" | "md";
+}) {
+  return (
+    <div className={cn(
+      "inline-flex items-center rounded-lg border border-[var(--border)] bg-[var(--bg-card)]",
+      size === "sm" ? "h-8" : "h-10"
+    )}>
+      <button
+        onClick={() => onChange(Math.max(min, quantity - 1))}
+        disabled={quantity <= min}
+        className={cn(
+          "flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--brand)] transition-colors disabled:opacity-30",
+          size === "sm" ? "h-8 w-7 text-xs" : "h-10 w-9 text-sm"
+        )}
+      >
+        −
+      </button>
+      <input
+        type="number"
+        value={quantity}
+        onChange={(e) => {
+          const val = parseInt(e.target.value);
+          if (!isNaN(val)) onChange(Math.max(min, Math.min(max, val)));
+        }}
+        className={cn(
+          "border-x border-[var(--border)] bg-transparent text-center font-semibold text-[var(--text-primary)] focus:outline-none",
+          size === "sm" ? "h-8 w-10 text-xs" : "h-10 w-14 text-sm"
+        )}
+      />
+      <button
+        onClick={() => onChange(Math.min(max, quantity + 1))}
+        disabled={quantity >= max}
+        className={cn(
+          "flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--brand)] transition-colors disabled:opacity-30",
+          size === "sm" ? "h-8 w-7 text-xs" : "h-10 w-9 text-sm"
+        )}
+      >
+        +
+      </button>
+    </div>
+  );
+}
