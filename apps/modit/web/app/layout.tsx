@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { DM_Sans, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { Providers } from "@/components/providers";
 import { ModitShell } from "@/components/modit-shell";
 
 import "./globals.css";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,14 +13,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MODIT — Building Materials, Delivered Fast",
-  description: "Cement, Steel, Sand, Tiles & more. Compare prices from 200+ verified suppliers. AI-powered procurement for contractors and builders.",
+  title: "MODIT — Cloud Teal Commerce for Building Materials",
+  description: "A premium B2B marketplace for construction materials, procurement workflows, supplier sourcing, and enterprise checkout.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-brand="modit" className={`${dmSans.variable} ${inter.variable}`}>
-      <body className="antialiased">
+    <html lang="en" data-brand="modit" className={inter.variable}>
+      <body className="antialiased bg-[var(--bg)] text-[var(--text)]">
         <Providers>
           <ModitShell>{children}</ModitShell>
         </Providers>

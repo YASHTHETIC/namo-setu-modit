@@ -23,7 +23,7 @@ export function Panel({
       <motion.div
         whileHover={{ y: -2, boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}
         className={cn(
-          "rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-sm)]",
+          "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-sm)]",
           className
         )}
       >
@@ -35,7 +35,7 @@ export function Panel({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-sm)]",
         className
       )}
     >
@@ -86,13 +86,13 @@ export function MetricTile({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className={cn(
-        "rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)]",
         className
       )}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">{label}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</p>
           <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
             {typeof value === "number" ? displayValue.toLocaleString() : value}
           </p>
@@ -114,7 +114,7 @@ export function MetricTile({
           )}
         </div>
         {icon && (
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-bg)] text-[var(--brand)]">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-bg)] text-[var(--brand)]">
             {icon}
           </div>
         )}
@@ -138,7 +138,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-sm)]",
         className
       )}
       {...props}
@@ -216,12 +216,12 @@ export function Button({
       whileHover={disabled ? undefined : { scale: 1.02 }}
       whileTap={disabled ? undefined : { scale: 0.98 }}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition-all duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         {
-          "bg-[var(--brand)] text-white hover:bg-[var(--brand-dark)] shadow-sm": variant === "primary",
-          "bg-[var(--bg-subtle)] text-[var(--text-primary)] hover:bg-[var(--border)]": variant === "secondary",
+          "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm": variant === "primary",
+          "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)]": variant === "secondary",
           "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]": variant === "ghost",
           "bg-red-500 text-white hover:bg-red-600": variant === "danger",
         },
@@ -262,11 +262,11 @@ export function LinkButton({
       <Link
         href={href}
         className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-all duration-200",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
           {
-            "bg-[var(--brand)] text-white hover:bg-[var(--brand-dark)] shadow-sm": variant === "primary",
-            "bg-[var(--bg-subtle)] text-[var(--text-primary)] hover:bg-[var(--border)]": variant === "secondary",
+            "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm": variant === "primary",
+            "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)]": variant === "secondary",
             "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]": variant === "ghost",
           },
           {
@@ -294,7 +294,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "flex h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
+        "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
         "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -313,7 +313,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "flex min-h-[80px] w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
+        "flex min-h-[80px] w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
         "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -333,7 +333,7 @@ export function Select({
   return (
     <select
       className={cn(
-        "flex h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
+        "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
         "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "transition-all duration-200",
@@ -364,7 +364,7 @@ export function Badge({
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
         {
-          "bg-[var(--bg-subtle)] text-[var(--text-secondary)]": variant === "default",
+          "bg-[var(--brand-50)] text-[var(--brand)]": variant === "default",
           "bg-emerald-50 text-emerald-700": variant === "success",
           "bg-amber-50 text-amber-700": variant === "warning",
           "bg-red-50 text-red-700": variant === "danger",
@@ -386,22 +386,22 @@ export function StatusPill({
   className?: string;
 }) {
   const variants: Record<string, string> = {
-    active: "bg-emerald-50 text-emerald-700",
+    active: "bg-[var(--brand-50)] text-[var(--brand)]",
     draft: "bg-slate-100 text-slate-600",
     pending: "bg-amber-50 text-amber-700",
-    approved: "bg-emerald-50 text-emerald-700",
-    rejected: "bg-red-50 text-red-700",
-    delivered: "bg-emerald-50 text-emerald-700",
+    approved: "bg-[var(--success-light)] text-[var(--success)]",
+    rejected: "bg-[var(--danger-light)] text-[var(--danger)]",
+    delivered: "bg-[var(--success-light)] text-[var(--success)]",
     dispatched: "bg-blue-50 text-blue-700",
     placed: "bg-blue-50 text-blue-700",
-    accepted: "bg-emerald-50 text-emerald-700",
+    accepted: "bg-[var(--success-light)] text-[var(--success)]",
     open: "bg-blue-50 text-blue-700",
     closed: "bg-slate-100 text-slate-600",
-    cancelled: "bg-red-50 text-red-700",
-    paid: "bg-emerald-50 text-emerald-700",
-    in_stock: "bg-emerald-50 text-emerald-700",
+    cancelled: "bg-[var(--danger-light)] text-[var(--danger)]",
+    paid: "bg-[var(--success-light)] text-[var(--success)]",
+    in_stock: "bg-[var(--success-light)] text-[var(--success)]",
     low_stock: "bg-amber-50 text-amber-700",
-    out_of_stock: "bg-red-50 text-red-700",
+    out_of_stock: "bg-[var(--danger-light)] text-[var(--danger)]",
   };
 
   return (
@@ -439,7 +439,7 @@ export function EmptyState({
       className="flex flex-col items-center justify-center py-16 text-center"
     >
       {icon && (
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-subtle)] text-[var(--text-muted)]">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--brand-50)] text-[var(--brand)]">
           {icon}
         </div>
       )}
@@ -683,7 +683,7 @@ export function StarRating({
             key={s}
             className={cn(
               size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4",
-              s <= Math.round(rating) ? "fill-[var(--brand)] text-[var(--brand)]" : "fill-gray-200 text-gray-200"
+              s <= Math.round(rating) ? "fill-[var(--cta)] text-[var(--cta)]" : "fill-gray-200 text-gray-200"
             )}
             viewBox="0 0 20 20"
           >
@@ -726,7 +726,7 @@ export function PriceDisplay({
       <div className="flex items-baseline gap-2">
         <span
           className={cn(
-            "font-extrabold text-[var(--brand)]",
+            "font-extrabold text-[var(--text-primary)]",
             size === "lg" ? "text-2xl" : size === "md" ? "text-lg" : "text-base"
           )}
         >
@@ -747,7 +747,7 @@ export function PriceDisplay({
         <p className="text-xs text-[var(--text-muted)] mt-0.5">per {unit}</p>
       )}
       {bulkPrice && bulkLabel && (
-        <p className="text-xs font-medium text-emerald-600 mt-1">
+        <p className="text-xs font-medium text-[var(--success)] mt-1">
           {bulkLabel}
         </p>
       )}
@@ -771,14 +771,14 @@ export function DeliveryBadge({
   return (
     <div className={cn("flex items-center gap-1.5 text-xs", className)}>
       {days <= 1 ? (
-        <span className="font-semibold text-emerald-600">Tomorrow</span>
+        <span className="font-semibold text-[var(--success)]">Tomorrow</span>
       ) : (
         <span className="font-semibold text-[var(--text-primary)]">
           {days} days
         </span>
       )}
       {freeDelivery && (
-        <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
+        <span className="rounded bg-[var(--success-light)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--success)]">
           FREE
         </span>
       )}
