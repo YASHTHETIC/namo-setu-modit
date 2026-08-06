@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -56,7 +56,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--bg)]">
       {/* ── Announcement Bar ── */}
-      <div className="bg-[#232F3E] text-white text-center py-1.5 px-4 text-[11px]">
+      <div className="bg-[var(--text)] text-white text-center py-1.5 px-4 text-[11px]">
         <span className="hidden sm:inline">Free delivery on first order </span>
         <span className="mx-2 text-white/20">|</span>
         <span>MONSOON MEGA SALE — Up to 25% OFF</span>
@@ -65,7 +65,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Main Header ── */}
-      <header className="sticky top-0 z-50 bg-[#131921]">
+      <header className="sticky top-0 z-50 bg-[var(--text)]">
         <div className="max-w-[1440px] mx-auto flex h-[60px] items-center gap-3 px-4 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-1">
@@ -92,7 +92,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search cement, steel, tiles, paint..."
                 className="flex-1 h-[40px] bg-white px-4 text-[13px] text-gray-900 placeholder:text-gray-500 focus:outline-none border-0" />
-              <button className="h-[40px] w-[48px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-r-md flex items-center justify-center transition-colors">
+              <button className="h-[40px] w-[48px] bg-[var(--amber)] hover:bg-[var(--amber-hover)] rounded-r-lg flex items-center justify-center transition-colors">
                 <Search className="h-5 w-5 text-[#111]" />
               </button>
             </div>
@@ -121,15 +121,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Right */}
           <div className="flex items-center gap-1">
-            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
+            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-all">
               <GitCompare className="h-5 w-5" />
               <span className="text-[9px] font-medium">Compare</span>
             </Link>
-            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
+            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-all">
               <Bell className="h-5 w-5" />
               <span className="text-[9px] font-medium">Alerts</span>
             </Link>
-            <Link href="/cart" className="relative flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
+            <Link href="/cart" className="relative flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-all">
               <ShoppingCart className="h-5 w-5" />
               <span className="text-[9px] font-medium">Cart</span>
               {cartCount > 0 && (
@@ -140,7 +140,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             {/* User Menu */}
             <div ref={userMenuRef} className="relative">
               <button onClick={() => setShowUserMenu(!showUserMenu)}
-                className="hidden sm:flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-[12px] font-bold px-3 py-2 rounded transition-all ml-1">
+                className="hidden sm:flex items-center gap-1.5 bg-white/10 hover:bg-white/10 text-white text-[12px] font-bold px-3 py-2 rounded transition-all ml-1">
                 <User className="h-4 w-4" /> Account <ChevronDown className="h-3 w-3" />
               </button>
               <AnimatePresence>
@@ -178,11 +178,11 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Category Nav */}
-        <div className="bg-[#232F3E] border-t border-white/5">
+        <div className="bg-[var(--text)] border-t border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center overflow-x-auto px-4 sm:px-6 scrollbar-hide">
             <div ref={megaMenuRef} className="relative">
               <button onClick={() => setShowMegaMenu(!showMegaMenu)}
-                className="flex items-center gap-1.5 px-3 py-2.5 text-[12px] font-bold text-white hover:bg-white/10 transition-all">
+                className="flex items-center gap-1.5 px-3 py-2.5 text-[12px] font-bold text-white hover:bg-white/5 transition-all">
                 <Menu className="h-3.5 w-3.5" /> All Categories <ChevronDown className="h-3 w-3" />
               </button>
               <AnimatePresence>
@@ -205,7 +205,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
             {["Today's Deals", "Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Bulk Orders"].map(item => (
               <Link key={item} href={item === "Today's Deals" ? "/products?sort=deals" : `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-                className="shrink-0 px-3 py-2.5 text-[12px] font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all border-b-2 border-transparent hover:border-[var(--brand)]">
+                className="shrink-0 px-3 py-2.5 text-[12px] font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all border-b-2 border-transparent hover:border-[var(--amber)]">
                 {item}
               </Link>
             ))}
@@ -255,7 +255,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <main className="min-h-[60vh]">{children}</main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#232F3E] mt-6">
+      <footer className="bg-[var(--text)] mt-6">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6">
             <div className="col-span-2 lg:col-span-1">
@@ -290,3 +290,4 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
