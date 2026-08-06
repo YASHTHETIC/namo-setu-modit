@@ -109,41 +109,41 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--bg-base)]">
       {/* Top Bar */}
-      <div className="bg-[var(--bg-elevated)] text-xs text-[var(--text-secondary)]">
+      <div className="bg-gradient-to-r from-[rgba(0,240,255,0.08)] to-[rgba(168,85,247,0.08)] border-b border-[var(--border)] text-xs text-[var(--text-secondary)]">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-1.5 sm:px-6">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
-              <Truck className="h-3 w-3" /> Delivering across Delhi NCR
+              <Truck className="h-3 w-3 text-[var(--cyan)]" /> Delivering across Delhi NCR
             </span>
-            <span className="hidden sm:inline">|</span>
+            <span className="hidden sm:inline text-white/10">|</span>
             <span className="hidden sm:inline">Free delivery on orders above ₹5,000</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/suppliers" className="hover:text-[var(--brand)] transition-colors">Sell on MODIT</Link>
-            <Link href="/dashboard" className="hover:text-[var(--brand)] transition-colors">Dashboard</Link>
+            <Link href="/suppliers" className="hover:text-[var(--cyan)] transition-colors">Sell on MODIT</Link>
+            <Link href="/dashboard" className="hover:text-[var(--cyan)] transition-colors">Dashboard</Link>
           </div>
         </div>
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white shadow-sm">
+      <header className="sticky top-0 z-50 glass-strong border-b border-[var(--border)]">
         <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-2.5 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--brand)] text-sm font-bold text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--cyan)] to-[var(--purple)] text-sm font-bold text-[#050510]">
               M
             </div>
             <div className="hidden sm:block">
-              <span className="text-lg font-extrabold tracking-tight text-[var(--text-primary)]">MODIT</span>
-              <span className="ml-1.5 hidden text-[10px] font-medium uppercase tracking-wider text-[var(--brand)] lg:inline">
+              <span className="text-lg font-extrabold tracking-tight text-glow-cyan font-display">MODIT</span>
+              <span className="ml-1.5 hidden text-[10px] font-medium uppercase tracking-wider text-[var(--cyan)] lg:inline">
                 Construction Procurement
               </span>
             </div>
           </Link>
 
           {/* Location */}
-          <button className="hidden items-center gap-1 rounded-lg border border-[var(--border)] px-3 py-2 text-sm hover:border-[var(--brand)] transition-colors lg:flex">
-            <MapPin className="h-4 w-4 text-[var(--brand)]" />
+          <button className="hidden items-center gap-1 rounded-xl border border-[var(--border)] px-3 py-2 text-sm hover:border-[rgba(0,240,255,0.3)] transition-colors lg:flex glass">
+            <MapPin className="h-4 w-4 text-[var(--cyan)]" />
             <div className="text-left">
               <p className="text-[10px] text-[var(--text-muted)]">Deliver to</p>
               <p className="text-xs font-semibold text-[var(--text-primary)]">New Delhi 110001</p>
@@ -160,7 +160,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length >= 2 && setShowSearch(true)}
                 placeholder="Search cement, steel, tiles, paint..."
-                className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-4 text-sm transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-4 text-sm transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--cyan)] focus:bg-[var(--bg-elevated)] focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.1)] text-[var(--text-primary)]"
               />
             </form>
 
@@ -171,7 +171,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-[var(--border)] bg-white shadow-xl"
+                  className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
                 >
                   <div className="p-2">
                     {searchResults.map((p) => (
@@ -181,8 +181,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         onClick={() => { setShowSearch(false); setSearchQuery(""); }}
                         className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[var(--bg-subtle)] transition-colors"
                       >
-                        <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
-                          <Package className="h-5 w-5 text-[var(--brand)]/40" />
+                        <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[#0A0A20] to-[#0D0D25] flex items-center justify-center border border-[var(--border)]">
+                          <Package className="h-5 w-5 text-[var(--cyan)]/40" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-[var(--text-primary)] truncate">{p.name}</p>
@@ -238,7 +238,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-[var(--border)] bg-white shadow-xl"
+                  className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
                 >
                   <div className="p-2">
                     <Link href="/auth" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]">
@@ -269,14 +269,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Category Nav Bar */}
-        <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-subtle)]/50">
+        <div className="border-t border-[var(--border)] bg-[rgba(10,10,26,0.8)]">
           <div className="mx-auto flex max-w-[1400px] items-center gap-1 overflow-x-auto px-4 py-1.5 sm:px-6 scrollbar-hide">
             {/* Mega Menu Trigger */}
             <div ref={megaMenuRef} className="relative">
               <button
                 onClick={() => setShowMegaMenu(!showMegaMenu)}
                 onMouseEnter={() => setShowMegaMenu(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-[var(--brand)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--brand-dark)] transition-colors"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--cyan)] to-[var(--purple)] px-3 py-1.5 text-xs font-semibold text-[#050510] hover:opacity-90 transition-opacity"
               >
                 <Menu className="h-3.5 w-3.5" />
                 All Categories
@@ -290,9 +290,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     onMouseLeave={() => setShowMegaMenu(false)}
-                    className="absolute left-0 top-full z-50 mt-1 w-[700px] rounded-xl border border-[var(--border)] bg-white shadow-2xl"
+                    className="absolute left-0 top-full z-50 mt-1 w-[700px] rounded-xl border border-[var(--border)] glass-strong shadow-2xl"
                   >
-                    <div className="grid grid-cols-3 gap-0 divide-x divide-[var(--border-subtle)] p-4">
+                    <div className="grid grid-cols-3 gap-0 divide-x divide-[var(--border)] p-4">
                       {categories.map((cat) => (
                         <div key={cat.slug} className="px-4 py-2">
                           <Link
@@ -327,14 +327,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={cat.slug}
                 href={`/products?category=${cat.slug}`}
-                className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-white hover:text-[var(--brand)] transition-colors"
+                className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[rgba(0,240,255,0.05)] hover:text-[var(--cyan)] transition-colors"
               >
                 {cat.name}
               </Link>
             ))}
             <Link
               href="/products"
-              className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--brand)] hover:bg-white transition-colors"
+              className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--cyan)] hover:bg-[rgba(0,240,255,0.05)] transition-colors"
             >
               View All →
             </Link>
@@ -357,7 +357,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-80 overflow-y-auto bg-white shadow-2xl"
+              className="h-full w-80 overflow-y-auto glass-strong shadow-2xl border-l border-[var(--border)]"
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
@@ -420,36 +420,36 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-[var(--border)] bg-[var(--bg-elevated)]">
+      <footer className="mt-12 border-t border-[var(--border)] bg-[var(--bg-subtle)]">
         <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             <div>
               <h4 className="mb-3 text-sm font-bold text-[var(--text-primary)]">Products</h4>
               <div className="space-y-2">
-                <Link href="/products?category=cement" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Cement</Link>
-                <Link href="/products?category=steel-tmt" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Steel & TMT</Link>
-                <Link href="/products?category=tiles-ceramics" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Tiles</Link>
-                <Link href="/products?category=paint" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Paint</Link>
-                <Link href="/products?category=electrical" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Electrical</Link>
-                <Link href="/products?category=plumbing" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Plumbing</Link>
+                <Link href="/products?category=cement" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Cement</Link>
+                <Link href="/products?category=steel-tmt" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Steel & TMT</Link>
+                <Link href="/products?category=tiles-ceramics" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Tiles</Link>
+                <Link href="/products?category=paint" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Paint</Link>
+                <Link href="/products?category=electrical" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Electrical</Link>
+                <Link href="/products?category=plumbing" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Plumbing</Link>
               </div>
             </div>
             <div>
               <h4 className="mb-3 text-sm font-bold text-[var(--text-primary)]">Services</h4>
               <div className="space-y-2">
-                <Link href="/rfq" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Request Quote</Link>
-                <Link href="/orders" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Track Order</Link>
-                <Link href="/inventory" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Check Stock</Link>
-                <Link href="/suppliers" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Find Suppliers</Link>
+                <Link href="/rfq" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Request Quote</Link>
+                <Link href="/orders" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Track Order</Link>
+                <Link href="/inventory" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Check Stock</Link>
+                <Link href="/suppliers" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Find Suppliers</Link>
               </div>
             </div>
             <div>
               <h4 className="mb-3 text-sm font-bold text-[var(--text-primary)]">Company</h4>
               <div className="space-y-2">
-                <Link href="/analytics" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Analytics</Link>
-                <Link href="/admin" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Admin</Link>
-                <Link href="/dashboard/profile" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Profile</Link>
-                <Link href="/auth" className="block text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">Sign In</Link>
+                <Link href="/analytics" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Analytics</Link>
+                <Link href="/admin" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Admin</Link>
+                <Link href="/dashboard/profile" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Profile</Link>
+                <Link href="/auth" className="block text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">Sign In</Link>
               </div>
             </div>
             <div>
@@ -461,8 +461,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-[var(--border-subtle)] pt-6 text-center text-xs text-[var(--text-muted)]">
-            © 2026 MODIT. All rights reserved. | Delhi NCR&apos;s trusted building material procurement platform.
+          <div className="mt-8 border-t border-[var(--border)] pt-6 text-center text-xs text-[var(--text-muted)]">
+            2026 MODIT. All rights reserved. | Delhi NCR&apos;s trusted building material procurement platform.
           </div>
         </div>
       </footer>

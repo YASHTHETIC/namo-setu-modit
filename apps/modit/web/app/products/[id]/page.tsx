@@ -83,7 +83,7 @@ export default function ProductDetailPage({
         <Package className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
         <h2 className="text-xl font-bold text-[var(--text-primary)]">Product Not Found</h2>
         <p className="mt-2 text-sm text-[var(--text-muted)]">The product you are looking for does not exist.</p>
-        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:underline">
+        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--cyan)] hover:underline">
           <ArrowLeft className="h-4 w-4" /> Back to Products
         </Link>
       </div>
@@ -96,11 +96,11 @@ export default function ProductDetailPage({
     <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6">
       {/* Breadcrumb */}
       <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-        <Link href="/" className="hover:text-[var(--brand)]">Home</Link>
+        <Link href="/" className="hover:text-[var(--cyan)]">Home</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link href="/products" className="hover:text-[var(--brand)]">Products</Link>
+        <Link href="/products" className="hover:text-[var(--cyan)]">Products</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link href={`/products?category=${product.categorySlug}`} className="hover:text-[var(--brand)]">{product.category}</Link>
+        <Link href={`/products?category=${product.categorySlug}`} className="hover:text-[var(--cyan)]">{product.category}</Link>
         <ChevronRight className="h-3 w-3" />
         <span className="text-[var(--text-primary)] font-medium truncate max-w-[200px]">{product.name}</span>
       </nav>
@@ -110,7 +110,7 @@ export default function ProductDetailPage({
         <div className="lg:col-span-5">
           <div className="sticky top-24">
             {/* Main Image */}
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[#0A0A20] via-[#0D0D25] to-[#100820]">
               {product.images[selectedImage] ? (
                 <img
                   src={product.images[selectedImage]}
@@ -119,7 +119,7 @@ export default function ProductDetailPage({
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <Package className="h-32 w-32 text-[var(--brand)]/20" />
+                  <Package className="h-32 w-32 text-[var(--cyan)]/20" />
                 </div>
               )}
               {product.discount > 0 && (
@@ -138,8 +138,8 @@ export default function ProductDetailPage({
                     onClick={() => setSelectedImage(i)}
                     className={`h-16 w-16 overflow-hidden rounded-lg border-2 transition-all ${
                       i === selectedImage
-                        ? "border-[var(--brand)]"
-                        : "border-[var(--border)] hover:border-[var(--brand)]/50"
+                        ? "border-[var(--cyan)]"
+                        : "border-[var(--border)] hover:border-[var(--cyan)]/50"
                     }`}
                   >
                     <img src={img} alt="" className="h-full w-full object-cover" />
@@ -155,7 +155,7 @@ export default function ProductDetailPage({
           {/* Brand & Title */}
           <div>
             {product.brand && (
-              <Link href={`/products?brand=${product.brandSlug}`} className="text-sm font-semibold text-[var(--brand)] hover:underline">
+              <Link href={`/products?brand=${product.brandSlug}`} className="text-sm font-semibold text-[var(--cyan)] hover:underline">
                 {product.brand}
               </Link>
             )}
@@ -187,9 +187,9 @@ export default function ProductDetailPage({
           </div>
 
           {/* Delivery Check */}
-          <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
             <h4 className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)]">
-              <Truck className="h-4 w-4 text-[var(--brand)]" />
+              <Truck className="h-4 w-4 text-[var(--cyan)]" />
               Delivery
             </h4>
             <div className="mt-3 flex gap-2">
@@ -200,7 +200,7 @@ export default function ProductDetailPage({
                   placeholder="Enter pincode"
                   value={pincode}
                   onChange={(e) => { setPincode(e.target.value.replace(/\D/g, "").slice(0, 6)); setPincodeChecked(false); }}
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
                 />
               </div>
               <Button variant="secondary" onClick={handleCheckDelivery} disabled={pincode.length < 6}>
@@ -277,8 +277,8 @@ export default function ProductDetailPage({
               { icon: CreditCard, label: "Secure Payment", sub: "SSL Encrypted" },
               { icon: RotateCcw, label: "Easy Returns", sub: "7 Days" },
             ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-[var(--border)] bg-white p-3 text-center">
-                <Icon className="h-5 w-5 text-[var(--brand)]" />
+              <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 text-center">
+                <Icon className="h-5 w-5 text-[var(--cyan)]" />
                 <span className="text-[10px] font-bold text-[var(--text-primary)]">{label}</span>
                 <span className="text-[10px] text-[var(--text-muted)]">{sub}</span>
               </div>
@@ -286,10 +286,10 @@ export default function ProductDetailPage({
           </div>
 
           {/* Seller Info */}
-          <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand)]/10">
-                <Store className="h-5 w-5 text-[var(--brand)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--cyan)]/10">
+                <Store className="h-5 w-5 text-[var(--cyan)]" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-[var(--text-primary)]">{product.seller.name}</p>
@@ -316,12 +316,12 @@ export default function ProductDetailPage({
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`relative px-6 py-3 text-sm font-semibold transition-colors ${
-                activeTab === tab.key ? "text-[var(--brand)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                activeTab === tab.key ? "text-[var(--cyan)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
             >
               {tab.label}
               {activeTab === tab.key && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--brand)]" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--cyan)]" />
               )}
             </button>
           ))}
@@ -389,12 +389,12 @@ export default function ProductDetailPage({
           <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Frequently Bought Together</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="h-28 overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-amber-50">
+              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <div className="h-28 overflow-hidden rounded-lg bg-gradient-to-br from-[#0A0A20] to-[#0D0D25]">
                   <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
                 </div>
                 <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-1">{p.name}</p>
-                <p className="mt-1 text-sm font-bold text-[var(--brand)]">₹{p.price.toLocaleString()}</p>
+                <p className="mt-1 text-sm font-bold text-[var(--cyan)]">₹{p.price.toLocaleString()}</p>
               </Link>
             ))}
           </div>
@@ -406,20 +406,20 @@ export default function ProductDetailPage({
         <div className="mt-10 mb-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">Similar Products in {product.category}</h3>
-            <Link href={`/products?category=${product.categorySlug}`} className="text-sm font-medium text-[var(--brand)] hover:underline">
+            <Link href={`/products?category=${product.categorySlug}`} className="text-sm font-medium text-[var(--cyan)] hover:underline">
               View All →
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-amber-50">
+              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-[#0A0A20] to-[#0D0D25]">
                   <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
                 </div>
-                <p className="mt-2 text-[10px] font-semibold text-[var(--brand)]">{p.brand}</p>
+                <p className="mt-2 text-[10px] font-semibold text-[var(--cyan)]">{p.brand}</p>
                 <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2">{p.name}</p>
                 <div className="mt-1 flex items-center gap-1">
-                  <Star className="h-3 w-3 fill-[var(--brand)] text-[var(--brand)]" />
+                  <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--cyan)]" />
                   <span className="text-[10px] font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
                 <p className="text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>

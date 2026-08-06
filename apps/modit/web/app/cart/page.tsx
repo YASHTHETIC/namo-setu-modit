@@ -55,7 +55,7 @@ export default function CartPage() {
         <ShoppingCart className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
         <h2 className="text-xl font-bold text-[var(--text-primary)]">Your cart is empty</h2>
         <p className="mt-2 text-sm text-[var(--text-muted)]">Add construction materials to your cart to proceed.</p>
-        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:underline">
+        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--cyan)] hover:underline">
           <ArrowLeft className="h-4 w-4" /> Browse Products
         </Link>
 
@@ -64,13 +64,13 @@ export default function CartPage() {
             <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Saved for Later ({savedItems.length})</h3>
             <div className="mx-auto grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
               {savedItems.map((s) => (
-                <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white p-3">
+                <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
                   <img src={s.product.images[0]} alt="" className="h-16 w-16 rounded-lg object-cover" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-[var(--text-primary)] truncate">{s.product.name}</p>
-                    <p className="text-sm font-bold text-[var(--brand)]">₹{s.product.price.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-[var(--cyan)]">₹{s.product.price.toLocaleString()}</p>
                   </div>
-                  <button onClick={() => moveToCart(s.product.id)} className="text-xs font-medium text-[var(--brand)] hover:underline">Move to Cart</button>
+                  <button onClick={() => moveToCart(s.product.id)} className="text-xs font-medium text-[var(--cyan)] hover:underline">Move to Cart</button>
                 </div>
               ))}
             </div>
@@ -85,7 +85,7 @@ export default function CartPage() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <Link href="/products" className="mb-1 inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--brand)]">
+          <Link href="/products" className="mb-1 inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--cyan)]">
             <ArrowLeft className="h-3.5 w-3.5" /> Continue Shopping
           </Link>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">
@@ -104,9 +104,9 @@ export default function CartPage() {
         {/* Cart Items */}
         <div className="lg:col-span-8 space-y-3">
           {items.map((item) => (
-            <div key={item.product.id} className="flex gap-4 rounded-xl border border-[var(--border)] bg-white p-4">
+            <div key={item.product.id} className="flex gap-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
               {/* Image */}
-              <Link href={`/products/${item.product.id}`} className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-amber-50">
+              <Link href={`/products/${item.product.id}`} className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-[#0A0A20] to-[#0D0D25]">
                 <img src={item.product.images[0]} alt="" className="h-full w-full object-cover" />
               </Link>
 
@@ -114,8 +114,8 @@ export default function CartPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    {item.product.brand && <p className="text-[10px] font-semibold text-[var(--brand)]">{item.product.brand}</p>}
-                    <Link href={`/products/${item.product.id}`} className="text-sm font-bold text-[var(--text-primary)] hover:text-[var(--brand)] line-clamp-1">
+                    {item.product.brand && <p className="text-[10px] font-semibold text-[var(--cyan)]">{item.product.brand}</p>}
+                    <Link href={`/products/${item.product.id}`} className="text-sm font-bold text-[var(--text-primary)] hover:text-[var(--cyan)] line-clamp-1">
                       {item.product.name}
                     </Link>
                     <p className="text-[10px] text-[var(--text-muted)]">Seller: {item.product.seller.name}</p>
@@ -149,13 +149,13 @@ export default function CartPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => saveForLater(item.product.id)}
-                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--brand)]"
+                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--cyan)]"
                     >
                       <Heart className="h-3 w-3" /> Save for later
                     </button>
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-red-500 hover:bg-red-50"
+                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-red-500 hover:bg-[rgba(220,38,38,0.1)]"
                     >
                       <Trash2 className="h-3 w-3" /> Remove
                     </button>
@@ -171,13 +171,13 @@ export default function CartPage() {
               <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">Saved for Later ({savedItems.length})</h3>
               <div className="space-y-2">
                 {savedItems.map((s) => (
-                  <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white p-3">
+                  <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
                     <img src={s.product.images[0]} alt="" className="h-14 w-14 rounded-lg object-cover" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-[var(--text-primary)] truncate">{s.product.name}</p>
-                      <p className="text-sm font-bold text-[var(--brand)]">₹{s.product.price.toLocaleString()}</p>
+                      <p className="text-sm font-bold text-[var(--cyan)]">₹{s.product.price.toLocaleString()}</p>
                     </div>
-                    <button onClick={() => moveToCart(s.product.id)} className="text-xs font-medium text-[var(--brand)] hover:underline">Move to Cart</button>
+                    <button onClick={() => moveToCart(s.product.id)} className="text-xs font-medium text-[var(--cyan)] hover:underline">Move to Cart</button>
                     <button onClick={() => removeSaved(s.product.id)} className="text-[10px] text-red-500 hover:underline">Remove</button>
                   </div>
                 ))}
@@ -190,9 +190,9 @@ export default function CartPage() {
         <div className="lg:col-span-4">
           <div className="sticky top-24 space-y-4">
             {/* Coupon */}
-            <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
               <h4 className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)]">
-                <Tag className="h-4 w-4 text-[var(--brand)]" /> Apply Coupon
+                <Tag className="h-4 w-4 text-[var(--cyan)]" /> Apply Coupon
               </h4>
               <div className="mt-3 flex gap-2">
                 <input
@@ -200,7 +200,7 @@ export default function CartPage() {
                   placeholder="Enter code"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
-                  className="h-9 flex-1 rounded-lg border border-[var(--border)] bg-white px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                  className="h-9 flex-1 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
                 />
                 <Button variant="secondary" size="sm" onClick={handleApplyCoupon} disabled={!couponCode}>
                   Apply
@@ -211,7 +211,7 @@ export default function CartPage() {
             </div>
 
             {/* Price Details */}
-            <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
               <h4 className="text-sm font-bold text-[var(--text-primary)]">Price Details</h4>
               <div className="mt-3 space-y-2">
                 <div className="flex justify-between text-xs">
@@ -240,7 +240,7 @@ export default function CartPage() {
                 )}
                 <div className="border-t border-[var(--border-subtle)] pt-2 flex justify-between">
                   <span className="text-sm font-bold text-[var(--text-primary)]">Total</span>
-                  <span className="text-lg font-extrabold text-[var(--brand)]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                  <span className="text-lg font-extrabold text-[var(--cyan)]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                 </div>
               </div>
 
@@ -252,13 +252,13 @@ export default function CartPage() {
 
               <div className="mt-3 space-y-1.5">
                 <div className="flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
-                  <Shield className="h-3 w-3 text-[var(--brand)]" /> Secure payment — 256-bit SSL
+                  <Shield className="h-3 w-3 text-[var(--cyan)]" /> Secure payment — 256-bit SSL
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
-                  <Truck className="h-3 w-3 text-[var(--brand)]" /> Free delivery on orders above ₹5,000
+                  <Truck className="h-3 w-3 text-[var(--cyan)]" /> Free delivery on orders above ₹5,000
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
-                  <Clock className="h-3 w-3 text-[var(--brand)]" /> 7-day easy returns
+                  <Clock className="h-3 w-3 text-[var(--cyan)]" /> 7-day easy returns
                 </div>
               </div>
             </div>
