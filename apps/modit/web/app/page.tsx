@@ -144,68 +144,76 @@ export default function ModitHomePage() {
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-[var(--navy)]">
-        <div className="max-w-[1440px] mx-auto flex h-[60px] items-center gap-3 px-4 sm:px-6">
-          <Link href="/" className="flex shrink-0 items-center gap-1.5">
-            <div className="h-8 w-8 rounded-lg bg-[var(--brand)] flex items-center justify-center">
-              <span className="text-[14px] font-black text-white">M</span>
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-[var(--border)]">
+        <div className="max-w-[1440px] mx-auto flex h-[64px] items-center gap-4 px-4 sm:px-6">
+          {/* Logo */}
+          <Link href="/" className="flex shrink-0 items-center gap-2">
+            <div className="h-9 w-9 rounded-xl bg-[var(--brand)] flex items-center justify-center shadow-sm shadow-[var(--brand)]/20">
+              <span className="text-[15px] font-black text-white">M</span>
             </div>
             <div className="hidden sm:block">
-              <span className="text-[20px] font-black text-white tracking-tight leading-none">MODIT</span>
-              <span className="block text-[8px] text-[var(--gold)] font-bold tracking-widest">BUILDING MATERIALS</span>
+              <span className="text-[22px] font-black text-[var(--text)] tracking-tight leading-none">MODIT</span>
+              <span className="block text-[8px] text-[var(--brand)] font-bold tracking-[0.2em]">BUILDING MATERIALS</span>
             </div>
           </Link>
 
-          <button className="hidden md:flex items-center gap-1.5 text-white/70 hover:text-white text-[12px] px-2 py-1.5 rounded-lg hover:bg-white/5 transition-all">
-            <MapPin className="h-3.5 w-3.5 text-[var(--gold)]" />
+          {/* Deliver to */}
+          <button className="hidden md:flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text)] text-[12px] px-3 py-2 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-[var(--border)]">
+            <MapPin className="h-4 w-4 text-[var(--brand)]" />
             <div className="text-left">
-              <p className="text-[9px] text-white/40 leading-none">Deliver to</p>
-              <p className="text-[12px] font-bold leading-tight">New Delhi 110001</p>
+              <p className="text-[9px] text-[var(--text-muted)] leading-none uppercase tracking-wider">Deliver to</p>
+              <p className="text-[12px] font-bold leading-tight text-[var(--text)]">New Delhi 110001</p>
             </div>
           </button>
 
-          <div className="flex-1 max-w-3xl">
-            <div className="flex">
-              <select className="h-[40px] rounded-l-lg bg-white/10 border-0 text-[12px] text-white/80 px-3 cursor-pointer focus:outline-none hidden sm:block backdrop-blur">
-                <option className="text-gray-900">All</option>
-                {CATEGORIES.slice(0, 6).map(c => <option key={c.slug} className="text-gray-900">{c.name}</option>)}
-              </select>
+          {/* Search */}
+          <div className="flex-1 max-w-2xl">
+            <div className="relative flex items-center">
               <input type="text" placeholder="Search cement, steel, tiles, paint, electrical..."
-                className="flex-1 h-[40px] bg-white px-4 text-[13px] text-gray-900 placeholder:text-gray-500 focus:outline-none border-0" />
-              <button className="h-[40px] w-[48px] bg-[var(--gold)] hover:bg-[var(--gold-hover)] rounded-r-lg flex items-center justify-center transition-colors">
-                <Search className="h-5 w-5 text-[var(--navy)]" />
+                className="w-full h-[42px] bg-[var(--bg)] border border-[var(--border)] rounded-full pl-5 pr-14 text-[13px] text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 transition-all" />
+              <button className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
+                <Search className="h-4 w-4 text-white" />
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-0.5">
-            <Link href="#" className="hidden lg:flex flex-col items-center text-white/60 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-all">
-              <GitCompare className="h-4 w-4" />
-              <span className="text-[9px] font-medium mt-0.5">Compare</span>
+          {/* Right Actions */}
+          <div className="flex items-center gap-1">
+            <Link href="#" className="hidden lg:flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
+              <GitCompare className="h-4 w-4" /> Compare
             </Link>
-            <Link href="#" className="hidden lg:flex flex-col items-center text-white/60 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-all">
-              <Bell className="h-4 w-4" />
-              <span className="text-[9px] font-medium mt-0.5">Alerts</span>
+            <Link href="#" className="hidden lg:flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
+              <Bell className="h-4 w-4" /> Alerts
             </Link>
-            <Link href="/cart" className="relative flex flex-col items-center text-white/60 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-all">
-              <ShoppingCart className="h-4 w-4" />
-              <span className="text-[9px] font-medium mt-0.5">Cart</span>
-              <span className="absolute -top-0 right-1 h-[16px] min-w-[16px] rounded-full bg-[var(--gold)] text-[9px] font-black text-[var(--navy)] flex items-center justify-center px-1">3</span>
+            <Link href="/cart" className="relative flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
+              <div className="relative">
+                <ShoppingCart className="h-4.5 w-4.5" />
+                <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-[var(--brand)] text-[9px] font-black text-white flex items-center justify-center px-1">3</span>
+              </div>
+              Cart
             </Link>
-            <Link href="/auth" className="hidden sm:flex items-center gap-1.5 bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg transition-all ml-1">
+            <Link href="/auth" className="flex items-center gap-1.5 bg-[var(--text)] hover:bg-[var(--navy-light)] text-white text-[12px] font-bold px-4 py-2 rounded-xl transition-all ml-1">
               <User className="h-3.5 w-3.5" /> Sign In
             </Link>
           </div>
         </div>
 
-        <div className="bg-white/5 border-t border-white/5">
-          <div className="max-w-[1440px] mx-auto flex items-center overflow-x-auto px-4 sm:px-6 scrollbar-hide">
-            {["Today's Deals", "Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Plumbing", "Bulk Orders", "New Arrivals", "All Categories"].map(item => (
-              <Link key={item} href={item === "Today's Deals" ? "/products?sort=deals" : item === "All Categories" ? "/products" : `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-                className="shrink-0 px-3 py-2.5 text-[12px] font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all border-b-2 border-transparent hover:border-[var(--gold)]">
+        {/* Category Strip */}
+        <div className="border-t border-[var(--border-light)] bg-[var(--bg)]">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-1 overflow-x-auto px-4 sm:px-6 py-2 scrollbar-hide">
+            {["Today's Deals", "Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Plumbing", "Bulk Orders", "New Arrivals"].map((item, i) => (
+              <Link key={item} href={item === "Today's Deals" ? "/products?sort=deals" : `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
+                className={`shrink-0 px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-all ${
+                  i === 0 
+                    ? "bg-[var(--brand)] text-white" 
+                    : "text-[var(--text-secondary)] hover:text-[var(--brand)] hover:bg-[var(--brand-light)]"
+                }`}>
                 {item}
               </Link>
             ))}
+            <Link href="/products" className="shrink-0 px-3.5 py-1.5 text-[12px] font-semibold text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-full transition-all">
+              View All \u2192
+            </Link>
           </div>
         </div>
       </header>
