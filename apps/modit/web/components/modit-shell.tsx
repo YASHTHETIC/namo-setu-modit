@@ -1,36 +1,19 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search,
-  ShoppingCart,
-  MapPin,
-  ChevronDown,
-  Menu,
-  X,
-  Bell,
-  User,
-  LogOut,
-  LayoutDashboard,
-  Package,
-  Users,
-  FileText,
-  Truck,
-  FolderOpen,
-  BarChart3,
-  Settings,
-  Clock,
-  Star,
+  Search, ShoppingCart, MapPin, ChevronDown, Menu, X, Bell, User,
+  LogOut, LayoutDashboard, Package, FileText, Truck, BarChart3,
+  Settings, GitCompare, Heart
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { searchProducts, categories, type Product } from "@/lib/product-data";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const isHome = pathname === "/";
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,7 +22,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [mobileCategory, setMobileCategory] = useState<string | null>(null);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
@@ -48,19 +30,17 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const cartItems = useCartStore((s) => s.items);
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
 
-  // Search
   useEffect(() => {
     if (searchQuery.length >= 2) {
-      const results = searchProducts(searchQuery).slice(0, 8);
+      const results = searchProducts(searchQuery).slice(0, 6);
       setSearchResults(results);
-      setShowSearch(true);
+      setShowSearch(results.length > 0);
     } else {
       setSearchResults([]);
       setShowSearch(false);
     }
   }, [searchQuery]);
 
-  // Close dropdowns on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowSearch(false);
@@ -71,398 +51,239 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Close on Escape
-  useEffect(() => {
-    function handleEscape(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setShowSearch(false);
-        setShowMegaMenu(false);
-        setShowUserMenu(false);
-        setShowMobileMenu(false);
-      }
-    }
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, []);
-
-  // Close on route change
-  useEffect(() => {
-    setShowMobileMenu(false);
-    setShowSearch(false);
-    setShowMegaMenu(false);
-  }, [pathname]);
-
-  const handleSearchSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-        setShowSearch(false);
-        setSearchQuery("");
-      }
-    },
-    [searchQuery, router]
-  );
-
   if (isHome) return <>{children}</>;
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      {/* Top Bar */}
-      <div className="bg-[var(--bg-dark)] text-xs text-white/60">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-1.5 sm:px-6">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <Truck className="h-3 w-3 text-[var(--brand)]" /> Delivering across Delhi NCR
-            </span>
-            <span className="hidden sm:inline text-white/10">|</span>
-            <span className="hidden sm:inline">Free delivery on orders above ₹5,000</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/suppliers" className="hover:text-[var(--brand)] transition-colors">Sell on MODIT</Link>
-            <Link href="/dashboard" className="hover:text-[var(--brand)] transition-colors">Dashboard</Link>
-          </div>
-        </div>
+      {/* ── Announcement Bar ── */}
+      <div className="bg-[#232F3E] text-white text-center py-1.5 px-4 text-[11px]">
+        <span className="hidden sm:inline">Free delivery on first order </span>
+        <span className="mx-2 text-white/20">|</span>
+        <span>MONSOON MEGA SALE — Up to 25% OFF</span>
+        <span className="mx-2 text-white/20">|</span>
+        <span className="font-bold text-[var(--brand)]">Use code FUTURE25</span>
       </div>
 
-      {/* Main Header */}
-      <header className="sticky top-0 z-50 border-b border-white/5">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-2.5 sm:px-6">
+      {/* ── Main Header ── */}
+      <header className="sticky top-0 z-50 bg-[#131921]">
+        <div className="max-w-[1440px] mx-auto flex h-[60px] items-center gap-3 px-4 sm:px-6">
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br bg-[var(--brand)] text-sm font-bold text-white">
-              M
-            </div>
-            <div className="hidden sm:block">
-              <span className="text-lg font-extrabold tracking-tight text-white">MODIT</span>
-              <span className="ml-1.5 hidden text-[10px] font-medium uppercase tracking-wider text-[var(--brand)] lg:inline">
-                Construction Procurement
-              </span>
-            </div>
+          <Link href="/" className="flex shrink-0 items-center gap-1">
+            <span className="text-[22px] font-black text-white tracking-tight">MODIT</span>
+            <span className="text-[9px] text-[var(--brand)] font-bold hidden sm:block mt-1">BUILDING MATERIALS</span>
           </Link>
 
-          {/* Location */}
-          <button className="hidden items-center gap-1 rounded-xl border border-[var(--border)] px-3 py-2 text-sm hover:border-[var(--brand-200)] transition-colors lg:flex glass">
-            <MapPin className="h-4 w-4 text-[var(--brand)]" />
+          {/* Deliver to */}
+          <button className="hidden md:flex items-center gap-1.5 text-white/80 hover:text-white text-[12px] px-2 py-1 rounded hover:border hover:border-white/20 transition-all">
+            <MapPin className="h-3.5 w-3.5" />
             <div className="text-left">
-              <p className="text-[10px] text-white/40">Deliver to</p>
-              <p className="text-xs font-semibold text-white">New Delhi 110001</p>
+              <p className="text-[9px] text-white/50 leading-none">Deliver to</p>
+              <p className="text-[12px] font-bold leading-tight">New Delhi 110001</p>
             </div>
           </button>
 
-          {/* Search Bar */}
-          <div ref={searchRef} className="relative flex-1">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => searchQuery.length >= 2 && setShowSearch(true)}
+          {/* Search */}
+          <div className="flex-1 max-w-3xl" ref={searchRef}>
+            <div className="flex">
+              <select className="h-[40px] rounded-l-md bg-gray-100 border-0 text-[12px] text-gray-700 px-2 cursor-pointer focus:outline-none hidden sm:block">
+                <option>All</option>
+                {categories.slice(0, 6).map(c => <option key={c.slug}>{c.name}</option>)}
+              </select>
+              <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search cement, steel, tiles, paint..."
-                className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-darker)] pl-10 pr-4 text-sm transition-colors placeholder:text-white/40 focus:border-[var(--brand)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)] text-white"
-              />
-            </form>
-
+                className="flex-1 h-[40px] bg-white px-4 text-[13px] text-gray-900 placeholder:text-gray-500 focus:outline-none border-0" />
+              <button className="h-[40px] w-[48px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-r-md flex items-center justify-center transition-colors">
+                <Search className="h-5 w-5 text-[#111]" />
+              </button>
+            </div>
             {/* Search Dropdown */}
             <AnimatePresence>
               {showSearch && searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
-                >
-                  <div className="p-2">
-                    {searchResults.map((p) => (
-                      <Link
-                        key={p.id}
-                        href={`/products/${p.id}`}
-                        onClick={() => { setShowSearch(false); setSearchQuery(""); }}
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[var(--bg-darker)] transition-colors"
-                      >
-                        <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)] flex items-center justify-center border border-[var(--border)]">
-                          <Package className="h-5 w-5 text-[var(--brand)]/40" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">{p.name}</p>
-                          <p className="text-xs text-white/40">{p.category} · {p.brand || "No brand"}</p>
-                        </div>
-                        <span className="text-sm font-bold text-[var(--brand)]">₹{p.price.toLocaleString()}</span>
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="border-t border-[var(--border-subtle)] px-4 py-2">
-                    <button
-                      onClick={() => { handleSearchSubmit({ preventDefault: () => {} } as React.FormEvent); }}
-                      className="text-xs font-medium text-[var(--brand)] hover:underline"
-                    >
-                      See all results for &ldquo;{searchQuery}&rdquo;
-                    </button>
-                  </div>
+                <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                  className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-xl max-h-[400px] overflow-y-auto">
+                  {searchResults.map(p => (
+                    <Link key={p.id} href={`/products/${p.id}`} onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-[var(--border-light)] last:border-0">
+                      <div className="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0">
+                        <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-medium text-[var(--text)] truncate">{p.name}</p>
+                        <p className="text-[10px] text-[var(--text-muted)]">{p.category}</p>
+                      </div>
+                      <span className="text-[13px] font-bold text-[var(--text)]">₹{p.price.toLocaleString()}</span>
+                    </Link>
+                  ))}
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Cart */}
-          <Link
-            href="/cart"
-            className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)] transition-colors"
-          >
-            <div className="relative">
+          {/* Right */}
+          <div className="flex items-center gap-1">
+            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
+              <GitCompare className="h-5 w-5" />
+              <span className="text-[9px] font-medium">Compare</span>
+            </Link>
+            <Link href="#" className="hidden lg:flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
+              <Bell className="h-5 w-5" />
+              <span className="text-[9px] font-medium">Alerts</span>
+            </Link>
+            <Link href="/cart" className="relative flex flex-col items-center text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-all">
               <ShoppingCart className="h-5 w-5" />
+              <span className="text-[9px] font-medium">Cart</span>
               {cartCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white">
-                  {cartCount > 99 ? "99+" : cartCount}
-                </span>
+                <span className="absolute -top-0.5 right-0 h-[18px] min-w-[18px] rounded-full bg-[var(--brand)] text-[10px] font-bold text-[#111] flex items-center justify-center px-1">{cartCount > 99 ? "99+" : cartCount}</span>
               )}
-            </div>
-            <span className="hidden sm:inline">Cart</span>
-          </Link>
+            </Link>
 
-          {/* User Menu */}
-          <div ref={userMenuRef} className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)] transition-colors"
-            >
-              <User className="h-5 w-5" />
-              <span className="hidden lg:inline">Sign In</span>
-              <ChevronDown className="h-3.5 w-3.5" />
-            </button>
-
-            <AnimatePresence>
-              {showUserMenu && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
-                >
-                  <div className="p-2">
-                    <Link href="/auth" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[var(--bg-darker)]">
-                      <LogOut className="h-4 w-4" /> Sign In
-                    </Link>
-                    <Link href="/auth/register" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
-                      <User className="h-4 w-4" /> Create Account
-                    </Link>
-                    <div className="my-1 border-t border-[var(--border-subtle)]" />
-                    <Link href="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
-                      <LayoutDashboard className="h-4 w-4" /> Dashboard
-                    </Link>
-                    <Link href="/orders" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
-                      <Package className="h-4 w-4" /> My Orders
-                    </Link>
-                    <Link href="/payment/history" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
-                      <FileText className="h-4 w-4" /> Payments
-                    </Link>
-                    <div className="my-1 border-t border-[var(--border-subtle)]" />
-                    <Link href="/admin" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
-                      <Settings className="h-4 w-4" /> Admin
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Category Nav Bar */}
-        <div className="border-t border-white/5 bg-[#1E293B]">
-          <div className="mx-auto flex max-w-[1400px] items-center gap-1 overflow-x-auto px-4 py-1.5 sm:px-6 scrollbar-hide">
-            {/* Mega Menu Trigger */}
-            <div ref={megaMenuRef} className="relative">
-              <button
-                onClick={() => setShowMegaMenu(!showMegaMenu)}
-                onMouseEnter={() => setShowMegaMenu(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r bg-[var(--brand)] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"
-              >
-                <Menu className="h-3.5 w-3.5" />
-                All Categories
-                <ChevronDown className="h-3 w-3" />
+            {/* User Menu */}
+            <div ref={userMenuRef} className="relative">
+              <button onClick={() => setShowUserMenu(!showUserMenu)}
+                className="hidden sm:flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-[12px] font-bold px-3 py-2 rounded transition-all ml-1">
+                <User className="h-4 w-4" /> Account <ChevronDown className="h-3 w-3" />
               </button>
-
               <AnimatePresence>
-                {showMegaMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    onMouseLeave={() => setShowMegaMenu(false)}
-                    className="absolute left-0 top-full z-50 mt-1 w-[700px] rounded-xl border border-[var(--border)] bg-white shadow-xl"
-                  >
-                    <div className="grid grid-cols-3 gap-0 divide-x divide-[var(--border)] p-4">
-                      {categories.map((cat) => (
-                        <div key={cat.slug} className="px-4 py-2">
-                          <Link
-                            href={`/products?category=${cat.slug}`}
-                            onClick={() => setShowMegaMenu(false)}
-                            className="text-sm font-semibold text-white hover:text-[var(--brand)] transition-colors"
-                          >
-                            {cat.name}
-                          </Link>
-                          <div className="mt-1.5 space-y-1">
-                            {cat.subCategories.map((sub) => (
-                              <Link
-                                key={sub.slug}
-                                href={`/products?category=${cat.slug}&sub=${sub.slug}`}
-                                onClick={() => setShowMegaMenu(false)}
-                                className="block text-xs text-white/40 hover:text-[var(--brand)] transition-colors"
-                              >
-                                {sub.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                {showUserMenu && (
+                  <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                    className="absolute right-0 top-full z-50 mt-1 w-56 bg-white border border-[var(--border)] rounded-lg shadow-xl overflow-hidden">
+                    <div className="p-2">
+                      <Link href="/auth" className="flex items-center gap-2 rounded px-3 py-2 text-[12px] font-semibold text-[var(--text)] hover:bg-gray-50">
+                        <User className="h-4 w-4" /> Sign In
+                      </Link>
+                      <Link href="/auth/register" className="flex items-center gap-2 rounded px-3 py-2 text-[12px] text-[var(--text-secondary)] hover:bg-gray-50">
+                        Create Account
+                      </Link>
+                      <div className="my-1 border-t border-[var(--border-light)]" />
+                      <Link href="/dashboard" className="flex items-center gap-2 rounded px-3 py-2 text-[12px] text-[var(--text-secondary)] hover:bg-gray-50">
+                        <LayoutDashboard className="h-4 w-4" /> Dashboard
+                      </Link>
+                      <Link href="/orders" className="flex items-center gap-2 rounded px-3 py-2 text-[12px] text-[var(--text-secondary)] hover:bg-gray-50">
+                        <Package className="h-4 w-4" /> My Orders
+                      </Link>
+                      <Link href="/wishlist" className="flex items-center gap-2 rounded px-3 py-2 text-[12px] text-[var(--text-secondary)] hover:bg-gray-50">
+                        <Heart className="h-4 w-4" /> Wishlist
+                      </Link>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Quick Category Links */}
-            {categories.slice(0, 8).map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/products?category=${cat.slug}`}
-                className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
-              >
-                {cat.name}
+            {/* Mobile Menu Toggle */}
+            <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="lg:hidden p-2 text-white/80 hover:text-white">
+              {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Category Nav */}
+        <div className="bg-[#232F3E] border-t border-white/5">
+          <div className="max-w-[1440px] mx-auto flex items-center overflow-x-auto px-4 sm:px-6 scrollbar-hide">
+            <div ref={megaMenuRef} className="relative">
+              <button onClick={() => setShowMegaMenu(!showMegaMenu)}
+                className="flex items-center gap-1.5 px-3 py-2.5 text-[12px] font-bold text-white hover:bg-white/10 transition-all">
+                <Menu className="h-3.5 w-3.5" /> All Categories <ChevronDown className="h-3 w-3" />
+              </button>
+              <AnimatePresence>
+                {showMegaMenu && (
+                  <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                    className="absolute left-0 top-full z-50 w-[600px] bg-white border border-[var(--border)] rounded-lg shadow-xl p-4">
+                    <div className="grid grid-cols-3 gap-2">
+                      {categories.map(cat => (
+                        <Link key={cat.slug} href={`/products?category=${cat.slug}`}
+                          onClick={() => setShowMegaMenu(false)}
+                          className="flex items-center gap-2 rounded px-3 py-2 text-[12px] text-[var(--text)] hover:bg-gray-50 hover:text-[var(--brand)] transition-all">
+                          <span className="text-lg">{cat.icon}</span>
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            {["Today's Deals", "Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Bulk Orders"].map(item => (
+              <Link key={item} href={item === "Today's Deals" ? "/products?sort=deals" : `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
+                className="shrink-0 px-3 py-2.5 text-[12px] font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all border-b-2 border-transparent hover:border-[var(--brand)]">
+                {item}
               </Link>
             ))}
-            <Link
-              href="/products"
-              className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--brand)] hover:bg-[var(--brand-50)] transition-colors"
-            >
-              View All →
-            </Link>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* ── Mobile Menu ── */}
       <AnimatePresence>
         {showMobileMenu && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 lg:hidden"
-            onClick={() => setShowMobileMenu(false)}
-          >
-            <motion.div
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="h-full w-80 overflow-y-auto bg-white shadow-xl border-l border-[var(--border)]"
-            >
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-lg font-bold">Menu</span>
-                  <button onClick={() => setShowMobileMenu(false)}>
-                    <X className="h-5 w-5" />
-                  </button>
+          <motion.div initial={{ opacity: 0, x: -300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -300 }}
+            className="fixed inset-0 z-[100] lg:hidden">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setShowMobileMenu(false)} />
+            <div className="relative w-72 h-full bg-white shadow-xl overflow-y-auto">
+              <div className="p-4 border-b border-[var(--border)]">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[16px] font-black text-[var(--text)]">MODIT</span>
+                  <button onClick={() => setShowMobileMenu(false)}><X className="h-5 w-5 text-gray-500" /></button>
                 </div>
-
-                {mobileCategory ? (
-                  <div>
-                    <button
-                      onClick={() => setMobileCategory(null)}
-                      className="mb-3 text-sm text-[var(--brand)] font-medium"
-                    >
-                      ← Back to Categories
-                    </button>
-                    <h3 className="text-sm font-bold mb-2">
-                      {categories.find((c) => c.slug === mobileCategory)?.name}
-                    </h3>
-                    <div className="space-y-1">
-                      {categories
-                        .find((c) => c.slug === mobileCategory)
-                        ?.subCategories.map((sub) => (
-                          <Link
-                            key={sub.slug}
-                            href={`/products?category=${mobileCategory}&sub=${sub.slug}`}
-                            className="block rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.slug}
-                        onClick={() => setMobileCategory(cat.slug)}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-white hover:bg-[var(--bg-darker)]"
-                      >
-                        {cat.name}
-                        <ChevronDown className="h-4 w-4 -rotate-90" />
-                      </button>
-                    ))}
-                    <div className="my-2 border-t border-[var(--border-subtle)]" />
-                    <Link href="/dashboard" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">Dashboard</Link>
-                    <Link href="/orders" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">Orders</Link>
-                    <Link href="/auth" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-[var(--bg-darker)]">Sign In</Link>
-                  </div>
-                )}
+                <Link href="/auth" className="btn-amazon w-full text-[12px]">Sign In</Link>
               </div>
-            </motion.div>
+              <div className="p-3">
+                <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2 px-2">Categories</p>
+                {categories.map(cat => (
+                  <Link key={cat.slug} href={`/products?category=${cat.slug}`}
+                    onClick={() => setShowMobileMenu(false)}
+                    className="flex items-center gap-2.5 px-2 py-2.5 text-[13px] text-[var(--text)] hover:bg-gray-50 rounded transition-colors">
+                    <span className="text-lg">{cat.icon}</span> {cat.name}
+                  </Link>
+                ))}
+                <div className="my-3 border-t border-[var(--border-light)]" />
+                <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2 px-2">Quick Links</p>
+                {["Today's Deals", "Track Order", "Bulk Orders", "Sell on MODIT"].map(item => (
+                  <Link key={item} href="#"
+                    onClick={() => setShowMobileMenu(false)}
+                    className="block px-2 py-2.5 text-[13px] text-[var(--text)] hover:bg-gray-50 rounded transition-colors">
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <main>{children}</main>
+      {/* ── Content ── */}
+      <main className="min-h-[60vh]">{children}</main>
 
-      {/* Footer */}
-      <footer className="mt-12 border-t border-white/5 bg-[var(--bg-darker)]">
-        <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <div>
-              <h4 className="mb-3 text-sm font-bold text-white">Products</h4>
-              <div className="space-y-2">
-                <Link href="/products?category=cement" className="block text-xs text-white/40 hover:text-[var(--brand)]">Cement</Link>
-                <Link href="/products?category=steel-tmt" className="block text-xs text-white/40 hover:text-[var(--brand)]">Steel & TMT</Link>
-                <Link href="/products?category=tiles-ceramics" className="block text-xs text-white/40 hover:text-[var(--brand)]">Tiles</Link>
-                <Link href="/products?category=paint" className="block text-xs text-white/40 hover:text-[var(--brand)]">Paint</Link>
-                <Link href="/products?category=electrical" className="block text-xs text-white/40 hover:text-[var(--brand)]">Electrical</Link>
-                <Link href="/products?category=plumbing" className="block text-xs text-white/40 hover:text-[var(--brand)]">Plumbing</Link>
+      {/* ── Footer ── */}
+      <footer className="bg-[#232F3E] mt-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="col-span-2 lg:col-span-1">
+              <h3 className="text-[16px] font-black text-white mb-2">MODIT</h3>
+              <p className="text-[11px] text-white/40 leading-relaxed mb-3">India&apos;s B2B marketplace for construction materials.</p>
+              <div className="flex gap-2">
+                <span className="rounded bg-white/10 px-3 py-1.5 text-[10px] font-bold text-white cursor-pointer hover:bg-white/20 transition-all">Google Play</span>
+                <span className="rounded bg-white/10 px-3 py-1.5 text-[10px] font-bold text-white cursor-pointer hover:bg-white/20 transition-all">App Store</span>
               </div>
             </div>
-            <div>
-              <h4 className="mb-3 text-sm font-bold text-white">Services</h4>
-              <div className="space-y-2">
-                <Link href="/rfq" className="block text-xs text-white/40 hover:text-[var(--brand)]">Request Quote</Link>
-                <Link href="/orders" className="block text-xs text-white/40 hover:text-[var(--brand)]">Track Order</Link>
-                <Link href="/inventory" className="block text-xs text-white/40 hover:text-[var(--brand)]">Check Stock</Link>
-                <Link href="/suppliers" className="block text-xs text-white/40 hover:text-[var(--brand)]">Find Suppliers</Link>
+            {[
+              { title: "Products", items: ["Cement", "Steel & TMT", "Tiles", "Paint", "Electrical"] },
+              { title: "Company", items: ["About Us", "Careers", "Blog", "Press"] },
+              { title: "Support", items: ["Help Center", "Contact", "API Docs", "Status"] },
+              { title: "Legal", items: ["Privacy", "Terms", "Refund", "GST Info"] },
+            ].map(col => (
+              <div key={col.title}>
+                <h4 className="text-[12px] font-bold text-white/60 mb-2.5 uppercase tracking-wider">{col.title}</h4>
+                <div className="space-y-1.5">
+                  {col.items.map(item => (
+                    <Link key={item} href="#" className="block text-[11px] text-white/40 hover:text-white/70 transition-colors">{item}</Link>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <h4 className="mb-3 text-sm font-bold text-white">Company</h4>
-              <div className="space-y-2">
-                <Link href="/analytics" className="block text-xs text-white/40 hover:text-[var(--brand)]">Analytics</Link>
-                <Link href="/admin" className="block text-xs text-white/40 hover:text-[var(--brand)]">Admin</Link>
-                <Link href="/dashboard/profile" className="block text-xs text-white/40 hover:text-[var(--brand)]">Profile</Link>
-                <Link href="/auth" className="block text-xs text-white/40 hover:text-[var(--brand)]">Sign In</Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="mb-3 text-sm font-bold text-white">Contact</h4>
-              <div className="space-y-2">
-                <p className="text-xs text-white/40">1800-123-4567</p>
-                <p className="text-xs text-white/40">Delhi NCR, India</p>
-                <p className="text-xs text-white/40">support@modit.in</p>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-white/40">
-            2026 MODIT. All rights reserved. | Delhi NCR&apos;s trusted building material procurement platform.
+          <div className="border-t border-white/5 mt-6 pt-5 text-center text-[10px] text-white/30">
+            2026 MODIT. All rights reserved.
           </div>
         </div>
       </footer>
