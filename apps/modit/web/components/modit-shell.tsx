@@ -103,7 +103,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         <p className="text-[12px] font-medium text-[var(--text)] truncate">{p.name}</p>
                         <p className="text-[10px] text-[var(--text-muted)]">{p.category}</p>
                       </div>
-                      <span className="text-[13px] font-bold text-[var(--text)]">\u20B9{p.price.toLocaleString()}</span>
+                      <span className="text-[13px] font-bold text-[var(--text)]">₹{p.price.toLocaleString()}</span>
                     </Link>
                   ))}
                 </motion.div>
@@ -195,7 +195,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
             <Link href="/products" className="shrink-0 px-3.5 py-1.5 text-[12px] font-semibold text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-full transition-all">
-              View All \u2192
+              View All →
             </Link>
           </div>
         </div>

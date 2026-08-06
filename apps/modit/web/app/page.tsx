@@ -22,24 +22,24 @@ const PRODUCTS = [
 ];
 
 const CATEGORIES = [
-  { name: "Cement", icon: "\u{1F3D7}\u{FE0F}", slug: "cement", count: "500+ Products" },
-  { name: "Steel & TMT", icon: "\u{1F529}", slug: "steel", count: "300+ Products" },
-  { name: "Tiles", icon: "\u{1F532}", slug: "tiles", count: "1200+ Products" },
-  { name: "Paint", icon: "\u{1F3A8}", slug: "paint", count: "800+ Products" },
-  { name: "Electrical", icon: "\u{26A1}", slug: "electrical", count: "600+ Products" },
-  { name: "Plumbing", icon: "\u{1F527}", slug: "plumbing", count: "400+ Products" },
-  { name: "Sand & Aggregate", icon: "\u{1FAA8}", slug: "sand", count: "150+ Products" },
-  { name: "Bricks & Blocks", icon: "\u{1F9F1}", slug: "bricks", count: "200+ Products" },
-  { name: "Wood & Plywood", icon: "\u{1FAB5}", slug: "wood", count: "350+ Products" },
-  { name: "Hardware", icon: "\u{1F529}", slug: "hardware", count: "1000+ Products" },
-  { name: "Bathroom", icon: "\u{1F6BF}", slug: "bathroom", count: "250+ Products" },
-  { name: "Doors & Windows", icon: "\u{1F6AA}", slug: "doors", count: "180+ Products" },
+  { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products" },
+  { name: "Steel & TMT", icon: "🔩", slug: "steel", count: "300+ Products" },
+  { name: "Tiles", icon: "🔲", slug: "tiles", count: "1200+ Products" },
+  { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products" },
+  { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products" },
+  { name: "Plumbing", icon: "🔧", slug: "plumbing", count: "400+ Products" },
+  { name: "Sand & Aggregate", icon: "🪨", slug: "sand", count: "150+ Products" },
+  { name: "Bricks & Blocks", icon: "🧱", slug: "bricks", count: "200+ Products" },
+  { name: "Wood & Plywood", icon: "🪵", slug: "wood", count: "350+ Products" },
+  { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products" },
+  { name: "Bathroom", icon: "🚿", slug: "bathroom", count: "250+ Products" },
+  { name: "Doors & Windows", icon: "🚪", slug: "doors", count: "180+ Products" },
 ];
 
 const HERO_SLIDES = [
   { badge: "MEGA DEAL", badgeBg: "#E8453C", title: "Monsoon Mega Sale", sub: "Up to 25% off on Cement, Steel & building materials. Limited time offer.", cta: "Shop Now", ctaClass: "btn-gold", link: "/products" },
   { badge: "B2B EXCLUSIVE", badgeBg: "#1B2838", title: "Bulk Order Pricing", sub: "Extra 10% off on orders above 50 units. Best prices for contractors.", cta: "Get Quote", ctaClass: "btn-brand", link: "/rfq" },
-  { badge: "NEW COLLECTION", badgeBg: "#00B4A0", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting \u20B942/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles" },
+  { badge: "NEW COLLECTION", badgeBg: "#00B4A0", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting ₹42/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles" },
 ];
 
 const LIVE_ORDERS = [
@@ -86,14 +86,14 @@ function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
           <span className="text-[11px] text-[var(--text-muted)]">({p.reviews.toLocaleString()})</span>
         </div>
         <div className="product-price">
-          <span className="current">\u20B9{p.price.toLocaleString()}</span>
-          <span className="mrp">\u20B9{p.mrp.toLocaleString()}</span>
+          <span className="current">₹{p.price.toLocaleString()}</span>
+          <span className="mrp">₹{p.mrp.toLocaleString()}</span>
           <span className="discount">{p.discount}% off</span>
         </div>
         <p className="text-[11px] text-[var(--text-muted)]">Incl. 18% GST</p>
         <p className="product-delivery">
           <Truck className="h-3 w-3 inline mr-1" />
-          <span className="free">Free delivery</span> \u00B7 {p.delivery}
+          <span className="free">Free delivery</span> · {p.delivery}
         </p>
         <p className="product-supplier">
           <Building2 className="h-3 w-3" /> {p.supplier}
@@ -137,9 +137,9 @@ export default function ModitHomePage() {
       {/* Announcement Bar */}
       <div className="bg-gradient-to-r from-[var(--brand)] via-[var(--brand-hover)] to-[var(--brand)] text-white text-center py-1.5 px-4 text-[11px] font-semibold tracking-wide">
         <span className="hidden sm:inline">Free delivery on first order </span>
-        <span className="mx-2 text-white/30">\u2502</span>
-        <span>MONSOON MEGA SALE \u2014 Up to 25% OFF</span>
-        <span className="mx-2 text-white/30">\u2502</span>
+        <span className="mx-2 text-white/30">|</span>
+        <span>MONSOON MEGA SALE — Up to 25% OFF</span>
+        <span className="mx-2 text-white/30">|</span>
         <span className="font-bold bg-white/20 px-2 py-0.5 rounded ml-1">FUTURE25</span>
       </div>
 
@@ -212,7 +212,7 @@ export default function ModitHomePage() {
               </Link>
             ))}
             <Link href="/products" className="shrink-0 px-3.5 py-1.5 text-[12px] font-semibold text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-full transition-all">
-              View All \u2192
+              View All →
             </Link>
           </div>
         </div>
@@ -263,8 +263,8 @@ export default function ModitHomePage() {
                       <p className="text-[9px] font-bold text-[var(--brand)] uppercase">{p.brand}</p>
                       <p className="text-[11px] font-medium text-[var(--text)] truncate">{p.name}</p>
                       <div className="flex items-baseline gap-1 mt-0.5">
-                        <span className="text-[14px] font-black text-[var(--text)]">\u20B9{p.price.toLocaleString()}</span>
-                        <span className="text-[10px] text-[var(--text-muted)] line-through">\u20B9{p.mrp.toLocaleString()}</span>
+                        <span className="text-[14px] font-black text-[var(--text)]">₹{p.price.toLocaleString()}</span>
+                        <span className="text-[10px] text-[var(--text-muted)] line-through">₹{p.mrp.toLocaleString()}</span>
                       </div>
                       <span className="badge-discount text-[9px] mt-0.5">{p.discount}% OFF</span>
                     </div>
@@ -303,7 +303,7 @@ export default function ModitHomePage() {
                   <motion.div key={liveIdx} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
                     className="text-[11px]">
                     <p className="text-[var(--text)] font-medium">{LIVE_ORDERS[liveIdx].name} ordered {LIVE_ORDERS[liveIdx].item}</p>
-                    <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{LIVE_ORDERS[liveIdx].city} \u2014 {LIVE_ORDERS[liveIdx].time}</p>
+                    <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{LIVE_ORDERS[liveIdx].city} — {LIVE_ORDERS[liveIdx].time}</p>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -403,7 +403,7 @@ export default function ModitHomePage() {
               { label: "Products", value: "10,000+", icon: Package, color: "#E8453C" },
               { label: "Verified Suppliers", value: "500+", icon: Users, color: "#10B981" },
               { label: "Orders Delivered", value: "2M+", icon: Truck, color: "#00B4A0" },
-              { label: "Customer Rating", value: "4.8\u2605", icon: Star, color: "#F5A623" },
+              { label: "Customer Rating", value: "4.8★", icon: Star, color: "#F5A623" },
             ].map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
                 className="card p-4 text-center">
@@ -531,3 +531,4 @@ export default function ModitHomePage() {
     </div>
   );
 }
+
