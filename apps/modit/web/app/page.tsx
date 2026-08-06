@@ -288,7 +288,7 @@ export default function Page() {
   const catProducts = getBestInCategory(activeCategory);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F5F5F5]">
       {/* ── Announcement Bar ── */}
       <div className="bg-[#0F172A] text-white text-center py-2 px-4 text-[11px] font-semibold tracking-wide">
         <span className="hidden sm:inline">Delivering across Delhi NCR</span>
