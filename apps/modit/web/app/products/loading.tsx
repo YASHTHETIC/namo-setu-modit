@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <div className="h-16 border-b border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-xl" />
+      <div className="h-16 border-b border-[var(--border)] bg-white/80 backdrop-blur-xl" />
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="h-10 w-48 animate-pulse rounded-xl bg-stone-100" />
         <div className="mt-3 h-5 w-72 animate-pulse rounded-lg bg-stone-100" />

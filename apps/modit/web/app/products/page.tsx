@@ -131,7 +131,7 @@ function ProductsContent() {
     <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6">
       {/* Breadcrumb */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-        <Link href="/" className="hover:text-[var(--cyan)]">Home</Link>
+        <Link href="/" className="hover:text-[var(--brand)]">Home</Link>
         <ChevronRight className="h-3 w-3" />
         <span className="font-medium text-[var(--text-primary)]">Products</span>
         {selectedCategory && (
@@ -159,7 +159,7 @@ function ProductsContent() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search in results..."
-                    className="h-9 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
+                    className="h-9 w-full rounded-lg border border-[var(--border)] bg-white pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                   />
                 </div>
               </div>
@@ -171,7 +171,7 @@ function ProductsContent() {
                   <button
                     onClick={() => setSelectedCategory("")}
                     className={`block w-full rounded-lg px-3 py-1.5 text-left text-xs transition-colors ${
-                      !selectedCategory ? "bg-[var(--cyan)]/10 font-semibold text-[var(--cyan)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
+                      !selectedCategory ? "bg-[var(--cyan)]/10 font-semibold text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
                     }`}
                   >
                     All Categories
@@ -182,7 +182,7 @@ function ProductsContent() {
                       onClick={() => setSelectedCategory(cat.slug)}
                       className={`block w-full rounded-lg px-3 py-1.5 text-left text-xs transition-colors ${
                         selectedCategory === cat.slug
-                          ? "bg-[var(--cyan)]/10 font-semibold text-[var(--cyan)]"
+                          ? "bg-[var(--cyan)]/10 font-semibold text-[var(--brand)]"
                           : "text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
                       }`}
                     >
@@ -203,7 +203,7 @@ function ProductsContent() {
                     type="number"
                     value={priceRange[0]}
                     onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
+                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                     placeholder="Min"
                   />
                   <span className="text-xs text-[var(--text-muted)]">to</span>
@@ -211,7 +211,7 @@ function ProductsContent() {
                     type="number"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
+                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                     placeholder="Max"
                   />
                 </div>
@@ -226,7 +226,7 @@ function ProductsContent() {
                     <button
                       key={preset.label}
                       onClick={() => setPriceRange(preset.range)}
-                      className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--text-muted)] hover:border-[var(--cyan)] hover:text-[var(--cyan)] transition-colors"
+                      className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--text-muted)] hover:border-[var(--cyan)] hover:text-[var(--brand)] transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -261,12 +261,12 @@ function ProductsContent() {
                       key={r}
                       onClick={() => setMinRating(minRating === r ? 0 : r)}
                       className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs transition-colors ${
-                        minRating === r ? "bg-[var(--cyan)]/10 text-[var(--cyan)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
+                        minRating === r ? "bg-[var(--cyan)]/10 text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
                       }`}
                     >
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((s) => (
-                          <Star key={s} className={`h-3 w-3 ${s <= r ? "fill-[var(--cyan)] text-[var(--cyan)]" : "fill-gray-200 text-gray-200"}`} />
+                          <Star key={s} className={`h-3 w-3 ${s <= r ? "fill-[var(--cyan)] text-[var(--brand)]" : "fill-gray-200 text-gray-200"}`} />
                         ))}
                       </div>
                       <span>& Up</span>
@@ -290,7 +290,7 @@ function ProductsContent() {
 
               {/* Clear */}
               {hasActiveFilters && (
-                <button onClick={clearFilters} className="text-xs font-medium text-[var(--cyan)] hover:underline">
+                <button onClick={clearFilters} className="text-xs font-medium text-[var(--brand)] hover:underline">
                   Clear all filters
                 </button>
               )}
@@ -301,11 +301,11 @@ function ProductsContent() {
         {/* Main Content */}
         <div className="flex-1">
           {/* Sort Bar */}
-          <div className="mb-4 flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3">
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-[var(--border)] bg-white px-4 py-3">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--cyan)] hover:text-[var(--cyan)] transition-colors lg:hidden"
+                className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--cyan)] hover:text-[var(--brand)] transition-colors lg:hidden"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
               </button>
@@ -321,7 +321,7 @@ function ProductsContent() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[rgba(0,240,255,0.15)]"
+                className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
               >
                 <option value="relevance">Relevance</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -333,13 +333,13 @@ function ProductsContent() {
               <div className="hidden items-center rounded-lg border border-[var(--border)] sm:flex">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-1.5 ${viewMode === "grid" ? "bg-[var(--cyan)]/10 text-[var(--cyan)]" : "text-[var(--text-muted)]"}`}
+                  className={`p-1.5 ${viewMode === "grid" ? "bg-[var(--cyan)]/10 text-[var(--brand)]" : "text-[var(--text-muted)]"}`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-1.5 ${viewMode === "list" ? "bg-[var(--cyan)]/10 text-[var(--cyan)]" : "text-[var(--text-muted)]"}`}
+                  className={`p-1.5 ${viewMode === "list" ? "bg-[var(--cyan)]/10 text-[var(--brand)]" : "text-[var(--text-muted)]"}`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -351,19 +351,19 @@ function ProductsContent() {
           {hasActiveFilters && (
             <div className="mb-4 flex flex-wrap gap-2">
               {selectedCategory && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--cyan)]/10 px-3 py-1 text-xs font-medium text-[var(--cyan)]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--cyan)]/10 px-3 py-1 text-xs font-medium text-[var(--brand)]">
                   {categories.find((c) => c.slug === selectedCategory)?.name}
                   <button onClick={() => setSelectedCategory("")}><X className="h-3 w-3" /></button>
                 </span>
               )}
               {selectedBrands.map((b) => (
-                <span key={b} className="inline-flex items-center gap-1 rounded-full bg-[var(--cyan)]/10 px-3 py-1 text-xs font-medium text-[var(--cyan)]">
+                <span key={b} className="inline-flex items-center gap-1 rounded-full bg-[var(--cyan)]/10 px-3 py-1 text-xs font-medium text-[var(--brand)]">
                   {b}
                   <button onClick={() => toggleBrand(b)}><X className="h-3 w-3" /></button>
                 </span>
               ))}
               {inStockOnly && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(52,211,153,0.1)] px-3 py-1 text-xs font-medium text-[var(--green)]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success-light)] px-3 py-1 text-xs font-medium text-[var(--success)]">
                   In Stock
                   <button onClick={() => setInStockOnly(false)}><X className="h-3 w-3" /></button>
                 </span>
@@ -413,9 +413,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <Link href={`/products/${product.id}`}>
-      <div className="group rounded-xl border border-[var(--border)] bg-[var(--bg-card)] transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden">
+      <div className="group rounded-xl border border-[var(--border)] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden">
         {/* Image */}
-        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#0A0A20] via-[#0D0D25] to-[#100820]">
+        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[var(--brand-50)] via-[var(--brand-100)] to-[var(--brand-50)]">
           {product.images[0] ? (
             <img
               src={product.images[0]}
@@ -424,16 +424,16 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Package className="h-16 w-16 text-[var(--cyan)]/20" />
+              <Package className="h-16 w-16 text-[var(--brand)]/20" />
             </div>
           )}
           {product.discount > 0 && (
-            <span className="absolute top-2 left-2 rounded-lg bg-[rgba(220,38,38,0.9)] px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute top-2 left-2 rounded-lg bg-[#DC2626] px-2 py-0.5 text-[10px] font-bold text-white">
               {product.discount}% OFF
             </span>
           )}
           {product.seller.isVerified && (
-            <span className="absolute top-2 right-2 rounded-lg bg-[rgba(52,211,153,0.2)] px-2 py-0.5 text-[10px] font-bold text-[var(--green)]">
+            <span className="absolute top-2 right-2 rounded-lg bg-[var(--success-light)] px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
               <Shield className="mr-0.5 inline h-2.5 w-2.5" /> Verified
             </span>
           )}
@@ -442,16 +442,16 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Info */}
         <div className="p-4">
           {product.brand && (
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--cyan)]">{product.brand}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--brand)]">{product.brand}</p>
           )}
-          <h3 className="mt-1 text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight group-hover:text-[var(--cyan)] transition-colors">
+          <h3 className="mt-1 text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight group-hover:text-[var(--brand)] transition-colors">
             {product.name}
           </h3>
 
           <div className="mt-2 flex items-center gap-2">
             <div className="flex items-center gap-0.5 rounded bg-[var(--cyan)]/10 px-1.5 py-0.5">
-              <span className="text-xs font-bold text-[var(--cyan)]">{product.rating}</span>
-              <Star className="h-2.5 w-2.5 fill-[var(--cyan)] text-[var(--cyan)]" />
+              <span className="text-xs font-bold text-[var(--brand)]">{product.rating}</span>
+              <Star className="h-2.5 w-2.5 fill-[var(--cyan)] text-[var(--brand)]" />
             </div>
             <span className="text-[10px] text-[var(--text-muted)]">({product.reviewCount.toLocaleString()})</span>
           </div>
@@ -515,18 +515,18 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
   return (
     <Link href={`/products/${product.id}`}>
-      <div className="group flex gap-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="group flex gap-4 rounded-xl border border-[var(--border)] bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg">
         {/* Image */}
-        <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-[#0A0A20] via-[#0D0D25] to-[#100820]">
+        <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] via-[var(--brand-100)] to-[var(--brand-50)]">
           {product.images[0] ? (
             <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Package className="h-12 w-12 text-[var(--cyan)]/20" />
+              <Package className="h-12 w-12 text-[var(--brand)]/20" />
             </div>
           )}
           {product.discount > 0 && (
-            <span className="absolute top-1 left-1 rounded bg-[rgba(220,38,38,0.9)] px-1.5 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute top-1 left-1 rounded bg-[#DC2626] px-1.5 py-0.5 text-[10px] font-bold text-white">
               {product.discount}% OFF
             </span>
           )}
@@ -536,14 +536,14 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <div>
-              {product.brand && <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--cyan)]">{product.brand}</p>}
-              <h3 className="mt-0.5 text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--cyan)] transition-colors">
+              {product.brand && <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--brand)]">{product.brand}</p>}
+              <h3 className="mt-0.5 text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--brand)] transition-colors">
                 {product.name}
               </h3>
             </div>
             <div className="flex items-center gap-1 rounded bg-[var(--cyan)]/10 px-1.5 py-0.5">
-              <span className="text-xs font-bold text-[var(--cyan)]">{product.rating}</span>
-              <Star className="h-2.5 w-2.5 fill-[var(--cyan)] text-[var(--cyan)]" />
+              <span className="text-xs font-bold text-[var(--brand)]">{product.rating}</span>
+              <Star className="h-2.5 w-2.5 fill-[var(--cyan)] text-[var(--brand)]" />
             </div>
           </div>
 
