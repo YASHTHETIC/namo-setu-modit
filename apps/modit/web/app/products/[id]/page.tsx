@@ -200,7 +200,7 @@ export default function ProductDetailPage({
                   placeholder="Enter pincode"
                   value={pincode}
                   onChange={(e) => { setPincode(e.target.value.replace(/\D/g, "").slice(0, 6)); setPincodeChecked(false); }}
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-100"
+                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                 />
               </div>
               <Button variant="secondary" onClick={handleCheckDelivery} disabled={pincode.length < 6}>
@@ -390,7 +390,7 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="h-28 overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-amber-50">
+                <div className="h-28 overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
                   <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
                 </div>
                 <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-1">{p.name}</p>
@@ -413,7 +413,7 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-amber-50">
+                <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
                   <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
                 </div>
                 <p className="mt-2 text-[10px] font-semibold text-[var(--brand)]">{p.brand}</p>

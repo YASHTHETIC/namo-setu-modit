@@ -155,7 +155,7 @@ export default function CartPage() {
                     </button>
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-red-500 hover:bg-red-50"
+                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-red-500 hover:bg-[var(--danger-light)]"
                     >
                       <Trash2 className="h-3 w-3" /> Remove
                     </button>

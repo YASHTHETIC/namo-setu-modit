@@ -159,7 +159,7 @@ function ProductsContent() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search in results..."
-                    className="h-9 w-full rounded-lg border border-[var(--border)] bg-white pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="h-9 w-full rounded-lg border border-[var(--border)] bg-white pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                   />
                 </div>
               </div>
@@ -203,7 +203,7 @@ function ProductsContent() {
                     type="number"
                     value={priceRange[0]}
                     onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                     placeholder="Min"
                   />
                   <span className="text-xs text-[var(--text-muted)]">to</span>
@@ -211,7 +211,7 @@ function ProductsContent() {
                     type="number"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="h-8 w-full rounded-lg border border-[var(--border)] bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
                     placeholder="Max"
                   />
                 </div>
@@ -321,7 +321,7 @@ function ProductsContent() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-orange-100"
+                className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
               >
                 <option value="relevance">Relevance</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -363,7 +363,7 @@ function ProductsContent() {
                 </span>
               ))}
               {inStockOnly && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success-light)] px-3 py-1 text-xs font-medium text-[var(--success)]">
                   In Stock
                   <button onClick={() => setInStockOnly(false)}><X className="h-3 w-3" /></button>
                 </span>
@@ -415,7 +415,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
     <Link href={`/products/${product.id}`}>
       <div className="group rounded-xl border border-[var(--border)] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden">
         {/* Image */}
-        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
+        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[var(--brand-50)] via-[var(--brand-100)] to-[var(--brand-50)]">
           {product.images[0] ? (
             <img
               src={product.images[0]}
@@ -428,12 +428,12 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             </div>
           )}
           {product.discount > 0 && (
-            <span className="absolute top-2 left-2 rounded-lg bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute top-2 left-2 rounded-lg bg-[#DC2626] px-2 py-0.5 text-[10px] font-bold text-white">
               {product.discount}% OFF
             </span>
           )}
           {product.seller.isVerified && (
-            <span className="absolute top-2 right-2 rounded-lg bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
+            <span className="absolute top-2 right-2 rounded-lg bg-[var(--success-light)] px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
               <Shield className="mr-0.5 inline h-2.5 w-2.5" /> Verified
             </span>
           )}
@@ -517,7 +517,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
     <Link href={`/products/${product.id}`}>
       <div className="group flex gap-4 rounded-xl border border-[var(--border)] bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg">
         {/* Image */}
-        <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100">
+        <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] via-[var(--brand-100)] to-[var(--brand-50)]">
           {product.images[0] ? (
             <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
           ) : (
@@ -526,7 +526,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             </div>
           )}
           {product.discount > 0 && (
-            <span className="absolute top-1 left-1 rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute top-1 left-1 rounded bg-[#DC2626] px-1.5 py-0.5 text-[10px] font-bold text-white">
               {product.discount}% OFF
             </span>
           )}
