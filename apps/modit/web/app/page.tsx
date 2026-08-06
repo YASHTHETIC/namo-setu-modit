@@ -1,14 +1,17 @@
 ﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, ShoppingCart, User, ChevronRight, ChevronLeft, Star, Zap, Shield, Truck,
   ArrowRight, Package, BarChart3, Brain, Layers, Sparkles, MapPin, Clock,
   Heart, GitCompare, Bell, Eye, Award, TrendingUp, CheckCircle, Users,
-  Building2, Timer, Flame
+  Building2, Timer, Flame, X
 } from "lucide-react";
+import { useCartStore } from "@/lib/cart-store";
+import { searchProducts, products as allProducts, type Product as ProductType } from "@/lib/product-data";
 
 const PRODUCTS = [
   { id: "cement-1", name: "UltraTech Cement OPC 43 Grade 50kg", brand: "UltraTech", price: 370, mrp: 490, discount: 24, rating: 4.7, reviews: 2340, img: "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge: "Bestseller", category: "Cement", supplier: "BuildMart India", delivery: "Tomorrow" },
@@ -64,20 +67,45 @@ const FAQS = [
 ];
 
 function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
+  const addItem = useCartStore((s) => s.addItem);
+  const router = useRouter();
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    const fullProduct = allProducts.find(ap => ap.id === p.id);
+    if (fullProduct) {
+      addItem(fullProduct);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1500);
+    }
+  };
+
+  const handleBuyNow = () => {
+    const fullProduct = allProducts.find(ap => ap.id === p.id);
+    if (fullProduct) {
+      addItem(fullProduct);
+      router.push("/cart");
+    }
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card group">
       <div className="product-img">
-        <img src={p.img} alt={p.name} loading="lazy" />
+        <Link href={`/products/${p.id}`}>
+          <img src={p.img} alt={p.name} loading="lazy" />
+        </Link>
         <div className="product-actions">
-          <button><Heart className="h-4 w-4" /></button>
-          <button><GitCompare className="h-4 w-4" /></button>
-          <button><Eye className="h-4 w-4" /></button>
+          <button onClick={() => {}} title="Add to Wishlist"><Heart className="h-4 w-4" /></button>
+          <button onClick={() => {}} title="Compare"><GitCompare className="h-4 w-4" /></button>
+          <Link href={`/products/${p.id}`} title="Quick View"><Eye className="h-4 w-4" /></Link>
         </div>
         {p.discount >= 20 && <span className="badge-discount absolute top-2 left-2">{p.discount}% off</span>}
       </div>
       <div className="product-info">
         <p className="product-brand">{p.brand}</p>
-        <h3 className="product-name">{p.name}</h3>
+        <Link href={`/products/${p.id}`}>
+          <h3 className="product-name hover:text-[var(--brand)] transition-colors">{p.name}</h3>
+        </Link>
         <div className="product-rating">
           <span className="inline-flex items-center gap-1 bg-[#10B981] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
             {p.rating} <Star className="h-2.5 w-2.5 fill-white" />
@@ -100,8 +128,10 @@ function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
           <span className="badge-verified ml-1"><CheckCircle className="h-2.5 w-2.5" /> Verified</span>
         </p>
         <div className="flex gap-2 mt-3">
-          <button className="btn-gold flex-1 text-[11px] py-1.5 px-3">Add to Cart</button>
-          <button className="btn-brand flex-1 text-[11px] py-1.5 px-3">Buy Now</button>
+          <button onClick={handleAddToCart} className={`btn-gold flex-1 text-[11px] py-1.5 px-3 transition-all ${added ? '!bg-[#10B981] !text-white' : ''}`}>
+            {added ? '✓ Added' : 'Add to Cart'}
+          </button>
+          <button onClick={handleBuyNow} className="btn-brand flex-1 text-[11px] py-1.5 px-3">Buy Now</button>
         </div>
       </div>
     </div>
@@ -113,6 +143,32 @@ export default function ModitHomePage() {
   const [liveIdx, setLiveIdx] = useState(0);
   const [flashTimer, setFlashTimer] = useState({ h: 5, m: 23, s: 47 });
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<ProductType[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const cartItems = useCartStore((s) => s.items);
+  const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+
+  useEffect(() => {
+    if (searchQuery.length >= 2) {
+      const results = searchProducts(searchQuery).slice(0, 6);
+      setSearchResults(results);
+      setShowSearch(results.length > 0);
+    } else {
+      setSearchResults([]);
+      setShowSearch(false);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowSearch(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   useEffect(() => {
     const t1 = setInterval(() => setSlide(s => (s + 1) % HERO_SLIDES.length), 6000);
@@ -167,14 +223,41 @@ export default function ModitHomePage() {
           </button>
 
           {/* Search */}
-          <div className="flex-1 max-w-2xl">
+          <div className="flex-1 max-w-2xl" ref={searchRef}>
             <div className="relative flex items-center">
-              <input type="text" placeholder="Search cement, steel, tiles, paint, electrical..."
+              <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
+                placeholder="Search cement, steel, tiles, paint, electrical..."
                 className="w-full h-[42px] bg-[var(--bg)] border border-[var(--border)] rounded-full pl-5 pr-14 text-[13px] text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 transition-all" />
-              <button className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
+              <button onClick={() => { if (searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
+                className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
                 <Search className="h-4 w-4 text-white" />
               </button>
             </div>
+            <AnimatePresence>
+              {showSearch && searchResults.length > 0 && (
+                <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                  className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-[var(--border)] rounded-xl shadow-xl max-h-[400px] overflow-y-auto">
+                  {searchResults.map(p => (
+                    <Link key={p.id} href={`/products/${p.id}`} onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-[var(--border-light)] last:border-0">
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0">
+                        <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-medium text-[var(--text)] truncate">{p.name}</p>
+                        <p className="text-[10px] text-[var(--text-muted)]">{p.category}</p>
+                      </div>
+                      <span className="text-[13px] font-bold text-[var(--text)]">₹{p.price.toLocaleString()}</span>
+                    </Link>
+                  ))}
+                  <Link href={`/products?q=${encodeURIComponent(searchQuery)}`} onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                    className="flex items-center justify-center px-4 py-2.5 text-[12px] font-bold text-[var(--brand)] hover:bg-[var(--brand-light)] transition-colors">
+                    View all results for &ldquo;{searchQuery}&rdquo; →
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Right Actions */}
@@ -188,7 +271,9 @@ export default function ModitHomePage() {
             <Link href="/cart" className="relative flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
               <div className="relative">
                 <ShoppingCart className="h-4.5 w-4.5" />
-                <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-[var(--brand)] text-[9px] font-black text-white flex items-center justify-center px-1">3</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-[var(--brand)] text-[9px] font-black text-white flex items-center justify-center px-1">{cartCount > 99 ? "99+" : cartCount}</span>
+                )}
               </div>
               Cart
             </Link>
@@ -256,12 +341,14 @@ export default function ModitHomePage() {
                   <motion.div key={`hero-${i}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
                     className="bg-white rounded-lg border border-[var(--border)] p-2.5 flex gap-3 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="w-16 h-16 rounded-lg bg-gray-50 overflow-hidden shrink-0">
+                    <Link href={`/products/${p.id}`} className="w-16 h-16 rounded-lg bg-gray-50 overflow-hidden shrink-0">
                       <img src={p.img} alt={p.name} className="w-full h-full object-cover" />
-                    </div>
+                    </Link>
                     <div className="flex-1 min-w-0">
                       <p className="text-[9px] font-bold text-[var(--brand)] uppercase">{p.brand}</p>
-                      <p className="text-[11px] font-medium text-[var(--text)] truncate">{p.name}</p>
+                      <Link href={`/products/${p.id}`}>
+                        <p className="text-[11px] font-medium text-[var(--text)] truncate hover:text-[var(--brand)] transition-colors">{p.name}</p>
+                      </Link>
                       <div className="flex items-baseline gap-1 mt-0.5">
                         <span className="text-[14px] font-black text-[var(--text)]">₹{p.price.toLocaleString()}</span>
                         <span className="text-[10px] text-[var(--text-muted)] line-through">₹{p.mrp.toLocaleString()}</span>
@@ -277,9 +364,15 @@ export default function ModitHomePage() {
               <div className="card p-3">
                 <h3 className="text-[12px] font-bold text-[var(--text)] mb-2">Quick Links</h3>
                 <div className="space-y-0.5">
-                  {["Get Best Price", "Track Order", "Find Supplier", "Bulk Order", "AI Assistant"].map(item => (
-                    <Link key={item} href="#" className="flex items-center justify-between px-2 py-1.5 text-[11px] text-[var(--text-secondary)] hover:text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-md transition-all">
-                      {item} <ChevronRight className="h-3 w-3 text-gray-300" />
+                  {[
+                    { name: "Get Best Price", href: "/rfq" },
+                    { name: "Track Order", href: "/orders" },
+                    { name: "Find Supplier", href: "/suppliers" },
+                    { name: "Bulk Order", href: "/rfq" },
+                    { name: "AI Assistant", href: "/dashboard" },
+                  ].map(item => (
+                    <Link key={item.name} href={item.href} className="flex items-center justify-between px-2 py-1.5 text-[11px] text-[var(--text-secondary)] hover:text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-md transition-all">
+                      {item.name} <ChevronRight className="h-3 w-3 text-gray-300" />
                     </Link>
                   ))}
                 </div>
@@ -321,7 +414,7 @@ export default function ModitHomePage() {
             {CATEGORIES.map((cat, i) => (
               <motion.div key={cat.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 + i * 0.03 }}>
                 <Link href={`/products?category=${cat.slug}`}
-                  className="flex flex-col items-center bg-white rounded-xl border border-[var(--border)] p-3 hover:shadow-md hover:border-[var(--brand-200)] transition-all group">
+                  className="flex flex-col items-center bg-white rounded-xl border border-[var(--border)] p-3 hover:shadow-md hover:border-[var(--brand)] transition-all group">
                   <span className="text-2xl mb-1.5 group-hover:scale-110 transition-transform">{cat.icon}</span>
                   <span className="text-[11px] font-semibold text-[var(--text)] text-center group-hover:text-[var(--brand)] transition-colors">{cat.name}</span>
                   <span className="text-[9px] text-[var(--text-muted)] mt-0.5">{cat.count}</span>
@@ -512,7 +605,7 @@ export default function ModitHomePage() {
                 <h4 className="text-[12px] font-bold text-white/60 mb-2.5 uppercase tracking-wider">{col.title}</h4>
                 <div className="space-y-1.5">
                   {col.items.map(item => (
-                    <Link key={item} href="#" className="block text-[11px] text-white/35 hover:text-white/70 transition-colors">{item}</Link>
+                    <Link key={item} href={col.title === "Products" ? `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}` : "#"} className="block text-[11px] text-white/35 hover:text-white/70 transition-colors">{item}</Link>
                   ))}
                 </div>
               </div>
@@ -523,7 +616,7 @@ export default function ModitHomePage() {
             <div className="flex gap-4 text-[10px] text-white/25">
               <Link href="#" className="hover:text-white/50 transition-colors">Privacy</Link>
               <Link href="#" className="hover:text-white/50 transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-white/50 transition-colors">Sitemap</Link>
+              <Link href="/products" className="hover:text-white/50 transition-colors">Sitemap</Link>
             </div>
           </div>
         </div>

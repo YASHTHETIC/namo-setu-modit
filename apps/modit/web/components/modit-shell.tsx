@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, ShoppingCart, MapPin, ChevronDown, Menu, X, Bell, User,
@@ -13,6 +13,7 @@ import { searchProducts, categories, type Product } from "@/lib/product-data";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,9 +84,11 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="flex-1 max-w-2xl" ref={searchRef}>
             <div className="relative flex items-center">
               <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
                 placeholder="Search cement, steel, tiles, paint..."
                 className="w-full h-[42px] bg-[var(--bg)] border border-[var(--border)] rounded-full pl-5 pr-14 text-[13px] text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 transition-all" />
-              <button className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
+              <button onClick={() => { if (searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
+                className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
                 <Search className="h-4 w-4 text-white" />
               </button>
             </div>
@@ -106,6 +109,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       <span className="text-[13px] font-bold text-[var(--text)]">₹{p.price.toLocaleString()}</span>
                     </Link>
                   ))}
+                  <Link href={`/products?q=${encodeURIComponent(searchQuery)}`} onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                    className="flex items-center justify-center px-4 py-2.5 text-[12px] font-bold text-[var(--brand)] hover:bg-[var(--brand-light)] transition-colors">
+                    View all results for &ldquo;{searchQuery}&rdquo; →
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -158,7 +165,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 )}
               </AnimatePresence>
             </div>
-            <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="lg:hidden p-2 text-white/80 hover:text-white">
+            <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--brand)]">
               {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
