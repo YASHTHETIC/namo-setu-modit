@@ -109,13 +109,13 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--bg)]">
       {/* Top Bar */}
-      <div className="bg-[var(--bg-dark)] text-xs text-white/60">
+      <div className="bg-[#0F172A] text-xs text-white/70">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-1.5 sm:px-6">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Truck className="h-3 w-3 text-[var(--brand)]" /> Delivering across Delhi NCR
             </span>
-            <span className="hidden sm:inline text-white/10">|</span>
+            <span className="hidden sm:inline text-white/20">|</span>
             <span className="hidden sm:inline">Free delivery on orders above ₹5,000</span>
           </div>
           <div className="flex items-center gap-4">
@@ -126,15 +126,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 border-b border-white/5">
+      <header className="sticky top-0 z-50 border-b border-gray-100">
         <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-2.5 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br bg-[var(--brand)] text-sm font-bold text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br bg-[var(--brand)] text-sm font-bold text-gray-900">
               M
             </div>
             <div className="hidden sm:block">
-              <span className="text-lg font-extrabold tracking-tight text-white">MODIT</span>
+              <span className="text-lg font-extrabold tracking-tight text-[#0F172A]">MODIT</span>
               <span className="ml-1.5 hidden text-[10px] font-medium uppercase tracking-wider text-[var(--brand)] lg:inline">
                 Construction Procurement
               </span>
@@ -142,25 +142,25 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </Link>
 
           {/* Location */}
-          <button className="hidden items-center gap-1 rounded-xl border border-[var(--border)] px-3 py-2 text-sm hover:border-[var(--brand-200)] transition-colors lg:flex glass">
+          <button className="hidden items-center gap-1 rounded-xl border border-gray-200 px-3 py-2 text-sm hover:border-[var(--brand-200)] transition-colors lg:flex">
             <MapPin className="h-4 w-4 text-[var(--brand)]" />
             <div className="text-left">
-              <p className="text-[10px] text-white/40">Deliver to</p>
-              <p className="text-xs font-semibold text-white">New Delhi 110001</p>
+              <p className="text-[10px] text-gray-400">Deliver to</p>
+              <p className="text-xs font-semibold text-gray-900">New Delhi 110001</p>
             </div>
           </button>
 
           {/* Search Bar */}
           <div ref={searchRef} className="relative flex-1">
             <form onSubmit={handleSearchSubmit} className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length >= 2 && setShowSearch(true)}
                 placeholder="Search cement, steel, tiles, paint..."
-                className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-darker)] pl-10 pr-4 text-sm transition-colors placeholder:text-white/40 focus:border-[var(--brand)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)] text-white"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm transition-colors placeholder:text-gray-400 focus:border-[var(--brand)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-100 text-gray-900"
               />
             </form>
 
@@ -171,7 +171,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
+                  className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-gray-200 bg-white/95 backdrop-blur shadow-xl"
                 >
                   <div className="p-2">
                     {searchResults.map((p) => (
@@ -179,20 +179,20 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         key={p.id}
                         href={`/products/${p.id}`}
                         onClick={() => { setShowSearch(false); setSearchQuery(""); }}
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[var(--bg-darker)] transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-orange-50 transition-colors"
                       >
-                        <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)] flex items-center justify-center border border-[var(--border)]">
+                        <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)] flex items-center justify-center border border-gray-200">
                           <Package className="h-5 w-5 text-[var(--brand)]/40" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">{p.name}</p>
-                          <p className="text-xs text-white/40">{p.category} · {p.brand || "No brand"}</p>
+                          <p className="text-sm font-medium text-gray-900 truncate">{p.name}</p>
+                          <p className="text-xs text-gray-400">{p.category} · {p.brand || "No brand"}</p>
                         </div>
                         <span className="text-sm font-bold text-[var(--brand)]">₹{p.price.toLocaleString()}</span>
                       </Link>
                     ))}
                   </div>
-                  <div className="border-t border-[var(--border-subtle)] px-4 py-2">
+                  <div className="border-t border-gray-100 px-4 py-2">
                     <button
                       onClick={() => { handleSearchSubmit({ preventDefault: () => {} } as React.FormEvent); }}
                       className="text-xs font-medium text-[var(--brand)] hover:underline"
@@ -208,12 +208,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           {/* Cart */}
           <Link
             href="/cart"
-            className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)] transition-colors"
+            className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-orange-50 transition-colors"
           >
             <div className="relative">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white">
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-gray-900">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -225,7 +225,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div ref={userMenuRef} className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)] transition-colors"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-orange-50 transition-colors"
             >
               <User className="h-5 w-5" />
               <span className="hidden lg:inline">Sign In</span>
@@ -238,27 +238,27 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-[var(--border)] glass-strong shadow-xl"
+                  className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-gray-200 bg-white/95 backdrop-blur shadow-xl"
                 >
                   <div className="p-2">
-                    <Link href="/auth" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[var(--bg-darker)]">
+                    <Link href="/auth" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-900 hover:bg-orange-50">
                       <LogOut className="h-4 w-4" /> Sign In
                     </Link>
-                    <Link href="/auth/register" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
+                    <Link href="/auth/register" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-orange-50">
                       <User className="h-4 w-4" /> Create Account
                     </Link>
-                    <div className="my-1 border-t border-[var(--border-subtle)]" />
-                    <Link href="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
+                    <div className="my-1 border-t border-gray-100" />
+                    <Link href="/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-orange-50">
                       <LayoutDashboard className="h-4 w-4" /> Dashboard
                     </Link>
-                    <Link href="/orders" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
+                    <Link href="/orders" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-orange-50">
                       <Package className="h-4 w-4" /> My Orders
                     </Link>
-                    <Link href="/payment/history" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
+                    <Link href="/payment/history" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-orange-50">
                       <FileText className="h-4 w-4" /> Payments
                     </Link>
-                    <div className="my-1 border-t border-[var(--border-subtle)]" />
-                    <Link href="/admin" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">
+                    <div className="my-1 border-t border-gray-100" />
+                    <Link href="/admin" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-orange-50">
                       <Settings className="h-4 w-4" /> Admin
                     </Link>
                   </div>
@@ -269,7 +269,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Category Nav Bar */}
-        <div className="border-t border-white/5 bg-[#1E293B]">
+        <div className="border-t border-gray-100 bg-gray-50/50">
           <div className="mx-auto flex max-w-[1400px] items-center gap-1 overflow-x-auto px-4 py-1.5 sm:px-6 scrollbar-hide">
             {/* Mega Menu Trigger */}
             <div ref={megaMenuRef} className="relative">
@@ -290,15 +290,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     onMouseLeave={() => setShowMegaMenu(false)}
-                    className="absolute left-0 top-full z-50 mt-1 w-[700px] rounded-xl border border-[var(--border)] bg-white shadow-xl"
+                    className="absolute left-0 top-full z-50 mt-1 w-[700px] rounded-xl border border-gray-200 bg-white shadow-xl"
                   >
-                    <div className="grid grid-cols-3 gap-0 divide-x divide-[var(--border)] p-4">
+                    <div className="grid grid-cols-3 gap-0 divide-x divide-gray-100 p-4">
                       {categories.map((cat) => (
                         <div key={cat.slug} className="px-4 py-2">
                           <Link
                             href={`/products?category=${cat.slug}`}
                             onClick={() => setShowMegaMenu(false)}
-                            className="text-sm font-semibold text-white hover:text-[var(--brand)] transition-colors"
+                            className="text-sm font-semibold text-gray-900 hover:text-[var(--brand)] transition-colors"
                           >
                             {cat.name}
                           </Link>
@@ -308,7 +308,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                                 key={sub.slug}
                                 href={`/products?category=${cat.slug}&sub=${sub.slug}`}
                                 onClick={() => setShowMegaMenu(false)}
-                                className="block text-xs text-white/40 hover:text-[var(--brand)] transition-colors"
+                                className="block text-xs text-gray-500 hover:text-[var(--brand)] transition-colors"
                               >
                                 {sub.name}
                               </Link>
@@ -357,7 +357,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-80 overflow-y-auto bg-white shadow-xl border-l border-[var(--border)]"
+              className="h-full w-80 overflow-y-auto bg-white shadow-xl border-l border-gray-200"
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
@@ -385,7 +385,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                           <Link
                             key={sub.slug}
                             href={`/products?category=${mobileCategory}&sub=${sub.slug}`}
-                            className="block rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]"
+                            className="block rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-orange-50"
                           >
                             {sub.name}
                           </Link>
@@ -398,16 +398,16 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       <button
                         key={cat.slug}
                         onClick={() => setMobileCategory(cat.slug)}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-white hover:bg-[var(--bg-darker)]"
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-orange-50"
                       >
                         {cat.name}
                         <ChevronDown className="h-4 w-4 -rotate-90" />
                       </button>
                     ))}
-                    <div className="my-2 border-t border-[var(--border-subtle)]" />
-                    <Link href="/dashboard" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">Dashboard</Link>
-                    <Link href="/orders" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-darker)]">Orders</Link>
-                    <Link href="/auth" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-[var(--bg-darker)]">Sign In</Link>
+                    <div className="my-2 border-t border-gray-100" />
+                    <Link href="/dashboard" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-orange-50">Dashboard</Link>
+                    <Link href="/orders" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-orange-50">Orders</Link>
+                    <Link href="/auth" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-orange-50">Sign In</Link>
                   </div>
                 )}
               </div>
@@ -420,36 +420,36 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-white/5 bg-[var(--bg-darker)]">
+      <footer className="mt-12 border-t border-gray-100 bg-gray-50">
         <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             <div>
               <h4 className="mb-3 text-sm font-bold text-white">Products</h4>
               <div className="space-y-2">
-                <Link href="/products?category=cement" className="block text-xs text-white/40 hover:text-[var(--brand)]">Cement</Link>
-                <Link href="/products?category=steel-tmt" className="block text-xs text-white/40 hover:text-[var(--brand)]">Steel & TMT</Link>
-                <Link href="/products?category=tiles-ceramics" className="block text-xs text-white/40 hover:text-[var(--brand)]">Tiles</Link>
-                <Link href="/products?category=paint" className="block text-xs text-white/40 hover:text-[var(--brand)]">Paint</Link>
-                <Link href="/products?category=electrical" className="block text-xs text-white/40 hover:text-[var(--brand)]">Electrical</Link>
-                <Link href="/products?category=plumbing" className="block text-xs text-white/40 hover:text-[var(--brand)]">Plumbing</Link>
+                <Link href="/products?category=cement" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Cement</Link>
+                <Link href="/products?category=steel-tmt" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Steel & TMT</Link>
+                <Link href="/products?category=tiles-ceramics" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Tiles</Link>
+                <Link href="/products?category=paint" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Paint</Link>
+                <Link href="/products?category=electrical" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Electrical</Link>
+                <Link href="/products?category=plumbing" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Plumbing</Link>
               </div>
             </div>
             <div>
               <h4 className="mb-3 text-sm font-bold text-white">Services</h4>
               <div className="space-y-2">
-                <Link href="/rfq" className="block text-xs text-white/40 hover:text-[var(--brand)]">Request Quote</Link>
-                <Link href="/orders" className="block text-xs text-white/40 hover:text-[var(--brand)]">Track Order</Link>
-                <Link href="/inventory" className="block text-xs text-white/40 hover:text-[var(--brand)]">Check Stock</Link>
-                <Link href="/suppliers" className="block text-xs text-white/40 hover:text-[var(--brand)]">Find Suppliers</Link>
+                <Link href="/rfq" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Request Quote</Link>
+                <Link href="/orders" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Track Order</Link>
+                <Link href="/inventory" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Check Stock</Link>
+                <Link href="/suppliers" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Find Suppliers</Link>
               </div>
             </div>
             <div>
               <h4 className="mb-3 text-sm font-bold text-white">Company</h4>
               <div className="space-y-2">
-                <Link href="/analytics" className="block text-xs text-white/40 hover:text-[var(--brand)]">Analytics</Link>
-                <Link href="/admin" className="block text-xs text-white/40 hover:text-[var(--brand)]">Admin</Link>
-                <Link href="/dashboard/profile" className="block text-xs text-white/40 hover:text-[var(--brand)]">Profile</Link>
-                <Link href="/auth" className="block text-xs text-white/40 hover:text-[var(--brand)]">Sign In</Link>
+                <Link href="/analytics" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Analytics</Link>
+                <Link href="/admin" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Admin</Link>
+                <Link href="/dashboard/profile" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Profile</Link>
+                <Link href="/auth" className="block text-xs text-gray-500 hover:text-[var(--brand)]">Sign In</Link>
               </div>
             </div>
             <div>
@@ -461,7 +461,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-white/40">
+          <div className="mt-8 border-t border-gray-100 pt-6 text-center text-xs text-white/40">
             2026 MODIT. All rights reserved. | Delhi NCR&apos;s trusted building material procurement platform.
           </div>
         </div>
