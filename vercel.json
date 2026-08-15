@@ -1,10 +1,9 @@
 {
-  "installCommand": "npm install",
+  "installCommand": "npm install --no-package-lock",
   "buildCommand": "npm run build --workspace=@modit/web",
   "outputDirectory": "apps/modit/web/.next",
   "regions": ["iad1"],
   "github": {
     "silent": true
-  },
-  "ignoreCommand": "npx -y turbo-ignore --filter=@modit/web"
+  }
 }

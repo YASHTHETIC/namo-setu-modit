@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MODIT — Cloud Teal Commerce for Building Materials",
+  title: "MODIT — Premium Building Materials Marketplace",
   description: "A premium B2B marketplace for construction materials, procurement workflows, supplier sourcing, and enterprise checkout.",
 };
 

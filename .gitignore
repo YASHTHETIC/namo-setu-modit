@@ -64,5 +64,11 @@ storage/
 start-backend.py
 start-modit.py
 
+# Build artifacts
+namo_setu_modit_backend.egg-info/
+
+# Other repos
+portfolio-check/
+
 .vercel
 .env*

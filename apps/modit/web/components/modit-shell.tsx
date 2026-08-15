@@ -88,26 +88,20 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="app-shell min-h-screen">
-      <div className="border-b border-[var(--border)] bg-[var(--brand)] text-white">
-        <div className="market-container flex items-center justify-between gap-4 py-2 text-xs font-medium">
-          <p className="truncate">Enterprise procurement for construction materials, bulk orders, and supplier sourcing.</p>
-          <div className="hidden items-center gap-3 md:flex">
-            <span className="rounded-full bg-white/10 px-3 py-1">Verified suppliers</span>
-            <span className="rounded-full bg-white/10 px-3 py-1">GST invoices</span>
-            <span className="rounded-full bg-white/10 px-3 py-1">Bulk pricing</span>
-          </div>
-        </div>
+      {/* Announcement bar */}
+      <div className="announce-bar text-white text-center py-2 text-xs font-medium">
+        Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-amber-200/60" style={{ background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E7 30%, #FFFDF5 60%, #FFFCF0 100%)' }}>
         <div className="market-container flex min-h-[76px] items-center gap-3 py-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--brand)] text-white shadow-[var(--shadow-brand-soft)]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">
               <span className="text-base font-black">M</span>
             </div>
             <div className="hidden md:block">
               <div className="text-[22px] font-black tracking-tight text-[var(--text)]">MODIT</div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--brand)]">Cloud Teal Commerce</div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--brand)]">Premium Building Materials</div>
             </div>
           </Link>
 
@@ -230,7 +224,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <button
                   type="button"
                   onClick={submitSearch}
-                  className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-[var(--cta)] text-white transition-colors hover:bg-[var(--cta-hover)]"
+                  className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cta)] to-[var(--cta-hover)] text-white transition-all hover:shadow-[0_4px_12px_rgba(194,65,12,0.3)]"
                   aria-label="Search"
                 >
                   <Search className="h-4.5 w-4.5" />
@@ -288,7 +282,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <Link href="/notifications" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Notifications">
               <Bell className="h-5 w-5" />
             </Link>
-            <Link href="/products" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Wishlist">
+            <Link href="/wishlist" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Wishlist">
               <Heart className="h-5 w-5" />
             </Link>
             <Link href="/products" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Compare">
@@ -306,7 +300,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setShowUserMenu((value) => !value)}
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-brand-soft)] transition-colors hover:bg-[var(--brand-hover)]"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(194,65,12,0.25)] transition-all hover:shadow-[0_6px_16px_rgba(194,65,12,0.3)]"
               >
                 <User className="h-4 w-4" />
                 Account
@@ -358,20 +352,30 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-card)]">
-          <div className="market-container flex items-center gap-2 overflow-x-auto py-2 scrollbar-hide">
-            {['Today\'s Deals', 'Cement', 'Steel & TMT', 'Tiles', 'Paint', 'Electrical', 'Bulk Orders', 'New Arrivals'].map((item) => (
-              <Link
-                key={item}
-                href={item === "Today\'s Deals" ? "/products?sort=deals" : `/products?search=${encodeURIComponent(item.toLowerCase())}`}
-                className="shrink-0 rounded-full border border-[var(--border)] px-4 py-1.5 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
-              >
-                {item}
-              </Link>
-            ))}
-            <Link href="/rfq" className="shrink-0 rounded-full bg-[var(--brand-50)] px-4 py-1.5 text-xs font-semibold text-[var(--brand)] transition-colors hover:bg-[var(--brand-light)]">
-              Supplier RFQ
-            </Link>
+        <div className="dark-nav border-t border-white/5">
+          <div className="market-container flex items-center gap-0 overflow-x-auto scrollbar-hide">
+            {[
+              { label: "Products", href: "/products" },
+              { label: "Suppliers", href: "/suppliers" },
+              { label: "Get Quote", href: "/rfq" },
+              { label: "Orders", href: "/orders" },
+              { label: "Inventory", href: "/inventory" },
+            ].map((item) => {
+              const isActive = pathname === item.href || pathname.startsWith(item.href + "/") || (item.href === "/products" && pathname.startsWith("/products"));
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`shrink-0 px-5 py-2.5 text-[12px] font-semibold transition-all ${
+                    isActive
+                      ? "text-[var(--brand)] bg-[var(--brand)]/10 border-b-2 border-[var(--brand)]"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </header>
@@ -389,10 +393,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--brand)] text-white">M</div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">M</div>
                   <div>
                     <p className="text-sm font-black text-[var(--text)]">MODIT</p>
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--brand)]">Cloud Teal Commerce</p>
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--brand)]">Premium Building Materials</p>
                   </div>
                 </div>
                 <button type="button" onClick={() => setShowMobileMenu(false)} aria-label="Close menu" className="rounded-full p-2 text-[var(--text-secondary)]">
@@ -433,15 +437,17 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <main className="market-container min-h-[60vh] py-6">{children}</main>
 
-      <footer className="mt-6 border-t border-[var(--border)] bg-[var(--bg-alt)]">
+      <footer className="mt-6 bg-gradient-to-b from-[#1A1108] to-[#0D0905] border-t border-white/5 relative overflow-hidden">
+        {/* Decorative top glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
         <div className="market-container py-10">
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--brand)] text-white">M</div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">M</div>
                 <div>
                   <p className="text-lg font-black tracking-tight text-[var(--text)]">MODIT</p>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--brand)]">Cloud Teal Commerce</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--brand)]">Premium Building Materials</p>
                 </div>
               </div>
               <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
@@ -481,12 +487,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               </ul>
             </div>
           </div>
-          <div className="mt-8 flex flex-col gap-3 border-t border-[var(--border-subtle)] pt-6 text-sm text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
+          <div className="mt-8 flex flex-col gap-3 border-t border-white/5 pt-6 text-sm text-white/30 md:flex-row md:items-center md:justify-between">
             <p>© 2026 MODIT. All rights reserved.</p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/terms">Terms</Link>
-              <Link href="/privacy">Privacy</Link>
-              <Link href="/shipping">Shipping</Link>
+              <Link href="/terms" className="hover:text-white/50 transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-white/50 transition-colors">Privacy</Link>
+              <Link href="/shipping" className="hover:text-white/50 transition-colors">Shipping</Link>
             </div>
           </div>
         </div>

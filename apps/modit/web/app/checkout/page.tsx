@@ -22,8 +22,10 @@ import {
   Pencil,
   AlertCircle,
   Info,
+  ShoppingCart,
 } from "lucide-react";
 import { Button, Card, Input, Select, Badge, FormRow, Textarea } from "@/lib/modit-ui";
+import { useCartStore } from "@/lib/cart-store";
 
 interface Address {
   id: string;
@@ -64,25 +66,16 @@ const demoAddresses: Address[] = [
   },
 ];
 
-interface CartItem {
-  name: string;
-  quantity: number;
-  unitPrice: number;
-  unitCode: string;
-  supplier: string;
-  gstRate: number;
-}
-
-const demoCartItems: CartItem[] = [
-  { name: "TMT Steel Bars Fe-500D 12mm", quantity: 5, unitPrice: 62000, unitCode: "MT", supplier: "Tata Steel Distribution", gstRate: 18 },
-  { name: "Portland Pozzolana Cement PPC 53 Grade", quantity: 200, unitPrice: 380, unitCode: "BAG", supplier: "UltraTech Cement Dealers", gstRate: 28 },
-  { name: "Red Clay Bricks First Class (9x4x3 inch)", quantity: 5000, unitPrice: 8.5, unitCode: "PCS", supplier: "Bharat Bricks Supply Co.", gstRate: 5 },
-];
-
 type PaymentMethod = "upi" | "cards" | "netbanking" | "cod" | "credit";
 
 export default function CheckoutPage() {
   const router = useRouter();
+
+  const items = useCartStore((s) => s.items);
+  const getCartTotal = useCartStore((s) => s.getCartTotal);
+  const getCartGST = useCartStore((s) => s.getCartGST);
+  const getCartShipping = useCartStore((s) => s.getCartShipping);
+  const getCartGrandTotal = useCartStore((s) => s.getCartGrandTotal);
 
   const [selectedAddressId, setSelectedAddressId] = useState("a1");
   const [addresses, setAddresses] = useState<Address[]>(demoAddresses);
@@ -113,12 +106,12 @@ export default function CheckoutPage() {
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
 
   const totals = useMemo(() => {
-    const subtotal = demoCartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-    const totalGst = demoCartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity * (item.gstRate / 100), 0);
-    const shipping = subtotal >= 100000 ? 0 : subtotal >= 50000 ? 1500 : 3500;
-    const total = subtotal + totalGst + shipping;
+    const subtotal = getCartTotal();
+    const totalGst = getCartGST();
+    const shipping = getCartShipping();
+    const total = getCartGrandTotal();
     return { subtotal, totalGst, shipping, total };
-  }, []);
+  }, [items]);
 
   const handleAddAddress = useCallback(() => {
     if (!newAddress.name || !newAddress.line1 || !newAddress.city || !newAddress.pincode) return;
@@ -146,6 +139,19 @@ export default function CheckoutPage() {
     setIsPlacing(false);
     setOrderPlaced(true);
   }, []);
+
+  if (items.length === 0 && !orderPlaced) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <ShoppingCart className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">Your cart is empty</h2>
+        <p className="mt-2 text-sm text-[var(--text-muted)]">Add items to your cart before checking out.</p>
+        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:underline">
+          <ArrowLeft className="h-4 w-4" /> Browse Products
+        </Link>
+      </div>
+    );
+  }
 
   if (orderPlaced) {
     return (
@@ -357,7 +363,6 @@ export default function CheckoutPage() {
                 </label>
               ))}
 
-              {/* UPI Form */}
               {paymentMethod === "upi" && (
                 <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
                   <FormRow label="UPI ID">
@@ -366,7 +371,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Card Form */}
               {paymentMethod === "cards" && (
                 <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4 space-y-4">
                   <FormRow label="Card Number">
@@ -383,7 +387,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Net Banking */}
               {paymentMethod === "netbanking" && (
                 <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
                   <FormRow label="Select Bank">
@@ -401,7 +404,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Credit Terms */}
               {paymentMethod === "credit" && (
                 <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
                   <div className="flex items-start gap-3">
@@ -456,18 +458,18 @@ export default function CheckoutPage() {
               <h3 className="text-base font-semibold text-[var(--text-primary)]">Order Summary</h3>
             </div>
             <div className="p-6 space-y-4">
-              {/* Items */}
+              {/* Items from actual cart */}
               <div className="space-y-3">
-                {demoCartItems.map((item, i) => (
-                  <div key={i} className="flex items-start justify-between gap-3">
+                {items.map((item) => (
+                  <div key={item.product.id} className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">{item.name}</p>
+                      <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">{item.product.name}</p>
                       <p className="text-xs text-[var(--text-muted)]">
-                        {item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}
+                        {item.quantity} × ₹{item.product.price.toLocaleString()}
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-[var(--text-primary)]">
-                      ₹{(item.unitPrice * item.quantity).toLocaleString("en-IN")}
+                      ₹{(item.product.price * item.quantity).toLocaleString("en-IN")}
                     </p>
                   </div>
                 ))}
@@ -475,12 +477,12 @@ export default function CheckoutPage() {
 
               <div className="border-t border-[var(--border-subtle)] pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-muted)]">Subtotal</span>
+                  <span className="text-[var(--text-muted)]">Subtotal ({items.length} items)</span>
                   <span className="text-[var(--text-primary)]">₹{totals.subtotal.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[var(--text-muted)]">GST</span>
-                  <span className="text-[var(--text-primary)]">₹{totals.totalGst.toLocaleString("en-IN")}</span>
+                  <span className="text-[var(--text-primary)]">₹{totals.totalGst.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[var(--text-muted)]">Shipping</span>
@@ -494,7 +496,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between">
                   <span className="text-base font-semibold text-[var(--text-primary)]">Total</span>
                   <span className="text-xl font-extrabold text-[var(--brand)]">
-                    ₹{totals.total.toLocaleString("en-IN")}
+                    ₹{totals.total.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                   </span>
                 </div>
               </div>

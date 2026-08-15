@@ -11,6 +11,7 @@ import {
   Building2, Timer, Flame, X
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { useWishlistStore } from "@/lib/wishlist-store";
 import { searchProducts, products as allProducts, type Product as ProductType } from "@/lib/product-data";
 
 const PRODUCTS = [
@@ -31,24 +32,33 @@ const PRODUCTS = [
 ];
 
 const CATEGORIES = [
-  { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products" },
-  { name: "Steel & TMT", icon: "🔩", slug: "steel", count: "300+ Products" },
-  { name: "Tiles", icon: "🔲", slug: "tiles", count: "1200+ Products" },
-  { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products" },
-  { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products" },
-  { name: "Plumbing", icon: "🔧", slug: "plumbing", count: "400+ Products" },
-  { name: "Sand & Aggregate", icon: "🪨", slug: "sand", count: "150+ Products" },
-  { name: "Bricks & Blocks", icon: "🧱", slug: "bricks", count: "200+ Products" },
-  { name: "Wood & Plywood", icon: "🪵", slug: "wood", count: "350+ Products" },
-  { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products" },
-  { name: "Bathroom", icon: "🚿", slug: "bathroom", count: "250+ Products" },
-  { name: "Doors & Windows", icon: "🚪", slug: "doors", count: "180+ Products" },
+  { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products", catClass: "cat-cement" },
+  { name: "Steel & TMT", icon: "🔩", slug: "steel-tmt", count: "300+ Products", catClass: "cat-steel" },
+  { name: "Tiles", icon: "🔲", slug: "tiles-ceramics", count: "1200+ Products", catClass: "cat-tiles" },
+  { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products", catClass: "cat-paint" },
+  { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products", catClass: "cat-electrical" },
+  { name: "Plumbing", icon: "🔧", slug: "plumbing", count: "400+ Products", catClass: "cat-plumbing" },
+  { name: "Sand & Aggregate", icon: "🪨", slug: "sand-aggregate", count: "150+ Products", catClass: "cat-sand" },
+  { name: "Bricks & Blocks", icon: "🧱", slug: "bricks-blocks", count: "200+ Products", catClass: "cat-bricks" },
+  { name: "Plywood & Boards", icon: "🪵", slug: "plywood-boards", count: "350+ Products", catClass: "cat-wood" },
+  { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products", catClass: "cat-hardware" },
+  { name: "Sanitary & Bath", icon: "🚿", slug: "sanitary", count: "250+ Products", catClass: "cat-bathroom" },
+  { name: "Pipes & Fittings", icon: "🔧", slug: "pipes-fittings", count: "180+ Products", catClass: "cat-doors" },
 ];
 
 const HERO_SLIDES = [
-  { badge: "MEGA DEAL", badgeBg: "#E8453C", title: "Monsoon Mega Sale", sub: "Up to 25% off on Cement, Steel & building materials. Limited time offer.", cta: "Shop Now", ctaClass: "btn-gold", link: "/products" },
-  { badge: "B2B EXCLUSIVE", badgeBg: "#1B2838", title: "Bulk Order Pricing", sub: "Extra 10% off on orders above 50 units. Best prices for contractors.", cta: "Get Quote", ctaClass: "btn-brand", link: "/rfq" },
-  { badge: "NEW COLLECTION", badgeBg: "#00B4A0", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting ₹42/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles" },
+  { badge: "MEGA DEAL", badgeBg: "#E8453C", title: "Monsoon Mega Sale", sub: "Up to 25% off on Cement, Steel & building materials. Limited time offer.", cta: "Shop Now", ctaClass: "btn-gold", link: "/products",
+    bg: "linear-gradient(135deg, #FFF7ED 0%, #FED7AA 35%, #FEF3E2 65%, #FFFBF5 100%)",
+    glow: "radial-gradient(ellipse at 15% 60%, rgba(194,65,12,0.10), transparent 50%), radial-gradient(ellipse at 85% 20%, rgba(245,165,36,0.08), transparent 40%)",
+    cardBorder: "#FED7AA", cardBg: "#FFFBF5" },
+  { badge: "B2B EXCLUSIVE", badgeBg: "#1B2838", title: "Bulk Order Pricing", sub: "Extra 10% off on orders above 50 units. Best prices for contractors.", cta: "Get Quote", ctaClass: "btn-brand", link: "/rfq",
+    bg: "linear-gradient(135deg, #F0F4FF 0%, #DBEAFE 35%, #E0E7FF 65%, #F8FAFC 100%)",
+    glow: "radial-gradient(ellipse at 20% 70%, rgba(37,99,235,0.08), transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.06), transparent 40%)",
+    cardBorder: "#BFDBFE", cardBg: "#F0F7FF" },
+  { badge: "NEW COLLECTION", badgeBg: "#0D9488", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting ₹42/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles-ceramics",
+    bg: "linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 35%, #D1FAE5 65%, #F0FDF4 100%)",
+    glow: "radial-gradient(ellipse at 15% 50%, rgba(13,148,136,0.08), transparent 50%), radial-gradient(ellipse at 85% 30%, rgba(16,185,129,0.06), transparent 40%)",
+    cardBorder: "#99F6E4", cardBg: "#F0FDFA" },
 ];
 
 const LIVE_ORDERS = [
@@ -74,8 +84,11 @@ const FAQS = [
 
 function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
   const addItem = useCartStore((s) => s.addItem);
+  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const router = useRouter();
   const [added, setAdded] = useState(false);
+  const wishlisted = isWishlisted(p.id);
 
   const handleAddToCart = () => {
     const fullProduct = allProducts.find(ap => ap.id === p.id);
@@ -94,6 +107,11 @@ function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
     }
   };
 
+  const handleWishlist = () => {
+    const fullProduct = allProducts.find(ap => ap.id === p.id);
+    if (fullProduct) toggleWishlist(fullProduct);
+  };
+
   return (
     <div className="product-card group">
       <div className="product-img">
@@ -101,7 +119,9 @@ function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
           <img src={p.img} alt={p.name} loading="lazy" />
         </Link>
         <div className="product-actions">
-          <button onClick={() => {}} title="Add to Wishlist"><Heart className="h-4 w-4" /></button>
+          <button onClick={handleWishlist} title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}>
+            <Heart className={`h-4 w-4 ${wishlisted ? "fill-red-500 text-red-500" : ""}`} />
+          </button>
           <button onClick={() => {}} title="Compare"><GitCompare className="h-4 w-4" /></button>
           <Link href={`/products/${p.id}`} title="Quick View"><Eye className="h-4 w-4" /></Link>
         </div>
@@ -195,22 +215,25 @@ export default function ModitHomePage() {
   const s = HERO_SLIDES[slide];
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      {/* Announcement Bar */}
-      <div className="bg-gradient-to-r from-[var(--brand)] via-[var(--brand-hover)] to-[var(--brand)] text-white text-center py-1.5 px-4 text-[11px] font-semibold tracking-wide">
-        <span className="hidden sm:inline">Free delivery on first order </span>
-        <span className="mx-2 text-white/30">|</span>
-        <span>MONSOON MEGA SALE — Up to 25% OFF</span>
-        <span className="mx-2 text-white/30">|</span>
-        <span className="font-bold bg-white/20 px-2 py-0.5 rounded ml-1">FUTURE25</span>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #FFF7ED 0%, #FFFAF5 15%, #FFF7ED 30%, #FFFAF5 45%, #FFF7ED 60%, #FFFAF5 75%, #FFF7ED 100%)' }}>
+      {/* Announcement Bar — Animated gradient */}
+      <div className="announce-bar text-white text-center py-1.5 px-4 text-[11px] font-semibold tracking-wide relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#7C2D12] via-[#C2410C] to-[#D45A1A] opacity-90" />
+        <span className="relative z-10">
+          <span className="hidden sm:inline">Free delivery on first order </span>
+          <span className="mx-2 text-white/30">|</span>
+          <span>MONSOON MEGA SALE — Up to 25% OFF</span>
+          <span className="mx-2 text-white/30">|</span>
+          <span className="font-bold bg-white/20 px-2 py-0.5 rounded ml-1 backdrop-blur-sm">FUTURE25</span>
+        </span>
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-[var(--border)]">
+      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-amber-200/60" style={{ background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E7 30%, #FFFDF5 60%, #FFFCF0 100%)' }}>
         <div className="max-w-[1440px] mx-auto flex h-[64px] items-center gap-4 px-4 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-[var(--brand)] flex items-center justify-center shadow-sm shadow-[var(--brand)]/20">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_2px_8px_rgba(194,65,12,0.3)]">
               <span className="text-[15px] font-black text-white">M</span>
             </div>
             <div className="hidden sm:block">
@@ -220,7 +243,7 @@ export default function ModitHomePage() {
           </Link>
 
           {/* Deliver to */}
-          <button className="hidden md:flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text)] text-[12px] px-3 py-2 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-[var(--border)]">
+          <button className="hidden md:flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text)] text-[12px] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all border border-transparent hover:border-[var(--brand-200)]">
             <MapPin className="h-4 w-4 text-[var(--brand)]" />
             <div className="text-left">
               <p className="text-[9px] text-[var(--text-muted)] leading-none uppercase tracking-wider">Deliver to</p>
@@ -236,7 +259,7 @@ export default function ModitHomePage() {
                 placeholder="Search cement, steel, tiles, paint, electrical..."
                 className="w-full h-[42px] bg-[var(--bg)] border border-[var(--border)] rounded-full pl-5 pr-14 text-[13px] text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 transition-all" />
               <button onClick={() => { if (searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
-                className="absolute right-1.5 h-[34px] w-[34px] bg-[var(--brand)] hover:bg-[var(--brand-hover)] rounded-full flex items-center justify-center transition-colors shadow-sm shadow-[var(--brand)]/20">
+                className="absolute right-1.5 h-[34px] w-[34px] bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] hover:from-[var(--brand-hover)] hover:to-[var(--brand-dark)] rounded-full flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(194,65,12,0.25)]">
                 <Search className="h-4 w-4 text-white" />
               </button>
             </div>
@@ -246,7 +269,7 @@ export default function ModitHomePage() {
                   className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-[var(--border)] rounded-xl shadow-xl max-h-[400px] overflow-y-auto">
                   {searchResults.map(p => (
                     <Link key={p.id} href={`/products/${p.id}`} onClick={() => { setShowSearch(false); setSearchQuery(""); }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-[var(--border-light)] last:border-0">
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--brand-light)] transition-colors border-b border-[var(--border-light)] last:border-0">
                       <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0">
                         <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
                       </div>
@@ -271,6 +294,9 @@ export default function ModitHomePage() {
             <Link href="#" className="hidden lg:flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
               <GitCompare className="h-4 w-4" /> Compare
             </Link>
+            <Link href="/wishlist" className="hidden lg:flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
+              <Heart className="h-4 w-4" /> Wishlist
+            </Link>
             <Link href="#" className="hidden lg:flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--brand)] px-3 py-2 rounded-xl hover:bg-[var(--brand-light)] transition-all text-[12px] font-medium">
               <Bell className="h-4 w-4" /> Alerts
             </Link>
@@ -278,33 +304,32 @@ export default function ModitHomePage() {
               <div className="relative">
                 <ShoppingCart className="h-4.5 w-4.5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-[var(--brand)] text-[9px] font-black text-white flex items-center justify-center px-1">{cartCount > 99 ? "99+" : cartCount}</span>
+                  <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-[0_2px_6px_rgba(194,65,12,0.3)]">{cartCount > 99 ? "99+" : cartCount}</span>
                 )}
               </div>
               Cart
             </Link>
-            <Link href="/auth" className="flex items-center gap-1.5 bg-[var(--text)] hover:bg-[var(--navy-light)] text-white text-[12px] font-bold px-4 py-2 rounded-xl transition-all ml-1">
+            <Link href="/auth" className="flex items-center gap-1.5 bg-gradient-to-br from-[var(--text)] to-[var(--navy-light)] hover:from-[var(--navy-light)] hover:to-[var(--navy)] text-white text-[12px] font-bold px-4 py-2 rounded-xl transition-all ml-1 shadow-[0_2px_8px_rgba(26,17,8,0.15)]">
               <User className="h-3.5 w-3.5" /> Sign In
             </Link>
           </div>
         </div>
 
-        {/* Category Strip */}
-        <div className="border-t border-[var(--border-light)] bg-[var(--bg)]">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-1 overflow-x-auto px-4 sm:px-6 py-2 scrollbar-hide">
-            {["Today's Deals", "Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Plumbing", "Bulk Orders", "New Arrivals"].map((item, i) => (
-              <Link key={item} href={item === "Today's Deals" ? "/products?sort=deals" : `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-                className={`shrink-0 px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-all ${
-                  i === 0 
-                    ? "bg-[var(--brand)] text-white" 
-                    : "text-[var(--text-secondary)] hover:text-[var(--brand)] hover:bg-[var(--brand-light)]"
-                }`}>
-                {item}
+        {/* Dark Nav Bar */}
+        <div className="dark-nav border-t border-white/5">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-0 overflow-x-auto scrollbar-hide">
+            {[
+              { label: "Products", href: "/products" },
+              { label: "Suppliers", href: "/suppliers" },
+              { label: "Get Quote", href: "/rfq" },
+              { label: "Orders", href: "/orders" },
+              { label: "Inventory", href: "/inventory" },
+            ].map((item) => (
+              <Link key={item.label} href={item.href}
+                className="shrink-0 px-5 py-2.5 text-[12px] font-semibold text-white/60 transition-all hover:text-white hover:bg-white/10">
+                {item.label}
               </Link>
             ))}
-            <Link href="/products" className="shrink-0 px-3.5 py-1.5 text-[12px] font-semibold text-[var(--brand)] hover:bg-[var(--brand-light)] rounded-full transition-all">
-              View All →
-            </Link>
           </div>
         </div>
       </header>
@@ -313,10 +338,12 @@ export default function ModitHomePage() {
         {/* Hero */}
         <section className="pt-4 pb-3">
           <div className="grid gap-3 lg:grid-cols-[1fr_260px]">
-            <div className="relative overflow-hidden rounded-xl bg-white border border-[var(--border)] min-h-[340px]">
-              <div className="relative h-full flex flex-col justify-center p-8 sm:p-10 lg:p-12">
+            <motion.div key={slide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
+              className="relative min-h-[340px] rounded-[20px] overflow-hidden shadow-lg border border-[var(--border)]" style={{ background: s.bg }}>
+              <div className="absolute inset-0" style={{ backgroundImage: s.glow }} />
+              <div className="relative h-full flex flex-col justify-center p-8 sm:p-10 lg:p-12 z-10">
                 <motion.span key={s.badge} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                  className="inline-flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-1.5 rounded-md w-fit mb-4"
+                  className="inline-flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-1.5 rounded-md w-fit mb-4 shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
                   style={{ background: s.badgeBg }}>
                   <Zap className="h-3 w-3" /> {s.badge}
                 </motion.span>
@@ -335,18 +362,19 @@ export default function ModitHomePage() {
                 </motion.div>
               </div>
 
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                 {HERO_SLIDES.map((_, i) => (
                   <button key={i} onClick={() => setSlide(i)}
                     className={`h-1.5 rounded-full transition-all ${i === slide ? "w-6 bg-[var(--brand)]" : "w-1.5 bg-gray-300"}`} />
                 ))}
               </div>
 
-              <div className="hidden lg:flex absolute right-0 top-0 h-full w-[280px] flex-col justify-center gap-2 p-3">
+              <div className="hidden lg:flex absolute right-0 top-0 h-full w-[280px] flex-col justify-center gap-2 p-3 z-10">
                 {PRODUCTS.slice(0, 3).map((p, i) => (
                   <motion.div key={`hero-${i}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
-                    className="bg-white rounded-lg border border-[var(--border)] p-2.5 flex gap-3 hover:shadow-md transition-shadow cursor-pointer">
+                    className="rounded-lg p-2.5 flex gap-3 hover:shadow-md transition-all cursor-pointer backdrop-blur-sm"
+                    style={{ background: `${s.cardBg}ee`, border: `1px solid ${s.cardBorder}` }}>
                     <Link href={`/products/${p.id}`} className="w-16 h-16 rounded-lg bg-gray-50 overflow-hidden shrink-0">
                       <img src={p.img} alt={p.name} className="w-full h-full object-cover" />
                     </Link>
@@ -359,15 +387,15 @@ export default function ModitHomePage() {
                         <span className="text-[14px] font-black text-[var(--text)]">₹{p.price.toLocaleString()}</span>
                         <span className="text-[10px] text-[var(--text-muted)] line-through">₹{p.mrp.toLocaleString()}</span>
                       </div>
-                      <span className="badge-discount text-[9px] mt-0.5">{p.discount}% OFF</span>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold text-white mt-0.5" style={{ background: 'linear-gradient(135deg, #DC2626, #B91C1C)' }}>{p.discount}% OFF</span>
                     </div>
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             <div className="flex flex-col gap-3">
-              <div className="card p-3">
+              <div className="bg-white rounded-[20px] border border-[var(--border)] p-3 shadow-sm">
                 <h3 className="text-[12px] font-bold text-[var(--text)] mb-2">Quick Links</h3>
                 <div className="space-y-0.5">
                   {[
@@ -384,16 +412,19 @@ export default function ModitHomePage() {
                 </div>
               </div>
 
-              <div className="rounded-xl bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] p-3.5 text-white">
-                <h3 className="text-[12px] font-bold mb-0.5">Download App</h3>
-                <p className="text-[10px] text-white/50 mb-2.5">Get exclusive app-only deals</p>
-                <div className="flex gap-2">
-                  <span className="flex-1 rounded-lg bg-white/10 px-2 py-2 text-[10px] font-bold text-center cursor-pointer hover:bg-white/20 transition-all">Google Play</span>
-                  <span className="flex-1 rounded-lg bg-white/10 px-2 py-2 text-[10px] font-bold text-center cursor-pointer hover:bg-white/20 transition-all">App Store</span>
+              {/* Download App */}
+              <div className="rounded-[20px] p-3.5 text-white" style={{ background: 'linear-gradient(135deg, #2D1B0E, #3F2A18, #523A22)' }}>
+                <h3 className="text-[12px] font-bold mb-0.5 relative z-10">Download App</h3>
+                <p className="text-[10px] text-white/50 mb-2.5 relative z-10">Get exclusive app-only deals</p>
+                <div className="flex gap-2 relative z-10">
+                  <span className="flex-1 rounded-lg bg-white/10 backdrop-blur-sm px-2 py-2 text-[10px] font-bold text-center cursor-pointer hover:bg-white/20 transition-all border border-white/10">Google Play</span>
+                  <span className="flex-1 rounded-lg bg-white/10 backdrop-blur-sm px-2 py-2 text-[10px] font-bold text-center cursor-pointer hover:bg-white/20 transition-all border border-white/10">App Store</span>
                 </div>
               </div>
 
-              <div className="card p-3">
+              {/* Live Orders */}
+              <div className="bg-white rounded-[20px] border border-[var(--border)] p-3 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: 'linear-gradient(90deg, #0E8A5F, #34D399)' }} />
                 <div className="flex items-center gap-1.5 mb-2">
                   <span className="h-2 w-2 rounded-full bg-[var(--success)]" style={{ animation: "timerPulse 1.5s infinite" }} />
                   <span className="text-[10px] font-bold text-[var(--success)] uppercase tracking-wider">Live Orders</span>
@@ -410,19 +441,37 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* Categories */}
+        {/* Categories — Bold colored cards */}
         <section className="py-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[16px] font-bold text-[var(--text)]">Shop by Category</h2>
             <Link href="/products" className="text-[12px] font-bold text-[var(--brand)] hover:underline flex items-center gap-0.5">View All <ChevronRight className="h-3 w-3" /></Link>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-            {CATEGORIES.map((cat, i) => (
-              <motion.div key={cat.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 + i * 0.03 }}>
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            {[
+              { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products", bg: "linear-gradient(135deg, #FFF7ED, #FEF3E2)", hoverBorder: "#FED7AA", iconBg: "#C2410C" },
+              { name: "Steel & TMT", icon: "🔩", slug: "steel-tmt", count: "300+ Products", bg: "linear-gradient(135deg, #F1F5F9, #E2E8F0)", hoverBorder: "#CBD5E1", iconBg: "#475569" },
+              { name: "Tiles", icon: "🔲", slug: "tiles-ceramics", count: "1200+ Products", bg: "linear-gradient(135deg, #F5F3FF, #EDE9FE)", hoverBorder: "#DDD6FE", iconBg: "#7C3AED" },
+              { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products", bg: "linear-gradient(135deg, #FFF1F2, #FFE4E6)", hoverBorder: "#FECDD3", iconBg: "#E11D48" },
+              { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#D97706" },
+              { name: "Plumbing", icon: "🔧", slug: "plumbing", count: "400+ Products", bg: "linear-gradient(135deg, #EFF6FF, #DBEAFE)", hoverBorder: "#BFDBFE", iconBg: "#2563EB" },
+              { name: "Sand & Aggregate", icon: "🪨", slug: "sand-aggregate", count: "150+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#B45309" },
+              { name: "Bricks & Blocks", icon: "🧱", slug: "bricks-blocks", count: "200+ Products", bg: "linear-gradient(135deg, #FEF2F2, #FEE2E2)", hoverBorder: "#FECACA", iconBg: "#DC2626" },
+              { name: "Plywood & Boards", icon: "🪵", slug: "plywood-boards", count: "350+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#92400E" },
+              { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products", bg: "linear-gradient(135deg, #EEF2FF, #E0E7FF)", hoverBorder: "#C7D2FE", iconBg: "#4F46E5" },
+              { name: "Sanitary & Bath", icon: "🚿", slug: "sanitary", count: "250+ Products", bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)", hoverBorder: "#99F6E4", iconBg: "#0D9488" },
+              { name: "Pipes & Fittings", icon: "🔧", slug: "pipes-fittings", count: "180+ Products", bg: "linear-gradient(135deg, #FAF5FF, #F3E8FF)", hoverBorder: "#E9D5FF", iconBg: "#9333EA" },
+            ].map((cat, i) => (
+              <motion.div key={cat.slug} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 + i * 0.03 }}>
                 <Link href={`/products?category=${cat.slug}`}
-                  className="flex flex-col items-center bg-white rounded-xl border border-[var(--border)] p-3 hover:shadow-md hover:border-[var(--brand)] transition-all group">
-                  <span className="text-2xl mb-1.5 group-hover:scale-110 transition-transform">{cat.icon}</span>
-                  <span className="text-[11px] font-semibold text-[var(--text)] text-center group-hover:text-[var(--brand)] transition-colors">{cat.name}</span>
+                  className="flex flex-col items-center p-4 text-center rounded-[20px] border border-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group"
+                  style={{ background: cat.bg, borderColor: 'transparent' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = cat.hoverBorder; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'transparent'; }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-2 text-2xl shadow-sm transition-transform group-hover:scale-110" style={{ background: `${cat.iconBg}12` }}>
+                    {cat.icon}
+                  </div>
+                  <span className="text-[11px] font-bold text-[var(--text)] group-hover:text-[var(--brand)] transition-colors">{cat.name}</span>
                   <span className="text-[9px] text-[var(--text-muted)] mt-0.5">{cat.count}</span>
                 </Link>
               </motion.div>
@@ -430,22 +479,24 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* Flash Deals */}
+        {/* Flash Deals — Warm orange background */}
         <section className="py-4">
-          <div className="bg-white rounded-xl border border-[var(--border)] p-4">
-            <div className="flex items-center justify-between mb-4">
+          <div className="p-5 rounded-[20px] border border-orange-200 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF7ED, #FEF3E2, #FFF7ED)' }}>
+            <div className="absolute top-[-40px] right-[-40px] w-[160px] h-[160px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(194,65,12,0.12), transparent 70%)' }} />
+            <div className="absolute bottom-[-30px] left-[-30px] w-[120px] h-[120px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(245,165,36,0.1), transparent 70%)' }} />
+            <div className="flex items-center justify-between mb-4 relative z-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-[16px] font-bold text-[var(--text)] flex items-center gap-2">
                   <Flame className="h-5 w-5 text-[var(--brand)]" /> Flash Deals
                 </h2>
-                <div className="flex items-center gap-1 bg-[var(--navy)] text-white text-[11px] font-bold px-2.5 py-1 rounded-md">
+                <div className="flex items-center gap-1 text-white text-[11px] font-bold px-2.5 py-1 rounded-md" style={{ background: 'linear-gradient(135deg, #2D1B0E, #3F2A18)' }}>
                   <Timer className="h-3 w-3" />
                   {String(flashTimer.h).padStart(2, '0')}:{String(flashTimer.m).padStart(2, '0')}:{String(flashTimer.s).padStart(2, '0')}
                 </div>
               </div>
               <Link href="/products?sort=deals" className="text-[12px] font-bold text-[var(--brand)] hover:underline flex items-center gap-0.5">View All <ChevronRight className="h-3 w-3" /></Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 relative z-10">
               {PRODUCTS.slice(0, 4).map((p, i) => (
                 <motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.05 }}>
                   <ProductCard p={p} />
@@ -455,35 +506,38 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* Featured Products */}
+        {/* Featured Products — White card on warm background */}
         <section className="py-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[16px] font-bold text-[var(--text)]">Featured Products</h2>
-            <Link href="/products" className="text-[12px] font-bold text-[var(--brand)] hover:underline flex items-center gap-0.5">View All <ChevronRight className="h-3 w-3" /></Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {PRODUCTS.map((p, i) => (
-              <motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.04 }}>
-                <ProductCard p={p} />
-              </motion.div>
-            ))}
+          <div className="bg-white p-5 rounded-[20px] border border-[var(--border)] shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-[16px] font-bold text-[var(--text)]">Featured Products</h2>
+              <Link href="/products" className="text-[12px] font-bold text-[var(--brand)] hover:underline flex items-center gap-0.5">View All <ChevronRight className="h-3 w-3" /></Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {PRODUCTS.map((p, i) => (
+                <motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.04 }}>
+                  <ProductCard p={p} />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Why Choose MODIT */}
+        {/* Why Choose MODIT — Colored icon cards */}
         <section className="py-4">
           <h2 className="text-[16px] font-bold text-[var(--text)] mb-3">Why Choose MODIT</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: Shield, title: "Verified Suppliers", desc: "Every supplier KYC-verified", color: "#10B981" },
-              { icon: Truck, title: "Same-Day Delivery", desc: "Deliver within hours", color: "#00B4A0" },
-              { icon: Brain, title: "AI Price Intelligence", desc: "Real-time market prices", color: "#8B5CF6" },
-              { icon: Award, title: "Best Prices Guaranteed", desc: "Compare 500+ suppliers", color: "#E8453C" },
+              { icon: Shield, title: "Verified Suppliers", desc: "Every supplier KYC-verified", color: "#10B981", bg: "linear-gradient(135deg, #ECFDF5, #D1FAE5)" },
+              { icon: Truck, title: "Same-Day Delivery", desc: "Deliver within hours", color: "#0D9488", bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)" },
+              { icon: Brain, title: "AI Price Intelligence", desc: "Real-time market prices", color: "#7C3AED", bg: "linear-gradient(135deg, #F5F3FF, #EDE9FE)" },
+              { icon: Award, title: "Best Prices Guaranteed", desc: "Compare 500+ suppliers", color: "#DC2626", bg: "linear-gradient(135deg, #FEF2F2, #FEE2E2)" },
             ].map((f, i) => (
               <motion.div key={f.title} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
-                className="card p-4 flex items-start gap-3">
-                <div className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: `${f.color}12`, border: `1px solid ${f.color}22` }}>
+                className="bg-white p-4 flex items-start gap-3 rounded-[20px] border border-[var(--border)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden group">
+                <div className="absolute bottom-0 left-0 right-0 h-[3px] scale-x-0 transition-transform duration-300 group-hover:scale-x-100" style={{ background: f.color }} />
+                <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
+                  style={{ background: f.bg, boxShadow: `0 4px 12px ${f.color}15` }}>
                   <f.icon className="h-5 w-5" style={{ color: f.color }} />
                 </div>
                 <div>
@@ -495,40 +549,46 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* Stats */}
+        {/* Stats — Dark gradient band */}
         <section className="py-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { label: "Products", value: "10,000+", icon: Package, color: "#E8453C" },
-              { label: "Verified Suppliers", value: "500+", icon: Users, color: "#10B981" },
-              { label: "Orders Delivered", value: "2M+", icon: Truck, color: "#00B4A0" },
-              { label: "Customer Rating", value: "4.8★", icon: Star, color: "#F5A623" },
-            ].map((stat, i) => (
-              <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
-                className="card p-4 text-center">
-                <stat.icon className="h-5 w-5 mx-auto mb-1.5" style={{ color: stat.color }} />
-                <p className="text-xl font-black text-[var(--text)]">{stat.value}</p>
-                <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{stat.label}</p>
-              </motion.div>
-            ))}
+          <div className="p-6 sm:p-8 rounded-[20px] relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A1108, #2D1B0E 40%, #3F2A18 70%, #523A22)' }}>
+            <div className="absolute inset-0 opacity-60" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, rgba(194,65,12,0.12), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(245,165,36,0.08), transparent 40%)' }} />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+              {[
+                { label: "Products", value: "10,000+", icon: Package, color: "#F59E0B" },
+                { label: "Verified Suppliers", value: "500+", icon: Users, color: "#10B981" },
+                { label: "Orders Delivered", value: "2M+", icon: Truck, color: "#3B82F6" },
+                { label: "Customer Rating", value: "4.8★", icon: Star, color: "#F59E0B" },
+              ].map((stat, i) => (
+                <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
+                  className="text-center">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 mb-2" style={{ boxShadow: `0 4px 12px ${stat.color}30` }}>
+                    <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
+                  </div>
+                  <p className="text-2xl font-black text-white">{stat.value}</p>
+                  <p className="text-[11px] text-white/50 mt-0.5">{stat.label}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Testimonials — Warm bg with quote marks */}
         <section className="py-4">
           <h2 className="text-[16px] font-bold text-[var(--text)] mb-3">What Our Customers Say</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {TESTIMONIALS.map((t, i) => (
               <motion.div key={t.name} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
-                className="card p-4">
-                <div className="flex items-center gap-0.5 mb-2">
+                className="bg-white p-4 rounded-[20px] border border-[var(--border)] relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group">
+                <div className="absolute top-[-8px] left-[12px] text-[64px] font-black leading-none pointer-events-none select-none" style={{ color: 'rgba(194,65,12,0.06)' }}>&ldquo;</div>
+                <div className="flex items-center gap-0.5 mb-2 relative z-10">
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="h-3 w-3 fill-[var(--gold)] text-[var(--gold)]" />
+                    <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-[12px] text-[var(--text-secondary)] mb-3 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[var(--brand-light)] flex items-center justify-center text-[12px] font-bold text-[var(--brand)]">
+                <p className="text-[12px] text-[var(--text-secondary)] mb-3 leading-relaxed relative z-10">&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-2 relative z-10">
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center text-[12px] font-bold text-white shadow-sm" style={{ background: 'linear-gradient(135deg, #C2410C, #9A3412)' }}>
                     {t.name.charAt(0)}
                   </div>
                   <div>
@@ -536,8 +596,8 @@ export default function ModitHomePage() {
                     <p className="text-[10px] text-[var(--text-muted)]">{t.company}</p>
                   </div>
                 </div>
-                <div className="mt-2 pt-2 border-t border-[var(--border-light)] flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
-                  <CheckCircle className="h-3 w-3 text-[var(--success)]" /> {t.orders} orders placed
+                <div className="mt-2 pt-2 border-t border-[var(--border-light)] flex items-center gap-1 text-[10px] text-[var(--text-muted)] relative z-10">
+                  <CheckCircle className="h-3 w-3 text-emerald-500" /> {t.orders} orders placed
                 </div>
               </motion.div>
             ))}
@@ -547,9 +607,9 @@ export default function ModitHomePage() {
         {/* FAQs */}
         <section className="py-4">
           <h2 className="text-[16px] font-bold text-[var(--text)] mb-3">Frequently Asked Questions</h2>
-          <div className="bg-white rounded-xl border border-[var(--border)] divide-y divide-[var(--border-light)]">
+          <div className="bg-white rounded-[20px] border border-[var(--border)] overflow-hidden shadow-sm">
             {FAQS.map((faq, i) => (
-              <div key={i} className="px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+              <div key={i} className="px-5 py-4 cursor-pointer hover:bg-orange-50/50 transition-colors border-b border-[var(--border-light)] last:border-b-0"
                 onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}>
                 <div className="flex items-center justify-between">
                   <h3 className="text-[13px] font-semibold text-[var(--text)]">{faq.q}</h3>
@@ -568,61 +628,73 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* CTA */}
+        {/* CTA — Rich dark gradient */}
         <section className="py-4">
-          <div className="rounded-xl bg-gradient-to-r from-[var(--navy)] via-[var(--navy-light)] to-[var(--navy)] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--brand)] rounded-full blur-[100px] opacity-10" />
+          <div className="rounded-[20px] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A1108, #2D1B0E 35%, #3F2A18 70%, #523A22)' }}>
+            <div className="absolute top-[-80px] right-[-60px] w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(194,65,12,0.15), transparent 60%)' }} />
+            <div className="absolute bottom-[-60px] left-[-40px] w-[200px] h-[200px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,165,36,0.1), transparent 60%)' }} />
             <div className="relative z-10">
               <h2 className="text-lg font-bold text-white mb-1">Ready to Start Building?</h2>
               <p className="text-[13px] text-white/50">Join 5,000+ contractors saving 42% on material costs</p>
             </div>
             <div className="flex gap-2 relative z-10">
               <Link href="/products" className="btn-gold">Start Ordering</Link>
-              <Link href="/rfq" className="btn-outline border-white/20 text-white hover:bg-white/10 hover:border-white/40">Get Quote</Link>
+              <Link href="/rfq" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[14px] text-[13px] font-bold border border-white/20 text-white hover:bg-white/10 hover:border-white/40 transition-all">Get Quote</Link>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[var(--navy)] mt-6">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6">
+      {/* Footer — Rich dark gradient */}
+      <footer className="mt-6 bg-gradient-to-b from-[#1A1108] to-[#0D0905] relative overflow-hidden">
+        {/* Decorative top glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 relative z-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-8">
             <div className="col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-1.5 mb-2">
-                <div className="h-8 w-8 rounded-lg bg-[var(--brand)] flex items-center justify-center">
+              <div className="flex items-center gap-1.5 mb-3">
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_4px_12px_rgba(194,65,12,0.3)]">
                   <span className="text-[14px] font-black text-white">M</span>
                 </div>
-                <span className="text-[16px] font-black text-white">MODIT</span>
+                <span className="text-[18px] font-black text-white">MODIT</span>
               </div>
-              <p className="text-[11px] text-white/40 leading-relaxed mb-3">India&apos;s B2B marketplace for construction materials. Compare prices from 500+ verified suppliers.</p>
+              <p className="text-[11px] text-white/35 leading-relaxed mb-4">India&apos;s B2B marketplace for construction materials. Compare prices from 500+ verified suppliers.</p>
               <div className="flex gap-2">
-                <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-[10px] font-bold text-white cursor-pointer hover:bg-white/10 transition-all">Google Play</span>
-                <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-[10px] font-bold text-white cursor-pointer hover:bg-white/10 transition-all">App Store</span>
+                <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-[10px] font-bold text-white/70 cursor-pointer hover:bg-white/10 hover:text-white transition-all">Google Play</span>
+                <span className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-[10px] font-bold text-white/70 cursor-pointer hover:bg-white/10 hover:text-white transition-all">App Store</span>
               </div>
             </div>
             {[
-              { title: "Products", items: ["Cement", "Steel & TMT", "Tiles", "Paint", "Electrical", "Plumbing"] },
+              { title: "Products", items: [
+                { name: "Cement", slug: "cement" },
+                { name: "Steel & TMT", slug: "steel-tmt" },
+                { name: "Tiles & Ceramics", slug: "tiles-ceramics" },
+                { name: "Paint", slug: "paint" },
+                { name: "Electrical", slug: "electrical" },
+                { name: "Plumbing", slug: "plumbing" },
+              ]},
               { title: "Company", items: ["About Us", "Careers", "Blog", "Press", "Contact Us"] },
               { title: "Support", items: ["Help Center", "Track Order", "Returns", "FAQs", "API Docs"] },
               { title: "Legal", items: ["Privacy Policy", "Terms of Service", "Refund Policy", "GST Info"] },
             ].map(col => (
               <div key={col.title}>
-                <h4 className="text-[12px] font-bold text-white/60 mb-2.5 uppercase tracking-wider">{col.title}</h4>
-                <div className="space-y-1.5">
-                  {col.items.map(item => (
-                    <Link key={item} href={col.title === "Products" ? `/products?category=${item.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}` : "#"} className="block text-[11px] text-white/35 hover:text-white/70 transition-colors">{item}</Link>
+                <h4 className="text-[12px] font-bold text-white/50 mb-3 uppercase tracking-wider">{col.title}</h4>
+                <div className="space-y-2">
+                  {col.title === "Products" ? (col as { title: string; items: { name: string; slug: string }[] }).items.map(item => (
+                    <Link key={item.slug} href={`/products?category=${item.slug}`} className="block text-[11px] text-white/30 hover:text-white/70 transition-colors">{item.name}</Link>
+                  )) : (col as { title: string; items: string[] }).items.map(item => (
+                    <Link key={item} href="#" className="block text-[11px] text-white/30 hover:text-white/70 transition-colors">{item}</Link>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-          <div className="border-t border-white/5 mt-6 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-[10px] text-white/25">2026 MODIT. All rights reserved.</p>
-            <div className="flex gap-4 text-[10px] text-white/25">
-              <Link href="#" className="hover:text-white/50 transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-white/50 transition-colors">Terms</Link>
-              <Link href="/products" className="hover:text-white/50 transition-colors">Sitemap</Link>
+          <div className="border-t border-white/5 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-[10px] text-white/20">© 2026 MODIT. All rights reserved.</p>
+            <div className="flex gap-4 text-[10px] text-white/20">
+              <Link href="#" className="hover:text-white/40 transition-colors">Privacy</Link>
+              <Link href="#" className="hover:text-white/40 transition-colors">Terms</Link>
+              <Link href="/products" className="hover:text-white/40 transition-colors">Sitemap</Link>
             </div>
           </div>
         </div>
@@ -630,4 +702,3 @@ export default function ModitHomePage() {
     </div>
   );
 }
-

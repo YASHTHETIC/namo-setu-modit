@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { useCartStore } from "@/lib/cart-store";
+import { useWishlistStore } from "@/lib/wishlist-store";
 import { getProductById, products } from "@/lib/product-data";
 
 export default function ProductDetailPage({
@@ -42,8 +43,11 @@ export default function ProductDetailPage({
   const [pincode, setPincode] = useState("");
   const [pincodeChecked, setPincodeChecked] = useState(false);
   const [added, setAdded] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
+
+  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
+  const wishlisted = product ? isWishlisted(product.id) : false;
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
@@ -258,7 +262,7 @@ export default function ProductDetailPage({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setWishlisted(!wishlisted)}
+                onClick={() => product && toggleWishlist(product)}
                 className="flex-1"
               >
                 <Heart className={`h-4 w-4 ${wishlisted ? "fill-red-500 text-red-500" : ""}`} />
