@@ -19,11 +19,6 @@ from backend.app.core.database import Base
 from backend.app.models import *  # noqa
 from backend.app.models.user import User
 from backend.app.models.shared import Country, State, City
-from backend.app.models.namo_setu import (
-    Temple, Festival, Puja, Accommodation, Hotel, Room,
-    TravelPackage, TourGuide, Pandit, Transportation, TempleReview,
-    NearbyAttraction, TempleEvent,
-)
 from backend.app.models.modit import (
     Organization, Supplier, Vendor, Brand, Category, SubCategory, Unit, GST,
     Product, Warehouse, Inventory, Project, RFQ, RFQItem,
@@ -31,7 +26,6 @@ from backend.app.models.modit import (
     Driver, Vehicle, Delivery, ModitNotification,
 )
 
-from backend.seeds import namo_seeds as ns
 from backend.seeds import modit_seeds as ms
 
 
@@ -50,241 +44,6 @@ def get_sync_url(settings):
     url = re.sub(r'&ssl=require', '&sslmode=require', url)
     url = re.sub(r'\?sslmode=require', '?sslmode=require', url)
     return url
-
-
-def seed_namo(session: Session, country_id: str):
-    """Seed Namo Setu data using ORM models."""
-    print("[NAMO] Seeding countries, states, cities...")
-
-    # Country
-    existing = session.query(Country).filter_by(id=country_id).first()
-    if not existing:
-        session.add(Country(id=country_id, name="India", iso2="IN", iso3="IND",
-                           calling_code="+91", is_active=True))
-
-    # States
-    for s in ns.STATES:
-        existing = session.query(State).filter_by(id=s["id"]).first()
-        if not existing:
-            session.add(State(id=s["id"], country_id=country_id, name=s["name"],
-                             state_code=s["code"], is_active=True))
-
-    # Cities
-    for c in ns.CITIES:
-        existing = session.query(City).filter_by(id=c["id"]).first()
-        if not existing:
-            session.add(City(id=c["id"], state_id=c["state_id"], country_id=country_id,
-                            name=c["name"], latitude=c["latitude"], longitude=c["longitude"],
-                            is_active=True))
-
-    session.flush()
-    print(f"  -> {len(ns.STATES)} states, {len(ns.CITIES)} cities")
-
-    # Users
-    for u in ns.USERS:
-        existing = session.query(User).filter_by(id=u["id"]).first()
-        if not existing:
-            session.add(User(
-                id=u["id"], email=u["email"], full_name=u["full_name"],
-                hashed_password="hashed_placeholder", is_active=u["is_active"],
-                is_verified=True, mfa_enabled=False,
-            ))
-
-    session.flush()
-    print(f"  -> {len(ns.USERS)} users")
-
-    # Temples
-    for t in ns.TEMPLES:
-        existing = session.query(Temple).filter_by(id=t["id"]).first()
-        if not existing:
-            slug = t["name"].lower().replace(" ", "-").replace("'", "")
-            session.add(Temple(
-                id=t["id"], city_id=t["city_id"], state_id=t["state_id"],
-                country_id=country_id, name=t["name"], slug=slug,
-                temple_type="main",
-                deity_name=t.get("deity", t.get("deity_name", "")),
-                address_line1=t.get("address", t.get("address_line1", t["name"])),
-                pincode=t.get("pincode", "000000"),
-                latitude=t.get("latitude", 0), longitude=t.get("longitude", 0),
-                description=t.get("description", ""),
-                is_active=True,
-            ))
-
-    session.flush()
-    print(f"  -> {len(ns.TEMPLES)} temples")
-
-    temple_ids = [t["id"] for t in ns.TEMPLES]
-
-    # Festivals - assign to temples (distribute across temples)
-    festival_count = 0
-    for i, f in enumerate(ns.FESTIVALS):
-        tid = temple_ids[i % len(temple_ids)]
-        session.add(Festival(
-            id=uid(), temple_id=tid, name=f["name"],
-            description=f.get("description", ""),
-            starts_on=datetime.now() + timedelta(days=i * 15),
-            ends_on=datetime.now() + timedelta(days=i * 15 + 1),
-            annual_recurring=f.get("annual_recurring", True),
-        ))
-        festival_count += 1
-
-    session.flush()
-    print(f"  -> {festival_count} festivals")
-
-    # Pujas - assign to temples
-    puja_count = 0
-    for i, p in enumerate(ns.PUJAS):
-        tid = temple_ids[i % len(temple_ids)]
-        session.add(Puja(
-            id=uid(), temple_id=tid, title=p["title"],
-            description=p.get("description", ""),
-            status=p.get("status", "active"),
-            base_price=p.get("base_price", 0),
-        ))
-        puja_count += 1
-
-    session.flush()
-    print(f"  -> {puja_count} pujas")
-
-    # Accommodations (generator function)
-    acc_count = 0
-    room_count = 0
-    for tid in temple_ids[:15]:  # 15 temples get accommodations
-        accommodations = ns.generate_accommodations(tid, count=2)
-        for acc in accommodations:
-            existing = session.query(Accommodation).filter_by(id=acc["id"]).first()
-            if not existing:
-                session.add(Accommodation(
-                    id=acc["id"], temple_id=acc.get("temple_id"),
-                    name=acc["name"],
-                    accommodation_type=acc.get("accommodation_type", "dharamshala"),
-                    is_active=acc.get("is_active", True),
-                ))
-                acc_count += 1
-            # Hotels
-            hotel = acc.get("hotel", {})
-            if hotel:
-                existing_h = session.query(Hotel).filter_by(id=hotel["id"]).first()
-                if not existing_h:
-                    session.add(Hotel(
-                        id=hotel["id"], accommodation_id=hotel["accommodation_id"],
-                        star_rating=hotel.get("star_rating"),
-                        check_in_time=hotel.get("check_in_time"),
-                        check_out_time=hotel.get("check_out_time"),
-                        contact_number=hotel.get("contact_number"),
-                        is_active=hotel.get("is_active", True),
-                    ))
-            # Rooms
-            for r in acc.get("rooms", []):
-                existing_r = session.query(Room).filter_by(id=r["id"]).first()
-                if not existing_r:
-                    session.add(Room(
-                        id=r["id"], hotel_id=r["hotel_id"],
-                        room_type=r["room_type"], capacity=r["capacity"],
-                        price_per_night=r["price_per_night"],
-                        is_available=r.get("is_available", True),
-                        is_active=r.get("is_active", True),
-                    ))
-                    room_count += 1
-
-    session.flush()
-    print(f"  -> {acc_count} accommodations, {room_count} rooms")
-
-    # Travel Packages (generator function)
-    tp_count = 0
-    for tid in temple_ids[:20]:
-        temple_name = next((t["name"] for t in ns.TEMPLES if t["id"] == tid), "Temple")
-        packages = ns.generate_travel_packages(tid, temple_name)
-        for tp in packages:
-            existing = session.query(TravelPackage).filter_by(id=tp["id"]).first()
-            if not existing:
-                session.add(TravelPackage(
-                    id=tp["id"], temple_id=tp.get("temple_id"),
-                    title=tp["title"], description=tp.get("description", ""),
-                    price=tp.get("price", 5000), is_active=tp.get("is_active", True),
-                ))
-                tp_count += 1
-
-    session.flush()
-    print(f"  -> {tp_count} travel packages")
-
-    # Tour Guides
-    city_ids = [c["id"] for c in ns.CITIES]
-    tg_count = 0
-    for i, tg in enumerate(ns.TOUR_GUIDES):
-        session.add(TourGuide(
-            id=uid(), city_id=city_ids[i % len(city_ids)],
-            name=tg["name"],
-            phone_number=tg.get("phone_number", ""),
-            rating_avg=tg.get("rating_avg", 4.5),
-            is_active=True,
-        ))
-        tg_count += 1
-
-    session.flush()
-    print(f"  -> {tg_count} tour guides")
-
-    # Pandits
-    pandit_count = 0
-    for i, p in enumerate(ns.PANDITS):
-        session.add(Pandit(
-            id=uid(), temple_id=temple_ids[i % len(temple_ids)],
-            name=p["name"], phone_number=p.get("phone_number", ""),
-            is_active=True,
-        ))
-        pandit_count += 1
-
-    session.flush()
-    print(f"  -> {pandit_count} pandits")
-
-    # Transportation
-    trans_count = 0
-    for t in ns.TRANSPORTATION:
-        existing = session.query(Transportation).filter_by(provider_name=t["provider_name"]).first()
-        if not existing:
-            session.add(Transportation(
-                id=uid(), temple_id=temple_ids[0],
-                provider_name=t["provider_name"],
-                transport_type=t["transport_type"],
-                contact_number=t.get("contact_number", ""),
-                is_active=True,
-            ))
-            trans_count += 1
-
-    session.flush()
-    print(f"  -> {trans_count} transportation providers")
-
-    # Nearby Attractions
-    attr_count = 0
-    for tid in temple_ids[:20]:
-        for i, attr in enumerate(ns.NEARBY_ATTRACTIONS):
-            session.add(NearbyAttraction(
-                id=uid(), temple_id=tid, name=attr["name"],
-                category=attr.get("category", "landmark"),
-                description=attr.get("description", ""),
-                distance_km=attr.get("distance_km", 0.5),
-                duration_minutes=attr.get("duration_minutes", 30),
-                is_active=True,
-            ))
-            attr_count += 1
-
-    session.flush()
-    print(f"  -> {attr_count} nearby attractions")
-
-    # Events
-    event_count = 0
-    for tid in temple_ids[:10]:
-        events = ns.generate_events(tid)
-        for e in events:
-            session.add(TempleEvent(
-                id=e["id"], temple_id=e["temple_id"],
-                title=e["title"], description=e.get("description", ""),
-                starts_on=e["starts_on"], is_public=e.get("is_public", True),
-            ))
-            event_count += 1
-
-    session.flush()
-    print(f"  -> {event_count} events")
 
 
 def seed_modit(session: Session):
@@ -684,8 +443,6 @@ def run():
     engine = create_engine(db_url)
 
     with Session(engine) as session:
-        country_id = ns.COUNTRY_ID
-        seed_namo(session, country_id)
         seed_modit(session)
         session.commit()
         print("=" * 60)

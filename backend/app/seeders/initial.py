@@ -101,42 +101,6 @@ def seed_sample_data(session: Session) -> None:
         session.add(address)
         session.flush()
 
-    temple = session.execute(select(Temple).filter_by(slug="somnath-darshan")).scalar_one_or_none()
-    if temple is None:
-        temple = Temple(
-            city_id=city.id,
-            state_id=state.id,
-            country_id=country.id,
-            address_id=address.id,
-            name="Somnath Darshan Center",
-            slug="somnath-darshan",
-            temple_type=TempleType.MAIN.value,
-            deity_name="Shiva",
-            address_line1="12 Sample Road",
-            pincode="380001",
-            description="Sample temple record for initial database verification.",
-            history="Seeded sample temple for Namo Setu.",
-            is_active=True,
-        )
-        session.add(temple)
-        session.flush()
-
-    if session.execute(select(TempleTiming).filter_by(temple_id=temple.id, day_of_week=0)).scalar_one_or_none() is None:
-        session.add(TempleTiming(temple_id=temple.id, day_of_week=0, opens_at="06:00", closes_at="21:00", is_closed=False))
-    if session.execute(select(DarshanSlot).filter_by(temple_id=temple.id, slot_date=date.today())).scalar_one_or_none() is None:
-        session.add(
-            DarshanSlot(
-                temple_id=temple.id,
-                slot_date=date.today(),
-                start_time="08:00",
-                end_time="09:00",
-                capacity=50,
-                booked_count=0,
-                slot_status=DarshanSlotStatus.AVAILABLE.value,
-            )
-        )
-    session.flush()
-
     organization = session.execute(select(Organization).filter_by(name="MODIT Core Supplies")).scalar_one_or_none()
     if organization is None:
         organization = Organization(name="MODIT Core Supplies", organization_type=OrganizationType.SUPPLIER.value if hasattr(OrganizationType, "SUPPLIER") else "supplier", is_active=True)

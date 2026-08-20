@@ -112,19 +112,19 @@ class NotificationService:
             logger.error("Failed to send email notification: %s", exc)
             return False
 
-    async def send_booking_confirmation(
-        self, session: AsyncSession, user_id: str, booking_details: dict[str, Any]
+    async def send_order_confirmation(
+        self, session: AsyncSession, user_id: str, order_details: dict[str, Any]
     ) -> list[Notification]:
-        """Send booking confirmation via all channels."""
+        """Send order confirmation via all channels."""
         return await self.send_notification(
             session,
-            product_code="namo_setu",
+            product_code="modit",
             user_id=user_id,
-            title="Booking Confirmed",
-            message=f"Your booking {booking_details.get('booking_number', '')} has been confirmed.",
+            title="Order Confirmed",
+            message=f"Your order {order_details.get('order_number', '')} has been confirmed.",
             channels=["in_app", "email"],
-            template_key="booking_confirmation",
-            metadata=booking_details,
+            template_key="order_confirmation",
+            metadata=order_details,
         )
 
     async def send_payment_confirmation(
@@ -133,7 +133,7 @@ class NotificationService:
         """Send payment confirmation."""
         return await self.send_notification(
             session,
-            product_code="namo_setu",
+            product_code="modit",
             user_id=user_id,
             title="Payment Received",
             message=f"Payment of {payment_details.get('amount', '0')} {payment_details.get('currency', 'INR')} confirmed.",
@@ -156,21 +156,6 @@ class NotificationService:
             channels=["in_app", "email"],
             template_key="order_status",
             metadata=order_details,
-        )
-
-    async def send_festival_reminder(
-        self, session: AsyncSession, user_id: str, festival_details: dict[str, Any]
-    ) -> list[Notification]:
-        """Send festival reminder notification."""
-        return await self.send_notification(
-            session,
-            product_code="namo_setu",
-            user_id=user_id,
-            title="Festival Reminder",
-            message=f"Don't miss {festival_details.get('name', 'the festival')} at {festival_details.get('temple', '')}!",
-            channels=["in_app", "email"],
-            template_key="festival_reminder",
-            metadata=festival_details,
         )
 
     async def send_rfq_notification(

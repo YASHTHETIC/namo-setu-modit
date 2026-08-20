@@ -151,7 +151,7 @@ const demoOrders: Record<string, OrderDetail> = {
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof Package }> = {
   confirmed: { label: "Confirmed", color: "bg-blue-50 text-blue-700", icon: CheckCircle2 },
-  processing: { label: "Processing", color: "bg-amber-50 text-amber-700", icon: Clock },
+  processing: { label: "Processing", color: "bg-purple-50 text-purple-700", icon: Clock },
   dispatched: { label: "Dispatched", color: "bg-purple-50 text-purple-700", icon: Package },
   in_transit: { label: "In Transit", color: "bg-blue-50 text-blue-700", icon: Truck },
   delivered: { label: "Delivered", color: "bg-emerald-50 text-emerald-700", icon: CheckCircle2 },
@@ -287,7 +287,7 @@ export default function OrderDetailPage({
             <div className="divide-y divide-[var(--border-subtle)]">
               {order.items.map((item, i) => (
                 <div key={i} className="flex gap-4 px-6 py-4">
-                  <div className="h-16 w-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center">
+                  <div className="h-16 w-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-purple-50 via-purple-50 to-purple-100 flex items-center justify-center">
                     <Package className="h-6 w-6 text-[var(--brand)]/30" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -353,7 +353,7 @@ export default function OrderDetailPage({
                   <span>{order.payment.method}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className={`font-medium ${order.payment.status === "paid" ? "text-emerald-600" : "text-amber-600"}`}>
+                  <span className={`font-medium ${order.payment.status === "paid" ? "text-emerald-600" : "text-purple-600"}`}>
                     {order.payment.status === "paid" ? "Paid" : "Pending"}
                   </span>
                   {order.payment.transactionId && (

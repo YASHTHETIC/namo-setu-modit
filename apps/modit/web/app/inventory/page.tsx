@@ -40,13 +40,13 @@ export default function InventoryPage() {
       </div>
 
       {alertList.length > 0 && (
-        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 animate-[fadeIn_0.4s_ease-out]">
-          <div className="mb-2 flex items-center gap-2 font-medium text-amber-800">
+        <div className="mb-6 rounded-2xl border border-purple-200 bg-purple-50 p-4 animate-[fadeIn_0.4s_ease-out]">
+          <div className="mb-2 flex items-center gap-2 font-medium text-purple-800">
             <AlertTriangle className="h-4 w-4" /> Inventory Alerts
           </div>
           <div className="space-y-1">
             {alertList.map((alert, i) => (
-              <div key={i} className="text-sm text-amber-700">
+              <div key={i} className="text-sm text-purple-700">
                 {alert.alert_type}: {alert.product_name} at {alert.warehouse_name} ({alert.current_stock} / {alert.reorder_level})
               </div>
             ))}

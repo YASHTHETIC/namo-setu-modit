@@ -8,8 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.core.config import get_settings
-from backend.app.models.namo_setu import Accommodation, Hotel, Temple
-from backend.app.services.namo import haversine_km
+
 
 logger = logging.getLogger(__name__)
 

@@ -433,33 +433,6 @@ class CloudinaryService:
         await db.flush()
         return doc
 
-    async def upload_temple_image(
-        self,
-        db: "AsyncSession",
-        *,
-        upload: UploadFile,
-        temple_id: str,
-        product_code: ProductCode | str = ProductCode.NAMO_SETU,
-        owner_user_id: str | None = None,
-        transformation: ImageTransformation | None = None,
-    ) -> MediaAsset:
-        folder = "namo_setu/temples"
-        public_id = f"temple_{temple_id}_{uuid.uuid4().hex[:8]}"
-        tags = ["temple", "namo_setu", temple_id]
-        context = {"temple_id": temple_id}
-        return await self.upload_image_to_db(
-            db,
-            upload=upload,
-            folder=folder,
-            product_code=product_code,
-            owner_user_id=owner_user_id,
-            media_type=MediaType.IMAGE.value,
-            transformation=transformation,
-            tags=tags,
-            context=context,
-            public_id=public_id,
-        )
-
     async def upload_product_image(
         self,
         db: "AsyncSession",

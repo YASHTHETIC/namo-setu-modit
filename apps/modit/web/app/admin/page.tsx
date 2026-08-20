@@ -18,7 +18,7 @@ const adminLinks = [
   { href: "/products", label: "Product Management", desc: "Manage product catalog and approvals", icon: Package, color: "bg-blue-100 text-blue-600" },
   { href: "/suppliers", label: "Supplier Management", desc: "Verify and manage suppliers", icon: Users, color: "bg-emerald-100 text-emerald-600" },
   { href: "/projects", label: "Project Management", desc: "Manage construction projects", icon: FolderOpen, color: "bg-purple-100 text-purple-600" },
-  { href: "/analytics", label: "Analytics", desc: "View reports and insights", icon: BarChart3, color: "bg-amber-100 text-amber-600" },
+  { href: "/analytics", label: "Analytics", desc: "View reports and insights", icon: BarChart3, color: "bg-purple-100 text-purple-600" },
   { href: "/orders", label: "Orders", desc: "Track and manage orders", icon: ShoppingCart, color: "bg-rose-100 text-rose-600" },
   { href: "/rfq", label: "RFQ Management", desc: "Manage requests for quotation", icon: FileText, color: "bg-indigo-100 text-indigo-600" },
 ];
@@ -59,7 +59,7 @@ export default function AdminPage() {
             </div>
           ) : (
             <div className="mt-3 flex items-center gap-3">
-              <span className="flex h-3 w-3 items-center justify-center rounded-full bg-amber-500" />
+              <span className="flex h-3 w-3 items-center justify-center rounded-full bg-green-500" />
               <span className="text-sm text-[var(--text-secondary)]">Connecting to backend...</span>
             </div>
           )}

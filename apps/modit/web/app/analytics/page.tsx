@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
   const maxValue = Math.max(...monthlyData.map((m) => m.value));
   const categoryData = [
     { name: "Cement & Concrete", value: 32, color: "from-[var(--brand)] to-[var(--brand-light)]" },
-    { name: "Steel & TMT", value: 24, color: "from-amber-500 to-orange-400" },
+    { name: "Steel & TMT", value: 24, color: "from-purple-500 to-pink-400" },
     { name: "Tiles & Flooring", value: 18, color: "from-teal-500 to-emerald-400" },
     { name: "Paint & Chemicals", value: 14, color: "from-purple-500 to-indigo-400" },
     { name: "Electrical & Plumbing", value: 12, color: "from-sky-500 to-blue-400" },
@@ -136,7 +136,7 @@ export default function AnalyticsPage() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-[var(--text-muted)]">Low Stock Items</span>
-                <span className="inline-flex items-center gap-1 font-medium text-amber-600">
+                <span className="inline-flex items-center gap-1 font-medium text-purple-600">
                   <AlertTriangle className="h-3.5 w-3.5" /> {d.low_stock_items}
                 </span>
               </div>

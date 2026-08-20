@@ -2,7 +2,6 @@ from enum import StrEnum
 
 
 class ProductCode(StrEnum):
-    NAMO_SETU = "namo_setu"
     MODIT = "modit"
 
 
@@ -70,85 +69,6 @@ class AIMessageRole(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
     TOOL = "tool"
-
-
-class ReviewTargetType(StrEnum):
-    TEMPLE = "temple"
-    PRODUCT = "product"
-    ORGANIZATION = "organization"
-    HOTEL = "hotel"
-    GUIDE = "guide"
-
-
-class SearchSource(StrEnum):
-    NAMO = "namo"
-    MODIT = "modit"
-
-
-class AnalyticsEventType(StrEnum):
-    PAGE_VIEW = "page_view"
-    SEARCH = "search"
-    BOOKING = "booking"
-    ORDER = "order"
-    PAYMENT = "payment"
-    AI_INTERACTION = "ai_interaction"
-
-
-class TempleType(StrEnum):
-    MAIN = "main"
-    SUB = "sub"
-    SHRINE = "shrine"
-    ASHRAM = "ashram"
-
-
-class BookingStatus(StrEnum):
-    DRAFT = "draft"
-    RESERVED = "reserved"
-    CONFIRMED = "confirmed"
-    CANCELLED = "cancelled"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class DarshanSlotStatus(StrEnum):
-    AVAILABLE = "available"
-    HOLD = "hold"
-    FULL = "full"
-
-
-class PaymentStatus(StrEnum):
-    PENDING = "pending"
-    AUTHORIZED = "authorized"
-    CAPTURED = "captured"
-    FAILED = "failed"
-    REFUNDED = "refunded"
-
-
-class RefundStatus(StrEnum):
-    REQUESTED = "requested"
-    APPROVED = "approved"
-    PROCESSED = "processed"
-    REJECTED = "rejected"
-
-
-class AccommodationType(StrEnum):
-    HOTEL = "hotel"
-    DHARAMSHALA = "dharamshala"
-    GUEST_HOUSE = "guest_house"
-
-
-class TransportType(StrEnum):
-    CAB = "cab"
-    BUS = "bus"
-    TEMPO = "tempo"
-    SHUTTLE = "shuttle"
-
-
-class PujaStatus(StrEnum):
-    DRAFT = "draft"
-    SCHEDULED = "scheduled"
-    COMPLETED = "completed"
-    CANCELLED = "cancelled"
 
 
 class OrganizationType(StrEnum):

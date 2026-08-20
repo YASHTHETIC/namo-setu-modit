@@ -366,7 +366,7 @@ export function Badge({
         {
           "bg-[var(--brand-50)] text-[var(--brand)]": variant === "default",
           "bg-emerald-50 text-emerald-700": variant === "success",
-          "bg-amber-50 text-amber-700": variant === "warning",
+          "bg-purple-50 text-purple-700": variant === "warning",
           "bg-red-50 text-red-700": variant === "danger",
           "bg-blue-50 text-blue-700": variant === "info",
         },
@@ -388,7 +388,7 @@ export function StatusPill({
   const variants: Record<string, string> = {
     active: "bg-[var(--brand-50)] text-[var(--brand)]",
     draft: "bg-slate-100 text-slate-600",
-    pending: "bg-amber-50 text-amber-700",
+    pending: "bg-purple-50 text-purple-700",
     approved: "bg-[var(--success-light)] text-[var(--success)]",
     rejected: "bg-[var(--danger-light)] text-[var(--danger)]",
     delivered: "bg-[var(--success-light)] text-[var(--success)]",
@@ -400,7 +400,7 @@ export function StatusPill({
     cancelled: "bg-[var(--danger-light)] text-[var(--danger)]",
     paid: "bg-[var(--success-light)] text-[var(--success)]",
     in_stock: "bg-[var(--success-light)] text-[var(--success)]",
-    low_stock: "bg-amber-50 text-amber-700",
+    low_stock: "bg-purple-50 text-purple-700",
     out_of_stock: "bg-[var(--danger-light)] text-[var(--danger)]",
   };
 

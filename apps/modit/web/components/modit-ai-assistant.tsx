@@ -94,7 +94,7 @@ export function ModitAIAssistant() {
               {aiAssistant.isPending ? "Processing..." : "Ask"}
             </Button>
             {aiError && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -147,7 +147,7 @@ export function ModitAIAssistant() {
               {materialRecommendation.isPending ? "Analyzing..." : "Get Recommendations"}
             </Button>
             {aiError && activeTab === "recommendation" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -196,7 +196,7 @@ export function ModitAIAssistant() {
               {boqReader.isPending ? "Processing..." : "Read BOQ"}
             </Button>
             {aiError && activeTab === "boq" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -238,7 +238,7 @@ export function ModitAIAssistant() {
               {quoteComparison.isPending ? "Analyzing..." : "Compare Quotes"}
             </Button>
             {aiError && activeTab === "quote" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -284,7 +284,7 @@ export function ModitAIAssistant() {
               {vendorMatching.isPending ? "Matching..." : "Find Vendors"}
             </Button>
             {aiError && activeTab === "vendor" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -315,7 +315,7 @@ export function ModitAIAssistant() {
               {voiceOrder.isPending ? "Processing..." : "Process Order"}
             </Button>
             {aiError && activeTab === "voice" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}
@@ -345,7 +345,7 @@ export function ModitAIAssistant() {
               {smartReorder.isPending ? "Analyzing..." : "Get Reorder Suggestions"}
             </Button>
             {aiError && activeTab === "reorder" && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-4 text-sm text-purple-800">
                 {aiError}
               </div>
             )}

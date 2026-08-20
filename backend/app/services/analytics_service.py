@@ -8,7 +8,6 @@ from typing import Any
 from sqlalchemy import func, select, and_, extract
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.models.namo_setu import Donation, NamoBooking, Temple
 from backend.app.models.modit import (
     Inventory,
     Order,

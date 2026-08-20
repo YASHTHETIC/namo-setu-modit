@@ -13,38 +13,12 @@ from backend.app.schemas.analytics import (
     ExportRequest,
     GrowthMetrics,
     HeatmapData,
-    NamoAnalyticsResponse,
     ModitAnalyticsResponse,
     RevenueForecast,
 )
 from backend.app.services.analytics_service import AnalyticsService
 
 router = APIRouter()
-
-
-@router.get(
-    "/analytics/namo",
-    response_model=NamoAnalyticsResponse,
-    dependencies=[Depends(require_permission(PermissionName.USER_MANAGE))],
-    summary="Namo Setu analytics dashboard",
-)
-async def get_namo_analytics(
-    period_days: int = Query(default=30, ge=1, le=365),
-    db: AsyncSession = Depends(get_db),
-) -> NamoAnalyticsResponse:
-    data = await AnalyticsService.get_namo_analytics(db, period_days=period_days)
-    return NamoAnalyticsResponse(
-        revenue=data["revenue"],
-        bookings=data["bookings"],
-        donations_total=data["donations_total"],
-        donations_growth_pct=data["donations_growth_pct"],
-        temples_active=data["temples_active"],
-        users_new=data["users_new"],
-        top_temples=data["top_temples"],
-        avg_booking_value=data["avg_booking_value"],
-        conversion_rate=data["conversion_rate"],
-        insights=[],
-    )
 
 
 @router.get(

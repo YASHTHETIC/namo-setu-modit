@@ -350,24 +350,6 @@ class AIService:
 
     @staticmethod
     def _fallback_response(user_message: str, product_code: str) -> str:
-        lower = user_message.lower()
-        if product_code == "namo_setu":
-            if "temple" in lower:
-                return (
-                    "For temple visits, I recommend checking the official temple website for darshan timings "
-                    "and booking your slot in advance. Popular temples like Tirumala, Varanasi, and Rishikesh "
-                    "tend to have long queues during peak seasons."
-                )
-            if "trip" in lower or "travel" in lower:
-                return (
-                    "For a spiritual trip, consider combining nearby temples into a single itinerary. "
-                    "Start with an early morning darshan, followed by a local sightseeing tour, "
-                    "and end with an evening aarti."
-                )
-            return (
-                "Welcome to Namo Setu! I can help you plan temple visits, book darshan slots, "
-                "find nearby temples, and arrange spiritual travel packages."
-            )
         return (
             "I can help you with construction material sourcing, price comparisons, vendor recommendations, "
             "and project cost estimation. Please ask a specific question to get started."

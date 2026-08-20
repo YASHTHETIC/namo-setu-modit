@@ -105,7 +105,7 @@ export default function WishlistPage() {
                 <Heart className="h-4 w-4 fill-red-500 text-red-500" />
               </button>
               {product.discount > 0 && (
-                <span className="absolute top-2 right-2 z-[2] rounded-lg bg-[#DC2626] px-2 py-0.5 text-[10px] font-bold text-white">
+                <span className="absolute top-2 right-2 z-[2] rounded-lg bg-[#E91E63] px-2 py-0.5 text-[10px] font-bold text-white">
                   {product.discount}% OFF
                 </span>
               )}
