@@ -18,16 +18,24 @@ const config: Config = {
           light: "var(--brand-light)",
           dark: "var(--brand-dark)",
         },
-        slate: {
-          deep: "var(--slate-deep)",
+        green: {
+          DEFAULT: "#7CB518",
+          light: "#F0F9E8",
+          dark: "#5A8010",
         },
-        steel: {
-          DEFAULT: "var(--steel)",
-          light: "var(--steel-light)",
+        pink: {
+          DEFAULT: "#E91E63",
+          light: "#FCE4EC",
+          dark: "#AD1457",
+        },
+        cyan: {
+          DEFAULT: "#00BCD4",
+          light: "#E0F7FA",
+          dark: "#00838F",
         },
       },
       boxShadow: {
-        glow: "0 20px 80px rgba(234, 88, 12, 0.15)",
+        glow: "0 20px 80px rgba(45, 27, 105, 0.15)",
         "brand-sm": "var(--shadow-brand-soft)",
         "brand-md": "var(--shadow-brand)",
       },
@@ -75,8 +83,8 @@ const config: Config = {
           "50%": { transform: "translateY(-6px)" },
         },
         glowPulse: {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(234, 88, 12, 0.15)" },
-          "50%": { boxShadow: "0 0 40px rgba(234, 88, 12, 0.3)" },
+          "0%, 100%": { boxShadow: "0 0 20px rgba(45, 27, 105, 0.15)" },
+          "50%": { boxShadow: "0 0 40px rgba(45, 27, 105, 0.3)" },
         },
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
