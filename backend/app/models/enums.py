@@ -150,3 +150,25 @@ class PaymentStatus(StrEnum):
     CANCELLED = "cancelled"
 
 
+class AnalyticsEventType(StrEnum):
+    PAGE_VIEW = "page_view"
+    PRODUCT_VIEW = "product_view"
+    SEARCH = "search"
+    ADD_TO_CART = "add_to_cart"
+    REMOVE_FROM_CART = "remove_from_cart"
+    CHECKOUT_START = "checkout_start"
+    CHECKOUT_COMPLETE = "checkout_complete"
+    RFQ_SUBMIT = "rfq_submit"
+    QUOTATION_REQUEST = "quotation_request"
+
+
+class ReviewTargetType(StrEnum):
+    PRODUCT = "product"
+    SUPPLIER = "supplier"
+    PROJECT = "project"
+
+
+class SearchSource(StrEnum):
+    MODIT = "modit"
+
+
