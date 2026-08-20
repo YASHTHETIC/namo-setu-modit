@@ -13,6 +13,7 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { searchProducts, products as allProducts, type Product as ProductType } from "@/lib/product-data";
+import { ModitLogo } from "@/components/modit-logo";
 
 const PRODUCTS = [
   { id: "cement-1", name: "UltraTech Cement OPC 53 Grade 50kg", brand: "UltraTech", price: 385, mrp: 410, discount: 6, rating: 4.7, reviews: 2340, img: "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge: "Bestseller", category: "Cement", supplier: "BuildMart India", delivery: "Tomorrow" },
@@ -232,7 +233,7 @@ export default function ModitHomePage() {
         <div className="max-w-[1440px] mx-auto flex h-[64px] items-center gap-4 px-4 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <img src="/modit-logo.svg" alt="MODIT — Materials on Door" className="h-[42px] w-auto" />
+            <ModitLogo className="h-[42px] w-auto" />
           </Link>
 
           {/* Deliver to */}
@@ -646,7 +647,7 @@ export default function ModitHomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-8">
             <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center gap-1.5 mb-3">
-                <img src="/modit-logo.svg" alt="MODIT" className="h-[36px] w-auto brightness-0 invert opacity-90" />
+                <ModitLogo className="h-[36px] w-auto" dark={false} />
               </div>
               <p className="text-[11px] text-white/35 leading-relaxed mb-4">India&apos;s B2B marketplace for construction materials. Compare prices from 500+ verified suppliers.</p>
               <div className="flex gap-2">

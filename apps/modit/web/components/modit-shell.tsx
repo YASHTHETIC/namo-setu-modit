@@ -24,6 +24,7 @@ import {
 
 import { useCartStore } from "@/lib/cart-store";
 import { categories, products as catalogProducts, searchProducts, type Product } from "@/lib/product-data";
+import { ModitLogo } from "@/components/modit-logo";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -96,7 +97,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-purple-200/60" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
         <div className="market-container flex min-h-[76px] items-center gap-3 py-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <img src="/modit-logo.svg" alt="MODIT — Materials on Door" className="h-[46px] w-auto" />
+            <ModitLogo className="h-[46px] w-auto" />
           </Link>
 
           <div ref={megaMenuRef} className="relative hidden xl:block">
@@ -387,7 +388,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <img src="/modit-logo.svg" alt="MODIT" className="h-[38px] w-auto" />
+                  <ModitLogo className="h-[38px] w-auto" />
                 </div>
                 <button type="button" onClick={() => setShowMobileMenu(false)} aria-label="Close menu" className="rounded-full p-2 text-[var(--text-secondary)]">
                   <X className="h-5 w-5" />
@@ -434,7 +435,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
-                <img src="/modit-logo.svg" alt="MODIT" className="h-[42px] w-auto" />
+                <ModitLogo className="h-[42px] w-auto" dark={false} />
               </div>
               <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
                 A production-grade procurement platform for building materials, supplier sourcing, bulk orders, and enterprise checkout.
