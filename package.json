@@ -1,12 +1,11 @@
 {
-  "name": "namo-setu-modit-monorepo",
+  "name": "modit-monorepo",
   "private": true,
   "workspaces": [
     "apps/*/web",
     "packages/*"
   ],
   "scripts": {
-    "dev:namo": "npm run dev --workspace @namo-setu/web",
     "dev:modit": "npm run dev --workspace @modit/web",
     "dev:backend": "python -m uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000",
     "build": "npm run build --workspaces --if-present",

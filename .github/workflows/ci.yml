@@ -62,10 +62,6 @@ jobs:
           cache: npm
       - name: Install frontend dependencies
         run: npm install
-      - name: Typecheck Namo Setu
-        run: npm run typecheck --workspace @namo-setu/web
-      - name: Build Namo Setu
-        run: npm run build --workspace @namo-setu/web
       - name: Typecheck MODIT
         run: npm run typecheck --workspace @modit/web
       - name: Build MODIT
