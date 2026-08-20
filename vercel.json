@@ -1,7 +1,12 @@
 {
-  "installCommand": "npm install --no-package-lock",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
+  "services": {
+    "web": {
+      "source": "apps/modit/web",
+      "installCommand": "cd ../.. && npm install --no-package-lock",
+      "buildCommand": "cd ../.. && npm run build --workspace=@modit/web",
+      "outputDirectory": ".next"
+    }
+  },
   "regions": ["iad1"],
   "github": {
     "silent": true
