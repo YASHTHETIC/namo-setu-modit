@@ -1,5 +1,27 @@
 import type { ApiClient } from "./index";
 
+// ── Layout (Server-Driven UI) ───────────────────────────────────────
+
+export interface LayoutResponse {
+  version: string;
+  screen: string;
+  meta: {
+    pincode: string;
+    city: string;
+    eta: string;
+    store_id?: string;
+    is_serviceable: boolean;
+    user_segment: string;
+  };
+  sections: Array<{
+    type: string;
+    id: string;
+    data: Record<string, unknown>;
+    order: number;
+    visible: boolean;
+  }>;
+}
+
 // Product Catalog
 export interface ProductRead {
   id: string;
@@ -762,6 +784,15 @@ export function createModitApi(client: ApiClient) {
 
     createNotification(organizationId: string, title: string, body: string) {
       return client.request(`${base}/notifications?organization_id=${organizationId}&title=${title}&body=${body}`, { method: "POST" });
+    },
+
+    // Layout (Server-Driven UI)
+    getLayout(screen: string, params?: { pincode?: string; segment?: string }) {
+      const qs = new URLSearchParams();
+      if (params?.pincode) qs.set("pincode", params.pincode);
+      if (params?.segment) qs.set("segment", params.segment);
+      const query = qs.toString();
+      return client.request<LayoutResponse>(`${base}/layout/${screen}${query ? `?${query}` : ""}`);
     },
   };
 }

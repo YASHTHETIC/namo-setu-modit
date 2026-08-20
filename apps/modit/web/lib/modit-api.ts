@@ -44,6 +44,7 @@ export const moditKeys = {
   materialRequests: (projectId: string) => ["modit", "material-requests", projectId] as const,
   analytics: () => ["modit", "analytics"] as const,
   notifications: (orgId: string) => ["modit", "notifications", orgId] as const,
+  layout: (screen: string, pincode?: string) => ["modit", "layout", screen, pincode] as const,
 };
 
 // Product Catalog
@@ -506,5 +507,20 @@ export function useCreateModitNotification() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.all }),
   });
 }
+
+// ── Layout (Server-Driven UI) ───────────────────────────────────────
+
+import type { LayoutResponse } from "@foundation/api-client";
+
+export function useHomeLayout(pincode?: string) {
+  return useQuery({
+    queryKey: moditKeys.layout("home", pincode),
+    queryFn: () => getModitApi().getLayout("home", { pincode }),
+    staleTime: 5 * 60 * 1000, // 5 min
+    placeholderData: (prev) => prev, // keep previous data while refetching
+  });
+}
+
+export type { LayoutResponse };
 
 export { getModitApi };
