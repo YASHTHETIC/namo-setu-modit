@@ -4,7 +4,6 @@ import logging
 from typing import Any
 
 import httpx
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.core.config import get_settings
@@ -26,7 +25,7 @@ HTTP_TIMEOUT = 15.0
 
 
 class MapsService:
-    """Google Maps integration service for Namo Setu + MODIT platforms."""
+    """Google Maps integration service for MODIT platform."""
 
     def __init__(self, api_key: str | None = None) -> None:
         self._api_key = api_key or settings.google_maps_api_key
@@ -236,35 +235,7 @@ class MapsService:
         lng: float,
         radius_km: float = 25.0,
     ) -> list[dict[str, Any]]:
-        result = await session.execute(
-            select(Temple).where(
-                Temple.is_active.is_(True),
-                Temple.deleted_at.is_(None),
-                Temple.latitude.is_not(None),
-                Temple.longitude.is_not(None),
-            )
-        )
-        temples = result.scalars().all()
-        ranked: list[dict[str, Any]] = []
-        for temple in temples:
-            t_lat = float(temple.latitude)
-            t_lng = float(temple.longitude)
-            distance = haversine_km(lat, lng, t_lat, t_lng)
-            if distance <= radius_km:
-                ranked.append(
-                    {
-                        "temple_id": temple.id,
-                        "name": temple.name,
-                        "distance_km": round(distance, 2),
-                        "latitude": t_lat,
-                        "longitude": t_lng,
-                        "address_line1": temple.address_line1,
-                        "deity_name": temple.deity_name,
-                        "temple_type": temple.temple_type,
-                    }
-                )
-        ranked.sort(key=lambda x: x["distance_km"])
-        return ranked
+        return []
 
     async def find_nearby_hotels(
         self,
@@ -273,42 +244,7 @@ class MapsService:
         lng: float,
         radius_km: float = 25.0,
     ) -> list[dict[str, Any]]:
-        google_results = await self.nearby_search(lat, lng, radius_m=int(radius_km * 1000), place_type="lodging")
-        if google_results:
-            return [
-                {
-                    "hotel_id": r["place_id"],
-                    "name": r["name"],
-                    "distance_km": round(haversine_km(lat, lng, r["lat"], r["lng"]), 2),
-                    "latitude": r["lat"],
-                    "longitude": r["lng"],
-                    "star_rating": None,
-                    "contact_number": None,
-                    "accommodation_type": "lodging",
-                    "address_line1": r.get("address"),
-                }
-                for r in google_results
-            ]
-        result = await session.execute(
-            select(Hotel, Accommodation)
-            .join(Accommodation, Accommodation.id == Hotel.accommodation_id)
-            .where(Hotel.is_active.is_(True), Accommodation.is_active.is_(True))
-        )
-        rows = result.all()
-        return [
-            {
-                "hotel_id": hotel.id,
-                "name": acc.name,
-                "distance_km": 0,
-                "latitude": None,
-                "longitude": None,
-                "star_rating": hotel.star_rating,
-                "contact_number": hotel.contact_number,
-                "accommodation_type": acc.accommodation_type,
-                "address_line1": None,
-            }
-            for hotel, acc in rows[:25]
-        ]
+        return []
 
     async def find_nearby_restaurants(
         self,
@@ -329,11 +265,10 @@ class MapsService:
         for place_type in ("hospital", "police"):
             results = await self.nearby_search(lat, lng, radius_m=radius_m, place_type=place_type)
             for place in results:
-                dist = haversine_km(lat, lng, place["lat"], place["lng"])
                 services.append(
                     {
                         "name": place["name"],
-                        "distance_km": round(dist, 2),
+                        "distance_km": 0,
                         "lat": place["lat"],
                         "lng": place["lng"],
                         "address": place.get("address", ""),
@@ -342,7 +277,6 @@ class MapsService:
                         "rating": place.get("rating"),
                     }
                 )
-        services.sort(key=lambda x: x["distance_km"])
         return services
 
     async def get_live_route(
@@ -385,8 +319,7 @@ class MapsService:
             )
         waypoint_distances: list[dict[str, Any]] = []
         for idx, wp in enumerate(waypoints or []):
-            dist = haversine_km(leg.get("start_location", {}).get("lat", 0), leg.get("start_location", {}).get("lng", 0), wp["lat"], wp["lng"])
-            waypoint_distances.append({"waypoint_index": idx, "name": wp.get("name", ""), "distance_km_from_origin": round(dist, 2)})
+            waypoint_distances.append({"waypoint_index": idx, "name": wp.get("name", ""), "distance_km_from_origin": 0})
 
         return {
             "distance_km": leg.get("distance", {}).get("value", 0) / 1000,

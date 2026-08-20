@@ -1,8 +1,6 @@
 import { joinUrl } from "@foundation/utils";
 
-export * from "./namo";
 export * from "./modit";
-export { createNamoApi } from "./namo";
 export { createModitApi } from "./modit";
 
 export interface ApiClientOptions {

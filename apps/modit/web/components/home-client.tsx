@@ -122,7 +122,7 @@ export function HomeClient() {
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white/80 p-4">
           <ArrowRight className="mb-3 h-5 w-5 text-[rgb(var(--brand))]" />
-          Namo Setu will reuse the same engineering base with separate business modules.
+          The platform is designed for secure domain expansion and modular growth.
         </div>
       </section>
     </main>

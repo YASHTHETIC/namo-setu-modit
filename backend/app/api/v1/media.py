@@ -479,12 +479,12 @@ async def upload_temple_images(
         db,
         upload=upload,
         temple_id=temple_id,
-        product_code=ProductCode.NAMO_SETU,
+        product_code=ProductCode.MODIT,
         owner_user_id=user.id,
     )
     await create_audit_log(
         db,
-        product_code=ProductCode.NAMO_SETU,
+        product_code=ProductCode.MODIT,
         actor_user_id=user.id,
         action="media.upload_temple_image",
         entity_type="media",

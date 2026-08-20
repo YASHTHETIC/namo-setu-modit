@@ -24,190 +24,6 @@ from backend.app.models.enums import ProductCode
 
 
 class AnalyticsService:
-    # ── Namo Setu ────────────────────────────────────────────────────────
-
-    @staticmethod
-    async def get_namo_analytics(session: AsyncSession, period_days: int = 30) -> dict[str, Any]:
-        now = datetime.utcnow()
-        cutoff = now - timedelta(days=period_days)
-        prev_cutoff = cutoff - timedelta(days=period_days)
-
-        # total bookings
-        total_bookings = (
-            await session.execute(
-                select(func.count(NamoBooking.id)).where(NamoBooking.created_at >= cutoff)
-            )
-        ).scalar_one()
-
-        prev_bookings = (
-            await session.execute(
-                select(func.count(NamoBooking.id)).where(
-                    and_(NamoBooking.created_at >= prev_cutoff, NamoBooking.created_at < cutoff)
-                )
-            )
-        ).scalar_one()
-
-        booking_growth = ((total_bookings - prev_bookings) / prev_bookings * 100) if prev_bookings else 0.0
-
-        # bookings by status
-        by_status_rows = (
-            await session.execute(
-                select(NamoBooking.booking_status, func.count())
-                .where(NamoBooking.created_at >= cutoff)
-                .group_by(NamoBooking.booking_status)
-            )
-        ).all()
-        by_status = {row[0]: row[1] for row in by_status_rows}
-
-        # bookings by date
-        by_date_rows = (
-            await session.execute(
-                select(
-                    func.date(NamoBooking.created_at).label("day"),
-                    func.count(),
-                )
-                .where(NamoBooking.created_at >= cutoff)
-                .group_by("day")
-                .order_by("day")
-            )
-        ).all()
-        by_date = {str(row[0]): row[1] for row in by_date_rows}
-
-        # revenue from bookings
-        total_booking_revenue = float(
-            (
-                await session.execute(
-                    select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                        and_(
-                            NamoBooking.created_at >= cutoff,
-                            NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                        )
-                    )
-                )
-            ).scalar_one()
-        )
-
-        prev_booking_revenue = float(
-            (
-                await session.execute(
-                    select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                        and_(
-                            NamoBooking.created_at >= prev_cutoff,
-                            NamoBooking.created_at < cutoff,
-                            NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                        )
-                    )
-                )
-            ).scalar_one()
-        )
-
-        revenue_growth = (
-            ((total_booking_revenue - prev_booking_revenue) / prev_booking_revenue * 100)
-            if prev_booking_revenue
-            else 0.0
-        )
-
-        avg_booking_value = (total_booking_revenue / total_bookings) if total_bookings else 0.0
-
-        # donations
-        total_donations = float(
-            (
-                await session.execute(
-                    select(func.coalesce(func.sum(Donation.amount), 0)).where(
-                        Donation.created_at >= cutoff
-                    )
-                )
-            ).scalar_one()
-        )
-        prev_donations = float(
-            (
-                await session.execute(
-                    select(func.coalesce(func.sum(Donation.amount), 0)).where(
-                        and_(Donation.created_at >= prev_cutoff, Donation.created_at < cutoff)
-                    )
-                )
-            ).scalar_one()
-        )
-        donation_growth = ((total_donations - prev_donations) / prev_donations * 100) if prev_donations else 0.0
-
-        total_revenue = total_booking_revenue + total_donations
-
-        # active temples
-        active_temples = (
-            await session.execute(
-                select(func.count(Temple.id)).where(Temple.is_active == True)
-            )
-        ).scalar_one()
-
-        # new users
-        new_users = (
-            await session.execute(
-                select(func.count(User.id)).where(User.created_at >= cutoff)
-            )
-        ).scalar_one()
-
-        # top temples by revenue
-        top_temples_rows = (
-            await session.execute(
-                select(
-                    Temple.id,
-                    Temple.name,
-                    func.coalesce(func.sum(NamoBooking.total_amount), 0).label("rev"),
-                    func.count(NamoBooking.id).label("bk_count"),
-                )
-                .outerjoin(
-                    NamoBooking,
-                    and_(NamoBooking.temple_id == Temple.id, NamoBooking.created_at >= cutoff),
-                )
-                .group_by(Temple.id, Temple.name)
-                .order_by(func.sum(NamoBooking.total_amount).desc())
-                .limit(10)
-            )
-        ).all()
-        top_temples = [
-            {
-                "temple_id": str(r[0]),
-                "temple_name": r[1],
-                "revenue": float(r[2]),
-                "booking_count": r[3],
-            }
-            for r in top_temples_rows
-        ]
-
-        # bookings by temple
-        by_temple_rows = (
-            await session.execute(
-                select(Temple.name, func.count(NamoBooking.id))
-                .join(NamoBooking, NamoBooking.temple_id == Temple.id)
-                .where(NamoBooking.created_at >= cutoff)
-                .group_by(Temple.name)
-                .order_by(func.count(NamoBooking.id).desc())
-            )
-        ).all()
-        bookings_by_temple = {row[0]: row[1] for row in by_temple_rows}
-
-        # conversion rate
-        confirmed_count = by_status.get("confirmed", 0) + by_status.get("completed", 0)
-        conversion_rate = (confirmed_count / total_bookings * 100) if total_bookings else 0.0
-
-        return {
-            "revenue": {"total": total_revenue, "growth_pct": round(revenue_growth, 2)},
-            "bookings": {
-                "total": total_bookings,
-                "growth_pct": round(booking_growth, 2),
-                "by_status": by_status,
-                "by_date": by_date,
-                "by_temple": bookings_by_temple,
-            },
-            "donations_total": total_donations,
-            "donations_growth_pct": round(donation_growth, 2),
-            "temples_active": active_temples,
-            "users_new": new_users,
-            "top_temples": top_temples,
-            "avg_booking_value": round(avg_booking_value, 2),
-            "conversion_rate": round(conversion_rate, 2),
-        }
-
     # ── MODIT ────────────────────────────────────────────────────────────
 
     @staticmethod
@@ -374,33 +190,19 @@ class AnalyticsService:
         now = datetime.utcnow()
         lookback = months * 2
 
-        if product_code == ProductCode.NAMO_SETU:
-            monthly_rows = (
-                await session.execute(
-                    select(
-                        extract("year", NamoBooking.created_at).label("yr"),
-                        extract("month", NamoBooking.created_at).label("mo"),
-                        func.coalesce(func.sum(NamoBooking.total_amount), 0).label("rev"),
-                    )
-                    .where(NamoBooking.created_at >= now - timedelta(days=lookback * 31))
-                    .group_by("yr", "mo")
-                    .order_by("yr", "mo")
+        monthly_rows = (
+            await session.execute(
+                select(
+                    extract("year", Order.placed_at).label("yr"),
+                    extract("month", Order.placed_at).label("mo"),
+                    func.coalesce(func.sum(OrderItem.line_total), 0).label("rev"),
                 )
-            ).all()
-        else:
-            monthly_rows = (
-                await session.execute(
-                    select(
-                        extract("year", Order.placed_at).label("yr"),
-                        extract("month", Order.placed_at).label("mo"),
-                        func.coalesce(func.sum(OrderItem.line_total), 0).label("rev"),
-                    )
-                    .join(Order, OrderItem.order_id == Order.id)
-                    .where(Order.created_at >= now - timedelta(days=lookback * 31))
-                    .group_by("yr", "mo")
-                    .order_by("yr", "mo")
-                )
-            ).all()
+                .join(Order, OrderItem.order_id == Order.id)
+                .where(Order.created_at >= now - timedelta(days=lookback * 31))
+                .group_by("yr", "mo")
+                .order_by("yr", "mo")
+            )
+        ).all()
 
         if not monthly_rows:
             return {
@@ -479,24 +281,7 @@ class AnalyticsService:
     async def get_heatmap_data(
         session: AsyncSession, product_code: str, entity_type: str = "bookings"
     ) -> dict[str, Any]:
-        if product_code == ProductCode.NAMO_SETU and entity_type in ("bookings", "donations"):
-            rows = (
-                await session.execute(
-                    select(
-                        City.name.label("city"),
-                        State.name.label("state"),
-                        City.latitude,
-                        City.longitude,
-                        func.count().label("count"),
-                        func.coalesce(func.sum(NamoBooking.total_amount), 0).label("value"),
-                    )
-                    .join(Temple, Temple.city_id == City.id)
-                    .join(State, Temple.state_id == State.id)
-                    .outerjoin(NamoBooking, NamoBooking.temple_id == Temple.id)
-                    .group_by(City.name, State.name, City.latitude, City.longitude)
-                )
-            ).all()
-        elif product_code == ProductCode.MODIT:
+        if product_code == ProductCode.MODIT:
             rows = (
                 await session.execute(
                     select(
@@ -568,89 +353,42 @@ class AnalyticsService:
             "user_growth": _growth(current_users, prev_users),
         }
 
-        if product_code == ProductCode.NAMO_SETU:
-            cur_book = (
+        cur_orders = (
+            await session.execute(
+                select(func.count(Order.id)).where(Order.created_at >= cutoff)
+            )
+        ).scalar_one()
+        prev_orders = (
+            await session.execute(
+                select(func.count(Order.id)).where(
+                    and_(Order.created_at >= prev_cutoff, Order.created_at < cutoff)
+                )
+            )
+        ).scalar_one()
+        cur_rev = float(
+            (
                 await session.execute(
-                    select(func.count(NamoBooking.id)).where(NamoBooking.created_at >= cutoff)
+                    select(func.coalesce(func.sum(OrderItem.line_total), 0))
+                    .join(Order, OrderItem.order_id == Order.id)
+                    .where(Order.created_at >= cutoff)
                 )
             ).scalar_one()
-            prev_book = (
+        )
+        prev_rev = float(
+            (
                 await session.execute(
-                    select(func.count(NamoBooking.id)).where(
-                        and_(NamoBooking.created_at >= prev_cutoff, NamoBooking.created_at < cutoff)
-                    )
+                    select(func.coalesce(func.sum(OrderItem.line_total), 0))
+                    .join(Order, OrderItem.order_id == Order.id)
+                    .where(and_(Order.created_at >= prev_cutoff, Order.created_at < cutoff))
                 )
             ).scalar_one()
-            cur_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                            and_(
-                                NamoBooking.created_at >= cutoff,
-                                NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                            )
-                        )
-                    )
-                ).scalar_one()
-            )
-            prev_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                            and_(
-                                NamoBooking.created_at >= prev_cutoff,
-                                NamoBooking.created_at < cutoff,
-                                NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                            )
-                        )
-                    )
-                ).scalar_one()
-            )
-            result["booking_growth"] = _growth(cur_book, prev_book)
-            result["revenue_growth"] = {
-                "current": cur_rev,
-                "previous": prev_rev,
-                "growth_pct": round(((cur_rev - prev_rev) / prev_rev * 100) if prev_rev else 0.0, 2),
-            }
-            result["order_growth"] = {"current": 0, "previous": 0, "growth_pct": 0.0}
-        else:
-            cur_orders = (
-                await session.execute(
-                    select(func.count(Order.id)).where(Order.created_at >= cutoff)
-                )
-            ).scalar_one()
-            prev_orders = (
-                await session.execute(
-                    select(func.count(Order.id)).where(
-                        and_(Order.created_at >= prev_cutoff, Order.created_at < cutoff)
-                    )
-                )
-            ).scalar_one()
-            cur_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(OrderItem.line_total), 0))
-                        .join(Order, OrderItem.order_id == Order.id)
-                        .where(Order.created_at >= cutoff)
-                    )
-                ).scalar_one()
-            )
-            prev_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(OrderItem.line_total), 0))
-                        .join(Order, OrderItem.order_id == Order.id)
-                        .where(and_(Order.created_at >= prev_cutoff, Order.created_at < cutoff))
-                    )
-                ).scalar_one()
-            )
-            result["order_growth"] = _growth(cur_orders, prev_orders)
-            result["revenue_growth"] = {
-                "current": cur_rev,
-                "previous": prev_rev,
-                "growth_pct": round(((cur_rev - prev_rev) / prev_rev * 100) if prev_rev else 0.0, 2),
-            }
-            result["booking_growth"] = {"current": 0, "previous": 0, "growth_pct": 0.0}
+        )
+        result["order_growth"] = _growth(cur_orders, prev_orders)
+        result["revenue_growth"] = {
+            "current": cur_rev,
+            "previous": prev_rev,
+            "growth_pct": round(((cur_rev - prev_rev) / prev_rev * 100) if prev_rev else 0.0, 2),
+        }
 
         return result
 
@@ -666,74 +404,7 @@ class AnalyticsService:
         last_30 = now - timedelta(days=30)
         prev_30 = last_30 - timedelta(days=30)
 
-        if product_code == ProductCode.NAMO_SETU:
-            cur_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                            and_(
-                                NamoBooking.created_at >= last_30,
-                                NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                            )
-                        )
-                    )
-                ).scalar_one()
-            )
-            prev_rev = float(
-                (
-                    await session.execute(
-                        select(func.coalesce(func.sum(NamoBooking.total_amount), 0)).where(
-                            and_(
-                                NamoBooking.created_at >= prev_30,
-                                NamoBooking.created_at < last_30,
-                                NamoBooking.booking_status.in_(["confirmed", "completed"]),
-                            )
-                        )
-                    )
-                ).scalar_one()
-            )
-
-            if prev_rev > 0:
-                change = (cur_rev - prev_rev) / prev_rev * 100
-                if abs(change) > 25:
-                    direction = "increased" if change > 0 else "decreased"
-                    anomalies.append({
-                        "metric": "revenue",
-                        "value": cur_rev,
-                        "expected_range": [prev_rev * 0.75, prev_rev * 1.25],
-                        "severity": "high" if abs(change) > 50 else "medium",
-                        "description": f"Revenue {direction} by {abs(change):.1f}% compared to previous period",
-                    })
-
-            low_booked = (
-                await session.execute(
-                    select(Temple.name, func.count(NamoBooking.id).label("cnt"))
-                    .outerjoin(
-                        NamoBooking,
-                        and_(NamoBooking.temple_id == Temple.id, NamoBooking.created_at >= last_30),
-                    )
-                    .where(Temple.is_active == True)
-                    .group_by(Temple.name)
-                    .having(func.count(NamoBooking.id) < 5)
-                )
-            ).all()
-            if low_booked:
-                names = [r[0] for r in low_booked[:5]]
-                insights.append(
-                    f"{len(low_booked)} temples have fewer than 5 bookings in the last 30 days: {', '.join(names)}"
-                )
-                recommendations.append("Consider promotional campaigns for low-traffic temples")
-
-            recent = (
-                await session.execute(
-                    select(func.count(NamoBooking.id)).where(NamoBooking.created_at >= last_30)
-                )
-            ).scalar_one()
-            if recent == 0:
-                insights.append("No bookings recorded in the last 30 days")
-                recommendations.append("Review booking flow and marketing channels")
-
-        else:  # MODIT
+        if product_code == ProductCode.MODIT:
             cur_orders = (
                 await session.execute(
                     select(func.count(Order.id)).where(Order.created_at >= last_30)

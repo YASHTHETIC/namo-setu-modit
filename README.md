@@ -1,15 +1,11 @@
-# Namo Setu + MODIT Monorepo
+# MODIT Monorepo
 
-Two independent full-stack products in a single monorepo:
-
-- **Namo Setu** — Pilgrimage tourism and devotee assistance platform (port 3000)
-- **MODIT** — B2B building material marketplace and procurement platform (port 3001)
+A B2B building material marketplace and procurement platform.
 
 ## Architecture
 
 ```
 apps/
-  namo-setu/web/        Next.js 15 + React 19 (basePath: /namo)
   modit/web/            Next.js 15 + React 19 (basePath: /modit)
 backend/
   app/
@@ -19,10 +15,10 @@ backend/
     schemas/            Pydantic v2 request/response models
     services/           Business logic (no ORM in routes)
 packages/
-  api-client/           Typed fetch wrappers (createNamoApi, createModitApi)
+  api-client/           Typed fetch wrappers (createModitApi)
   ui/                   Shared React components
   utils/                Shared TypeScript utilities
-docker-compose.yml      PostgreSQL 16, Redis 7, backend, 2 frontends
+docker-compose.yml      PostgreSQL 16, Redis 7, backend, frontend
 ```
 
 ## Quick Start
@@ -46,11 +42,7 @@ PYTHONPATH=".." alembic upgrade head
 PYTHONPATH=".." python -m seeds.runner          # seed sample data
 PYTHONPATH=".." uvicorn app.main:app --reload --port 8000
 
-# 3. Namo Setu (separate terminal)
-cd apps/namo-setu/web
-npm install && npm run dev                       # http://localhost:3000/namo
-
-# 4. MODIT (separate terminal)
+# 3. MODIT (separate terminal)
 cd apps/modit/web
 npm install && npm run dev                       # http://localhost:3001/modit
 ```
@@ -64,7 +56,6 @@ docker-compose up --build
 
 | Service | URL |
 |---------|-----|
-| Namo Setu | http://localhost:3000/namo |
 | MODIT | http://localhost:3001/modit |
 | Backend API | http://localhost:8000/api/v1 |
 | Swagger UI | http://localhost:8000/docs |
@@ -79,22 +70,6 @@ docker-compose up --build
 | POST | /auth/login | Get JWT tokens |
 | POST | /auth/refresh | Refresh access token |
 | GET | /auth/me | Current user profile |
-
-### Namo Setu
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | /namo/search/popular | Top temples |
-| GET | /namo/search/temples | Full-text search |
-| GET | /namo/temples/{id} | Temple detail |
-| GET | /namo/temples/{id}/darshan/slots | Available slots |
-| POST | /namo/darshan/bookings | Book darshan |
-| POST | /namo/donations | Make donation |
-| GET | /namo/accommodation/hotels | Browse hotels |
-| GET | /namo/travel/packages | Travel packages |
-| POST | /namo/travel/planner | AI trip planner |
-| POST | /namo/ai/spiritual-guide | AI spiritual guide |
-| POST | /namo/ai/nearby | Nearby places |
-| GET | /namo/analytics/summary | Dashboard metrics |
 
 ### MODIT
 | Method | Path | Description |
@@ -126,12 +101,11 @@ docker-compose up --build
 
 ## Frontend Highlights
 
-- **Inter font** (single consistent typeface across both apps)
+- **Inter font** (single consistent typeface)
 - **CSS custom properties** — 20+ design tokens for colors, shadows, radii
 - **Framer Motion** stagger animations on all pages
 - **Empty states** with Lucide icons on every list page
-- **Error states** with retry buttons on all MODIT pages
-- **Temple selector fallback** on Namo Setu booking/donation/travel/accommodation
+- **Error states** with retry buttons on all pages
 - **Skeleton loading** for progressive data loading
 - **focus-visible** rings for keyboard accessibility
 
@@ -141,7 +115,6 @@ Loaded via `PYTHONPATH=".." python -m seeds.runner`:
 
 | Table | Count |
 |-------|-------|
-| Temples | 10 |
 | Products | 51 |
 | Categories | 12 |
 | Brands | 20 |

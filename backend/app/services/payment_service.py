@@ -13,7 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.core.config import get_settings
-from backend.app.models.enums import PaymentStatus, RefundStatus, TransactionType
+from backend.app.models.enums import PaymentStatus, TransactionType
 from backend.app.models.modit import ModitPayment, Transaction
 
 settings = get_settings()
@@ -115,18 +115,16 @@ class PaymentService:
 
         data = resp.json()
         payment_reference = make_payment_reference()
-        booking_id = metadata.get("booking_id")
-        donation_id = metadata.get("donation_id")
+        organization_id = metadata.get("organization_id", "")
+        purchase_order_id = metadata.get("purchase_order_id")
 
-        payment_record = BookingPayment(
-            booking_id=booking_id,
-            donation_id=donation_id,
+        payment_record = ModitPayment(
+            organization_id=organization_id,
+            purchase_order_id=purchase_order_id,
             payment_reference=payment_reference,
-            provider="stripe",
             amount=amount,
             currency=currency,
             payment_status=PaymentStatus.PENDING.value,
-            external_id=data["id"],
         )
         self.session.add(payment_record)
         await self.session.flush()
@@ -165,18 +163,16 @@ class PaymentService:
 
         data = resp.json()
         payment_reference = make_payment_reference()
-        booking_id = metadata.get("booking_id")
-        donation_id = metadata.get("donation_id")
+        organization_id = metadata.get("organization_id", "")
+        purchase_order_id = metadata.get("purchase_order_id")
 
-        payment_record = BookingPayment(
-            booking_id=booking_id,
-            donation_id=donation_id,
+        payment_record = ModitPayment(
+            organization_id=organization_id,
+            purchase_order_id=purchase_order_id,
             payment_reference=payment_reference,
-            provider="stripe",
             amount=amount,
             currency=currency,
             payment_status=stripe_status_to_payment_status(data.get("status", "")),
-            external_id=data["id"],
         )
         self.session.add(payment_record)
         await self.session.flush()
@@ -192,7 +188,7 @@ class PaymentService:
     # ------------------------------------------------------------------
     async def confirm_payment(self, payment_reference: str) -> dict[str, Any]:
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.payment_reference == payment_reference)
+            select(ModitPayment).where(ModitPayment.payment_reference == payment_reference)
         )
         payment = result.scalar_one_or_none()
         if payment is None:
@@ -238,7 +234,7 @@ class PaymentService:
         reason: str | None = None,
     ) -> dict[str, Any]:
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.id == payment_id)
+            select(ModitPayment).where(ModitPayment.id == payment_id)
         )
         payment = result.scalar_one_or_none()
         if payment is None:
@@ -269,15 +265,14 @@ class PaymentService:
         data = resp.json()
         refund_reference = make_refund_reference()
 
-        refund_record = Refund(
-            booking_id=payment.booking_id,
+        refund_record = Transaction(
             payment_id=payment.id,
-            refund_reference=refund_reference,
+            transaction_reference=refund_reference,
+            transaction_type="refund",
             amount=amount,
-            currency=payment.currency,
-            refund_status=RefundStatus.REQUESTED.value if data.get("status") == "pending" else RefundStatus.PROCESSED.value,
-            reason=reason,
-            processed_at=datetime.now(timezone.utc) if data.get("status") in ("succeeded", "pending") else None,
+            provider_name="stripe",
+            external_id=data.get("id"),
+            occurred_at=datetime.now(timezone.utc),
         )
         self.session.add(refund_record)
 
@@ -331,12 +326,12 @@ class PaymentService:
         payment_intent = obj.get("payment_intent")
 
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.external_id == session_id)
+            select(ModitPayment).where(ModitPayment.external_id == session_id)
         )
         payment = result.scalar_one_or_none()
         if payment is None and payment_intent:
             result = await self.session.execute(
-                select(BookingPayment).where(BookingPayment.external_id == payment_intent)
+                select(ModitPayment).where(ModitPayment.external_id == payment_intent)
             )
             payment = result.scalar_one_or_none()
 
@@ -354,26 +349,22 @@ class PaymentService:
     async def _handle_payment_intent_succeeded(self, obj: dict[str, Any]) -> dict[str, Any]:
         pi_id = obj.get("id")
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.external_id == pi_id)
+            select(ModitPayment).where(ModitPayment.external_id == pi_id)
         )
         payment = result.scalar_one_or_none()
 
         if payment is None:
             metadata = obj.get("metadata", {})
-            booking_id = metadata.get("booking_id")
-            donation_id = metadata.get("donation_id")
+            organization_id = metadata.get("organization_id", "")
             amount = obj.get("amount", 0) / 100.0
             currency = (obj.get("currency") or "inr").upper()
 
-            payment = BookingPayment(
-                booking_id=booking_id,
-                donation_id=donation_id,
+            payment = ModitPayment(
+                organization_id=organization_id,
                 payment_reference=make_payment_reference(),
-                provider="stripe",
                 amount=amount,
                 currency=currency,
                 payment_status=PaymentStatus.CAPTURED.value,
-                external_id=pi_id,
                 paid_at=datetime.now(timezone.utc),
             )
             self.session.add(payment)
@@ -387,7 +378,7 @@ class PaymentService:
     async def _handle_payment_intent_failed(self, obj: dict[str, Any]) -> dict[str, Any]:
         pi_id = obj.get("id")
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.external_id == pi_id)
+            select(ModitPayment).where(ModitPayment.external_id == pi_id)
         )
         payment = result.scalar_one_or_none()
 
@@ -404,7 +395,7 @@ class PaymentService:
         refund_id_stripe = obj.get("id")
 
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.external_id == payment_intent_id)
+            select(ModitPayment).where(ModitPayment.external_id == payment_intent_id)
         )
         payment = result.scalar_one_or_none()
 
@@ -412,25 +403,25 @@ class PaymentService:
             return {"message": "No matching payment record found"}
 
         existing = await self.session.execute(
-            select(Refund).where(Refund.refund_reference == refund_id_stripe)
+            select(Transaction).where(Transaction.transaction_reference == refund_id_stripe)
         )
         if existing.scalar_one_or_none() is not None:
             return {"message": "Refund already recorded"}
 
         refund_reference = make_refund_reference()
-        refund_record = Refund(
-            booking_id=payment.booking_id,
+        refund_record = Transaction(
             payment_id=payment.id,
-            refund_reference=refund_reference,
+            transaction_reference=refund_reference,
+            transaction_type="refund",
             amount=amount_refunded,
-            currency=payment.currency,
-            refund_status=RefundStatus.PROCESSED.value,
-            processed_at=datetime.now(timezone.utc),
+            provider_name="stripe",
+            external_id=refund_id_stripe,
+            occurred_at=datetime.now(timezone.utc),
         )
         self.session.add(refund_record)
 
         total_refunded_result = await self.session.execute(
-            select(func.coalesce(func.sum(Refund.amount), 0)).where(Refund.payment_id == payment.id)
+            select(func.coalesce(func.sum(Transaction.amount), 0)).where(Transaction.payment_id == payment.id)
         )
         total_refunded = float(total_refunded_result.scalar_one())
 
@@ -449,14 +440,20 @@ class PaymentService:
         limit: int = 20,
         offset: int = 0,
     ) -> list[dict[str, Any]]:
+        from backend.app.models.modit import OrganizationUser
+
+        org_ids_result = await self.session.execute(
+            select(OrganizationUser.organization_id).where(OrganizationUser.user_id == user_id)
+        )
+        org_ids = [row[0] for row in org_ids_result.all()]
+
+        if not org_ids:
+            return []
+
         result = await self.session.execute(
-            select(BookingPayment)
-            .join(NamoBooking, NamoBooking.id == BookingPayment.booking_id, isouter=True)
-            .join(Donation, Donation.id == BookingPayment.donation_id, isouter=True)
-            .where(
-                (NamoBooking.user_id == user_id) | (Donation.user_id == user_id)
-            )
-            .order_by(BookingPayment.created_at.desc())
+            select(ModitPayment)
+            .where(ModitPayment.organization_id.in_(org_ids))
+            .order_by(ModitPayment.created_at.desc())
             .offset(offset)
             .limit(limit)
         )
@@ -469,7 +466,6 @@ class PaymentService:
                 "amount": float(p.amount),
                 "currency": p.currency,
                 "payment_status": p.payment_status,
-                "provider": p.provider,
                 "paid_at": p.paid_at.isoformat() if p.paid_at else None,
                 "created_at": p.created_at.isoformat(),
             }
@@ -481,14 +477,14 @@ class PaymentService:
     # ------------------------------------------------------------------
     async def get_payment_details(self, payment_id: str) -> dict[str, Any]:
         result = await self.session.execute(
-            select(BookingPayment).where(BookingPayment.id == payment_id)
+            select(ModitPayment).where(ModitPayment.id == payment_id)
         )
         payment = result.scalar_one_or_none()
         if payment is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
 
         refunds_result = await self.session.execute(
-            select(Refund).where(Refund.payment_id == payment.id).order_by(Refund.created_at.desc())
+            select(Transaction).where(Transaction.payment_id == payment.id).order_by(Transaction.created_at.desc())
         )
         refunds = refunds_result.scalars().all()
 
@@ -498,77 +494,23 @@ class PaymentService:
             "amount": float(payment.amount),
             "currency": payment.currency,
             "payment_status": payment.payment_status,
-            "provider": payment.provider,
-            "external_id": payment.external_id,
             "paid_at": payment.paid_at.isoformat() if payment.paid_at else None,
             "created_at": payment.created_at.isoformat(),
             "refunds": [
                 {
                     "id": r.id,
-                    "refund_reference": r.refund_reference,
+                    "transaction_reference": r.transaction_reference,
                     "amount": float(r.amount),
-                    "currency": r.currency,
-                    "refund_status": r.refund_status,
-                    "reason": r.reason,
-                    "processed_at": r.processed_at.isoformat() if r.processed_at else None,
+                    "transaction_type": r.transaction_type,
+                    "provider_name": r.provider_name,
+                    "occurred_at": r.occurred_at.isoformat() if r.occurred_at else None,
                 }
                 for r in refunds
             ],
         }
 
     # ------------------------------------------------------------------
-    # 8. Donation Payment
-    # ------------------------------------------------------------------
-    async def create_donation_payment(
-        self,
-        donation_id: str,
-        amount: float,
-        currency: str,
-    ) -> dict[str, Any]:
-        donation = await self.session.get(Donation, donation_id)
-        if donation is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Donation not found")
-
-        frontend_url = settings.frontend_url.rstrip("/")
-        success_url = f"{frontend_url}/donations/{donation_id}/success?session_id={{CHECKOUT_SESSION_ID}}"
-        cancel_url = f"{frontend_url}/donations/{donation_id}/cancel"
-
-        metadata = {
-            "donation_id": donation_id,
-            "temple_id": donation.temple_id,
-            "donor_name": donation.donor_name,
-            "purpose": donation.purpose or "",
-        }
-
-        return await self.create_checkout_session(amount, currency, metadata, success_url, cancel_url)
-
-    # ------------------------------------------------------------------
-    # 9. Booking Payment
-    # ------------------------------------------------------------------
-    async def create_booking_payment(
-        self,
-        booking_id: str,
-        amount: float,
-        currency: str,
-    ) -> dict[str, Any]:
-        booking = await self.session.get(NamoBooking, booking_id)
-        if booking is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found")
-
-        frontend_url = settings.frontend_url.rstrip("/")
-        success_url = f"{frontend_url}/bookings/{booking_id}/success?session_id={{CHECKOUT_SESSION_ID}}"
-        cancel_url = f"{frontend_url}/bookings/{booking_id}/cancel"
-
-        metadata = {
-            "booking_id": booking_id,
-            "temple_id": booking.temple_id,
-            "booking_number": booking.booking_number,
-        }
-
-        return await self.create_checkout_session(amount, currency, metadata, success_url, cancel_url)
-
-    # ------------------------------------------------------------------
-    # 10. MODIT Order Payment
+    # 8. MODIT Order Payment
     # ------------------------------------------------------------------
     async def create_order_payment(
         self,

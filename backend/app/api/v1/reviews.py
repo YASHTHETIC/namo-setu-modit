@@ -158,9 +158,7 @@ async def create_review(
         )
 
     review = Review(
-        product_code=ProductCode.NAMO_SETU.value
-        if payload.target_type == "temple"
-        else ProductCode.MODIT.value,
+        product_code=ProductCode.MODIT.value,
         user_id=user.id,
         target_type=payload.target_type,
         target_id=payload.target_id,
@@ -213,7 +211,7 @@ async def list_reviews(
 
     avg, dist = await _recalculate_rating_summary(
         db,
-        reviews[0].product_code if reviews else (ProductCode.NAMO_SETU.value if target_type == "temple" else ProductCode.MODIT.value),
+        reviews[0].product_code if reviews else ProductCode.MODIT.value,
         target_type,
         target_id,
     )
@@ -232,9 +230,7 @@ async def get_review_stats(
     target_id: str = Query(...),
     db: AsyncSession = Depends(get_db),
 ) -> ReviewStatsResponse:
-    product_code = (
-        ProductCode.NAMO_SETU.value if target_type == "temple" else ProductCode.MODIT.value
-    )
+    product_code = ProductCode.MODIT.value
     return await _get_stats_for_target(db, product_code, target_type, target_id)
 
 

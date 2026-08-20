@@ -50,9 +50,9 @@ def seed_modit(session: Session):
     """Seed MODIT data using ORM models."""
     print("[MODIT] Seeding organizations, suppliers, brands...")
 
-    # Map MODIT city names to Namo Setu city IDs
+    # Map MODIT city names to existing city IDs
     namo_cities = {c["name"]: c["id"] for c in ns.CITIES}
-    # Add Delhi since Namo Setu doesn't have it
+    # Add Delhi if not present in seed data
     if "Delhi" not in namo_cities:
         from backend.app.models.shared import City as CityModel
         delhi = session.query(CityModel).filter_by(name="Delhi").first()

@@ -141,3 +141,12 @@ class TransactionType(StrEnum):
     CREDIT = "credit"
 
 
+class PaymentStatus(StrEnum):
+    PENDING = "pending"
+    AUTHORIZED = "authorized"
+    CAPTURED = "captured"
+    FAILED = "failed"
+    REFUNDED = "refunded"
+    CANCELLED = "cancelled"
+
+

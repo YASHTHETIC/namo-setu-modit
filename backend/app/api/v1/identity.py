@@ -196,7 +196,7 @@ async def upload_avatar(
     media = await create_media_asset(
         db,
         upload=upload,
-        product_code=ProductCode.NAMO_SETU,
+        product_code=ProductCode.MODIT,
         owner_user_id=user.id,
         media_type=MediaType.IMAGE.value,
     )
