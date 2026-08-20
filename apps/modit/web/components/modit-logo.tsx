@@ -22,7 +22,7 @@ export function ModitLogo({ className = "h-[42px] w-auto", dark = true }: { clas
       <path d="M218 5h9v70h-9V5z" fill={textColor} />
 
       {/* T */}
-      <path d="M242 5h9v58h28v9H242V5z" fill={textColor} />
+      <path d="M242 5h37v9h-14v49h-9v-49h-14V5z" fill={textColor} />
 
       {/* Subtitle: MATERIALS ON DOOR */}
       <text x="3" y="96" fontFamily="Inter, Arial Black, sans-serif" fontWeight="800" fontSize="18" letterSpacing="2">
