@@ -232,13 +232,7 @@ export default function ModitHomePage() {
         <div className="max-w-[1440px] mx-auto flex h-[64px] items-center gap-4 px-4 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_2px_8px_rgba(45,27,105,0.3)]">
-              <span className="text-[15px] font-black text-white">M</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="text-[22px] font-black text-[var(--text)] tracking-tight leading-none">MODIT</span>
-              <span className="block text-[8px] text-[var(--brand)] font-bold tracking-[0.2em]">BUILDING MATERIALS</span>
-            </div>
+            <img src="/modit-logo.svg" alt="MODIT — Materials on Door" className="h-[42px] w-auto" />
           </Link>
 
           {/* Deliver to */}
@@ -645,17 +639,14 @@ export default function ModitHomePage() {
       </main>
 
       {/* Footer — Rich dark gradient */}
-      <footer className="mt-6 bg-gradient-to-b from-[#1A1108] to-[#0D0905] relative overflow-hidden">
+      <footer className="mt-6 bg-gradient-to-b from-[#0D0720] to-[#060314] relative overflow-hidden">
         {/* Decorative top glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 relative z-10">
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-8">
             <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center gap-1.5 mb-3">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_4px_12px_rgba(45,27,105,0.3)]">
-                  <span className="text-[14px] font-black text-white">M</span>
-                </div>
-                <span className="text-[18px] font-black text-white">MODIT</span>
+                <img src="/modit-logo.svg" alt="MODIT" className="h-[36px] w-auto brightness-0 invert opacity-90" />
               </div>
               <p className="text-[11px] text-white/35 leading-relaxed mb-4">India&apos;s B2B marketplace for construction materials. Compare prices from 500+ verified suppliers.</p>
               <div className="flex gap-2">

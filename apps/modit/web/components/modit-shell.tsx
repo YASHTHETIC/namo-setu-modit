@@ -96,13 +96,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-purple-200/60" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
         <div className="market-container flex min-h-[76px] items-center gap-3 py-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">
-              <span className="text-base font-black">M</span>
-            </div>
-            <div className="hidden md:block">
-              <div className="text-[22px] font-black tracking-tight text-[var(--text)]">MODIT</div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--brand)]">Premium Building Materials</div>
-            </div>
+            <img src="/modit-logo.svg" alt="MODIT — Materials on Door" className="h-[46px] w-auto" />
           </Link>
 
           <div ref={megaMenuRef} className="relative hidden xl:block">
@@ -393,11 +387,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">M</div>
-                  <div>
-                    <p className="text-sm font-black text-[var(--text)]">MODIT</p>
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--brand)]">Premium Building Materials</p>
-                  </div>
+                  <img src="/modit-logo.svg" alt="MODIT" className="h-[38px] w-auto" />
                 </div>
                 <button type="button" onClick={() => setShowMobileMenu(false)} aria-label="Close menu" className="rounded-full p-2 text-[var(--text-secondary)]">
                   <X className="h-5 w-5" />
@@ -437,18 +427,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <main className="market-container min-h-[60vh] py-6">{children}</main>
 
-      <footer className="mt-6 bg-gradient-to-b from-[#1A1108] to-[#0D0905] border-t border-white/5 relative overflow-hidden">
+      <footer className="mt-6 bg-gradient-to-b from-[#0D0720] to-[#060314] border-t border-white/5 relative overflow-hidden">
         {/* Decorative top glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
         <div className="market-container py-10">
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">M</div>
-                <div>
-                  <p className="text-lg font-black tracking-tight text-[var(--text)]">MODIT</p>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--brand)]">Premium Building Materials</p>
-                </div>
+                <img src="/modit-logo.svg" alt="MODIT" className="h-[42px] w-auto" />
               </div>
               <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
                 A production-grade procurement platform for building materials, supplier sourcing, bulk orders, and enterprise checkout.
