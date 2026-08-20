@@ -9,7 +9,7 @@
 :root {
   --brand: #2D1B69;
   --brand-hover: #1E1245;
-  --brand-dark: #150D33;
+  --brand-dark: #150726;
   --brand-light: #F0ECF9;
   --brand-50: #F5F2FC;
   --brand-100: #E8E0F7;
@@ -52,8 +52,8 @@
   --bg-subtle: #F5F2FC;
   --bg-white: #FFFFFF;
 
-  --text: #1A0A33;
-  --text-primary: #1A0A33;
+  --text: #150726;
+  --text-primary: #150726;
   --text-secondary: #5C4A7A;
   --text-muted: #9B8CB5;
   --text-white: #FFFFFF;
@@ -95,7 +95,7 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font-family: var(--font); }
 img { display: block; max-width: 100%; }
-::selection { background: rgba(194, 65, 12, 0.18); color: var(--text); }
+::selection { background: rgba(45, 27, 105, 0.18); color: var(--text); }
 
 /* ═══════════════════════════════════════════════
    SECTION BACKGROUNDS — Color breaks between sections
@@ -108,10 +108,10 @@ img { display: block; max-width: 100%; }
   background: linear-gradient(180deg, #F8F6FC 0%, #F0ECF9 50%, #F8F6FC 100%);
 }
 .section-brand-gradient {
-  background: linear-gradient(135deg, #150D33 0%, #2D1B69 50%, #4A2D8A 100%);
+  background: linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%);
 }
 .section-navy-gradient {
-  background: linear-gradient(135deg, #1A0A33 0%, #2D1B69 40%, #4A2D8A 100%);
+  background: linear-gradient(135deg, #150726 0%, #2D1B69 40%, #4A2D8A 100%);
 }
 .section-warm-dots {
   background-image: radial-gradient(circle, rgba(45, 27, 105, 0.06) 1px, transparent 1px);
@@ -121,8 +121,8 @@ img { display: block; max-width: 100%; }
 .section-purple-mesh {
   background:
     radial-gradient(ellipse at 20% 50%, rgba(45, 27, 105, 0.08), transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(124, 181, 24, 0.06), transparent 40%),
-    radial-gradient(ellipse at 60% 80%, rgba(233, 30, 99, 0.04), transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124, 181, 24, 0.35), transparent 40%),
+    radial-gradient(ellipse at 60% 80%, rgba(233, 30, 99, 0.3), transparent 50%),
     #F8F6FC;
 }
 
@@ -242,7 +242,7 @@ img { display: block; max-width: 100%; }
   right: -40px;
   width: 160px;
   height: 160px;
-  background: radial-gradient(circle, rgba(124, 181, 24, 0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(124, 181, 24, 0.35), transparent 70%);
   border-radius: 50%;
 }
 .flash-section::after {
@@ -252,7 +252,7 @@ img { display: block; max-width: 100%; }
   left: -30px;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle, rgba(233, 30, 99, 0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.3), transparent 70%);
   border-radius: 50%;
 }
 
@@ -271,7 +271,7 @@ img { display: block; max-width: 100%; }
    ═══════════════════════════════════════════════ */
 
 .stats-band {
-  background: linear-gradient(135deg, #1A0A33 0%, #2D1B69 40%, #4A2D8A 100%);
+  background: linear-gradient(135deg, #150726 0%, #2D1B69 40%, #4A2D8A 100%);
   border-radius: var(--radius-xl);
   position: relative;
   overflow: hidden;
@@ -284,8 +284,8 @@ img { display: block; max-width: 100%; }
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(124, 181, 24, 0.15), transparent 50%),
-    radial-gradient(ellipse at 80% 30%, rgba(233, 30, 99, 0.1), transparent 40%);
+    radial-gradient(ellipse at 20% 50%, rgba(124, 181, 24, 0.35), transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(233, 30, 99, 0.3), transparent 40%);
   pointer-events: none;
 }
 
@@ -323,7 +323,7 @@ img { display: block; max-width: 100%; }
    ═══════════════════════════════════════════════ */
 
 .cta-section {
-  background: linear-gradient(135deg, #1A0A33 0%, #2D1B69 35%, #4A2D8A 70%, #6B3FA0 100%);
+  background: linear-gradient(135deg, #150726 0%, #2D1B69 35%, #4A2D8A 70%, #6B3FA0 100%);
   position: relative;
   overflow: hidden;
 }
@@ -334,7 +334,7 @@ img { display: block; max-width: 100%; }
   right: -60px;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(124, 181, 24, 0.2), transparent 60%);
+  background: radial-gradient(circle, rgba(124, 181, 24, 0.35), transparent 60%);
   border-radius: 50%;
 }
 .cta-section::after {
@@ -344,7 +344,7 @@ img { display: block; max-width: 100%; }
   left: -40px;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(233, 30, 99, 0.15), transparent 60%);
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.3), transparent 60%);
   border-radius: 50%;
 }
 
@@ -364,7 +364,7 @@ img { display: block; max-width: 100%; }
    ═══════════════════════════════════════════════ */
 
 .announce-bar {
-  background: linear-gradient(90deg, #2D1B69 0%, #7CB518 30%, #E91E63 60%, #00BCD4 100%);
+  background: linear-gradient(90deg, #150726 0%, #2D1B69 30%, #E91E63 60%, #00BCD4 100%);
   background-size: 200% 100%;
   animation: gradientShift 8s ease infinite;
 }
@@ -379,7 +379,7 @@ img { display: block; max-width: 100%; }
    ═══════════════════════════════════════════════ */
 
 .dark-nav {
-  background: linear-gradient(90deg, #1A0A33 0%, #2D1B69 50%, #1A0A33 100%);
+  background: linear-gradient(90deg, #150726 0%, #2D1B69 50%, #150726 100%);
 }
 
 /* ═══════════════════════════════════════════════
@@ -395,7 +395,7 @@ img { display: block; max-width: 100%; }
   position: relative;
 }
 .product-card:hover {
-  box-shadow: 0 12px 32px rgba(45, 27, 105, 0.12);
+  box-shadow: 0 12px 32px rgba(21, 7, 38, 0.14);
   transform: translateY(-4px);
   border-color: var(--brand-200);
 }
@@ -513,7 +513,7 @@ img { display: block; max-width: 100%; }
    ═══════════════════════════════════════════════ */
 
 .app-card {
-  background: linear-gradient(135deg, #1A0A33 0%, #2D1B69 50%, #4A2D8A 100%);
+  background: linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%);
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
@@ -525,7 +525,7 @@ img { display: block; max-width: 100%; }
   right: -20px;
   width: 80px;
   height: 80px;
-  background: radial-gradient(circle, rgba(124, 181, 24, 0.25), transparent 70%);
+  background: radial-gradient(circle, rgba(124, 181, 24, 0.35), transparent 70%);
   border-radius: 50%;
 }
 
@@ -611,7 +611,7 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 4px 14px rgba(45, 27, 105, 0.25);
 }
 .btn-brand:hover {
-  background: linear-gradient(135deg, #1E1245, #150D33);
+  background: linear-gradient(135deg, #1E1245, #150726);
   box-shadow: 0 6px 20px rgba(45, 27, 105, 0.3);
   transform: translateY(-2px);
 }
@@ -636,7 +636,7 @@ img { display: block; max-width: 100%; }
 .btn-teal:hover { background: var(--brand-50); border-color: var(--brand); transform: translateY(-1px); }
 
 .btn-navy {
-  background: linear-gradient(135deg, #1A0A33, #2D1B69);
+  background: linear-gradient(135deg, #150726, #2D1B69);
   color: white;
   border: none;
 }

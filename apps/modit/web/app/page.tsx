@@ -47,18 +47,18 @@ const CATEGORIES = [
 ];
 
 const HERO_SLIDES = [
-  { badge: "MEGA DEAL", badgeBg: "#E8453C", title: "Monsoon Mega Sale", sub: "Up to 25% off on Cement, Steel & building materials. Limited time offer.", cta: "Shop Now", ctaClass: "btn-gold", link: "/products",
-    bg: "linear-gradient(135deg, #FFF7ED 0%, #FED7AA 35%, #FEF3E2 65%, #FFFBF5 100%)",
-    glow: "radial-gradient(ellipse at 15% 60%, rgba(194,65,12,0.10), transparent 50%), radial-gradient(ellipse at 85% 20%, rgba(245,165,36,0.08), transparent 40%)",
-    cardBorder: "#FED7AA", cardBg: "#FFFBF5" },
-  { badge: "B2B EXCLUSIVE", badgeBg: "#1B2838", title: "Bulk Order Pricing", sub: "Extra 10% off on orders above 50 units. Best prices for contractors.", cta: "Get Quote", ctaClass: "btn-brand", link: "/rfq",
-    bg: "linear-gradient(135deg, #F0F4FF 0%, #DBEAFE 35%, #E0E7FF 65%, #F8FAFC 100%)",
-    glow: "radial-gradient(ellipse at 20% 70%, rgba(37,99,235,0.08), transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.06), transparent 40%)",
-    cardBorder: "#BFDBFE", cardBg: "#F0F7FF" },
-  { badge: "NEW COLLECTION", badgeBg: "#0D9488", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting ₹42/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles-ceramics",
-    bg: "linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 35%, #D1FAE5 65%, #F0FDF4 100%)",
-    glow: "radial-gradient(ellipse at 15% 50%, rgba(13,148,136,0.08), transparent 50%), radial-gradient(ellipse at 85% 30%, rgba(16,185,129,0.06), transparent 40%)",
-    cardBorder: "#99F6E4", cardBg: "#F0FDFA" },
+  { badge: "MEGA DEAL", badgeBg: "#7CB518", title: "Material Chahiye? MODIT Hai Na!", sub: "Up to 25% off on Cement, Steel & building materials. Lowest prices, quality assured, delivered to site.", cta: "Shop Now", ctaClass: "btn-gold", link: "/products",
+    bg: "linear-gradient(135deg, #150726 0%, #2D1B69 40%, #4A2D8A 70%, #150726 100%)",
+    glow: "radial-gradient(ellipse at 15% 60%, rgba(124,181,24,0.35), transparent 50%), radial-gradient(ellipse at 85% 20%, rgba(233,30,99,0.35), transparent 40%)",
+    cardBorder: "#4A2D8A", cardBg: "rgba(255,255,255,0.08)" },
+  { badge: "B2B EXCLUSIVE", badgeBg: "#E91E63", title: "Bulk Order Pricing", sub: "Extra 10% off on orders above 50 units. Best prices for contractors.", cta: "Get Quote", ctaClass: "btn-brand", link: "/rfq",
+    bg: "linear-gradient(135deg, #2D1B69 0%, #150726 40%, #3D1B8A 70%, #2D1B69 100%)",
+    glow: "radial-gradient(ellipse at 20% 70%, rgba(233,30,99,0.35), transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0,188,212,0.35), transparent 40%)",
+    cardBorder: "#4A2D8A", cardBg: "rgba(255,255,255,0.08)" },
+  { badge: "NEW COLLECTION", badgeBg: "#00BCD4", title: "Premium Tiles", sub: "Explore 500+ designs from Kajaria, Somany, Johnson. Starting ₹42/sqft.", cta: "Explore", ctaClass: "btn-teal", link: "/products?category=tiles-ceramics",
+    bg: "linear-gradient(135deg, #150726 0%, #2D1B69 40%, #150726 70%, #150726 100%)",
+    glow: "radial-gradient(ellipse at 15% 50%, rgba(124,181,24,0.35), transparent 50%), radial-gradient(ellipse at 85% 30%, rgba(233,30,99,0.3), transparent 40%)",
+    cardBorder: "#4A2D8A", cardBg: "rgba(255,255,255,0.08)" },
 ];
 
 const LIVE_ORDERS = [
@@ -133,7 +133,7 @@ function ProductCard({ p }: { p: typeof PRODUCTS[0] }) {
           <h3 className="product-name hover:text-[var(--brand)] transition-colors">{p.name}</h3>
         </Link>
         <div className="product-rating">
-          <span className="inline-flex items-center gap-1 bg-[#10B981] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+          <span className="inline-flex items-center gap-1 bg-[#2D1B69] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
             {p.rating} <Star className="h-2.5 w-2.5 fill-white" />
           </span>
           <span className="text-[11px] font-semibold text-[var(--text)]">{p.rating}</span>
@@ -215,10 +215,9 @@ export default function ModitHomePage() {
   const s = HERO_SLIDES[slide];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #FFF7ED 0%, #FFFAF5 15%, #FFF7ED 30%, #FFFAF5 45%, #FFF7ED 60%, #FFFAF5 75%, #FFF7ED 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #F8F6FC 0%, #F0ECF9 15%, #F8F6FC 30%, #F0ECF9 45%, #F8F6FC 60%, #F0ECF9 75%, #F8F6FC 100%)' }}>
       {/* Announcement Bar — Animated gradient */}
       <div className="announce-bar text-white text-center py-1.5 px-4 text-[11px] font-semibold tracking-wide relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#7C2D12] via-[#C2410C] to-[#D45A1A] opacity-90" />
         <span className="relative z-10">
           <span className="hidden sm:inline">Free delivery on first order </span>
           <span className="mx-2 text-white/30">|</span>
@@ -348,11 +347,11 @@ export default function ModitHomePage() {
                   <Zap className="h-3 w-3" /> {s.badge}
                 </motion.span>
                 <motion.h1 key={s.title} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                  className="text-3xl sm:text-4xl lg:text-[2.5rem] font-black text-[var(--text)] leading-tight mb-3">
+                  className={`text-3xl sm:text-4xl lg:text-[2.5rem] font-black leading-tight mb-3 ${(s as any).titleColor || 'text-[var(--text)]'}`}>
                   {s.title}
                 </motion.h1>
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
-                  className="text-[var(--text-secondary)] text-[14px] mb-5 max-w-md leading-relaxed">
+                  className={`text-[14px] mb-5 max-w-md leading-relaxed ${(s as any).subColor || 'text-[var(--text-secondary)]'}`}>
                   {s.sub}
                 </motion.p>
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
@@ -449,18 +448,18 @@ export default function ModitHomePage() {
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
             {[
-              { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products", bg: "linear-gradient(135deg, #FFF7ED, #FEF3E2)", hoverBorder: "#FED7AA", iconBg: "#C2410C" },
+              { name: "Cement", icon: "🏗️", slug: "cement", count: "500+ Products", bg: "linear-gradient(135deg, #F0ECF9, #E8E0F7)", hoverBorder: "#C9B8E8", iconBg: "#2D1B69" },
               { name: "Steel & TMT", icon: "🔩", slug: "steel-tmt", count: "300+ Products", bg: "linear-gradient(135deg, #F1F5F9, #E2E8F0)", hoverBorder: "#CBD5E1", iconBg: "#475569" },
-              { name: "Tiles", icon: "🔲", slug: "tiles-ceramics", count: "1200+ Products", bg: "linear-gradient(135deg, #F5F3FF, #EDE9FE)", hoverBorder: "#DDD6FE", iconBg: "#7C3AED" },
-              { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products", bg: "linear-gradient(135deg, #FFF1F2, #FFE4E6)", hoverBorder: "#FECDD3", iconBg: "#E11D48" },
-              { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#D97706" },
+              { name: "Tiles", icon: "🔲", slug: "tiles-ceramics", count: "1200+ Products", bg: "linear-gradient(135deg, #FCE4EC, #F8BBD0)", hoverBorder: "#F48FB1", iconBg: "#E91E63" },
+              { name: "Paint", icon: "🎨", slug: "paint", count: "800+ Products", bg: "linear-gradient(135deg, #F0F9E8, #E8F5D8)", hoverBorder: "#C5E1A5", iconBg: "#7CB518" },
+              { name: "Electrical", icon: "⚡", slug: "electrical", count: "600+ Products", bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)", hoverBorder: "#B2EBF2", iconBg: "#00BCD4" },
               { name: "Plumbing", icon: "🔧", slug: "plumbing", count: "400+ Products", bg: "linear-gradient(135deg, #EFF6FF, #DBEAFE)", hoverBorder: "#BFDBFE", iconBg: "#2563EB" },
-              { name: "Sand & Aggregate", icon: "🪨", slug: "sand-aggregate", count: "150+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#B45309" },
-              { name: "Bricks & Blocks", icon: "🧱", slug: "bricks-blocks", count: "200+ Products", bg: "linear-gradient(135deg, #FEF2F2, #FEE2E2)", hoverBorder: "#FECACA", iconBg: "#DC2626" },
-              { name: "Plywood & Boards", icon: "🪵", slug: "plywood-boards", count: "350+ Products", bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", hoverBorder: "#FDE68A", iconBg: "#92400E" },
-              { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products", bg: "linear-gradient(135deg, #EEF2FF, #E0E7FF)", hoverBorder: "#C7D2FE", iconBg: "#4F46E5" },
-              { name: "Sanitary & Bath", icon: "🚿", slug: "sanitary", count: "250+ Products", bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)", hoverBorder: "#99F6E4", iconBg: "#0D9488" },
-              { name: "Pipes & Fittings", icon: "🔧", slug: "pipes-fittings", count: "180+ Products", bg: "linear-gradient(135deg, #FAF5FF, #F3E8FF)", hoverBorder: "#E9D5FF", iconBg: "#9333EA" },
+              { name: "Sand & Aggregate", icon: "🪨", slug: "sand-aggregate", count: "150+ Products", bg: "linear-gradient(135deg, #FFF8E1, #FFECB3)", hoverBorder: "#FFD54F", iconBg: "#FF9800" },
+              { name: "Bricks & Blocks", icon: "🧱", slug: "bricks-blocks", count: "200+ Products", bg: "linear-gradient(135deg, #FCE4EC, #F8BBD0)", hoverBorder: "#F48FB1", iconBg: "#E91E63" },
+              { name: "Plywood & Boards", icon: "🪵", slug: "plywood-boards", count: "350+ Products", bg: "linear-gradient(135deg, #F0F9E8, #E8F5D8)", hoverBorder: "#C5E1A5", iconBg: "#7CB518" },
+              { name: "Hardware", icon: "🔩", slug: "hardware", count: "1000+ Products", bg: "linear-gradient(135deg, #EDE7F6, #D1C4E9)", hoverBorder: "#B39DDB", iconBg: "#673AB7" },
+              { name: "Sanitary & Bath", icon: "🚿", slug: "sanitary", count: "250+ Products", bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)", hoverBorder: "#B2EBF2", iconBg: "#00BCD4" },
+              { name: "Pipes & Fittings", icon: "🔧", slug: "pipes-fittings", count: "180+ Products", bg: "linear-gradient(135deg, #F3E5F5, #E1BEE7)", hoverBorder: "#CE93D8", iconBg: "#9C27B0" },
             ].map((cat, i) => (
               <motion.div key={cat.slug} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 + i * 0.03 }}>
                 <Link href={`/products?category=${cat.slug}`}
@@ -528,10 +527,10 @@ export default function ModitHomePage() {
           <h2 className="text-[16px] font-bold text-[var(--text)] mb-3">Why Choose MODIT</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: Shield, title: "Verified Suppliers", desc: "Every supplier KYC-verified", color: "#10B981", bg: "linear-gradient(135deg, #ECFDF5, #D1FAE5)" },
-              { icon: Truck, title: "Same-Day Delivery", desc: "Deliver within hours", color: "#0D9488", bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)" },
-              { icon: Brain, title: "AI Price Intelligence", desc: "Real-time market prices", color: "#7C3AED", bg: "linear-gradient(135deg, #F5F3FF, #EDE9FE)" },
-              { icon: Award, title: "Best Prices Guaranteed", desc: "Compare 500+ suppliers", color: "#DC2626", bg: "linear-gradient(135deg, #FEF2F2, #FEE2E2)" },
+              { icon: Shield, title: "Verified Suppliers", desc: "Every supplier KYC-verified", color: "#2D1B69", bg: "linear-gradient(135deg, #F0ECF9, #E8E0F7)" },
+              { icon: Truck, title: "Same-Day Delivery", desc: "Deliver within hours", color: "#7CB518", bg: "linear-gradient(135deg, #F0F9E8, #E8F5D8)" },
+              { icon: Brain, title: "AI Price Intelligence", desc: "Real-time market prices", color: "#E91E63", bg: "linear-gradient(135deg, #FCE4EC, #F8BBD0)" },
+              { icon: Award, title: "Best Prices Guaranteed", desc: "Compare 500+ suppliers", color: "#00BCD4", bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)" },
             ].map((f, i) => (
               <motion.div key={f.title} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
                 className="bg-white p-4 flex items-start gap-3 rounded-[20px] border border-[var(--border)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden group">
@@ -555,10 +554,10 @@ export default function ModitHomePage() {
             <div className="absolute inset-0 opacity-60" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, rgba(194,65,12,0.12), transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(245,165,36,0.08), transparent 40%)' }} />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
               {[
-                { label: "Products", value: "10,000+", icon: Package, color: "#F59E0B" },
+                { label: "Products", value: "10,000+", icon: Package, color: "#2D1B69" },
                 { label: "Verified Suppliers", value: "500+", icon: Users, color: "#10B981" },
                 { label: "Orders Delivered", value: "2M+", icon: Truck, color: "#3B82F6" },
-                { label: "Customer Rating", value: "4.8★", icon: Star, color: "#F59E0B" },
+                { label: "Customer Rating", value: "4.8★", icon: Star, color: "#7CB518" },
               ].map((stat, i) => (
                 <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
                   className="text-center">
@@ -588,7 +587,7 @@ export default function ModitHomePage() {
                 </div>
                 <p className="text-[12px] text-[var(--text-secondary)] mb-3 leading-relaxed relative z-10">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-2 relative z-10">
-                  <div className="h-8 w-8 rounded-full flex items-center justify-center text-[12px] font-bold text-white shadow-sm" style={{ background: 'linear-gradient(135deg, #C2410C, #9A3412)' }}>
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center text-[12px] font-bold text-white shadow-sm" style={{ background: 'linear-gradient(135deg, #2D1B69, #150726)' }}>
                     {t.name.charAt(0)}
                   </div>
                   <div>

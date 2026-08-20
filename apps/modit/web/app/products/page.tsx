@@ -41,7 +41,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; accent: string
   sanitary:       { bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)", text: "#065F46", accent: "#0D9488", border: "#99F6E4", light: "#F0FFFE", icon: "bg-teal-100 text-teal-700" },
   "sand-aggregate":{ bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", text: "#78350F", accent: "#B45309", border: "#FDE68A", light: "#FFFEF8", icon: "bg-yellow-100 text-yellow-700" },
   "pipes-fittings":{ bg: "linear-gradient(135deg, #FAF5FF, #F3E8FF)", text: "#6B21A8", accent: "#9333EA", border: "#E9D5FF", light: "#FDFBFF", icon: "bg-purple-100 text-purple-700" },
-  "plywood-boards":{ bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", text: "#78350F", accent: "#92400E", border: "#FDE68A", light: "#FFFEF8", icon: "bg-amber-100 text-amber-800" },
+  "plywood-boards":{ bg: "linear-gradient(135deg, #F0ECF9, #E8E0F7)", text: "#2D1B69", accent: "#7CB518", border: "#C9B8E8", light: "#F5F2FC", icon: "bg-purple-100 text-purple-700" },
   hardware:       { bg: "linear-gradient(135deg, #EEF2FF, #E0E7FF)", text: "#3730A3", accent: "#4F46E5", border: "#C7D2FE", light: "#F8F9FF", icon: "bg-indigo-100 text-indigo-700" },
 };
 
@@ -189,17 +189,17 @@ function ProductsContent() {
               <div
                 className="px-5 py-4 border-b"
                 style={{
-                  background: catColor?.bg || 'linear-gradient(135deg, #FFF7ED, #FEF3E2)',
+                  background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)',
                   borderColor: catColor?.border || '#FED7AA',
                 }}
               >
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="h-4 w-4" style={{ color: catColor?.accent || '#C2410C' }} />
+                  <SlidersHorizontal className="h-4 w-4" style={{ color: catColor?.accent || '#2D1B69' }} />
                   <h3 className="text-sm font-black" style={{ color: catColor?.text || '#9A3412' }}>Filters</h3>
                   {hasActiveFilters && (
                     <span
                       className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
-                      style={{ background: catColor?.accent || '#C2410C' }}
+                      style={{ background: catColor?.accent || '#2D1B69' }}
                     >
                       Active
                     </span>
@@ -212,7 +212,7 @@ function ProductsContent() {
                 <div>
                   <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Search</h3>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" style={{ color: catColor?.accent || '#C2410C' }} />
+                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" style={{ color: catColor?.accent || '#2D1B69' }} />
                     <input
                       type="text"
                       value={search}
@@ -222,7 +222,7 @@ function ProductsContent() {
                       style={{
                         borderColor: catColor?.border || '#FED7AA',
                         color: 'var(--text-primary)',
-                        ...(search ? { boxShadow: `0 0 0 2px ${catColor?.accent || '#C2410C'}22`, borderColor: catColor?.accent || '#C2410C' } : {}),
+                        ...(search ? { boxShadow: `0 0 0 2px ${catColor?.accent || '#2D1B69'}22`, borderColor: catColor?.accent || '#2D1B69' } : {}),
                       }}
                     />
                   </div>
@@ -237,11 +237,11 @@ function ProductsContent() {
                       className="flex items-center w-full rounded-xl px-3 py-2.5 text-left text-xs font-bold transition-all"
                       style={
                         !selectedCategory
-                          ? { background: catColor?.bg || 'linear-gradient(135deg, #FFF7ED, #FEF3E2)', color: catColor?.accent || '#C2410C', border: `1px solid ${catColor?.border || '#FED7AA'}`, boxShadow: `0 2px 8px ${catColor?.accent || '#C2410C'}15` }
+                          ? { background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)', color: catColor?.accent || '#2D1B69', border: `1px solid ${catColor?.border || '#FED7AA'}`, boxShadow: `0 2px 8px ${catColor?.accent || '#2D1B69'}15` }
                           : { color: 'var(--text-secondary)' }
                       }
                     >
-                      <span className="w-2 h-2 rounded-full mr-2" style={{ background: catColor?.accent || '#C2410C' }} />
+                      <span className="w-2 h-2 rounded-full mr-2" style={{ background: catColor?.accent || '#2D1B69' }} />
                       All Categories
                     </button>
                     {categories.map((cat) => {
@@ -317,7 +317,7 @@ function ProductsContent() {
                           className="rounded-full px-2.5 py-1 text-[10px] font-bold transition-all border"
                           style={
                             isActive
-                              ? { background: catColor?.bg || '#FFF7ED', color: catColor?.accent || '#C2410C', borderColor: catColor?.border || '#FED7AA', boxShadow: `0 1px 4px ${catColor?.accent || '#C2410C'}12` }
+                              ? { background: catColor?.bg || '#FED7AA', color: catColor?.accent || '#2D1B69', borderColor: catColor?.border || '#FED7AA', boxShadow: `0 1px 4px ${catColor?.accent || '#2D1B69'}12` }
                               : { background: 'white', color: 'var(--text-muted)', borderColor: '#F0EBE3' }
                           }
                         >
@@ -339,8 +339,8 @@ function ProductsContent() {
                           <div
                             className="h-4 w-4 rounded border-2 flex items-center justify-center transition-all flex-shrink-0"
                             style={{
-                              borderColor: isSelected ? (catColor?.accent || '#C2410C') : '#D1D5DB',
-                              background: isSelected ? (catColor?.accent || '#C2410C') : 'white',
+                              borderColor: isSelected ? (catColor?.accent || '#2D1B69') : '#D1D5DB',
+                              background: isSelected ? (catColor?.accent || '#2D1B69') : 'white',
                             }}
                           >
                             {isSelected && (
@@ -349,7 +349,7 @@ function ProductsContent() {
                               </svg>
                             )}
                           </div>
-                          <span className={`text-xs ${isSelected ? 'font-bold' : 'font-medium'}`} style={{ color: isSelected ? (catColor?.accent || '#C2410C') : 'var(--text-secondary)' }}>
+                          <span className={`text-xs ${isSelected ? 'font-bold' : 'font-medium'}`} style={{ color: isSelected ? (catColor?.accent || '#2D1B69') : 'var(--text-secondary)' }}>
                             {brand}
                           </span>
                         </label>
@@ -371,13 +371,13 @@ function ProductsContent() {
                           className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all w-full"
                           style={
                             isActive
-                              ? { background: catColor?.bg || '#FFF7ED', color: catColor?.accent || '#C2410C', fontWeight: 700, border: `1px solid ${catColor?.border || '#FED7AA'}` }
+                              ? { background: catColor?.bg || '#FED7AA', color: catColor?.accent || '#2D1B69', fontWeight: 700, border: `1px solid ${catColor?.border || '#FED7AA'}` }
                               : { color: 'var(--text-secondary)' }
                           }
                         >
                           <div className="flex">
                             {[1, 2, 3, 4, 5].map((s) => (
-                              <Star key={s} className={`h-3 w-3 ${s <= r ? "" : "fill-gray-200 text-gray-200"}`} style={s <= r ? { fill: catColor?.accent || '#C2410C', color: catColor?.accent || '#C2410C' } : {}} />
+                              <Star key={s} className={`h-3 w-3 ${s <= r ? "" : "fill-gray-200 text-gray-200"}`} style={s <= r ? { fill: catColor?.accent || '#2D1B69', color: catColor?.accent || '#2D1B69' } : {}} />
                             ))}
                           </div>
                           <span>& Up</span>
@@ -421,7 +421,7 @@ function ProductsContent() {
                     className="w-full rounded-xl py-2.5 text-xs font-black transition-all border-2 border-dashed"
                     style={{
                       borderColor: catColor?.border || '#FED7AA',
-                      color: catColor?.accent || '#C2410C',
+                      color: catColor?.accent || '#2D1B69',
                       background: catColor?.light || '#FFFBF5',
                     }}
                   >
@@ -441,7 +441,7 @@ function ProductsContent() {
             style={{
               borderColor: catColor?.border || '#FED7AA',
               background: 'linear-gradient(135deg, #FFFFFF 0%, #FFFCF8 100%)',
-              boxShadow: `0 2px 12px ${catColor?.accent || '#C2410C'}08`,
+              boxShadow: `0 2px 12px ${catColor?.accent || '#2D1B69'}08`,
             }}
           >
             <div className="flex items-center gap-3">
@@ -450,8 +450,8 @@ function ProductsContent() {
                 className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden"
                 style={{
                   borderColor: catColor?.border || '#FED7AA',
-                  background: catColor?.bg || '#FFF7ED',
-                  color: catColor?.accent || '#C2410C',
+                  background: catColor?.bg || '#FED7AA',
+                  color: catColor?.accent || '#2D1B69',
                 }}
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
@@ -459,7 +459,7 @@ function ProductsContent() {
               <p className="text-sm text-[var(--text-secondary)]">
                 <span className="font-black text-[var(--text-primary)]">{filteredProducts.length}</span> results
                 {search && (
-                  <> for <span className="font-bold" style={{ color: catColor?.accent || '#C2410C' }}>&ldquo;{search}&rdquo;</span></>
+                  <> for <span className="font-bold" style={{ color: catColor?.accent || '#2D1B69' }}>&ldquo;{search}&rdquo;</span></>
                 )}
               </p>
             </div>
@@ -486,8 +486,8 @@ function ProductsContent() {
                   onClick={() => setViewMode("grid")}
                   className="p-2 transition-all"
                   style={{
-                    background: viewMode === 'grid' ? (catColor?.bg || '#FFF7ED') : 'white',
-                    color: viewMode === 'grid' ? (catColor?.accent || '#C2410C') : 'var(--text-muted)',
+                    background: viewMode === 'grid' ? (catColor?.bg || '#FED7AA') : 'white',
+                    color: viewMode === 'grid' ? (catColor?.accent || '#2D1B69') : 'var(--text-muted)',
                   }}
                 >
                   <Grid3X3 className="h-4 w-4" />
@@ -496,8 +496,8 @@ function ProductsContent() {
                   onClick={() => setViewMode("list")}
                   className="p-2 transition-all"
                   style={{
-                    background: viewMode === 'list' ? (catColor?.bg || '#FFF7ED') : 'white',
-                    color: viewMode === 'list' ? (catColor?.accent || '#C2410C') : 'var(--text-muted)',
+                    background: viewMode === 'list' ? (catColor?.bg || '#FED7AA') : 'white',
+                    color: viewMode === 'list' ? (catColor?.accent || '#2D1B69') : 'var(--text-muted)',
                   }}
                 >
                   <List className="h-4 w-4" />
@@ -529,7 +529,7 @@ function ProductsContent() {
                   key={b}
                   className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold border shadow-sm"
                   style={{
-                    background: catColor?.bg || '#FFF7ED',
+                    background: catColor?.bg || '#FED7AA',
                     color: catColor?.text || '#9A3412',
                     borderColor: catColor?.border || '#FED7AA',
                   }}
@@ -558,14 +558,14 @@ function ProductsContent() {
               style={{
                 background: 'linear-gradient(135deg, #FFFFFF, #FFFCF8)',
                 borderColor: catColor?.border || '#FED7AA',
-                boxShadow: `0 2px 12px ${catColor?.accent || '#C2410C'}08`,
+                boxShadow: `0 2px 12px ${catColor?.accent || '#2D1B69'}08`,
               }}
             >
               <div
                 className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl"
-                style={{ background: catColor?.bg || 'linear-gradient(135deg, #FFF7ED, #FEF3E2)' }}
+                style={{ background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)' }}
               >
-                <Package className="h-10 w-10" style={{ color: catColor?.accent || '#C2410C', opacity: 0.5 }} />
+                <Package className="h-10 w-10" style={{ color: catColor?.accent || '#2D1B69', opacity: 0.5 }} />
               </div>
               <h3 className="text-lg font-black text-[var(--text-primary)]">No products found</h3>
               <p className="mt-2 text-sm text-[var(--text-muted)] max-w-xs">Try adjusting your filters or search terms to find what you&apos;re looking for</p>
@@ -573,8 +573,8 @@ function ProductsContent() {
                 onClick={clearFilters}
                 className="mt-5 rounded-xl px-6 py-3 text-xs font-black text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 style={{
-                  background: `linear-gradient(135deg, ${catColor?.accent || '#C2410C'}, ${catColor?.accent || '#C2410C'}DD)`,
-                  boxShadow: `0 4px 16px ${catColor?.accent || '#C2410C'}30`,
+                  background: `linear-gradient(135deg, ${catColor?.accent || '#2D1B69'}, ${catColor?.accent || '#2D1B69'}DD)`,
+                  boxShadow: `0 4px 16px ${catColor?.accent || '#2D1B69'}30`,
                 }}
               >
                 Clear All Filters
