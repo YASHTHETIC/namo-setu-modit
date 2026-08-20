@@ -15,7 +15,7 @@ export function CategoryGridWidget({ data }: { data: Record<string, unknown> }) 
             <div className="w-full aspect-square rounded-2xl bg-white border border-[var(--border)] overflow-hidden flex items-center justify-center group-hover:border-[var(--brand)] group-hover:shadow-md transition-all">
               <img src={cat.image_url} alt={cat.name} loading="lazy" className="w-full h-full object-cover" />
             </div>
-            <p className="text-[10px] font-semibold text-[var(--text)] text-center leading-tight">{cat.name}</p>
+            <p className="text-[10px] font-semibold text-[var(--text)] text-center leading-tight whitespace-pre-line">{cat.name}</p>
           </Link>
         ))}
       </div>
