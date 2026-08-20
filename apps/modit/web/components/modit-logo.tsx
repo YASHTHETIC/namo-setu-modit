@@ -1,28 +1,33 @@
 export function ModitLogo({ className = "h-[42px] w-auto", dark = true }: { className?: string; dark?: boolean }) {
-  const c = dark ? "#FFFFFF" : "#150726";
-  const g = "#7CB518";
+  const textColor = dark ? "#FFFFFF" : "#150726";
+  const green = "#7CB518";
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" fill="none" className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" fill="none" className={className}>
       {/* M */}
-      <path d="M0 72V10h9l25 42 25-42h9v62h-8V28L30 68h-6L6 28v44H0z" fill={c} />
-      {/* Green O - circular refresh arrows */}
-      <g transform="translate(80, 0)">
+      <path d="M2 75V5h10l28 48 28-48h10v70h-9V22L35 70h-7L11 22v53H2z" fill={textColor} />
+
+      {/* O — green circular arrows */}
+      <g transform="translate(88, 8)">
         {/* Top arrow arc */}
-        <path d="M36 4C22 4 11 14 9 27l7 2c1.5-8 8-14 17-14 10 0 18 8 18 18s-8 18-18 18c-5 0-9-2-12.5-5L9 53l3 7 10-3c4.5 5 11 8 18 8C39 65 50 54 50 41S49 18 36 4z" fill={g} transform="translate(6, 0)"/>
+        <path d="M36 2C20 2 8 14 6 28l8 2c1.5-9 9-15 19-15 11 0 20 9 20 20s-9 20-20 20c-6 0-10-2-14-6l-8 2 2 8 10-3c4 5 11 8 19 8 17 0 30-13 30-29S53 5 36 2z" fill={green} />
         {/* Bottom arrow arc */}
-        <path d="M36 78c14 0 25-10 27-23l-7-2c-1.5 8-8 14-17 14-10 0-18-8-18-18S12 31 22 31c5 0 9 2 12.5 5l10-3-3-7-10 3C27 24 21 21 14 21 1 21-10 32-12 45s11 33 25 33c5 0 9-2 12.5-5L36 78z" fill={g} transform="translate(6, 0)"/>
+        <path d="M36 86c16 0 29-12 30-28l-8-2c-1.5 9-9 15-19 15-11 0-20-9-20-20s9-20 20-20c6 0 10 2 14 6l8-2-2-8-10 3c-4-5-11-8-19-8-17 0-30 13-30 29s13 29 30 29z" fill={green} />
       </g>
+
       {/* D */}
-      <path d="M155 10h11c17 0 30 12 30 30s-13 30-30 30h-11V10zm8 8v44h3c13 0 22-9 22-22s-9-22-22-22h-3z" fill={c} />
+      <path d="M165 5h12c19 0 34 14 34 34s-15 34-34 34h-12V5zm9 9v52h3c14 0 25-11 25-26S191 14 177 14h-3z" fill={textColor} />
+
       {/* I */}
-      <path d="M204 10h8v62h-8V10z" fill={c} />
+      <path d="M218 5h9v70h-9V5z" fill={textColor} />
+
       {/* T */}
-      <path d="M226 10h8v52h24v8H226V10z" fill={c} />
+      <path d="M242 5h9v58h28v9H242V5z" fill={textColor} />
+
       {/* Subtitle: MATERIALS ON DOOR */}
-      <text x="0" y="88" fontFamily="Inter, Arial Black, sans-serif" fontWeight="800" fontSize="22" letterSpacing="1">
-        <tspan fill={c}>MATERIALS ON </tspan>
-        <tspan fill={g}>DOOR</tspan>
+      <text x="3" y="96" fontFamily="Inter, Arial Black, sans-serif" fontWeight="800" fontSize="18" letterSpacing="2">
+        <tspan fill={textColor}>MATERIALS ON </tspan>
+        <tspan fill={green}>DOOR</tspan>
       </text>
     </svg>
   );
