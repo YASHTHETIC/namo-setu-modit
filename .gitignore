@@ -72,3 +72,5 @@ portfolio-check/
 
 .vercel
 .env*
+
+.env*
