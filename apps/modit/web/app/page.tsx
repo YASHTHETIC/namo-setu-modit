@@ -229,11 +229,11 @@ export default function ModitHomePage() {
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-amber-200/60" style={{ background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E7 30%, #FFFDF5 60%, #FFFCF0 100%)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-purple-200/60" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
         <div className="max-w-[1440px] mx-auto flex h-[64px] items-center gap-4 px-4 sm:px-6">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_2px_8px_rgba(194,65,12,0.3)]">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_2px_8px_rgba(45,27,105,0.3)]">
               <span className="text-[15px] font-black text-white">M</span>
             </div>
             <div className="hidden sm:block">
@@ -259,7 +259,7 @@ export default function ModitHomePage() {
                 placeholder="Search cement, steel, tiles, paint, electrical..."
                 className="w-full h-[42px] bg-[var(--bg)] border border-[var(--border)] rounded-full pl-5 pr-14 text-[13px] text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 transition-all" />
               <button onClick={() => { if (searchQuery.trim()) { setShowSearch(false); router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`); } }}
-                className="absolute right-1.5 h-[34px] w-[34px] bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] hover:from-[var(--brand-hover)] hover:to-[var(--brand-dark)] rounded-full flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(194,65,12,0.25)]">
+                className="absolute right-1.5 h-[34px] w-[34px] bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] hover:from-[var(--brand-hover)] hover:to-[var(--brand-dark)] rounded-full flex items-center justify-center transition-all shadow-[0_2px_8px_rgba(45,27,105,0.25)]">
                 <Search className="h-4 w-4 text-white" />
               </button>
             </div>
@@ -304,7 +304,7 @@ export default function ModitHomePage() {
               <div className="relative">
                 <ShoppingCart className="h-4.5 w-4.5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-[0_2px_6px_rgba(194,65,12,0.3)]">{cartCount > 99 ? "99+" : cartCount}</span>
+                  <span className="absolute -top-1.5 -right-2 h-[16px] min-w-[16px] rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-[0_2px_6px_rgba(45,27,105,0.3)]">{cartCount > 99 ? "99+" : cartCount}</span>
                 )}
               </div>
               Cart
@@ -479,17 +479,17 @@ export default function ModitHomePage() {
           </div>
         </section>
 
-        {/* Flash Deals — Warm orange background */}
+        {/* Flash Deals — Purple/green accent */}
         <section className="py-4">
-          <div className="p-5 rounded-[20px] border border-orange-200 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF7ED, #FEF3E2, #FFF7ED)' }}>
-            <div className="absolute top-[-40px] right-[-40px] w-[160px] h-[160px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(194,65,12,0.12), transparent 70%)' }} />
-            <div className="absolute bottom-[-30px] left-[-30px] w-[120px] h-[120px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(245,165,36,0.1), transparent 70%)' }} />
+          <div className="p-5 rounded-[20px] border border-purple-200 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F0ECF9, #E8E0F7, #F0ECF9)' }}>
+            <div className="absolute top-[-40px] right-[-40px] w-[160px] h-[160px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(45,27,105,0.12), transparent 70%)' }} />
+            <div className="absolute bottom-[-30px] left-[-30px] w-[120px] h-[120px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(124,181,24,0.1), transparent 70%)' }} />
             <div className="flex items-center justify-between mb-4 relative z-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-[16px] font-bold text-[var(--text)] flex items-center gap-2">
                   <Flame className="h-5 w-5 text-[var(--brand)]" /> Flash Deals
                 </h2>
-                <div className="flex items-center gap-1 text-white text-[11px] font-bold px-2.5 py-1 rounded-md" style={{ background: 'linear-gradient(135deg, #2D1B0E, #3F2A18)' }}>
+                <div className="flex items-center gap-1 text-white text-[11px] font-bold px-2.5 py-1 rounded-md" style={{ background: 'linear-gradient(135deg, #2D1B69, #1E1245)' }}>
                   <Timer className="h-3 w-3" />
                   {String(flashTimer.h).padStart(2, '0')}:{String(flashTimer.m).padStart(2, '0')}:{String(flashTimer.s).padStart(2, '0')}
                 </div>
@@ -583,7 +583,7 @@ export default function ModitHomePage() {
                 <div className="absolute top-[-8px] left-[12px] text-[64px] font-black leading-none pointer-events-none select-none" style={{ color: 'rgba(194,65,12,0.06)' }}>&ldquo;</div>
                 <div className="flex items-center gap-0.5 mb-2 relative z-10">
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                    <Star key={j} className="h-3 w-3 fill-purple-400 text-purple-400" />
                   ))}
                 </div>
                 <p className="text-[12px] text-[var(--text-secondary)] mb-3 leading-relaxed relative z-10">&ldquo;{t.text}&rdquo;</p>
@@ -609,7 +609,7 @@ export default function ModitHomePage() {
           <h2 className="text-[16px] font-bold text-[var(--text)] mb-3">Frequently Asked Questions</h2>
           <div className="bg-white rounded-[20px] border border-[var(--border)] overflow-hidden shadow-sm">
             {FAQS.map((faq, i) => (
-              <div key={i} className="px-5 py-4 cursor-pointer hover:bg-orange-50/50 transition-colors border-b border-[var(--border-light)] last:border-b-0"
+              <div key={i} className="px-5 py-4 cursor-pointer hover:bg-purple-50/50 transition-colors border-b border-[var(--border-light)] last:border-b-0"
                 onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}>
                 <div className="flex items-center justify-between">
                   <h3 className="text-[13px] font-semibold text-[var(--text)]">{faq.q}</h3>
@@ -653,7 +653,7 @@ export default function ModitHomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-8">
             <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center gap-1.5 mb-3">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_4px_12px_rgba(194,65,12,0.3)]">
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[0_4px_12px_rgba(45,27,105,0.3)]">
                   <span className="text-[14px] font-black text-white">M</span>
                 </div>
                 <span className="text-[18px] font-black text-white">MODIT</span>

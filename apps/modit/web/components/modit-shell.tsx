@@ -93,10 +93,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-amber-200/60" style={{ background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E7 30%, #FFFDF5 60%, #FFFCF0 100%)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-purple-200/60" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
         <div className="market-container flex min-h-[76px] items-center gap-3 py-3">
           <Link href="/" className="flex shrink-0 items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">
               <span className="text-base font-black">M</span>
             </div>
             <div className="hidden md:block">
@@ -224,7 +224,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <button
                   type="button"
                   onClick={submitSearch}
-                  className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cta)] to-[var(--cta-hover)] text-white transition-all hover:shadow-[0_4px_12px_rgba(194,65,12,0.3)]"
+                  className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cta)] to-[var(--cta-hover)] text-white transition-all hover:shadow-[0_4px_12px_rgba(45,27,105,0.3)]"
                   aria-label="Search"
                 >
                   <Search className="h-4.5 w-4.5" />
@@ -300,7 +300,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => setShowUserMenu((value) => !value)}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(194,65,12,0.25)] transition-all hover:shadow-[0_6px_16px_rgba(194,65,12,0.3)]"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(194,65,12,0.25)] transition-all hover:shadow-[0_6px_16px_rgba(45,27,105,0.3)]"
               >
                 <User className="h-4 w-4" />
                 Account
@@ -393,7 +393,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">M</div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">M</div>
                   <div>
                     <p className="text-sm font-black text-[var(--text)]">MODIT</p>
                     <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--brand)]">Premium Building Materials</p>
@@ -444,7 +444,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(194,65,12,0.3)]">M</div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)]">M</div>
                 <div>
                   <p className="text-lg font-black tracking-tight text-[var(--text)]">MODIT</p>
                   <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--brand)]">Premium Building Materials</p>

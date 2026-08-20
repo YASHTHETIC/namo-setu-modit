@@ -31,12 +31,12 @@ type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discoun
 type ViewMode = "grid" | "list";
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; accent: string; border: string; light: string; icon: string }> = {
-  cement:         { bg: "linear-gradient(135deg, #FFF7ED, #FEF3E2)", text: "#9A3412", accent: "#C2410C", border: "#FED7AA", light: "#FFFBF5", icon: "bg-orange-100 text-orange-700" },
+  cement:         { bg: "linear-gradient(135deg, #F0ECF9, #E8E0F7)", text: "#2D1B69", accent: "#7CB518", border: "#C9B8E8", light: "#F5F2FC", icon: "bg-purple-100 text-purple-700" },
   "steel-tmt":    { bg: "linear-gradient(135deg, #F1F5F9, #E2E8F0)", text: "#334155", accent: "#475569", border: "#CBD5E1", light: "#F8FAFC", icon: "bg-slate-100 text-slate-700" },
-  "bricks-blocks":{ bg: "linear-gradient(135deg, #FEF2F2, #FEE2E2)", text: "#991B1B", accent: "#DC2626", border: "#FECACA", light: "#FFFBFB", icon: "bg-red-100 text-red-700" },
+  "bricks-blocks":{ bg: "linear-gradient(135deg, #FCE4EC, #F8BBD0)", text: "#AD1457", accent: "#E91E63", border: "#F48FB1", light: "#FFF0F3", icon: "bg-pink-100 text-pink-700" },
   "tiles-ceramics":{ bg: "linear-gradient(135deg, #F5F3FF, #EDE9FE)", text: "#5B21B6", accent: "#7C3AED", border: "#DDD6FE", light: "#FAF5FF", icon: "bg-violet-100 text-violet-700" },
-  paint:          { bg: "linear-gradient(135deg, #FFF1F2, #FFE4E6)", text: "#9F1239", accent: "#E11D48", border: "#FECDD3", light: "#FFF5F7", icon: "bg-rose-100 text-rose-700" },
-  electrical:     { bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", text: "#92400E", accent: "#D97706", border: "#FDE68A", light: "#FFFEFB", icon: "bg-amber-100 text-amber-700" },
+  paint:          { bg: "linear-gradient(135deg, #F0F9E8, #E8F5D8)", text: "#3D6B0E", accent: "#7CB518", border: "#C5E1A5", light: "#F5FCF0", icon: "bg-green-100 text-green-700" },
+  electrical:     { bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)", text: "#00838F", accent: "#00BCD4", border: "#B2EBF2", light: "#F0FFFE", icon: "bg-cyan-100 text-cyan-700" },
   plumbing:       { bg: "linear-gradient(135deg, #EFF6FF, #DBEAFE)", text: "#1E40AF", accent: "#2563EB", border: "#BFDBFE", light: "#F8FAFF", icon: "bg-blue-100 text-blue-700" },
   sanitary:       { bg: "linear-gradient(135deg, #F0FDFA, #CCFBF1)", text: "#065F46", accent: "#0D9488", border: "#99F6E4", light: "#F0FFFE", icon: "bg-teal-100 text-teal-700" },
   "sand-aggregate":{ bg: "linear-gradient(135deg, #FFFBEB, #FEF3C7)", text: "#78350F", accent: "#B45309", border: "#FDE68A", light: "#FFFEF8", icon: "bg-yellow-100 text-yellow-700" },
