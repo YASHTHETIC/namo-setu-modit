@@ -52,7 +52,7 @@ async def get_modit_analytics(
     summary="Revenue forecast using linear regression",
 )
 async def get_revenue_forecast(
-    product_code: str = Query(..., description="namo_setu or modit"),
+    product_code: str = Query(..., description="modit"),
     months: int = Query(default=6, ge=1, le=24),
     db: AsyncSession = Depends(get_db),
 ) -> RevenueForecast:
@@ -67,7 +67,7 @@ async def get_revenue_forecast(
     summary="Geographic heatmap data",
 )
 async def get_heatmap(
-    product_code: str = Query(..., description="namo_setu or modit"),
+    product_code: str = Query(..., description="modit"),
     entity_type: str = Query(default="bookings", description="bookings, donations, or orders"),
     db: AsyncSession = Depends(get_db),
 ) -> HeatmapData:
@@ -82,7 +82,7 @@ async def get_heatmap(
     summary="Growth metrics with month-over-month comparisons",
 )
 async def get_growth(
-    product_code: str = Query(..., description="namo_setu or modit"),
+    product_code: str = Query(..., description="modit"),
     period_days: int = Query(default=30, ge=1, le=365),
     db: AsyncSession = Depends(get_db),
 ) -> GrowthMetrics:
@@ -97,7 +97,7 @@ async def get_growth(
     summary="AI-driven insights and anomaly detection",
 )
 async def get_insights(
-    product_code: str = Query(..., description="namo_setu or modit"),
+    product_code: str = Query(..., description="modit"),
     db: AsyncSession = Depends(get_db),
 ) -> AIInsights:
     data = await AnalyticsService.get_ai_insights(db, product_code)
