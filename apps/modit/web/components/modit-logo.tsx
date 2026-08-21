@@ -3,29 +3,27 @@ export function ModitLogo({ className = "h-[42px] w-auto", dark = true }: { clas
   const green = "#7CB518";
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" fill="none" className={className}>
-      {/* M */}
-      <path d="M2 75V5h10l28 48 28-48h10v70h-9V22L35 70h-7L11 22v53H2z" fill={textColor} />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 105" fill="none" className={className}>
+      {/* M — bold, wide */}
+      <path d="M0 80V0h12l30 52 30-52h12v80h-10V24L38 76h-8L8 24v56H0z" fill={textColor} />
 
-      {/* O — green circular arrows */}
-      <g transform="translate(88, 8)">
-        {/* Top arrow arc */}
-        <path d="M36 2C20 2 8 14 6 28l8 2c1.5-9 9-15 19-15 11 0 20 9 20 20s-9 20-20 20c-6 0-10-2-14-6l-8 2 2 8 10-3c4 5 11 8 19 8 17 0 30-13 30-29S53 5 36 2z" fill={green} />
-        {/* Bottom arrow arc */}
-        <path d="M36 86c16 0 29-12 30-28l-8-2c-1.5 9-9 15-19 15-11 0-20-9-20-20s9-20 20-20c6 0 10 2 14 6l8-2-2-8-10 3c-4-5-11-8-19-8-17 0-30 13-30 29s13 29 30 29z" fill={green} />
+      {/* O — green circular arrows, vertically centered with letters */}
+      <g transform="translate(100, 8)">
+        <path d="M40 0C22 0 9 13 7 28l9 2c1.5-10 10-17 21-17 12 0 22 10 22 22s-10 22-22 22c-6 0-11-2-15-7l-9 2 2 9 11-3c5 6 12 9 21 9 19 0 34-15 34-33S59 0 40 0z" fill={green} />
+        <path d="M40 88c19 0 34-15 34-33l-9-2c-1.5 10-10 17-21 17-12 0-22-10-22-22s10-22 22-22c6 0 11 2 15 7l9-2-2-9-11 3c-5-6-12-9-21-9C21 0 6 15 6 33s15 33 34 33z" fill={green} />
       </g>
 
       {/* D */}
-      <path d="M165 5h12c19 0 34 14 34 34s-15 34-34 34h-12V5zm9 9v52h3c14 0 25-11 25-26S191 14 177 14h-3z" fill={textColor} />
+      <path d="M180 0h14c22 0 38 16 38 38s-16 38-38 38h-14V0zm10 10v60h4c16 0 28-13 28-30S210 10 194 10h-4z" fill={textColor} />
 
       {/* I */}
-      <path d="M218 5h9v70h-9V5z" fill={textColor} />
+      <path d="M242 0h12v80h-12V0z" fill={textColor} />
 
-      {/* T */}
-      <path d="M242 5h37v9h-14v49h-9v-49h-14V5z" fill={textColor} />
+      {/* T — proper T shape: horizontal bar + centered vertical stem */}
+      <path d="M270 0h52v12H296v68h-12V12h-14V0z" fill={textColor} />
 
       {/* Subtitle: MATERIALS ON DOOR */}
-      <text x="3" y="96" fontFamily="Inter, Arial Black, sans-serif" fontWeight="800" fontSize="18" letterSpacing="2">
+      <text x="2" y="98" fontFamily="Inter, Arial Black, sans-serif" fontWeight="800" fontSize="18" letterSpacing="3">
         <tspan fill={textColor}>MATERIALS ON </tspan>
         <tspan fill={green}>DOOR</tspan>
       </text>
