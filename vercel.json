@@ -1,5 +1,9 @@
 {
   "regions": ["iad1"],
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace=@modit/web",
+  "outputDirectory": "apps/modit/web/.next",
+  "framework": "nextjs",
   "github": {
     "silent": true
   }
