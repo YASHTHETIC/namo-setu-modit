@@ -1,9 +1,5 @@
 import type { LayoutResponse } from "@/lib/layout-types";
 
-// ── Static Fallback Layout ──────────────────────────────────────────
-// Used when the API is unreachable or during development.
-// Same JSON structure as the backend response — same widgets render it.
-
 export const STATIC_HOME_LAYOUT: LayoutResponse = {
   version: "1.0",
   screen: "home",
@@ -101,14 +97,14 @@ export const STATIC_HOME_LAYOUT: LayoutResponse = {
       order: 6,
       visible: true,
       data: {
-        title: "Trending Now",
+        title: "Cement",
         products: [
-          { id: "cement-1", name: "UltraTech Cement OPC 53 Grade 50kg", brand: "UltraTech", price: 385, mrp: 410, discount: 6, rating: 4.7, review_count: 2340, image_url: "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge: "Bestseller", delivery_text: "Tomorrow" },
-          { id: "steel-1", name: "Tata Tiscon TMT 500D 12mm Bars", brand: "Tata", price: 58500, mrp: 67000, discount: 13, rating: 4.8, review_count: 1890, image_url: "https://images.unsplash.com/photo-1745909247906-123b53b70e06?w=400&h=400&fit=crop", badge: "Top Rated", delivery_text: "2 days" },
-          { id: "paint-1", name: "Asian Paints Apex 20L Exterior", brand: "Asian Paints", price: 2400, mrp: 3100, discount: 23, rating: 4.6, review_count: 4230, image_url: "https://images.unsplash.com/photo-1550002233-59d811d29b95?w=400&h=400&fit=crop", badge: "Popular", delivery_text: "Tomorrow" },
-          { id: "tiles-1", name: "Kajaria Wall Tiles 2x2ft Glossy", brand: "Kajaria", price: 42, mrp: 55, discount: 24, rating: 4.5, review_count: 3120, image_url: "https://images.unsplash.com/photo-1562825642-4afada44b540?w=400&h=400&fit=crop", badge: "New", delivery_text: "3 days" },
-          { id: "electrical-1", name: "Havells LifeLine Plus 2.5sqmm Wire", brand: "Havells", price: 2520, mrp: 2800, discount: 10, rating: 4.8, review_count: 534, image_url: "https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=400&h=400&fit=crop", badge: "Trusted", delivery_text: "Tomorrow" },
-          { id: "plumbing-1", name: "Jaquar CP Valve 1/2 Inch", brand: "Jaquar", price: 890, mrp: 1200, discount: 26, rating: 4.4, review_count: 876, image_url: "https://images.unsplash.com/photo-1737505599025-836fce14b071?w=400&h=400&fit=crop", badge: "Deal", delivery_text: "2 days" },
+          { id: "cement-acc", name: "ACC Cement 50kg", brand: "ACC", price: 370, mrp: 400, discount: 8, rating: 4.6, review_count: 2100, image_url: "/products/cement/acc.jpg", badge: "Popular", delivery_text: "Tomorrow" },
+          { id: "cement-ambuja", name: "Ambuja Cement 50kg", brand: "Ambuja", price: 365, mrp: 395, discount: 8, rating: 4.5, review_count: 1800, image_url: "/products/cement/ambuja.jpg", badge: "Trusted", delivery_text: "Tomorrow" },
+          { id: "cement-dalmia", name: "Dalmia Cement RCF Expert 50kg", brand: "Dalmia", price: 355, mrp: 385, discount: 8, rating: 4.5, review_count: 1500, image_url: "/products/cement/dalmia.jpg", delivery_text: "Tomorrow" },
+          { id: "cement-jklakshmi", name: "JK Lakshmi Pro+ Cement 50kg", brand: "JK Lakshmi", price: 360, mrp: 390, discount: 8, rating: 4.6, review_count: 1700, image_url: "/products/cement/jk-lakshmi.jpg", badge: "Value", delivery_text: "Tomorrow" },
+          { id: "cement-jksuper", name: "JK Super Cement 50kg", brand: "JK Super", price: 350, mrp: 380, discount: 8, rating: 4.4, review_count: 1400, image_url: "/products/cement/jk-super.jpg", delivery_text: "Tomorrow" },
+          { id: "cement-jsw", name: "JSW Cement 50kg", brand: "JSW", price: 365, mrp: 395, discount: 8, rating: 4.5, review_count: 1600, image_url: "/products/cement/jsw.jpg", badge: "Deal", delivery_text: "Tomorrow" },
         ],
       },
     },
@@ -118,16 +114,15 @@ export const STATIC_HOME_LAYOUT: LayoutResponse = {
       order: 7,
       visible: true,
       data: {
-        title: "Featured Products",
+        title: "Cement",
         columns: 2,
         products: [
-          { id: "cement-1", name: "UltraTech Cement OPC 53 Grade 50kg", brand: "UltraTech", price: 385, mrp: 410, discount: 6, rating: 4.7, review_count: 2340, image_url: "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge: "Bestseller", delivery_text: "Tomorrow" },
-          { id: "steel-1", name: "Tata Tiscon TMT 500D 12mm Bars", brand: "Tata", price: 58500, mrp: 67000, discount: 13, rating: 4.8, review_count: 1890, image_url: "https://images.unsplash.com/photo-1745909247906-123b53b70e06?w=400&h=400&fit=crop", badge: "Top Rated", delivery_text: "2 days" },
-          { id: "paint-1", name: "Asian Paints Apex 20L Exterior", brand: "Asian Paints", price: 2400, mrp: 3100, discount: 23, rating: 4.6, review_count: 4230, image_url: "https://images.unsplash.com/photo-1550002233-59d811d29b95?w=400&h=400&fit=crop", badge: "Popular", delivery_text: "Tomorrow" },
-          { id: "tiles-1", name: "Kajaria Wall Tiles 2x2ft Glossy", brand: "Kajaria", price: 42, mrp: 55, discount: 24, rating: 4.5, review_count: 3120, image_url: "https://images.unsplash.com/photo-1562825642-4afada44b540?w=400&h=400&fit=crop", badge: "New", delivery_text: "3 days" },
-          { id: "electrical-1", name: "Havells LifeLine Plus 2.5sqmm Wire", brand: "Havells", price: 2520, mrp: 2800, discount: 10, rating: 4.8, review_count: 534, image_url: "https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=400&h=400&fit=crop", badge: "Trusted", delivery_text: "Tomorrow" },
-          { id: "plumbing-1", name: "Jaquar CP Valve 1/2 Inch", brand: "Jaquar", price: 890, mrp: 1200, discount: 26, rating: 4.4, review_count: 876, image_url: "https://images.unsplash.com/photo-1737505599025-836fce14b071?w=400&h=400&fit=crop", badge: "Deal", delivery_text: "2 days" },
-          { id: "cement-2", name: "ACC Cement PPC 43 Grade 50kg", brand: "ACC", price: 360, mrp: 395, discount: 9, rating: 4.6, review_count: 1890, image_url: "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge: "Value", delivery_text: "Tomorrow" },
+          { id: "cement-mpbirla", name: "MP Birla Samrat Cement 50kg", brand: "MP Birla", price: 355, mrp: 385, discount: 8, rating: 4.5, review_count: 1300, image_url: "/products/cement/mp-birla.jpg", delivery_text: "Tomorrow" },
+          { id: "cement-shree", name: "Shree Cement 50kg", brand: "Shree", price: 360, mrp: 390, discount: 8, rating: 4.6, review_count: 1900, image_url: "/products/cement/shree.jpg", badge: "Top Rated", delivery_text: "Tomorrow" },
+          { id: "cement-ult", name: "UltraTech Cement OPC 53 Grade 50kg", brand: "UltraTech", price: 385, mrp: 410, discount: 6, rating: 4.7, review_count: 2340, image_url: "/products/cement/ultratech.jpg", badge: "Bestseller", delivery_text: "Tomorrow" },
+          { id: "cement-wonder", name: "Wonder Cement 50kg", brand: "Wonder", price: 345, mrp: 375, discount: 8, rating: 4.4, review_count: 1200, image_url: "/products/cement/wonder.jpg", delivery_text: "Tomorrow" },
+          { id: "cement-acc2", name: "ACC Cement PPC 50kg", brand: "ACC", price: 365, mrp: 395, discount: 8, rating: 4.6, review_count: 2100, image_url: "/products/cement/acc.jpg", badge: "Value", delivery_text: "Tomorrow" },
+          { id: "cement-ambuja2", name: "Ambuja Cement PPC 50kg", brand: "Ambuja", price: 360, mrp: 390, discount: 8, rating: 4.5, review_count: 1800, image_url: "/products/cement/ambuja.jpg", delivery_text: "Tomorrow" },
         ],
       },
     },
