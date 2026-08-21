@@ -2,16 +2,17 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Shield, Truck, Clock, TrendingUp, Lock,
-  ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight
+  ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { ProductRail } from "@/widgets/product-rail";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
-import { products } from "@/lib/product-data";
+import { products, searchProducts } from "@/lib/product-data";
 
 /* ── Scroll-reveal hook ──────────────────────────────────────────── */
 function useScrollReveal(threshold = 0.15) {
@@ -93,13 +94,22 @@ export default function ModitHomePage() {
   const cartItems = useCartStore((s) => s.items);
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const router = useRouter();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [pincode, setPincode] = useState("201301");
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [deliveryPulse, setDeliveryPulse] = useState(true);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchResults = useMemo(() => searchQuery.length >= 2 ? searchProducts(searchQuery).slice(0, 8) : [], [searchQuery]);
 
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    if (showSearch) setTimeout(() => searchInputRef.current?.focus(), 100);
+  }, [showSearch]);
   useEffect(() => {
     const onScroll = () => setShowBackToTop(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -142,7 +152,7 @@ export default function ModitHomePage() {
       {/* ═══ HEADER ═══ */}
       <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-shadow hover:shadow-lg hover:shadow-purple-900/20">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5">
+          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
           <div className="flex-1 flex justify-center">
@@ -151,7 +161,7 @@ export default function ModitHomePage() {
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5">
+            <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowSearch(true)}>
               <Search className="h-5 w-5" />
             </RippleButton>
             <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
@@ -205,10 +215,10 @@ export default function ModitHomePage() {
               <h2 className="text-white text-[18px] font-bold leading-tight">Materials On Door</h2>
               <p className="text-white/60 text-[12px] mt-1">Construction materials delivered to your site</p>
             </div>
-            <RippleButton className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-5 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+            <Link href="/products" className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-5 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
               Shop Now
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </RippleButton>
+            </Link>
           </div>
         </div>
       </RevealSection>
@@ -445,11 +455,145 @@ export default function ModitHomePage() {
         </div>
       )}
 
+      {/* ═══ MENU SIDEBAR ═══ */}
+      {showMenu && (
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" onClick={() => setShowMenu(false)}>
+          <div className="w-72 h-full bg-[#150726] p-5 animate-slide-in-left overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <Link href="/" onClick={() => setShowMenu(false)}>
+                <ModitLogo className="h-[36px] w-auto" dark={true} />
+              </Link>
+              <button onClick={() => setShowMenu(false)} className="p-1 text-white/60 hover:text-white transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-1">
+              {[
+                { icon: Home, label: "Home", href: "/" },
+                { icon: LayoutGrid, label: "All Categories", href: "/products" },
+                { icon: Package, label: "My Orders", href: "/orders" },
+                { icon: ShoppingCart, label: "My Cart", href: "/cart" },
+                { icon: Heart, label: "Wishlist", href: "/wishlist" },
+                { icon: Wallet, label: "Payment History", href: "/payment/history" },
+                { icon: User, label: "Account", href: "/auth" },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setShowMenu(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
+                >
+                  <item.icon className="h-5 w-5 group-hover:text-[#7CB518] transition-colors" />
+                  <span className="text-[14px] font-semibold">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <p className="text-[10px] font-bold text-white/30 uppercase px-4 mb-3">Categories</p>
+              {categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/products?category=${cat.slug}`}
+                  onClick={() => setShowMenu(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"
+                >
+                  <div className="h-6 w-6 rounded-md bg-white/5 flex items-center justify-center overflow-hidden">
+                    <img src={cat.img} alt="" className="h-full w-full object-contain" />
+                  </div>
+                  <span className="text-[13px] font-medium">{cat.name.split("\n")[0]}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ SEARCH MODAL ═══ */}
+      {showSearch && (
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" onClick={() => { setShowSearch(false); setSearchQuery(""); }}>
+          <div className="w-full bg-[#150726] p-4 animate-slide-in-up" onClick={(e) => e.stopPropagation()}>
+            <div className="max-w-[1440px] mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && searchQuery) { router.push(`/products?search=${encodeURIComponent(searchQuery)}`); setShowSearch(false); setSearchQuery(""); } }}
+                    placeholder="Search cement, paint, lighting..."
+                    className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-[14px] text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
+                  />
+                </div>
+                <button onClick={() => { setShowSearch(false); setSearchQuery(""); }} className="p-3 text-white/60 hover:text-white transition-colors">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              {searchResults.length > 0 && (
+                <div className="mt-3 bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                  {searchResults.map((p) => (
+                    <Link
+                      key={p.id}
+                      href={`/products/${p.id}`}
+                      onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors border-b border-white/5 last:border-0"
+                    >
+                      <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-semibold text-white truncate">{p.name}</p>
+                        <p className="text-[11px] text-white/50">{p.brand}</p>
+                      </div>
+                      <p className="text-[13px] font-bold text-[#7CB518]">₹{p.price.toLocaleString("en-IN")}</p>
+                    </Link>
+                  ))}
+                  <Link
+                    href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                    onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                    className="flex items-center justify-center gap-2 px-4 py-3 text-[13px] font-semibold text-[#7CB518] hover:bg-white/5 transition-colors"
+                  >
+                    View all results <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              )}
+              {searchQuery.length >= 2 && searchResults.length === 0 && (
+                <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+                  <p className="text-[13px] text-white/50">No products found for &quot;{searchQuery}&quot;</p>
+                </div>
+              )}
+              {searchQuery.length < 2 && (
+                <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-4">
+                  <p className="text-[11px] font-bold text-white/40 uppercase mb-2">Popular Searches</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Cement", "Asian Paint", "Philips LED", "Dr Fixit", "Bostik", "UltraTech"].map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => { setSearchQuery(term); }}
+                        className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-all"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ═══ Mesh gradient animation ═══ */}
       <style jsx global>{`
         @keyframes meshMove {
           0% { transform: translate(0, 0) scale(1); }
           100% { transform: translate(20px, -10px) scale(1.1); }
+        }
+        @keyframes slideInLeft {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-slide-in-left {
+          animation: slideInLeft 0.25s ease-out forwards;
         }
       `}</style>
     </div>

@@ -1,29 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 170">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 155" fill="none">
+  <!-- Full word MODIT as one text block, then overlay the O replacement -->
   <style>
-    .t { font-family: 'Inter','Arial Black',Helvetica,sans-serif; font-weight: 900; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&amp;display=swap');
   </style>
 
-  <!-- Main text: M O D I T -->
-  <text x="0" y="115" class="t" font-size="128" fill="#150726">
-    <tspan x="0" dy="0">M</tspan>
-  </text>
+  <!-- Step 1: Draw full "MODIT" in purple (the O will be covered) -->
+  <text x="0" y="108" font-family="Inter, 'Arial Black', Helvetica, sans-serif" font-weight="900" font-size="118" fill="#150726" letter-spacing="-2">MODIT</text>
 
-  <!-- Green circular arrows replacing the O -->
-  <g transform="translate(168, 8)">
-    <!-- Upper arc with arrow -->
-    <path d="M 50 4 A 46 46 0 0 1 94 48 L 84 42 A 34 34 0 0 0 56 16 Z" fill="#7CB518"/>
-    <polygon points="94,36 106,50 94,54" fill="#7CB518"/>
-    <!-- Lower arc with arrow -->
-    <path d="M 94 48 A 46 46 0 0 1 50 92 L 56 82 A 34 34 0 0 0 84 56 Z" fill="#7CB518"/>
-    <polygon points="62,92 50,80 54,68" fill="#7CB518"/>
-    <!-- Inner white circle -->
-    <circle cx="70" cy="48" r="18" fill="white"/>
+  <!-- Step 2: White rectangle to erase the text "O" -->
+  <rect x="148" y="8" width="88" height="108" fill="white"/>
+
+  <!-- Step 3: Green circular refresh arrows as the O -->
+  <g transform="translate(152, 8)">
+    <!-- Outer ring composed of two curved arrows -->
+    <!-- Top arc (goes from ~8 o'clock to ~2 o'clock, clockwise) -->
+    <path d="M 36 6 A 38 38 0 0 1 78 30 L 78 24 L 86 30 L 78 36 L 78 30 A 38 38 0 0 0 42 12 Z" fill="#7CB518"/>
+    <!-- Arrow head top-right -->
+    <path d="M 78 18 L 90 30 L 78 42 L 74 34 L 82 30 L 74 26 Z" fill="#7CB518"/>
+
+    <!-- Bottom arc (goes from ~2 o'clock to ~8 o'clock, clockwise) -->
+    <path d="M 78 60 A 38 38 0 0 1 36 84 L 36 90 L 28 84 L 36 78 L 36 84 A 38 38 0 0 0 72 72 Z" fill="#7CB518"/>
+    <!-- Arrow head bottom-left -->
+    <path d="M 36 72 L 24 84 L 36 96 L 40 88 L 32 84 L 40 80 Z" fill="#7CB518"/>
+
+    <!-- Inner white circle to create the ring effect -->
+    <circle cx="57" cy="51" r="20" fill="white"/>
   </g>
 
-  <text x="270" y="115" class="t" font-size="128" fill="#150726">DIT</text>
-
-  <!-- Subtitle: MATERIALS ON DOOR -->
-  <text x="0" y="158" class="t" font-size="40" fill="#150726" letter-spacing="2">
-    MATERIALS ON <tspan fill="#7CB518">DOOR</tspan>
+  <!-- Step 4: Subtitle "MATERIALS ON DOOR" -->
+  <text x="0" y="148" font-family="Inter, 'Arial Black', Helvetica, sans-serif" font-weight="800" font-size="34" letter-spacing="1.5">
+    <tspan fill="#150726">MATERIALS ON </tspan>
+    <tspan fill="#7CB518">DOOR</tspan>
   </text>
 </svg>
