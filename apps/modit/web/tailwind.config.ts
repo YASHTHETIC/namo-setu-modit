@@ -35,6 +35,10 @@ const config: Config = {
           light: "#E0F7FA",
           dark: "#00838F",
         },
+        action: { DEFAULT: "#7CB518", hover: "#6A9C14", light: "#F0F9E8" },
+        urgency: { DEFAULT: "#E91E63", hover: "#C2185B", light: "#FCE4EC" },
+        info: { DEFAULT: "#00BCD4", hover: "#0097A7", light: "#E0F7FA" },
+        structure: { DEFAULT: "#2D1B69", dark: "#150726", light: "#F0ECF9" },
       },
       boxShadow: {
         glow: "0 20px 80px rgba(45, 27, 105, 0.15)",
@@ -48,6 +52,10 @@ const config: Config = {
         lg: "var(--radius)",
         xl: "var(--radius-lg)",
         "2xl": "var(--radius-xl)",
+        pill: "999px",
+        btn: "10px",
+        card: "16px",
+        sheet: "24px",
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",
@@ -58,6 +66,11 @@ const config: Config = {
         float: "float 4s ease-in-out infinite",
         glow: "glowPulse 3s ease-in-out infinite",
         shimmer: "shimmer 1.8s infinite",
+        "bolt-flash": "boltFlash 0.4s ease-out",
+        "cart-pop": "cartBadgePop 0.3s ease-out",
+        "slide-in-right": "slideInRight 0.3s ease-out",
+        "slide-in-up": "slideInUp 0.3s ease-out",
+        "shimmer-card": "shimmerCard 1.8s infinite",
       },
       keyframes: {
         fadeIn: {
@@ -89,6 +102,29 @@ const config: Config = {
           "50%": { boxShadow: "0 0 40px rgba(45, 27, 105, 0.3)" },
         },
         shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        boltFlash: {
+          "0%": { transform: "scale(1)" },
+          "30%": { transform: "scale(0.92)" },
+          "60%": { transform: "scale(1.08)", boxShadow: "0 0 12px rgba(124,181,24,.4)" },
+          "100%": { transform: "scale(1)", boxShadow: "none" },
+        },
+        cartBadgePop: {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.3)" },
+          "100%": { transform: "scale(1)" },
+        },
+        slideInRight: {
+          from: { transform: "translateX(20px)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
+        },
+        slideInUp: {
+          from: { transform: "translateY(100%)" },
+          to: { transform: "translateY(0)" },
+        },
+        shimmerCard: {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },

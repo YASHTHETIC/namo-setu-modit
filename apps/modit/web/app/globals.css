@@ -98,6 +98,225 @@ img { display: block; max-width: 100%; }
 ::selection { background: rgba(45, 27, 105, 0.18); color: var(--text); }
 
 /* ═══════════════════════════════════════════════
+   DESIGN TOKENS v2 — Locked color hierarchy
+   Purple = structure, Green = action, Pink = urgency/money, Cyan = info
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* Color hierarchy — each color has ONE job */
+  --color-structure: #2D1B69;
+  --color-structure-dark: #150726;
+  --color-structure-light: #F0ECF9;
+  --color-action: #7CB518;
+  --color-action-hover: #6A9C14;
+  --color-action-light: #F0F9E8;
+  --color-urgency: #E91E63;
+  --color-urgency-hover: #C2185B;
+  --color-urgency-light: #FCE4EC;
+  --color-info: #00BCD4;
+  --color-info-hover: #0097A7;
+  --color-info-light: #E0F7FA;
+
+  /* Spacing — 4px grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Radius — per spec */
+  --radius-pill: 999px;
+  --radius-btn: 10px;
+  --radius-card: 16px;
+  --radius-sheet: 24px;
+
+  /* Shadows — purple-tinted, never pure black */
+  --shadow-resting: 0 1px 3px rgba(21,7,38,.06);
+  --shadow-raised: 0 -4px 16px rgba(21,7,38,.12);
+  --shadow-card: 0 2px 8px rgba(21,7,38,.08);
+
+  /* Typography */
+  --font-app: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --text-price: 700 16px/1.2 var(--font-app);
+  --text-product-name: 600 13px/1.3 var(--font-app);
+  --text-meta: 400 11px/1.3 var(--font-app);
+  --text-section: 700 17px/1.2 var(--font-app);
+  --text-see-all: 600 13px/1 var(--font-app);
+
+  /* Bolt flash animation */
+  --bolt-flash: boltFlash 0.4s ease-out;
+}
+
+@keyframes boltFlash {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.92); }
+  60% { transform: scale(1.08); box-shadow: 0 0 12px rgba(124,181,24,.4); }
+  100% { transform: scale(1); box-shadow: none; }
+}
+
+@keyframes shimmerCard {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes cartBadgePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITY CLASSES — Design system components
+   ═══════════════════════════════════════════════ */
+
+/* Bolt flash on add-to-cart */
+.bolt-flash { animation: var(--bolt-flash); }
+
+/* Product card skeleton */
+.skeleton-card {
+  background: linear-gradient(90deg, #F0ECF9 25%, #E8E0F7 50%, #F0ECF9 75%);
+  background-size: 200% 100%;
+  animation: shimmerCard 1.8s infinite;
+  border-radius: var(--radius-card);
+}
+
+/* Sticky cart bar */
+.sticky-cart-bar {
+  position: fixed;
+  bottom: 64px;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #150726;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -4px 20px rgba(21,7,38,.2);
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Horizontal scroll rail */
+.scroll-rail {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 0;
+}
+.scroll-rail::-webkit-scrollbar { display: none; }
+.scroll-rail > * { scroll-snap-align: start; flex-shrink: 0; }
+
+/* Section header with "See all" */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px;
+}
+.section-header h2 {
+  font: var(--text-section);
+  color: var(--text);
+}
+.section-header a {
+  font: var(--text-see-all);
+  color: var(--color-action);
+}
+
+/* ADD button — white pill, green border */
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-action);
+  background: white;
+  color: var(--color-action);
+  font: 600 12px/1 var(--font-app);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-add:hover {
+  background: var(--color-action-light);
+}
+
+/* Stepper — green filled */
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-action);
+  color: white;
+  font: 600 12px/1 var(--font-app);
+  overflow: hidden;
+}
+.stepper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+.stepper button:hover { background: rgba(255,255,255,.15); }
+.stepper span {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Pill badge */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font: 600 10px/1 var(--font-app);
+}
+.badge-pink { background: var(--color-urgency); color: white; }
+.badge-cyan { background: var(--color-info); color: white; }
+.badge-green { background: var(--color-action); color: white; }
+.badge-purple { background: var(--color-structure); color: white; }
+
+/* Product card */
+.product-card {
+  background: white;
+  border: 1px solid #DDD6EE;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-resting);
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.product-card:hover { box-shadow: var(--shadow-card); }
+
+/* Price styling */
+.price-main { font: 700 16px/1.2 var(--font-app); color: #150726; }
+.price-mrp { font: 400 12px/1 var(--font-app); color: #9B8CB5; text-decoration: line-through; }
+.price-discount { font: 600 11px/1 var(--font-app); color: var(--color-urgency); }
+
+/* ═══════════════════════════════════════════════
    SECTION BACKGROUNDS — Color breaks between sections
    ═══════════════════════════════════════════════ */
 
