@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Zap } from "lucide-react";
+import { MapPin, ChevronDown, Zap } from "lucide-react";
 import type { DeliveryBarData } from "@/lib/layout-types";
 import { castSectionData } from "@/lib/layout-types";
 
@@ -15,10 +15,11 @@ export function DeliveryBarWidget({ data }: { data: Record<string, unknown> }) {
           <span className="text-[9px] font-bold text-[var(--green)] uppercase leading-tight">Mins</span>
         </div>
         <div className="flex items-center gap-1.5 text-white">
-          <MapPin className="h-3.5 w-3.5 text-[var(--green)]" />
-          <span className="text-[11px] font-semibold">Deliver To</span>
+          <MapPin className="h-3.5 w-3.5 text-white/60" />
+          <span className="text-[12px] font-semibold">Deliver To</span>
+          <ChevronDown className="h-3.5 w-3.5 text-white/60" />
         </div>
-        <span className="text-[12px] font-bold text-[var(--green)]">{d.pincode}</span>
+        <span className="text-[13px] font-bold text-[var(--green)]">{d.pincode}</span>
         <div className="ml-auto">
           <Zap className="h-5 w-5 text-[var(--green)]" />
         </div>
