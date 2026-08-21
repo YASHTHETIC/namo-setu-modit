@@ -118,16 +118,24 @@ async def build_home_layout(
     )
     db_categories = result.scalars().all()
 
+    _CATEGORY_IMAGES = {
+        "cement": "/products/cement/Ambuja Cement.png",
+        "tiles-ceramics": "/products/tiling/Kajaria Adhesives Tiling.png",
+        "paint": "/products/painting/Asian Paint.png",
+        "waterproofing": "/products/tiling/Dr Fixit.png",
+        "plywood-boards": "/products/painting/Asian Paints Tractor Emulsion, Base White 20 L.png",
+        "fevicol": "/products/tiling/Bostik.png",
+        "electrical": "/products/lighting/download-Photoroom (1).png",
+        "switches": "/products/lighting/Philips EvenGlow LED Strip Light, 5m.webp",
+        "lighting": "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp",
+        "hardware": "/products/tiling/Roff T1.png",
+    }
     category_items = [
         CategoryItem(
             id=str(cat.id),
             name=cat.name,
             slug=cat.slug,
-            image_url=f"https://images.unsplash.com/photo-1680357680725-f350480aee35?w=200&h=200&fit=crop" if cat.slug == "cement"
-            else f"https://images.unsplash.com/photo-1562825642-4afada44b540?w=200&h=200&fit=crop" if cat.slug == "tiles-ceramics"
-            else f"https://images.unsplash.com/photo-1550002233-59d811d29b95?w=200&h=200&fit=crop" if cat.slug == "paint"
-            else f"https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=200&h=200&fit=crop" if cat.slug == "electrical"
-            else f"https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=200&h=200&fit=crop",
+            image_url=_CATEGORY_IMAGES.get(cat.slug, "/products/cement/Ambuja Cement.png"),
             product_count=0,
         )
         for cat in db_categories
@@ -261,18 +269,16 @@ def _product_to_summary(p: Product) -> ProductSummary:
 def _get_fallback_categories() -> list[CategoryItem]:
     """Static fallback when DB has no categories."""
     cats = [
-        ("Cement", "cement", "https://images.unsplash.com/photo-1680357680725-f350480aee35?w=200&h=200&fit=crop"),
-        ("Tiling", "tiles-ceramics", "https://images.unsplash.com/photo-1562825642-4afada44b540?w=200&h=200&fit=crop"),
-        ("Painting", "paint", "https://images.unsplash.com/photo-1550002233-59d811d29b95?w=200&h=200&fit=crop"),
-        ("Water Proofing", "waterproofing", "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=200&h=200&fit=crop"),
-        ("Plywood, MDF & HDHMR", "plywood-boards", "https://images.unsplash.com/photo-1611600700192-d87eaeed4f81?w=200&h=200&fit=crop"),
-        ("Fevicol", "fevicol", "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=200&h=200&fit=crop"),
-        ("Wires", "electrical", "https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=200&h=200&fit=crop"),
-        ("Switches & Sockets", "switches", "https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=200&h=200&fit=crop"),
-        ("Hinges & Handles", "hardware", "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=200&h=200&fit=crop"),
-        ("Kitchen Systems", "kitchen", "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop"),
-        ("Wardrobe Fittings", "bedroom", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=200&h=200&fit=crop"),
-        ("Door Locks", "door-locks", "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&h=200&fit=crop"),
+        ("Cement", "cement", "/products/cement/Ambuja Cement.png"),
+        ("Tiling", "tiles-ceramics", "/products/tiling/Kajaria Adhesives Tiling.png"),
+        ("Painting", "paint", "/products/painting/Asian Paint.png"),
+        ("Water Proofing", "waterproofing", "/products/tiling/Dr Fixit.png"),
+        ("Plywood, MDF & HDHMR", "plywood-boards", "/products/painting/Asian Paints Tractor Emulsion, Base White 20 L.png"),
+        ("Fevicol", "fevicol", "/products/tiling/Bostik.png"),
+        ("Wires & Cables", "electrical", "/products/lighting/download-Photoroom (1).png"),
+        ("Switches & Sockets", "switches", "/products/lighting/Philips EvenGlow LED Strip Light, 5m.webp"),
+        ("Lighting", "lighting", "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp"),
+        ("Hardware", "hardware", "/products/tiling/Roff T1.png"),
     ]
     return [
         CategoryItem(id=f"cat_{i}", name=n, slug=s, image_url=img, product_count=0)
@@ -283,11 +289,11 @@ def _get_fallback_categories() -> list[CategoryItem]:
 def _get_fallback_products() -> list[ProductSummary]:
     """Static fallback when DB has no products."""
     products = [
-        ProductSummary(id="cement-1", name="UltraTech Cement OPC 53 Grade 50kg", brand="UltraTech", price=385, mrp=410, discount=6, rating=4.7, review_count=2340, image_url="https://images.unsplash.com/photo-1680357680725-f350480aee35?w=400&h=400&fit=crop", badge="Bestseller", delivery_text="Tomorrow"),
-        ProductSummary(id="steel-1", name="Tata Tiscon TMT 500D 12mm Bars", brand="Tata", price=58500, mrp=67000, discount=13, rating=4.8, review_count=1890, image_url="https://images.unsplash.com/photo-1745909247906-123b53b70e06?w=400&h=400&fit=crop", badge="Top Rated", delivery_text="2 days"),
-        ProductSummary(id="paint-1", name="Asian Paints Apex 20L Exterior", brand="Asian Paints", price=2400, mrp=3100, discount=23, rating=4.6, review_count=4230, image_url="https://images.unsplash.com/photo-1550002233-59d811d29b95?w=400&h=400&fit=crop", badge="Popular", delivery_text="Tomorrow"),
-        ProductSummary(id="tiles-1", name="Kajaria Wall Tiles 2x2ft Glossy", brand="Kajaria", price=42, mrp=55, discount=24, rating=4.5, review_count=3120, image_url="https://images.unsplash.com/photo-1562825642-4afada44b540?w=400&h=400&fit=crop", badge="New", delivery_text="3 days"),
-        ProductSummary(id="electrical-1", name="Havells LifeLine Plus 2.5sqmm Wire", brand="Havells", price=2520, mrp=2800, discount=10, rating=4.8, review_count=534, image_url="https://images.unsplash.com/photo-1764866085369-44c7ef1a18f3?w=400&h=400&fit=crop", badge="Trusted", delivery_text="Tomorrow"),
-        ProductSummary(id="plumbing-1", name="Jaquar CP Valve 1/2 Inch", brand="Jaquar", price=890, mrp=1200, discount=26, rating=4.4, review_count=876, image_url="https://images.unsplash.com/photo-1737505599025-836fce14b071?w=400&h=400&fit=crop", badge="Deal", delivery_text="2 days"),
+        ProductSummary(id="cement-ambuja", name="Ambuja Cement 50kg", brand="Ambuja", price=365, mrp=395, discount=8, rating=4.5, review_count=1800, image_url="/products/cement/Ambuja Cement.png", badge="Trusted", delivery_text="Tomorrow"),
+        ProductSummary(id="cement-acc", name="ACC Cement 50kg", brand="ACC", price=370, mrp=400, discount=8, rating=4.6, review_count=2100, image_url="/products/cement/ACC Cement.png", badge="Popular", delivery_text="Tomorrow"),
+        ProductSummary(id="paint-asian-apex", name="Asian Paints Apex, Base White", brand="Asian Paints", price=2400, mrp=3100, discount=23, rating=4.6, review_count=4230, image_url="/products/painting/Asian Paints Apex, Base White.png", badge="Bestseller", delivery_text="Tomorrow"),
+        ProductSummary(id="paint-asian-royale", name="Asian Paints Royale Luxury Emulsion", brand="Asian Paints", price=3200, mrp=4000, discount=20, rating=4.7, review_count=3100, image_url="/products/painting/Asian Paints Royale Luxury Emulsion, Base White.png", badge="Premium", delivery_text="Tomorrow"),
+        ProductSummary(id="tile-drfixit", name="Dr Fixit Waterproofing", brand="Dr Fixit", price=850, mrp=1100, discount=23, rating=4.6, review_count=2200, image_url="/products/tiling/Dr Fixit.png", badge="Bestseller", delivery_text="Tomorrow"),
+        ProductSummary(id="lighting-philips", name="Philips Ultra Glow LED Downlight", brand="Philips", price=1200, mrp=1500, discount=20, rating=4.5, review_count=1500, image_url="/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp", badge="New", delivery_text="Tomorrow"),
     ]
     return products
