@@ -86,7 +86,9 @@ async def product_to_read(session: AsyncSession, product: Product) -> ProductRea
 
 async def product_to_detail(session: AsyncSession, product: Product) -> ProductDetailRead:
     """Convert Product model to ProductDetailRead with relationships."""
-    await session.refresh(product, ["brand", "category", "sub_category", "unit", "gst", "images"])
+    # Use eager-loaded relationships if available, fallback to refresh
+    if not hasattr(product, '_sa_instance_state') or not getattr(product, 'brand', None):
+        await session.refresh(product, ["brand", "category", "sub_category", "unit", "gst", "images"])
     
     images_data = []
     for img in product.images:
@@ -118,7 +120,11 @@ async def search_products(
     page_size: int = 20,
 ) -> tuple[list[ProductRead], int, list[str]]:
     """Search products with filters."""
-    stmt = select(Product).where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+    stmt = (
+        select(Product)
+        .options(selectinload(Product.brand), selectinload(Product.category), selectinload(Product.images))
+        .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+    )
     
     if query:
         stmt = stmt.where(
@@ -161,7 +167,19 @@ async def search_products(
 
 async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
     """Get product by ID or raise 404."""
-    product = await session.get(Product, product_id)
+    stmt = (
+        select(Product)
+        .options(
+            selectinload(Product.brand),
+            selectinload(Product.category),
+            selectinload(Product.sub_category),
+            selectinload(Product.unit),
+            selectinload(Product.images),
+        )
+        .where(Product.id == product_id)
+    )
+    result = await session.execute(stmt)
+    product = result.scalar_one_or_none()
     if product is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     return product
@@ -170,7 +188,10 @@ async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
 # Inventory Services
 async def get_inventory_alerts(session: AsyncSession, organization_id: str | None = None) -> list[InventoryAlert]:
     """Get low stock and out of stock alerts."""
-    stmt = select(Inventory).where(
+    stmt = select(Inventory).options(
+        selectinload(Inventory.product),
+        selectinload(Inventory.warehouse),
+    ).where(
         or_(
             Inventory.quantity_on_hand <= Inventory.reorder_level,
             Inventory.quantity_on_hand == 0,
@@ -185,8 +206,6 @@ async def get_inventory_alerts(session: AsyncSession, organization_id: str | Non
     
     alerts = []
     for inv in inventory_items:
-        await session.refresh(inv, ["product", "warehouse"])
-        
         alert_type = "out_of_stock" if inv.quantity_on_hand == 0 else "low_stock"
         alerts.append(
             InventoryAlert(
@@ -205,7 +224,7 @@ async def get_inventory_alerts(session: AsyncSession, organization_id: str | Non
 
 async def get_inventory_analytics(session: AsyncSession, organization_id: str | None = None) -> InventoryAnalytics:
     """Get inventory analytics."""
-    stmt = select(Inventory)
+    stmt = select(Inventory).options(selectinload(Inventory.product))
     if organization_id:
         stmt = stmt.join(Warehouse).where(Warehouse.organization_id == organization_id)
     
@@ -216,26 +235,28 @@ async def get_inventory_analytics(session: AsyncSession, organization_id: str | 
     low_stock_count = sum(1 for inv in inventory_items if inv.quantity_on_hand <= inv.reorder_level and inv.quantity_on_hand > 0)
     out_of_stock_count = sum(1 for inv in inventory_items if inv.quantity_on_hand == 0)
     
-    # Calculate total value (simplified)
-    total_value = 0.0
-    for inv in inventory_items:
-        await session.refresh(inv, ["product"])
-        if inv.product:
-            total_value += float(inv.quantity_on_hand * (inv.product.list_price or 0))
+    total_value = sum(
+        float(inv.quantity_on_hand * (inv.product.list_price or 0))
+        for inv in inventory_items
+        if inv.product
+    )
     
-    # Warehouse breakdown
+    # Warehouse breakdown (single query instead of N+1)
     warehouse_breakdown = []
     warehouse_ids = set(inv.warehouse_id for inv in inventory_items)
-    for wid in warehouse_ids:
-        wh = await session.get(Warehouse, wid)
-        if wh:
-            wh_items = [inv for inv in inventory_items if inv.warehouse_id == wid]
-            warehouse_breakdown.append({
-                "warehouse_id": wid,
-                "warehouse_name": wh.name,
-                "product_count": len(wh_items),
-                "total_stock": sum(inv.quantity_on_hand for inv in wh_items),
-            })
+    if warehouse_ids:
+        wh_result = await session.execute(select(Warehouse).where(Warehouse.id.in_(warehouse_ids)))
+        warehouses = {wh.id: wh for wh in wh_result.scalars().all()}
+        for wid in warehouse_ids:
+            wh = warehouses.get(wid)
+            if wh:
+                wh_items = [inv for inv in inventory_items if inv.warehouse_id == wid]
+                warehouse_breakdown.append({
+                    "warehouse_id": wid,
+                    "warehouse_name": wh.name,
+                    "product_count": len(wh_items),
+                    "total_stock": sum(inv.quantity_on_hand for inv in wh_items),
+                })
     
     return InventoryAnalytics(
         total_products=total_products,

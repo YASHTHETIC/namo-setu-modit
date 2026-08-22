@@ -38,7 +38,11 @@ class SearchService:
         if cached_result is not None:
             return cached_result
 
-        stmt = select(Product).where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+        stmt = (
+            select(Product)
+            .options(selectinload(Product.brand), selectinload(Product.category), selectinload(Product.images))
+            .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+        )
 
         if query:
             pattern = f"%{query}%"
@@ -67,7 +71,6 @@ class SearchService:
 
         items: list[dict[str, Any]] = []
         for p in products:
-            await session.refresh(p, ["brand", "category", "images"])
             items.append({
                 "id": p.id,
                 "sku": p.sku,

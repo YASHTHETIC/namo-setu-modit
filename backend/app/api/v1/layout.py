@@ -6,8 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.core.database import get_db
 from backend.app.schemas.layout import LayoutResponse
 from backend.app.services.layout_service import build_home_layout
+from backend.app.services.cache_service import cache
 
 router = APIRouter()
+
+# Cache layout for 60 seconds (homepage is hit on every app open)
+LAYOUT_CACHE_TTL = 60
 
 
 @router.get("/layout/{screen}", response_model=LayoutResponse)
@@ -25,8 +29,11 @@ async def get_layout(
 
     Supported screens: home, category, search, product_detail
     """
-    if screen == "home":
-        return await build_home_layout(db, pincode=pincode, user_segment=segment)
+    cache_key = f"layout:{screen}:{pincode}:{segment}"
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return LayoutResponse(**cached)
 
-    # Future: category, search, product_detail layouts
-    return await build_home_layout(db, pincode=pincode, user_segment=segment)
+    result = await build_home_layout(db, pincode=pincode, user_segment=segment)
+    await cache.set(cache_key, result.model_dump(), ttl_seconds=LAYOUT_CACHE_TTL)
+    return result

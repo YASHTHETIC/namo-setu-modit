@@ -12,6 +12,9 @@ from backend.app.core.middleware import (
     ValidationMiddleware,
     ContentTypeMiddleware,
     SecurityHeadersMiddleware,
+    RateLimitMiddleware,
+    GZipMiddleware,
+    RequestTimeoutMiddleware,
 )
 
 settings = get_settings()
@@ -23,9 +26,14 @@ async def lifespan(app: FastAPI):
     from backend.app.core.redis import get_redis_client
 
     configure_logging(settings.log_level)
+    logger = __import__("logging").get.getLogger(__name__)
+    logger.info("Starting MODIT backend...")
+    logger.info(f"Environment: {settings.environment}")
+
     try:
         yield
     finally:
+        logger.info("Shutting down MODIT backend...")
         try:
             await engine.dispose()
         except Exception:
@@ -37,22 +45,39 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
-    
+    app = FastAPI(
+        title=settings.app_name,
+        version="0.1.0",
+        lifespan=lifespan,
+        docs_url="/docs" if settings.environment != "production" else None,
+        redoc_url="/redoc" if settings.environment != "production" else None,
+    )
+
+    # GZip compression (reduces bandwidth 60-80%)
+    app.add_middleware(GZipMiddleware)
+
     # CORS middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.backend_cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["*"],
     )
-    
-    # Custom middleware (order matters - first added is first executed)
+
+    # Request timeout (prevents resource exhaustion)
+    app.add_middleware(RequestTimeoutMiddleware)
+
+    # Rate limiting (Redis-backed, 120 req/min per IP)
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=120, burst=30)
+
+    # Security headers
     app.add_middleware(SecurityHeadersMiddleware)
+
+    # Content type + request tracking
     app.add_middleware(ContentTypeMiddleware)
     app.add_middleware(ValidationMiddleware)
-    
+
     # Register exception handlers
     register_exception_handlers(app)
 
@@ -78,6 +103,10 @@ def create_app() -> FastAPI:
             "status": "ok" if db_ok and redis_ok else "degraded",
             "dependencies": {"database": db_ok, "redis": redis_ok},
         }
+
+    @app.get("/readyz")
+    async def readyz():
+        return {"status": "ready"}
 
     try:
         from backend.app.api.v1.router import api_router
