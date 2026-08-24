@@ -449,7 +449,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BOTTOM NAV ═══ */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#150726] border-t border-white/10 safe-area-bottom">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-5 gap-0">
+        <div className="grid grid-cols-5 gap-0 w-full max-w-full">
           {[
             { icon: Home, label: "Home", href: "/", active: true },
             { icon: LayoutGrid, label: "Category", href: "/products" },
