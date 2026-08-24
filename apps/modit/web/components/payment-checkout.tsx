@@ -1,260 +1,201 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { createApiClient } from "@foundation/api-client";
-import {
-  CreditCard,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Receipt,
-  ArrowLeft,
-  Shield,
-} from "lucide-react";
-import { Button, Input, Card, CardHeader, CardContent, CardFooter } from "@/lib/modit-ui";
-import { getAccessToken } from "@/lib/auth";
-import { env } from "@/lib/env";
+import { useCartStore } from "@/lib/cart-store";
+import { placeOrder } from "@/lib/hybrid-api";
+import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone } from "lucide-react";
 
-interface PaymentCheckoutProps {
-  amount: number;
-  currency: string;
-  description: string;
-  onSuccess?: (receipt: PaymentReceipt) => void;
-  onFailure?: (error: Error) => void;
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
 }
 
-interface PaymentReceipt {
-  id: string;
-  amount: number;
-  currency: string;
-  status: string;
-  created_at: string;
-  receipt_url?: string;
+interface PaymentProps {
+  total: number;
+  onPaymentComplete: (orderId: string) => void;
 }
 
-interface CardForm {
-  number: string;
-  exp: string;
-  cvc: string;
-  name: string;
-}
+export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
+  const items = useCartStore((s) => s.items);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi">("razorpay");
+  const [processing, setProcessing] = useState(false);
+  const [upiId, setUpiId] = useState("");
 
-export function PaymentCheckout({
-  amount,
-  currency,
-  description,
-  onSuccess,
-  onFailure,
-}: PaymentCheckoutProps) {
-  const [step, setStep] = useState<"form" | "processing" | "success" | "error">("form");
-  const [card, setCard] = useState<CardForm>({ number: "", exp: "", cvc: "", name: "" });
-  const [receipt, setReceipt] = useState<PaymentReceipt | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const handleRazorpayPayment = async () => {
+    setProcessing(true);
+    try {
+      const orderData = {
+        items: items.map((i) => ({
+          productId: i.product.id,
+          quantity: i.quantity,
+          price: i.product.price,
+        })),
+        paymentMethod: "razorpay",
+      };
 
-  const processPayment = useMutation({
-    mutationFn: async () => {
-      const client = createApiClient({
-        baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
-        accessToken: getAccessToken(),
+      const result = await placeOrder(orderData);
+      if (result.success && result.orderId) {
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo",
+          amount: total * 100,
+          currency: "INR",
+          name: "MODIT",
+          description: `Order ${result.orderId}`,
+          order_id: result.orderId,
+          handler: function (response: any) {
+            clearCart();
+            onPaymentComplete(result.orderId!);
+          },
+          prefill: {
+            name: "",
+            email: "",
+            contact: "",
+          },
+          theme: {
+            color: "#2D1B69",
+          },
+          modal: {
+            ondismiss: function () {
+              setProcessing(false);
+            },
+          },
+        };
+
+        if (typeof window !== "undefined" && window.Razorpay) {
+          const rzp = new window.Razorpay(options);
+          rzp.open();
+        } else {
+          clearCart();
+          onPaymentComplete(result.orderId);
+        }
+      }
+    } catch (err) {
+      console.error("Payment failed:", err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleCOD = async () => {
+    setProcessing(true);
+    try {
+      const result = await placeOrder({
+        items: items.map((i) => ({
+          productId: i.product.id,
+          quantity: i.quantity,
+          price: i.product.price,
+        })),
+        paymentMethod: "cod",
       });
-      const data = await client.request<PaymentReceipt>("/api/v1/payments/create", {
-        method: "POST",
-        body: JSON.stringify({
-          amount,
-          currency,
-          description,
-          card: { token: "tok_simulated_" + Date.now() },
-        }),
+      if (result.success && result.orderId) {
+        clearCart();
+        onPaymentComplete(result.orderId);
+      }
+    } catch (err) {
+      console.error("Order failed:", err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleUPI = async () => {
+    setProcessing(true);
+    try {
+      const result = await placeOrder({
+        items: items.map((i) => ({
+          productId: i.product.id,
+          quantity: i.quantity,
+          price: i.product.price,
+        })),
+        paymentMethod: "upi",
       });
-      return data;
-    },
-    onSuccess: (data) => {
-      setReceipt(data);
-      setStep("success");
-      onSuccess?.(data);
-    },
-    onError: (err: Error) => {
-      setErrorMessage(err.message || "Payment failed. Please try again.");
-      setStep("error");
-      onFailure?.(err);
-    },
-  });
-
-  const formatCardNumber = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 16);
-    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+      if (result.success && result.orderId) {
+        clearCart();
+        onPaymentComplete(result.orderId);
+      }
+    } catch (err) {
+      console.error("Order failed:", err);
+    } finally {
+      setProcessing(false);
+    }
   };
-
-  const formatExpiry = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 4);
-    if (digits.length > 2) return digits.slice(0, 2) + "/" + digits.slice(2);
-    return digits;
-  };
-
-  const handleSubmit = () => {
-    setStep("processing");
-    processPayment.mutate();
-  };
-
-  if (step === "processing") {
-    return (
-      <Card className="max-w-md mx-auto">
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <Loader2 className="h-10 w-10 animate-spin text-[var(--brand)]" />
-          <p className="text-sm font-medium text-[var(--text-primary)]">Processing payment...</p>
-          <p className="text-xs text-[var(--text-muted)]">Please do not close this window</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (step === "success" && receipt) {
-    return (
-      <Card className="max-w-md mx-auto">
-        <CardContent className="flex flex-col items-center gap-4 py-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
-            <CheckCircle2 className="h-10 w-10 text-emerald-600" />
-          </div>
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">Payment Successful</h3>
-          <p className="text-sm text-[var(--text-muted)]">Your payment has been recorded.</p>
-
-          <div className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-4 space-y-2 mt-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--text-muted)]">Amount</span>
-              <span className="font-semibold text-[var(--text-primary)]">
-                {currency} {amount.toFixed(2)}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--text-muted)]">Status</span>
-              <span className="text-emerald-600 font-medium capitalize">{receipt.status}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--text-muted)]">Transaction ID</span>
-              <span className="font-mono text-xs text-[var(--text-primary)]">{receipt.id}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--text-muted)]">Date</span>
-              <span className="text-[var(--text-primary)]">
-                {new Date(receipt.created_at).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mt-2">
-            <Receipt className="h-3.5 w-3.5" />
-            <span>A receipt has been sent to your email</span>
-          </div>
-
-          <Button variant="secondary" className="mt-2" onClick={() => setStep("form")}>
-            <ArrowLeft className="h-4 w-4" />
-            Done
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (step === "error") {
-    return (
-      <Card className="max-w-md mx-auto">
-        <CardContent className="flex flex-col items-center gap-4 py-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-            <XCircle className="h-10 w-10 text-red-500" />
-          </div>
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">Payment Failed</h3>
-          <p className="text-sm text-red-600">{errorMessage}</p>
-          <Button variant="secondary" onClick={() => setStep("form")}>
-            <ArrowLeft className="h-4 w-4" />
-            Try Again
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
-    <Card className="max-w-md mx-auto">
-      <CardHeader>
-        <h3 className="text-base font-semibold text-[var(--text-primary)]">Payment Details</h3>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="rounded-xl bg-[var(--brand-bg)] p-4 text-center">
-          <p className="text-xs font-medium uppercase tracking-wider text-[var(--brand)]">Amount Due</p>
-          <p className="mt-1 text-3xl font-bold text-[var(--text-primary)]">
-            {currency} {amount.toFixed(2)}
-          </p>
-          <p className="mt-1 text-xs text-[var(--text-muted)]">{description}</p>
+    <div className="space-y-4">
+      {/* Payment Methods */}
+      <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+        <h4 className="text-[14px] font-bold text-[#150726] mb-3">Payment Method</h4>
+        <div className="space-y-2">
+          {[
+            { id: "razorpay", label: "UPI / Card / Netbanking", icon: CreditCard, desc: "Powered by Razorpay" },
+            { id: "upi", label: "Pay by UPI ID", icon: Smartphone, desc: "Google Pay, PhonePe, Paytm" },
+            { id: "cod", label: "Cash on Delivery", icon: Banknote, desc: "Pay when order arrives" },
+          ].map((method) => (
+            <button
+              key={method.id}
+              onClick={() => setPaymentMethod(method.id as any)}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                paymentMethod === method.id
+                  ? "border-[#2D1B69] bg-[#F0ECF9]"
+                  : "border-[#DDD6EE] hover:border-[#C9B8E8]"
+              }`}
+            >
+              <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                paymentMethod === method.id ? "bg-[#2D1B69] text-white" : "bg-[#F0ECF9] text-[#2D1B69]"
+              }`}>
+                <method.icon className="h-5 w-5" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="text-[13px] font-semibold text-[#150726]">{method.label}</p>
+                <p className="text-[11px] text-[#9B8CB5]">{method.desc}</p>
+              </div>
+              {paymentMethod === method.id && (
+                <Check className="h-5 w-5 text-[#2D1B69]" />
+              )}
+            </button>
+          ))}
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Cardholder Name</label>
-            <Input
-              placeholder="Name on card"
-              value={card.name}
-              onChange={(e) => setCard({ ...card, name: e.target.value })}
-              className="mt-1"
+        {/* UPI ID Input */}
+        {paymentMethod === "upi" && (
+          <div className="mt-3">
+            <input
+              type="text"
+              value={upiId}
+              onChange={(e) => setUpiId(e.target.value)}
+              placeholder="yourname@upi"
+              className="w-full border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[13px] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10 transition-all"
             />
           </div>
+        )}
+      </div>
 
-          <div>
-            <label className="text-sm font-medium text-[var(--text-primary)]">Card Number</label>
-            <div className="relative mt-1">
-              <Input
-                placeholder="1234 5678 9012 3456"
-                value={card.number}
-                onChange={(e) => setCard({ ...card, number: formatCardNumber(e.target.value) })}
-                maxLength={19}
-              />
-              <CreditCard className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
-            </div>
-          </div>
+      {/* Place Order Button */}
+      <button
+        onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : handleUPI}
+        disabled={processing || items.length === 0}
+        className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {processing ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            Processing...
+          </span>
+        ) : paymentMethod === "cod" ? (
+          `Place Order — ₹${total.toLocaleString("en-IN")}`
+        ) : (
+          `Pay ₹${total.toLocaleString("en-IN")}`
+        )}
+      </button>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-sm font-medium text-[var(--text-primary)]">Expiry</label>
-              <Input
-                placeholder="MM/YY"
-                value={card.exp}
-                onChange={(e) => setCard({ ...card, exp: formatExpiry(e.target.value) })}
-                maxLength={5}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-[var(--text-primary)]">CVC</label>
-              <Input
-                placeholder="123"
-                value={card.cvc}
-                onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                maxLength={4}
-                className="mt-1"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 rounded-lg bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
-          <Shield className="h-4 w-4 shrink-0 text-emerald-500" />
-          <span>Secure payment. No real charges will be made in demo mode.</span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button
-          className="w-full"
-          onClick={handleSubmit}
-          disabled={!card.name || card.number.replace(/\s/g, "").length < 16 || card.exp.length < 5 || card.cvc.length < 3}
-        >
-          <CreditCard className="h-4 w-4" />
-          Pay {currency} {amount.toFixed(2)}
-        </Button>
-      </CardFooter>
-    </Card>
+      {/* Trust Badges */}
+      <div className="flex items-center justify-center gap-4 text-[10px] text-[#9B8CB5]">
+        <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> 256-bit SSL</span>
+        <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Free ₹5000+</span>
+        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> 7-day returns</span>
+      </div>
+    </div>
   );
 }

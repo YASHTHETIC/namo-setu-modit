@@ -1,528 +1,211 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
-  MapPin,
-  CreditCard,
-  Building2,
-  Wallet,
-  Banknote,
-  Calendar,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
-  Package,
-  Truck,
-  Shield,
-  FileText,
-  Plus,
-  Pencil,
-  AlertCircle,
-  Info,
-  ShoppingCart,
+  ArrowLeft, MapPin, Check, Plus, Package, Truck, Shield, Clock, CheckCircle2, ShoppingCart,
 } from "lucide-react";
-import { Button, Card, Input, Select, Badge, FormRow, Textarea } from "@/lib/modit-ui";
 import { useCartStore } from "@/lib/cart-store";
+import { PaymentSection } from "@/components/payment-checkout";
 
-interface Address {
-  id: string;
-  label: string;
-  name: string;
-  phone: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  pincode: string;
-  isDefault: boolean;
-}
-
-const demoAddresses: Address[] = [
-  {
-    id: "a1",
-    label: "Office",
-    name: "Rajesh Kumar",
-    phone: "+91 98765 43210",
-    line1: "42, MG Road, Near Metro Station",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pincode: "400001",
-    isDefault: true,
-  },
-  {
-    id: "a2",
-    label: "Site Address",
-    name: "Rajesh Kumar",
-    phone: "+91 98765 43210",
-    line1: "Construction Site B, Sector 15",
-    line2: "Goregaon East",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pincode: "400065",
-    isDefault: false,
-  },
+const demoAddresses = [
+  { id: "a1", label: "Site Office", name: "Rajesh Kumar", phone: "+91 98765 43210", line1: "42, MG Road, Near Metro Station", city: "Mumbai", state: "Maharashtra", pincode: "400001", isDefault: true },
+  { id: "a2", label: "Warehouse", name: "Rajesh Kumar", phone: "+91 98765 43210", line1: "15, Industrial Area Phase 2", city: "Mumbai", state: "Maharashtra", pincode: "400070", isDefault: false },
 ];
-
-type PaymentMethod = "upi" | "cards" | "netbanking" | "cod" | "credit";
 
 export default function CheckoutPage() {
   const router = useRouter();
-
   const items = useCartStore((s) => s.items);
   const getCartTotal = useCartStore((s) => s.getCartTotal);
   const getCartGST = useCartStore((s) => s.getCartGST);
   const getCartShipping = useCartStore((s) => s.getCartShipping);
-  const getCartGrandTotal = useCartStore((s) => s.getCartGrandTotal);
-
-  const [selectedAddressId, setSelectedAddressId] = useState("a1");
-  const [addresses, setAddresses] = useState<Address[]>(demoAddresses);
-  const [showAddressForm, setShowAddressForm] = useState(false);
-  const [newAddress, setNewAddress] = useState({ label: "", name: "", phone: "", line1: "", line2: "", city: "", state: "", pincode: "" });
-
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
-  const [upiId, setUpiId] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvv, setCardCvv] = useState("");
-  const [selectedBank, setSelectedBank] = useState("");
-
-  const [deliverySlot, setDeliverySlot] = useState<"morning" | "afternoon" | "evening">("morning");
-  const [deliveryDate, setDeliveryDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 3);
-    return d.toISOString().split("T")[0];
-  });
-
-  const [gstInvoiceType, setGstInvoiceType] = useState<"regular" | "composition" | "export">("regular");
-  const [purchaseOrderNumber, setPurchaseOrderNumber] = useState("");
-  const [specialInstructions, setSpecialInstructions] = useState("");
-
-  const [isPlacing, setIsPlacing] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("a1");
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderId, setOrderId] = useState("");
 
-  const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
-
-  const totals = useMemo(() => {
-    const subtotal = getCartTotal();
-    const totalGst = getCartGST();
-    const shipping = getCartShipping();
-    const total = getCartGrandTotal();
-    return { subtotal, totalGst, shipping, total };
-  }, [items]);
-
-  const handleAddAddress = useCallback(() => {
-    if (!newAddress.name || !newAddress.line1 || !newAddress.city || !newAddress.pincode) return;
-    const addr: Address = {
-      id: `a${addresses.length + 1}`,
-      label: newAddress.label || "New Address",
-      name: newAddress.name,
-      phone: newAddress.phone,
-      line1: newAddress.line1,
-      line2: newAddress.line2 || undefined,
-      city: newAddress.city,
-      state: newAddress.state,
-      pincode: newAddress.pincode,
-      isDefault: addresses.length === 0,
-    };
-    setAddresses((prev) => [...prev, addr]);
-    setSelectedAddressId(addr.id);
-    setShowAddressForm(false);
-    setNewAddress({ label: "", name: "", phone: "", line1: "", line2: "", city: "", state: "", pincode: "" });
-  }, [newAddress, addresses]);
-
-  const handlePlaceOrder = useCallback(async () => {
-    setIsPlacing(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    setIsPlacing(false);
-    setOrderPlaced(true);
-  }, []);
+  const subtotal = getCartTotal();
+  const gst = getCartGST();
+  const shipping = getCartShipping();
+  const total = subtotal + gst + shipping;
 
   if (items.length === 0 && !orderPlaced) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-        <ShoppingCart className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">Your cart is empty</h2>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">Add items to your cart before checking out.</p>
-        <Link href="/products" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:underline">
-          <ArrowLeft className="h-4 w-4" /> Browse Products
-        </Link>
+      <div className="min-h-screen bg-[#F8F6FC]">
+        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+            <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
+            <h1 className="text-[16px] font-bold text-white">Checkout</h1>
+          </div>
+        </header>
+        <div className="mx-auto max-w-[600px] px-4 py-20 text-center">
+          <ShoppingCart className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
+          <h2 className="text-[18px] font-bold text-[#150726]">Your cart is empty</h2>
+          <Link href="/products" className="mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all">
+            <ArrowLeft className="h-4 w-4" /> Browse Products
+          </Link>
+        </div>
       </div>
     );
   }
 
   if (orderPlaced) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-          <CheckCircle2 className="h-10 w-10 text-emerald-600" />
-        </div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Order Placed Successfully!</h1>
-        <p className="mt-3 text-[var(--text-muted)]">
-          Your order <span className="font-semibold text-[var(--text-primary)]">ORD-2026-08001</span> has been confirmed.
-          You will receive a confirmation email shortly.
-        </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Link href="/orders/ORD-2026-08001">
-            <Button>View Order</Button>
-          </Link>
-          <Link href="/products">
-            <Button variant="secondary">Continue Shopping</Button>
-          </Link>
+      <div className="min-h-screen bg-[#F8F6FC]">
+        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+            <h1 className="text-[16px] font-bold text-white">Order Confirmed</h1>
+          </div>
+        </header>
+        <div className="mx-auto max-w-[600px] px-4 py-20 text-center">
+          <div className="h-20 w-20 rounded-full bg-[#7CB518]/10 flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="h-10 w-10 text-[#7CB518]" />
+          </div>
+          <h2 className="text-[22px] font-bold text-[#150726]">Order Placed!</h2>
+          <p className="text-[13px] text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
+          <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#7CB518] font-semibold">
+            <Truck className="h-4 w-4" /> Estimated delivery: 60 minutes
+          </div>
+          <div className="mt-8 flex gap-3 justify-center">
+            <Link href={`/orders/${orderId}`} className="bg-[#2D1B69] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
+              Track Order
+            </Link>
+            <Link href="/products" className="bg-white text-[#150726] text-[13px] font-bold px-6 py-2.5 rounded-full border border-[#DDD6EE] hover:border-[#2D1B69] transition-all">
+              Continue Shopping
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-8">
-        <Link
-          href="/cart"
-          className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--brand)] transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to Cart
-        </Link>
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Checkout</h1>
-      </div>
-
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Left: Checkout Steps */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Step 1: Delivery Address */}
-          <Card className="overflow-hidden">
-            <div className="border-b border-[var(--border-subtle)] px-6 py-4">
-              <h3 className="flex items-center gap-2 text-base font-semibold text-[var(--text-primary)]">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">1</span>
-                <MapPin className="h-4 w-4 text-[var(--brand)]" />
-                Delivery Address
-              </h3>
-            </div>
-            <div className="p-6 space-y-4">
-              {addresses.map((addr) => (
-                <label
-                  key={addr.id}
-                  className={`flex items-start gap-4 rounded-xl border-2 p-4 cursor-pointer transition-all ${
-                    selectedAddressId === addr.id
-                      ? "border-[var(--brand)] bg-[var(--brand)]/5"
-                      : "border-[var(--border)] hover:border-[var(--brand)]/50"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="address"
-                    value={addr.id}
-                    checked={selectedAddressId === addr.id}
-                    onChange={() => setSelectedAddressId(addr.id)}
-                    className="mt-1 h-4 w-4 accent-[var(--brand)]"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-[var(--text-primary)]">{addr.label}</span>
-                      {addr.isDefault && <Badge variant="default" className="text-[10px]">Default</Badge>}
-                    </div>
-                    <p className="mt-1 text-sm text-[var(--text-secondary)]">{addr.name} · {addr.phone}</p>
-                    <p className="mt-0.5 text-sm text-[var(--text-muted)]">
-                      {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}, {addr.city}, {addr.state} - {addr.pincode}
-                    </p>
-                  </div>
-                  <button className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]">
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                </label>
-              ))}
-              <button
-                onClick={() => setShowAddressForm(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--border)] py-3 text-sm font-medium text-[var(--text-muted)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all"
-              >
-                <Plus className="h-4 w-4" /> Add New Address
-              </button>
-
-              {showAddressForm && (
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-5 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormRow label="Label">
-                      <Input placeholder="e.g. Office, Site" value={newAddress.label} onChange={(e) => setNewAddress({ ...newAddress, label: e.target.value })} />
-                    </FormRow>
-                    <FormRow label="Full Name" required>
-                      <Input placeholder="Recipient name" value={newAddress.name} onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })} />
-                    </FormRow>
-                  </div>
-                  <FormRow label="Phone" required>
-                    <Input placeholder="+91 XXXXX XXXXX" value={newAddress.phone} onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })} />
-                  </FormRow>
-                  <FormRow label="Address Line 1" required>
-                    <Input placeholder="Street address" value={newAddress.line1} onChange={(e) => setNewAddress({ ...newAddress, line1: e.target.value })} />
-                  </FormRow>
-                  <FormRow label="Address Line 2">
-                    <Input placeholder="Apartment, suite, etc." value={newAddress.line2} onChange={(e) => setNewAddress({ ...newAddress, line2: e.target.value })} />
-                  </FormRow>
-                  <div className="grid grid-cols-3 gap-4">
-                    <FormRow label="City" required>
-                      <Input placeholder="City" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })} />
-                    </FormRow>
-                    <FormRow label="State" required>
-                      <Input placeholder="State" value={newAddress.state} onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })} />
-                    </FormRow>
-                    <FormRow label="Pincode" required>
-                      <Input placeholder="6-digit pincode" value={newAddress.pincode} onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} />
-                    </FormRow>
-                  </div>
-                  <div className="flex justify-end gap-3">
-                    <Button variant="secondary" onClick={() => setShowAddressForm(false)}>Cancel</Button>
-                    <Button onClick={handleAddAddress}>Save Address</Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Step 2: Delivery Schedule */}
-          <Card className="overflow-hidden">
-            <div className="border-b border-[var(--border-subtle)] px-6 py-4">
-              <h3 className="flex items-center gap-2 text-base font-semibold text-[var(--text-primary)]">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">2</span>
-                <Calendar className="h-4 w-4 text-[var(--brand)]" />
-                Delivery Schedule
-              </h3>
-            </div>
-            <div className="p-6 space-y-4">
-              <FormRow label="Preferred Delivery Date">
-                <Input
-                  type="date"
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                  min={new Date(Date.now() + 3 * 86400000).toISOString().split("T")[0]}
-                />
-              </FormRow>
-              <FormRow label="Time Slot">
-                <div className="flex gap-3">
-                  {(["morning", "afternoon", "evening"] as const).map((slot) => (
-                    <button
-                      key={slot}
-                      onClick={() => setDeliverySlot(slot)}
-                      className={`flex-1 rounded-xl border-2 px-4 py-3 text-center transition-all ${
-                        deliverySlot === slot
-                          ? "border-[var(--brand)] bg-[var(--brand)]/5 text-[var(--brand)]"
-                          : "border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--brand)]/50"
-                      }`}
-                    >
-                      <Clock className="mx-auto mb-1 h-4 w-4" />
-                      <span className="text-xs font-semibold capitalize">{slot}</span>
-                      <span className="mt-0.5 block text-[10px] text-[var(--text-muted)]">
-                        {slot === "morning" ? "8 AM - 12 PM" : slot === "afternoon" ? "12 PM - 4 PM" : "4 PM - 8 PM"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </FormRow>
-            </div>
-          </Card>
-
-          {/* Step 3: Payment Method */}
-          <Card className="overflow-hidden">
-            <div className="border-b border-[var(--border-subtle)] px-6 py-4">
-              <h3 className="flex items-center gap-2 text-base font-semibold text-[var(--text-primary)]">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">3</span>
-                <CreditCard className="h-4 w-4 text-[var(--brand)]" />
-                Payment Method
-              </h3>
-            </div>
-            <div className="p-6 space-y-3">
-              {([
-                { id: "upi", label: "UPI", icon: Wallet, desc: "Google Pay, PhonePe, Paytm" },
-                { id: "cards", label: "Credit / Debit Card", icon: CreditCard, desc: "Visa, Mastercard, Rupay" },
-                { id: "netbanking", label: "Net Banking", icon: Building2, desc: "All major banks" },
-                { id: "cod", label: "Cash on Delivery", icon: Banknote, desc: "Pay when delivered" },
-                { id: "credit", label: "Credit Terms", icon: FileText, desc: "30/60/90 day credit" },
-              ] as const).map((pm) => (
-                <label
-                  key={pm.id}
-                  className={`flex items-center gap-4 rounded-xl border-2 p-4 cursor-pointer transition-all ${
-                    paymentMethod === pm.id
-                      ? "border-[var(--brand)] bg-[var(--brand)]/5"
-                      : "border-[var(--border)] hover:border-[var(--brand)]/50"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value={pm.id}
-                    checked={paymentMethod === pm.id}
-                    onChange={() => setPaymentMethod(pm.id as PaymentMethod)}
-                    className="h-4 w-4 accent-[var(--brand)]"
-                  />
-                  <pm.icon className="h-5 w-5 text-[var(--text-muted)]" />
-                  <div>
-                    <p className="text-sm font-semibold text-[var(--text-primary)]">{pm.label}</p>
-                    <p className="text-xs text-[var(--text-muted)]">{pm.desc}</p>
-                  </div>
-                </label>
-              ))}
-
-              {paymentMethod === "upi" && (
-                <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
-                  <FormRow label="UPI ID">
-                    <Input placeholder="yourname@upi" value={upiId} onChange={(e) => setUpiId(e.target.value)} />
-                  </FormRow>
-                </div>
-              )}
-
-              {paymentMethod === "cards" && (
-                <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4 space-y-4">
-                  <FormRow label="Card Number">
-                    <Input placeholder="XXXX XXXX XXXX XXXX" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} maxLength={19} />
-                  </FormRow>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormRow label="Expiry">
-                      <Input placeholder="MM/YY" value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value)} maxLength={5} />
-                    </FormRow>
-                    <FormRow label="CVV">
-                      <Input type="password" placeholder="XXX" value={cardCvv} onChange={(e) => setCardCvv(e.target.value)} maxLength={4} />
-                    </FormRow>
-                  </div>
-                </div>
-              )}
-
-              {paymentMethod === "netbanking" && (
-                <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
-                  <FormRow label="Select Bank">
-                    <Select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)}>
-                      <option value="">Choose your bank</option>
-                      <option value="sbi">State Bank of India</option>
-                      <option value="hdfc">HDFC Bank</option>
-                      <option value="icici">ICICI Bank</option>
-                      <option value="axis">Axis Bank</option>
-                      <option value="kotak">Kotak Mahindra Bank</option>
-                      <option value="pnb">Punjab National Bank</option>
-                      <option value="bob">Bank of Baroda</option>
-                    </Select>
-                  </FormRow>
-                </div>
-              )}
-
-              {paymentMethod === "credit" && (
-                <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-4">
-                  <div className="flex items-start gap-3">
-                    <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-[var(--brand)]" />
-                    <p className="text-xs text-[var(--text-muted)]">
-                      Credit terms are available for verified businesses with approved credit limits.
-                      Your credit limit: <span className="font-semibold text-[var(--text-primary)]">₹25,00,000</span>.
-                      Remaining: <span className="font-semibold text-emerald-600">₹18,50,000</span>.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Step 4: Invoice & Notes */}
-          <Card className="overflow-hidden">
-            <div className="border-b border-[var(--border-subtle)] px-6 py-4">
-              <h3 className="flex items-center gap-2 text-base font-semibold text-[var(--text-primary)]">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">4</span>
-                <FileText className="h-4 w-4 text-[var(--brand)]" />
-                GST Invoice & Notes
-              </h3>
-            </div>
-            <div className="p-6 space-y-4">
-              <FormRow label="Invoice Type">
-                <Select value={gstInvoiceType} onChange={(e) => setGstInvoiceType(e.target.value as any)}>
-                  <option value="regular">Regular GST Invoice</option>
-                  <option value="composition">Composition Scheme</option>
-                  <option value="export">Export Invoice (IGST)</option>
-                </Select>
-              </FormRow>
-              <FormRow label="Purchase Order Number (Optional)">
-                <Input placeholder="PO-XXXXX" value={purchaseOrderNumber} onChange={(e) => setPurchaseOrderNumber(e.target.value)} />
-              </FormRow>
-              <FormRow label="Special Instructions">
-                <Textarea
-                  placeholder="Any delivery notes, site access instructions, or special requirements..."
-                  value={specialInstructions}
-                  onChange={(e) => setSpecialInstructions(e.target.value)}
-                  className="min-h-[80px]"
-                />
-              </FormRow>
-            </div>
-          </Card>
+    <div className="min-h-screen bg-[#F8F6FC]">
+      <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+          <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
+          <h1 className="text-[16px] font-bold text-white">Checkout</h1>
         </div>
+      </header>
 
-        {/* Right: Order Summary */}
-        <div className="space-y-6">
-          <Card className="overflow-hidden sticky top-24">
-            <div className="border-b border-[var(--border-subtle)] px-6 py-4">
-              <h3 className="text-base font-semibold text-[var(--text-primary)]">Order Summary</h3>
-            </div>
-            <div className="p-6 space-y-4">
-              {/* Items from actual cart */}
-              <div className="space-y-3">
-                {items.map((item) => (
-                  <div key={item.product.id} className="flex items-start justify-between gap-3">
+      <div className="mx-auto max-w-[1200px] px-4 py-4 sm:px-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Left — Address + Items */}
+          <div className="lg:col-span-8 space-y-4">
+            {/* Delivery Address */}
+            <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+              <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
+              </h3>
+              <div className="space-y-2">
+                {demoAddresses.map((addr) => (
+                  <button
+                    key={addr.id}
+                    onClick={() => setSelectedAddress(addr.id)}
+                    className={`w-full flex items-start gap-3 p-3 rounded-xl border-2 transition-all text-left ${
+                      selectedAddress === addr.id
+                        ? "border-[#2D1B69] bg-[#F0ECF9]"
+                        : "border-[#DDD6EE] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    <div className={`mt-0.5 h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      selectedAddress === addr.id ? "border-[#2D1B69]" : "border-[#DDD6EE]"
+                    }`}>
+                      {selectedAddress === addr.id && <div className="h-2 w-2 rounded-full bg-[#2D1B69]" />}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">{item.product.name}</p>
-                      <p className="text-xs text-[var(--text-muted)]">
-                        {item.quantity} × ₹{item.product.price.toLocaleString()}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-bold text-[#150726]">{addr.label}</span>
+                        {addr.isDefault && <span className="px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-[9px] font-bold text-[#7CB518]">DEFAULT</span>}
+                      </div>
+                      <p className="text-[12px] text-[#150726] mt-0.5">{addr.name} · {addr.phone}</p>
+                      <p className="text-[11px] text-[#9B8CB5]">{addr.line1}, {addr.city}, {addr.state} - {addr.pincode}</p>
+                    </div>
+                  </button>
+                ))}
+                <button className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#DDD6EE] text-[12px] font-semibold text-[#9B8CB5] hover:border-[#2D1B69] hover:text-[#2D1B69] transition-all">
+                  <Plus className="h-4 w-4" /> Add New Address
+                </button>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+              <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                <Package className="h-4 w-4 text-[#2D1B69]" /> Order Items ({items.length})
+              </h3>
+              <div className="space-y-3">
+                {items.map((item) => {
+                  const discount = item.product.mrp > item.product.price
+                    ? Math.round(((item.product.mrp - item.product.price) / item.product.mrp) * 100)
+                    : 0;
+                  return (
+                    <div key={item.product.id} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
+                      <img src={item.product.images[0]} alt="" className="h-14 w-14 rounded-lg object-cover bg-[#F0ECF9]" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-semibold text-[#2D1B69]">{item.product.brand}</p>
+                        <p className="text-[12px] font-semibold text-[#150726] truncate">{item.product.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[12px] font-bold text-[#150726]">₹{item.product.price.toLocaleString()}</span>
+                          {discount > 0 && <span className="text-[10px] font-bold text-[#E91E63]">{discount}% OFF</span>}
+                          <span className="text-[10px] text-[#9B8CB5]">× {item.quantity}</span>
+                        </div>
+                      </div>
+                      <p className="text-[13px] font-bold text-[#150726] whitespace-nowrap">
+                        ₹{(item.product.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
-                    <p className="text-sm font-semibold text-[var(--text-primary)]">
-                      ₹{(item.product.price * item.quantity).toLocaleString("en-IN")}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-
-              <div className="border-t border-[var(--border-subtle)] pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-muted)]">Subtotal ({items.length} items)</span>
-                  <span className="text-[var(--text-primary)]">₹{totals.subtotal.toLocaleString("en-IN")}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-muted)]">GST</span>
-                  <span className="text-[var(--text-primary)]">₹{totals.totalGst.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-muted)]">Shipping</span>
-                  <span className={totals.shipping === 0 ? "text-emerald-600 font-medium" : "text-[var(--text-primary)]"}>
-                    {totals.shipping === 0 ? "FREE" : `₹${totals.shipping.toLocaleString()}`}
-                  </span>
-                </div>
-              </div>
-
-              <div className="border-t border-[var(--border-subtle)] pt-4">
-                <div className="flex justify-between">
-                  <span className="text-base font-semibold text-[var(--text-primary)]">Total</span>
-                  <span className="text-xl font-extrabold text-[var(--brand)]">
-                    ₹{totals.total.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
-                  </span>
-                </div>
-              </div>
-
-              <Button
-                className="w-full h-12 text-base font-semibold mt-2"
-                onClick={handlePlaceOrder}
-                disabled={isPlacing || !selectedAddressId}
-              >
-                {isPlacing ? (
-                  <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Placing Order...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="h-5 w-5" /> Place Order
-                  </>
-                )}
-              </Button>
-
-              <p className="text-center text-[10px] text-[var(--text-muted)] mt-2">
-                By placing this order you agree to our Terms of Service and Privacy Policy.
-              </p>
             </div>
-          </Card>
+          </div>
+
+          {/* Right — Payment */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-20 space-y-4">
+              {/* Delivery Info */}
+              <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+                <div className="flex items-center gap-2 text-[12px] text-[#150726]">
+                  <Clock className="h-4 w-4 text-[#7CB518]" />
+                  <span>Estimated delivery in <span className="font-bold text-[#7CB518]">60 minutes</span></span>
+                </div>
+              </div>
+
+              {/* Price Summary */}
+              <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+                <h4 className="text-[14px] font-bold text-[#150726] mb-3">Price Summary</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-[#9B8CB5]">Subtotal</span>
+                    <span className="text-[#150726]">₹{subtotal.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-[#9B8CB5]">GST</span>
+                    <span className="text-[#150726]">₹{gst.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                  </div>
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-[#9B8CB5]">Delivery</span>
+                    <span className={shipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
+                      {shipping === 0 ? "FREE" : `₹${shipping}`}
+                    </span>
+                  </div>
+                  <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
+                    <span className="text-[15px] font-bold text-[#150726]">Total</span>
+                    <span className="text-[18px] font-extrabold text-[#2D1B69]">₹{total.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              <PaymentSection
+                total={total}
+                onPaymentComplete={(id) => {
+                  setOrderId(id);
+                  setOrderPlaced(true);
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
