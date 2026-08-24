@@ -418,7 +418,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BRAND STRIP ═══ */}
       <RevealSection>
-        <div className="mx-4 mb-6">
+        <div className="mx-4 mb-6 pb-20">
           <div className="section-header px-0">
             <h2>Trusted Brands</h2>
           </div>
