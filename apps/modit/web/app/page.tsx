@@ -390,7 +390,7 @@ export default function ModitHomePage() {
 
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <RevealSection>
-        <div ref={featureCountRef.ref} className="mx-4 mb-24 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden">
+        <div ref={featureCountRef.ref} className="mx-4 mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-[#E91E63]/10 rounded-full blur-xl" />
           <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#7CB518]/10 rounded-full blur-xl" />
           {/* Animated gradient line */}
@@ -419,15 +419,25 @@ export default function ModitHomePage() {
       {/* ═══ BRAND STRIP ═══ */}
       <RevealSection>
         <div className="mx-4 mb-6 pb-20">
-          <div className="section-header px-0">
+          <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr Fixit", "Kajaria", "Roff"].map((brand, i) => (
-              <div key={brand} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group">
-                <div className="h-14 w-14 rounded-2xl bg-white border border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-[11px] font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.split(" ")[0]}</span>
+          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+            {[
+              { name: "UltraTech", short: "UT" },
+              { name: "ACC", short: "ACC" },
+              { name: "Ambuja", short: "AMB" },
+              { name: "Asian Paints", short: "AP" },
+              { name: "Philips", short: "PH" },
+              { name: "Dr. Fixit", short: "DF" },
+              { name: "Kajaria", short: "KAJ" },
+              { name: "Roff", short: "ROF" },
+            ].map((brand) => (
+              <div key={brand.name} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
+                <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+                  <span className="text-[13px] font-black text-[#150726] group-hover:text-[#7CB518] transition-colors">{brand.short}</span>
                 </div>
+                <span className="text-[11px] font-semibold text-white/60 group-hover:text-[#7CB518] transition-colors">{brand.name}</span>
               </div>
             ))}
           </div>
