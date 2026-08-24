@@ -103,6 +103,9 @@ export default function ModitHomePage() {
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [deliveryPulse, setDeliveryPulse] = useState(true);
+  const [cartToast, setCartToast] = useState<{ name: string; price: number } | null>(null);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [highlightIdx, setHighlightIdx] = useState(-1);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResults = useMemo(() => searchQuery.length >= 2 ? searchProducts(searchQuery).slice(0, 8) : [], [searchQuery]);
 
@@ -119,6 +122,35 @@ export default function ModitHomePage() {
     const t = setInterval(() => setDeliveryPulse((p) => !p), 2000);
     return () => clearInterval(t);
   }, []);
+  // Load recent searches from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("modit-recent-searches");
+      if (stored) setRecentSearches(JSON.parse(stored));
+    } catch {}
+  }, []);
+  // Cart toast subscription
+  const prevCartCount = useRef(cartCount);
+  useEffect(() => {
+    if (cartCount > prevCartCount.current && cartItems.length > 0) {
+      const added = cartItems[cartItems.length - 1];
+      setCartToast({ name: added.product.name, price: added.product.price });
+      setTimeout(() => setCartToast(null), 2600);
+    }
+    prevCartCount.current = cartCount;
+  }, [cartCount, cartItems]);
+
+  const handleSearchSubmit = (term: string) => {
+    if (!term) return;
+    // Save to recent searches
+    const updated = [term, ...recentSearches.filter((s) => s !== term)].slice(0, 6);
+    setRecentSearches(updated);
+    try { localStorage.setItem("modit-recent-searches", JSON.stringify(updated)); } catch {}
+    router.push(`/products?search=${encodeURIComponent(term)}`);
+    setShowSearch(false);
+    setSearchQuery("");
+    setHighlightIdx(-1);
+  };
 
   const cementProducts = useMemo(() => products.filter((p) => p.categorySlug === "cement"), []);
   const paintingProducts = useMemo(() => products.filter((p) => p.categorySlug === "painting"), []);
@@ -179,8 +211,13 @@ export default function ModitHomePage() {
       {/* ═══ DELIVERY BAR — Pulsing bolt ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
-          <div className={`flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/30 rounded-xl px-3 py-1.5 transition-all duration-500 ${deliveryPulse ? "shadow-md shadow-green-500/20" : ""}`}>
-            <Zap className="h-4 w-4 text-[#7CB518] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
+          <div className={`flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/30 rounded-xl px-3 py-1.5 transition-all duration-500 ${deliveryPulse ? "shadow-md shadow-green-500/20 border-[#7CB518]/50" : ""}`}>
+            <div className="relative">
+              <Zap className="h-4 w-4 text-[#7CB518] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
+              {deliveryPulse && (
+                <span className="absolute inset-0 rounded-full border border-[#7CB518]/40 animate-ping" />
+              )}
+            </div>
             <span className="text-[15px] font-black text-[#7CB518]">60</span>
             <span className="text-[9px] font-bold text-[#7CB518] uppercase leading-tight">Mins</span>
           </div>
@@ -193,6 +230,10 @@ export default function ModitHomePage() {
             <ChevronDown className="h-3.5 w-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-300" />
           </button>
           <span className="text-[13px] font-bold text-[#7CB518]">{pincode}</span>
+          <div className="ml-auto flex items-center gap-1.5 text-white/40">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+            <span className="text-[10px] font-medium">Live</span>
+          </div>
         </div>
       </div>
 
@@ -208,16 +249,29 @@ export default function ModitHomePage() {
           <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#E91E63]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <div className="relative z-10 p-5 flex items-center justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-[10px] font-bold px-2.5 py-1 rounded-full mb-2 animate-pulse">
+              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-[10px] font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
               <h2 className="text-white text-[18px] font-bold leading-tight">Materials On Door</h2>
               <p className="text-white/60 text-[12px] mt-1">Construction materials delivered to your site</p>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+                  <span className="text-[9px] font-semibold text-white/70">Live tracking</span>
+                </div>
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
+                  <Shield className="h-2.5 w-2.5 text-[#00BCD4]" />
+                  <span className="text-[9px] font-semibold text-white/70">Assured</span>
+                </div>
+              </div>
             </div>
-            <Link href="/products" className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-5 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
-              Shop Now
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Link href="/products" className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-5 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+                Shop Now
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <span className="text-[9px] text-white/40 font-medium">75+ products</span>
             </Link>
           </div>
         </div>
@@ -406,7 +460,7 @@ export default function ModitHomePage() {
             <Link
               key={item.label}
               href={item.href}
-              className={`flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 ${
+              className={`flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative ${
                 item.highlight
                   ? "bg-[#7CB518]/10 border-t-2 border-[#7CB518]"
                   : item.active
@@ -414,7 +468,10 @@ export default function ModitHomePage() {
                   : "text-white/40 hover:text-white/70"
               }`}
             >
-              <item.icon className="h-5 w-5" fill={item.active ? "currentColor" : "none"} />
+              {item.active && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#7CB518] rounded-full" />
+              )}
+              <item.icon className="h-5 w-5" fill={item.active ? "currentColor" : "none"} strokeWidth={item.active ? 0 : 2} />
               <span className="text-[9px] font-semibold">{item.label}</span>
             </Link>
           ))}
@@ -423,13 +480,16 @@ export default function ModitHomePage() {
 
       {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-end justify-center" onClick={() => setShowPincodeModal(false)}>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-end justify-center" onClick={() => setShowPincodeModal(false)}>
           <div
             className="w-full max-w-lg bg-white rounded-t-3xl p-6 animate-slide-in-up"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-[#150726]">Enter Pincode</h3>
+              <div>
+                <h3 className="text-[16px] font-bold text-[#150726]">Enter Pincode</h3>
+                <p className="text-[11px] text-[#9B8CB5] mt-0.5">Check delivery availability</p>
+              </div>
               <button onClick={() => setShowPincodeModal(false)} className="p-1 text-[#9B8CB5] hover:text-[#150726] transition-colors hover:rotate-90 duration-300">
                 <X className="h-5 w-5" />
               </button>
@@ -438,9 +498,9 @@ export default function ModitHomePage() {
               <input
                 type="text"
                 value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
+                onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="Enter 6-digit pincode"
-                className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all"
+                className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
                 maxLength={6}
               />
               <RippleButton className="bg-[#7CB518] text-white text-[13px] font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
@@ -450,6 +510,21 @@ export default function ModitHomePage() {
             <div className="flex items-center gap-2 mt-4 p-3 bg-[#7CB518]/5 rounded-xl border border-[#7CB518]/20">
               <Zap className="h-4 w-4 text-[#7CB518]" />
               <p className="text-[12px] text-[#150726]">Delivery available in <span className="font-bold text-[#7CB518]">60 minutes</span></p>
+            </div>
+            {/* Popular pincodes */}
+            <div className="mt-4">
+              <p className="text-[10px] font-bold text-[#9B8CB5] uppercase mb-2">Popular Areas</p>
+              <div className="flex flex-wrap gap-2">
+                {["201301", "110001", "400001", "560001", "600001"].map((pc) => (
+                  <button
+                    key={pc}
+                    onClick={() => setPincode(pc)}
+                    className="px-3 py-1.5 bg-[#F0ECF9] border border-[#DDD6EE] rounded-full text-[11px] font-semibold text-[#2D1B69] hover:bg-[#E8E0F7] hover:border-[#C9B8E8] transition-all"
+                  >
+                    {pc}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -510,7 +585,7 @@ export default function ModitHomePage() {
 
       {/* ═══ SEARCH MODAL ═══ */}
       {showSearch && (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" onClick={() => { setShowSearch(false); setSearchQuery(""); }}>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md" onClick={() => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); }}>
           <div className="w-full bg-[#150726] p-4 animate-slide-in-up" onClick={(e) => e.stopPropagation()}>
             <div className="max-w-[1440px] mx-auto">
               <div className="flex items-center gap-3">
@@ -520,65 +595,179 @@ export default function ModitHomePage() {
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && searchQuery) { router.push(`/products?search=${encodeURIComponent(searchQuery)}`); setShowSearch(false); setSearchQuery(""); } }}
+                    onChange={(e) => { setSearchQuery(e.target.value); setHighlightIdx(-1); }}
+                    onKeyDown={(e) => {
+                      const list = searchResults.length > 0 ? searchResults : [];
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        setHighlightIdx((i) => Math.min(i + 1, list.length - 1));
+                      } else if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        setHighlightIdx((i) => Math.max(i - 1, -1));
+                      } else if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (highlightIdx >= 0 && list[highlightIdx]) {
+                          handleSearchSubmit(list[highlightIdx].name);
+                        } else if (searchQuery) {
+                          handleSearchSubmit(searchQuery);
+                        }
+                      } else if (e.key === "Escape") {
+                        setShowSearch(false);
+                        setSearchQuery("");
+                        setHighlightIdx(-1);
+                      }
+                    }}
                     placeholder="Search cement, paint, lighting..."
-                    className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-[14px] text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-10 py-3.5 text-[14px] text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
                   />
+                  {searchQuery && (
+                    <button
+                      onClick={() => { setSearchQuery(""); setHighlightIdx(-1); searchInputRef.current?.focus(); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
-                <button onClick={() => { setShowSearch(false); setSearchQuery(""); }} className="p-3 text-white/60 hover:text-white transition-colors">
+                <button onClick={() => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); }} className="p-3 text-white/60 hover:text-white transition-colors">
                   <X className="h-5 w-5" />
                 </button>
               </div>
+
+              {/* Search results */}
               {searchResults.length > 0 && (
                 <div className="mt-3 bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                  {searchResults.map((p) => (
+                  {searchResults.map((p, idx) => (
                     <Link
                       key={p.id}
                       href={`/products/${p.id}`}
-                      onClick={() => { setShowSearch(false); setSearchQuery(""); }}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors border-b border-white/5 last:border-0"
+                      onClick={() => { handleSearchSubmit(searchQuery); }}
+                      className={`flex items-center gap-3 px-4 py-3 transition-colors border-b border-white/5 last:border-0 ${
+                        highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"
+                      }`}
                     >
                       <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-semibold text-white truncate">{p.name}</p>
-                        <p className="text-[11px] text-white/50">{p.brand}</p>
+                        <p className="text-[11px] text-white/50">{p.brand} · {p.unit}</p>
                       </div>
-                      <p className="text-[13px] font-bold text-[#7CB518]">₹{p.price.toLocaleString("en-IN")}</p>
+                      <div className="flex flex-col items-end gap-0.5">
+                        <p className="text-[13px] font-bold text-[#7CB518]">₹{p.price.toLocaleString("en-IN")}</p>
+                        {p.mrp > p.price && (
+                          <p className="text-[10px] text-white/40 line-through">₹{p.mrp.toLocaleString("en-IN")}</p>
+                        )}
+                      </div>
                     </Link>
                   ))}
                   <Link
                     href={`/products?search=${encodeURIComponent(searchQuery)}`}
-                    onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                    onClick={() => { handleSearchSubmit(searchQuery); }}
                     className="flex items-center justify-center gap-2 px-4 py-3 text-[13px] font-semibold text-[#7CB518] hover:bg-white/5 transition-colors"
                   >
                     View all results <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
               )}
+
               {searchQuery.length >= 2 && searchResults.length === 0 && (
                 <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+                  <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
+                    <Search className="h-5 w-5 text-white/30" />
+                  </div>
                   <p className="text-[13px] text-white/50">No products found for &quot;{searchQuery}&quot;</p>
+                  <p className="text-[11px] text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
                 </div>
               )}
+
+              {/* Default state — recent + trending */}
               {searchQuery.length < 2 && (
-                <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-4">
-                  <p className="text-[11px] font-bold text-white/40 uppercase mb-2">Popular Searches</p>
-                  <div className="flex flex-wrap gap-2">
-                    {["Cement", "Asian Paint", "Philips LED", "Dr Fixit", "Bostik", "UltraTech"].map((term) => (
-                      <button
-                        key={term}
-                        onClick={() => { setSearchQuery(term); }}
-                        className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-all"
-                      >
-                        {term}
-                      </button>
-                    ))}
+                <div className="mt-3 space-y-3">
+                  {/* Recent searches */}
+                  {recentSearches.length > 0 && (
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-[11px] font-bold text-white/40 uppercase">Recent Searches</p>
+                        <button
+                          onClick={() => { setRecentSearches([]); localStorage.removeItem("modit-recent-searches"); }}
+                          className="text-[10px] text-white/30 hover:text-[#E91E63] transition-colors"
+                        >
+                          Clear all
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {recentSearches.map((term) => (
+                          <button
+                            key={term}
+                            onClick={() => handleSearchSubmit(term)}
+                            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-all flex items-center gap-1.5"
+                          >
+                            <Clock className="h-3 w-3 opacity-50" />
+                            {term}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Trending / Popular */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p className="text-[11px] font-bold text-white/40 uppercase mb-2 flex items-center gap-1.5">
+                      <TrendingUp className="h-3 w-3" />
+                      Trending Now
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["UltraTech Cement", "Asian Paint", "Philips LED", "Dr Fixit", "Bostik", "Kajaria Tiles"].map((term) => (
+                        <button
+                          key={term}
+                          onClick={() => handleSearchSubmit(term)}
+                          className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#E91E63]/20 hover:border-[#E91E63]/40 hover:text-[#E91E63] transition-all"
+                        >
+                          {term}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Quick categories */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p className="text-[11px] font-bold text-white/40 uppercase mb-2">Browse Categories</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { name: "Cement", slug: "cement", color: "#2D1B69" },
+                        { name: "Painting", slug: "painting", color: "#7CB518" },
+                        { name: "Lighting", slug: "lighting", color: "#00BCD4" },
+                        { name: "Tiling", slug: "tiling", color: "#E91E63" },
+                      ].map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/products?category=${cat.slug}`}
+                          onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-all text-white/70 hover:text-white"
+                        >
+                          <div className="h-2 w-2 rounded-full" style={{ background: cat.color }} />
+                          <span className="text-[12px] font-semibold">{cat.name}</span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ═══ CART TOAST ═══ */}
+      {cartToast && (
+        <div className="cart-toast">
+          <div className="h-8 w-8 rounded-lg bg-[#7CB518]/20 flex items-center justify-center flex-shrink-0">
+            <ShoppingCart className="h-4 w-4 text-[#7CB518]" />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[12px] font-semibold text-white truncate max-w-[180px]">{cartToast.name}</span>
+            <span className="text-[10px] text-white/50">Added to cart · ₹{cartToast.price.toLocaleString("en-IN")}</span>
+          </div>
+          <div className="toast-progress" />
         </div>
       )}
 

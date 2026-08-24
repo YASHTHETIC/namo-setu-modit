@@ -156,6 +156,31 @@ img { display: block; max-width: 100%; }
   100% { transform: scale(1); box-shadow: none; }
 }
 
+@keyframes cartToastSlide {
+  0% { transform: translateX(-50%) translateY(100px); opacity: 0; }
+  15% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  85% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(100px); opacity: 0; }
+}
+
+@keyframes progressShrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes addBounce {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.85); }
+  50% { transform: scale(1.15); }
+  75% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
 @keyframes shimmerCard {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -184,6 +209,53 @@ img { display: block; max-width: 100%; }
 /* Bolt flash on add-to-cart */
 .bolt-flash { animation: var(--bolt-flash); }
 
+/* Cart toast notification */
+.cart-toast {
+  position: fixed;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: #150726;
+  color: white;
+  border-radius: 14px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(21, 7, 38, 0.3);
+  animation: cartToastSlide 2.5s ease-in-out forwards;
+  pointer-events: none;
+  border: 1px solid rgba(124, 181, 24, 0.3);
+}
+.cart-toast .toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #7CB518;
+  border-radius: 0 0 14px 14px;
+  animation: progressShrink 2.5s linear forwards;
+}
+
+/* Scroll rail fade edges */
+.scroll-fade-left {
+  background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+}
+.scroll-fade-right {
+  background: linear-gradient(270deg, var(--bg) 0%, transparent 100%);
+}
+
+/* Add-to-cart pulse ring */
+.pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid var(--color-action);
+  animation: pulseRing 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
 /* Product card skeleton */
 .skeleton-card {
   background: linear-gradient(90deg, #F0ECF9 25%, #E8E0F7 50%, #F0ECF9 75%);
@@ -199,14 +271,25 @@ img { display: block; max-width: 100%; }
   left: 0;
   right: 0;
   z-index: 40;
-  background: #150726;
+  background: linear-gradient(135deg, #150726 0%, #1E1245 100%);
   color: white;
   padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 -4px 20px rgba(21,7,38,.2);
-  animation: slideInUp 0.3s ease-out;
+  box-shadow: 0 -4px 24px rgba(21,7,38,.25);
+  animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-top: 1px solid rgba(124, 181, 24, 0.15);
+  backdrop-filter: blur(12px);
+}
+.sticky-cart-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-action), var(--color-urgency), var(--color-info));
 }
 
 /* Horizontal scroll rail */
@@ -214,13 +297,21 @@ img { display: block; max-width: 100%; }
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 4px 0;
+  padding: 4px 0 8px;
+  scroll-padding-left: 16px;
 }
 .scroll-rail::-webkit-scrollbar { display: none; }
-.scroll-rail > * { scroll-snap-align: start; flex-shrink: 0; }
+.scroll-rail > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.scroll-rail > *:hover {
+  transform: translateY(-2px);
+}
 
 /* Section header with "See all" */
 .section-header {
@@ -250,13 +341,22 @@ img { display: block; max-width: 100%; }
   color: var(--color-action);
   font: 600 12px/1 var(--font-app);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(124, 181, 24, 0.15);
+  position: relative;
+  overflow: hidden;
 }
 .btn-add:hover {
-  background: var(--color-action-light);
+  background: var(--color-action);
+  color: white;
+  box-shadow: 0 4px 16px rgba(124, 181, 24, 0.3);
+  transform: scale(1.05);
+}
+.btn-add:active {
+  transform: scale(0.95);
 }
 
-/* Stepper — green filled */
+/* Stepper — green filled, animated */
 .stepper {
   display: inline-flex;
   align-items: center;
@@ -266,6 +366,8 @@ img { display: block; max-width: 100%; }
   color: white;
   font: 600 12px/1 var(--font-app);
   overflow: hidden;
+  animation: addBounce 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(124, 181, 24, 0.25);
 }
 .stepper button {
   display: flex;
@@ -278,12 +380,15 @@ img { display: block; max-width: 100%; }
   color: white;
   font-size: 14px;
   cursor: pointer;
+  transition: background 0.15s;
 }
-.stepper button:hover { background: rgba(255,255,255,.15); }
+.stepper button:hover { background: rgba(255,255,255,.2); }
+.stepper button:active { transform: scale(0.9); }
 .stepper span {
   min-width: 24px;
   text-align: center;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Pill badge */
@@ -307,9 +412,13 @@ img { display: block; max-width: 100%; }
   box-shadow: var(--shadow-resting);
   overflow: hidden;
   position: relative;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.product-card:hover { box-shadow: var(--shadow-card); }
+.product-card:hover {
+  box-shadow: 0 12px 32px rgba(21, 7, 38, 0.14);
+  transform: translateY(-4px);
+  border-color: var(--brand-200);
+}
 
 /* Price styling */
 .price-main { font: 700 16px/1.2 var(--font-app); color: #150726; }
