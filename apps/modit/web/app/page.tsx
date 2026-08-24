@@ -423,21 +423,11 @@ export default function ModitHomePage() {
             <h2>Trusted Brands</h2>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-            {[
-              { name: "UltraTech", short: "UT" },
-              { name: "ACC", short: "ACC" },
-              { name: "Ambuja", short: "AMB" },
-              { name: "Asian Paints", short: "AP" },
-              { name: "Philips", short: "PH" },
-              { name: "Dr. Fixit", short: "DF" },
-              { name: "Kajaria", short: "KAJ" },
-              { name: "Roff", short: "ROF" },
-            ].map((brand) => (
-              <div key={brand.name} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
+            {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
+              <div key={brand} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-[13px] font-black text-[#150726] group-hover:text-[#7CB518] transition-colors">{brand.short}</span>
+                  <span className="text-[11px] font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
                 </div>
-                <span className="text-[11px] font-semibold text-white/60 group-hover:text-[#7CB518] transition-colors">{brand.name}</span>
               </div>
             ))}
           </div>
