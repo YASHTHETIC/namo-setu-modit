@@ -202,27 +202,22 @@ function ProductsContent() {
               <div className="p-5 space-y-5">
                 {/* Search in results */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Search</h3>
+                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" style={{ color: catColor?.accent || '#2D1B69' }} />
+                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9B8CB5]" />
                     <input
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search in results..."
-                      className="h-10 w-full rounded-xl border bg-white pl-9 pr-3 text-xs font-medium focus:outline-none focus:ring-2 transition-all"
-                      style={{
-                        borderColor: catColor?.border || '#FED7AA',
-                        color: 'var(--text-primary)',
-                        ...(search ? { boxShadow: `0 0 0 2px ${catColor?.accent || '#2D1B69'}22`, borderColor: catColor?.accent || '#2D1B69' } : {}),
-                      }}
+                      className="h-10 w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 text-xs font-medium focus:outline-none focus:ring-2 transition-all text-[#150726] focus:border-[#2D1B69] focus:ring-[#2D1B69]/10"
                     />
                   </div>
                 </div>
 
                 {/* Category */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Category</h3>
+                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
                   <div className="space-y-1">
                     <button
                       onClick={() => setSelectedCategory("")}
@@ -273,14 +268,13 @@ function ProductsContent() {
 
                 {/* Price Range */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Price Range</h3>
+                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
                       value={priceRange[0]}
                       onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                      className="h-9 w-full rounded-lg border bg-white px-2.5 text-xs font-medium focus:outline-none focus:ring-2 transition-all"
-                      style={{ borderColor: catColor?.border || '#FED7AA' }}
+                      className="h-9 w-full rounded-lg border border-[#DDD6EE] bg-white px-2.5 text-xs font-medium focus:outline-none focus:ring-2 transition-all focus:border-[#2D1B69] focus:ring-[#2D1B69]/10"
                       placeholder="Min"
                     />
                     <span className="text-[10px] font-bold text-[var(--text-muted)]">TO</span>
@@ -288,8 +282,7 @@ function ProductsContent() {
                       type="number"
                       value={priceRange[1]}
                       onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                      className="h-9 w-full rounded-lg border bg-white px-2.5 text-xs font-medium focus:outline-none focus:ring-2 transition-all"
-                      style={{ borderColor: catColor?.border || '#FED7AA' }}
+                      className="h-9 w-full rounded-lg border border-[#DDD6EE] bg-white px-2.5 text-xs font-medium focus:outline-none focus:ring-2 transition-all focus:border-[#2D1B69] focus:ring-[#2D1B69]/10"
                       placeholder="Max"
                     />
                   </div>
@@ -322,7 +315,7 @@ function ProductsContent() {
 
                 {/* Brands */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Brand</h3>
+                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
                   <div className="max-h-48 space-y-1 overflow-y-auto pr-1">
                     {allBrands.map((brand) => {
                       const isSelected = selectedBrands.includes(brand);
@@ -352,7 +345,7 @@ function ProductsContent() {
 
                 {/* Rating */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider" style={{ color: catColor?.text || '#9A3412' }}>Minimum Rating</h3>
+                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
                   <div className="space-y-1">
                     {[4, 3, 2, 1].map((r) => {
                       const isActive = minRating === r;
@@ -410,12 +403,7 @@ function ProductsContent() {
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
-                    className="w-full rounded-xl py-2.5 text-xs font-black transition-all border-2 border-dashed"
-                    style={{
-                      borderColor: catColor?.border || '#FED7AA',
-                      color: catColor?.accent || '#2D1B69',
-                      background: catColor?.light || '#FFFBF5',
-                    }}
+                    className="w-full rounded-xl py-2.5 text-xs font-black transition-all border-2 border-dashed border-[#DDD6EE] text-[#E91E63] bg-[#FCE4EC] hover:bg-[#F8BBD0]"
                   >
                     Clear All Filters
                   </button>
@@ -431,20 +419,15 @@ function ProductsContent() {
           <div
             className="mb-4 flex items-center justify-between rounded-2xl border px-5 py-3.5"
             style={{
-              borderColor: catColor?.border || '#FED7AA',
-              background: 'linear-gradient(135deg, #FFFFFF 0%, #FFFCF8 100%)',
-              boxShadow: `0 2px 12px ${catColor?.accent || '#2D1B69'}08`,
+              borderColor: catColor?.border || '#DDD6EE',
+              background: 'white',
+              boxShadow: '0 2px 12px rgba(26,10,51,0.04)',
             }}
           >
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden"
-                style={{
-                  borderColor: catColor?.border || '#FED7AA',
-                  background: catColor?.bg || '#FED7AA',
-                  color: catColor?.accent || '#2D1B69',
-                }}
+                className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden border-[#C9B8E8] bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7]"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
               </button>
@@ -460,11 +443,7 @@ function ProductsContent() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="rounded-xl border bg-white px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 transition-all"
-                style={{
-                  borderColor: catColor?.border || '#FED7AA',
-                  color: 'var(--text-secondary)',
-                }}
+                className="rounded-xl border bg-white px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 transition-all border-[#DDD6EE] text-[var(--text-secondary)] focus:border-[#2D1B69] focus:ring-[#2D1B69]/10"
               >
                 <option value="relevance">Relevance</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -473,13 +452,13 @@ function ProductsContent() {
                 <option value="discount">Discount</option>
               </select>
 
-              <div className="hidden items-center rounded-xl border sm:flex" style={{ borderColor: catColor?.border || '#FED7AA' }}>
+              <div className="hidden items-center rounded-xl border sm:flex border-[#DDD6EE]">
                 <button
                   onClick={() => setViewMode("grid")}
                   className="p-2 transition-all"
                   style={{
-                    background: viewMode === 'grid' ? (catColor?.bg || '#FED7AA') : 'white',
-                    color: viewMode === 'grid' ? (catColor?.accent || '#2D1B69') : 'var(--text-muted)',
+                    background: viewMode === 'grid' ? '#F0ECF9' : 'white',
+                    color: viewMode === 'grid' ? '#2D1B69' : 'var(--text-muted)',
                   }}
                 >
                   <Grid3X3 className="h-4 w-4" />
@@ -488,8 +467,8 @@ function ProductsContent() {
                   onClick={() => setViewMode("list")}
                   className="p-2 transition-all"
                   style={{
-                    background: viewMode === 'list' ? (catColor?.bg || '#FED7AA') : 'white',
-                    color: viewMode === 'list' ? (catColor?.accent || '#2D1B69') : 'var(--text-muted)',
+                    background: viewMode === 'list' ? '#F0ECF9' : 'white',
+                    color: viewMode === 'list' ? '#2D1B69' : 'var(--text-muted)',
                   }}
                 >
                   <List className="h-4 w-4" />
@@ -546,28 +525,22 @@ function ProductsContent() {
           {/* Product Grid/List */}
           {filteredProducts.length === 0 ? (
             <div
-              className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border"
+              className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-[#DDD6EE]"
               style={{
-                background: 'linear-gradient(135deg, #FFFFFF, #FFFCF8)',
-                borderColor: catColor?.border || '#FED7AA',
-                boxShadow: `0 2px 12px ${catColor?.accent || '#2D1B69'}08`,
+                background: 'white',
+                boxShadow: '0 2px 12px rgba(26,10,51,0.04)',
               }}
             >
               <div
-                className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl"
-                style={{ background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)' }}
+                className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#F0ECF9]"
               >
-                <Package className="h-10 w-10" style={{ color: catColor?.accent || '#2D1B69', opacity: 0.5 }} />
+                <Package className="h-10 w-10 text-[#9B8CB5]" />
               </div>
               <h3 className="text-lg font-black text-[var(--text-primary)]">No products found</h3>
               <p className="mt-2 text-sm text-[var(--text-muted)] max-w-xs">Try adjusting your filters or search terms to find what you&apos;re looking for</p>
               <button
                 onClick={clearFilters}
-                className="mt-5 rounded-xl px-6 py-3 text-xs font-black text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                style={{
-                  background: `linear-gradient(135deg, ${catColor?.accent || '#2D1B69'}, ${catColor?.accent || '#2D1B69'}DD)`,
-                  boxShadow: `0 4px 16px ${catColor?.accent || '#2D1B69'}30`,
-                }}
+                className="mt-5 rounded-xl px-6 py-3 text-xs font-black text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 bg-[#2D1B69] hover:bg-[#1E1245]"
               >
                 Clear All Filters
               </button>
@@ -617,16 +590,18 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
     <div
       className="group relative rounded-2xl bg-white transition-all duration-300 overflow-hidden"
       style={{
-        border: `1px solid ${catColor.border}`,
-        boxShadow: `0 1px 3px ${catColor.accent}08, 0 0 0 0 ${catColor.accent}00`,
+        border: '1px solid #DDD6EE',
+        boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = `0 8px 30px ${catColor.accent}15, 0 2px 8px ${catColor.accent}08`;
+        e.currentTarget.style.boxShadow = '0 8px 30px rgba(45,27,105,0.12), 0 2px 8px rgba(45,27,105,0.06)';
         e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.borderColor = '#C9B8E8';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = `0 1px 3px ${catColor.accent}08`;
+        e.currentTarget.style.boxShadow = '0 1px 3px rgba(26,10,51,0.04)';
         e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = '#DDD6EE';
       }}
     >
       {/* Category accent stripe at top */}
@@ -727,11 +702,10 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Rating */}
         <div className="mt-2 flex items-center gap-2">
           <div
-            className="flex items-center gap-1 rounded-lg px-2 py-1"
-            style={{ background: catColor.bg, border: `1px solid ${catColor.border}` }}
+            className="flex items-center gap-1 rounded-lg px-2 py-1 bg-[#F0ECF9] border border-[#DDD6EE]"
           >
-            <span className="text-xs font-black" style={{ color: catColor.accent }}>{product.rating}</span>
-            <Star className="h-3 w-3" style={{ fill: catColor.accent, color: catColor.accent }} />
+            <span className="text-xs font-black text-[#7CB518]">{product.rating}</span>
+            <Star className="h-3 w-3" style={{ fill: '#7CB518', color: '#7CB518' }} />
           </div>
           <span className="text-[10px] font-medium text-[var(--text-muted)]">({product.reviewCount.toLocaleString()} reviews)</span>
         </div>
@@ -776,17 +750,17 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                   boxShadow: '0 4px 16px rgba(16,185,129,0.35)',
                 }
               : {
-                  background: `linear-gradient(135deg, ${catColor.accent}, ${catColor.accent}CC)`,
+                  background: 'linear-gradient(135deg, #7CB518, #6A9C14)',
                   color: 'white',
-                  boxShadow: `0 3px 12px ${catColor.accent}30`,
+                  boxShadow: '0 3px 12px rgba(124,181,24,0.30)',
                 }
           }
           onMouseEnter={(e) => {
-            if (!added) e.currentTarget.style.boxShadow = `0 6px 24px ${catColor.accent}40`;
+            if (!added) e.currentTarget.style.boxShadow = '0 6px 24px rgba(124,181,24,0.40)';
             if (!added) e.currentTarget.style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            if (!added) e.currentTarget.style.boxShadow = `0 3px 12px ${catColor.accent}30`;
+            if (!added) e.currentTarget.style.boxShadow = '0 3px 12px rgba(124,181,24,0.30)';
             if (!added) e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
@@ -832,18 +806,19 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
   return (
     <div
-      className="group flex gap-0 rounded-2xl bg-white overflow-hidden transition-all duration-300"
+      className="group flex gap-0 rounded-2xl bg-white overflow-hidden transition-all duration-300 border border-[#DDD6EE]"
       style={{
-        border: `1px solid ${catColor.border}`,
-        boxShadow: `0 1px 3px ${catColor.accent}08`,
+        boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = `0 8px 30px ${catColor.accent}15`;
+        e.currentTarget.style.boxShadow = '0 8px 30px rgba(45,27,105,0.12)';
         e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.borderColor = '#C9B8E8';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = `0 1px 3px ${catColor.accent}08`;
+        e.currentTarget.style.boxShadow = '0 1px 3px rgba(26,10,51,0.04)';
         e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = '#DDD6EE';
       }}
     >
       {/* Left color accent */}
@@ -914,11 +889,10 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
           </div>
 
           <div
-            className="flex items-center gap-1 rounded-lg px-2 py-1 flex-shrink-0"
-            style={{ background: catColor.bg, border: `1px solid ${catColor.border}` }}
+            className="flex items-center gap-1 rounded-lg px-2 py-1 flex-shrink-0 bg-[#F0ECF9] border border-[#DDD6EE]"
           >
-            <span className="text-xs font-black" style={{ color: catColor.accent }}>{product.rating}</span>
-            <Star className="h-3 w-3" style={{ fill: catColor.accent, color: catColor.accent }} />
+            <span className="text-xs font-black text-[#7CB518]">{product.rating}</span>
+            <Star className="h-3 w-3" style={{ fill: '#7CB518', color: '#7CB518' }} />
           </div>
         </div>
 
@@ -948,16 +922,16 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
                 added
                   ? { background: 'linear-gradient(135deg, #10B981, #059669)', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }
                   : {
-                      background: `linear-gradient(135deg, ${catColor.accent}, ${catColor.accent}CC)`,
+                      background: 'linear-gradient(135deg, #7CB518, #6A9C14)',
                       color: 'white',
-                      boxShadow: `0 3px 12px ${catColor.accent}30`,
+                      boxShadow: '0 3px 12px rgba(124,181,24,0.30)',
                     }
               }
               onMouseEnter={(e) => {
-                if (!added) e.currentTarget.style.boxShadow = `0 6px 24px ${catColor.accent}40`;
+                if (!added) e.currentTarget.style.boxShadow = '0 6px 24px rgba(124,181,24,0.40)';
               }}
               onMouseLeave={(e) => {
-                if (!added) e.currentTarget.style.boxShadow = `0 3px 12px ${catColor.accent}30`;
+                if (!added) e.currentTarget.style.boxShadow = '0 3px 12px rgba(124,181,24,0.30)';
               }}
             >
               {added ? (
