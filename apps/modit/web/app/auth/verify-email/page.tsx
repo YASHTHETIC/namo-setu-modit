@@ -1,11 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { Button, Card, CardContent } from "@/lib/modit-ui";
+import { CheckCircle, XCircle } from "lucide-react";
 import { setAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 
@@ -42,67 +42,68 @@ function VerifyEmailForm() {
   });
 
   useEffect(() => {
-    if (token) {
-      verifyMutation.mutate();
-    }
+    if (token) verifyMutation.mutate();
   }, [token]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand)] text-xl font-bold text-white shadow-lg">
-            M
-          </div>
-          <h1 className="text-h2 text-[var(--text-primary)]">Email Verification</h1>
-        </div>
+    <div className="min-h-screen bg-[#F8F6FC] flex flex-col">
+      <div className="w-full bg-[#150726] py-3 px-6 flex items-center justify-center">
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/modit-logo.png" alt="MODIT" className="h-[28px] w-auto" />
+        </Link>
+      </div>
 
-        <Card>
-          <CardContent>
-            <div className="space-y-4 text-center">
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-[400px]">
+          <div className="mb-8 text-center">
+            <h1 className="text-[26px] font-extrabold text-[#150726] tracking-tight">Email Verification</h1>
+          </div>
+
+          <div className="rounded-2xl border border-[#E8E0F0] bg-white p-6 shadow-sm">
+            <div className="space-y-4 text-center py-4">
               {status === "loading" && (
                 <>
-                  <Loader2 className="mx-auto h-12 w-12 animate-spin text-[var(--brand)]" />
-                  <p className="text-sm text-[var(--text-muted)]">
-                    Verifying your email address...
-                  </p>
+                  <div className="mx-auto h-14 w-14 rounded-full bg-purple-50 flex items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#E8E0F0] border-t-[#7CB518]" />
+                  </div>
+                  <p className="text-[14px] text-[#6B5B83]">Verifying your email address...</p>
                 </>
               )}
 
               {status === "success" && (
                 <>
-                  <CheckCircle className="mx-auto h-12 w-12 text-emerald-500" />
-                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-                    Email verified!
-                  </h2>
-                  <p className="text-sm text-[var(--text-muted)]">
-                    Your email has been verified successfully.
-                  </p>
-                  <Button className="w-full" onClick={() => router.push("/dashboard")}>
-                    Go to Dashboard
-                  </Button>
+                  <div className="mx-auto h-14 w-14 rounded-full bg-green-50 flex items-center justify-center">
+                    <CheckCircle className="h-8 w-8 text-[#7CB518]" />
+                  </div>
+                  <h2 className="text-[18px] font-bold text-[#150726]">Email verified!</h2>
+                  <p className="text-[13px] text-[#6B5B83]">Your account is ready to use.</p>
+                  <button
+                    onClick={() => router.push("/products")}
+                    className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[15px] font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25"
+                  >
+                    Start Shopping
+                  </button>
                 </>
               )}
 
               {status === "error" && (
                 <>
-                  <XCircle className="mx-auto h-12 w-12 text-red-500" />
-                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-                    Verification failed
-                  </h2>
-                  <p className="text-sm text-[var(--text-muted)]">{errorMessage}</p>
-                  <Button
-                    variant="secondary"
-                    className="w-full"
+                  <div className="mx-auto h-14 w-14 rounded-full bg-red-50 flex items-center justify-center">
+                    <XCircle className="h-8 w-8 text-red-400" />
+                  </div>
+                  <h2 className="text-[18px] font-bold text-[#150726]">Verification failed</h2>
+                  <p className="text-[13px] text-[#6B5B83]">{errorMessage}</p>
+                  <button
                     onClick={() => router.push("/auth")}
+                    className="w-full h-12 rounded-xl border-2 border-[#E8E0F0] bg-white text-[14px] font-semibold text-[#150726] hover:border-[#7CB518] hover:bg-[#F8F6FC] transition-all"
                   >
                     Back to sign in
-                  </Button>
+                  </button>
                 </>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -110,13 +111,11 @@ function VerifyEmailForm() {
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[var(--bg)]">
-          <div className="h-12 w-12 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--brand)]" />
-        </div>
-      }
-    >
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#E8E0F0] border-t-[#7CB518]" />
+      </div>
+    }>
       <VerifyEmailForm />
     </Suspense>
   );

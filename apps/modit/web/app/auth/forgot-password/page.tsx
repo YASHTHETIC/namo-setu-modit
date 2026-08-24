@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
-import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
-import { Button, Input, Card, CardContent, LoadingSpinner } from "@/lib/modit-ui";
+import { Mail, CheckCircle } from "lucide-react";
 import { env } from "@/lib/env";
 
 export default function ForgotPasswordPage() {
@@ -22,106 +21,95 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ email }),
       });
     },
-    onSuccess: () => {
-      setSuccess(true);
-    },
-    onError: (err: Error) => {
-      setError(err.message || "Failed to send reset email");
-    },
+    onSuccess: () => setSuccess(true),
+    onError: (err: Error) => setError(err.message || "Failed to send reset email"),
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand)] text-xl font-bold text-white shadow-lg">
-            M
-          </div>
-          <h1 className="text-h2 text-[var(--text-primary)]">Forgot password?</h1>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
-            Enter your email and we&apos;ll send you a reset link
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#F8F6FC] flex flex-col">
+      <div className="w-full bg-[#150726] py-3 px-6 flex items-center justify-center">
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/modit-logo.png" alt="MODIT" className="h-[28px] w-auto" />
+        </Link>
+      </div>
 
-        <Card>
-          <CardContent>
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-[400px]">
+          <div className="mb-8 text-center">
+            <h1 className="text-[26px] font-extrabold text-[#150726] tracking-tight">
+              {success ? "Check your email" : "Forgot password?"}
+            </h1>
+            <p className="mt-2 text-[14px] text-[#6B5B83]">
+              {success
+                ? `We sent a reset link to ${email}`
+                : "Enter your email and we'll send you a reset link"}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[#E8E0F0] bg-white p-6 shadow-sm">
             {success ? (
-              <div className="space-y-4 text-center">
-                <CheckCircle className="mx-auto h-12 w-12 text-emerald-500" />
-                <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-                  Check your email
-                </h2>
-                <p className="text-sm text-[var(--text-muted)]">
-                  We sent a password reset link to <strong>{email}</strong>.
-                  The link expires in 1 hour.
+              <div className="space-y-4 text-center py-4">
+                <div className="mx-auto h-14 w-14 rounded-full bg-green-50 flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-[#7CB518]" />
+                </div>
+                <p className="text-[13px] text-[#6B5B83]">
+                  The link expires in 1 hour. Check your spam folder if you don&apos;t see it.
                 </p>
-                <Button
-                  variant="secondary"
-                  className="w-full"
-                  onClick={() => {
-                    setSuccess(false);
-                    setEmail("");
-                  }}
+                <button
+                  onClick={() => { setSuccess(false); setEmail(""); }}
+                  className="w-full h-12 rounded-xl border-2 border-[#E8E0F0] bg-white text-[14px] font-semibold text-[#150726] hover:border-[#7CB518] hover:bg-[#F8F6FC] transition-all"
                 >
                   Send another email
-                </Button>
+                </button>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  forgotMutation.mutate();
-                }}
-                className="space-y-4"
-              >
+              <form onSubmit={(e) => { e.preventDefault(); forgotMutation.mutate(); }} className="space-y-4">
                 {error && (
-                  <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+                  <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-[13px] font-medium text-red-600 flex items-center gap-2">
+                    <div className="h-5 w-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[11px] font-bold text-red-500">!</span>
+                    </div>
                     {error}
                   </div>
                 )}
 
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-[var(--text-primary)]">
-                    Email address
-                  </label>
+                  <label className="block text-[13px] font-semibold text-[#150726]">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
-                    <Input
+                    <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
+                    <input
                       type="email"
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10"
+                      className="w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-[14px] text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
                     />
                   </div>
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  className="w-full"
                   disabled={forgotMutation.isPending}
+                  className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[15px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {forgotMutation.isPending ? (
-                    <LoadingSpinner size="sm" />
-                  ) : (
-                    "Send reset link"
-                  )}
-                </Button>
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-4.5 w-4.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </span>
+                  ) : "Send reset link"}
+                </button>
               </form>
             )}
 
             <div className="mt-6 text-center">
-              <Link
-                href="/auth"
-                className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to sign in
+              <Link href="/auth" className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#6B5B83] hover:text-[#7CB518] transition-colors">
+                ← Back to sign in
               </Link>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
