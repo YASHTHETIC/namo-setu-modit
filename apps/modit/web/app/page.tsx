@@ -462,16 +462,16 @@ export default function ModitHomePage() {
               href={item.href}
               className={`flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative ${
                 item.highlight
-                  ? "bg-[#7CB518]/10 border-t-2 border-[#7CB518]"
+                  ? "text-[#7CB518] bg-[#7CB518]/10 border-t-2 border-[#7CB518]"
                   : item.active
                   ? "text-[#7CB518]"
                   : "text-white/40 hover:text-white/70"
               }`}
             >
-              {item.active && (
+              {(item.active || item.highlight) && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#7CB518] rounded-full" />
               )}
-              <item.icon className="h-5 w-5" fill={item.active ? "currentColor" : "none"} strokeWidth={item.active ? 0 : 2} />
+              <item.icon className="h-5 w-5" fill={item.active || item.highlight ? "currentColor" : "none"} strokeWidth={item.active || item.highlight ? 0 : 2} />
               <span className="text-[9px] font-semibold">{item.label}</span>
             </Link>
           ))}
