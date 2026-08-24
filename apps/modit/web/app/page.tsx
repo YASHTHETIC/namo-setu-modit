@@ -286,7 +286,7 @@ export default function ModitHomePage() {
           <div className="p-4 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-3">
               <h3 className="text-[14px] font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
-              <div className="h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center animate-bounce">
+              <div className="h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
                 <Shield className="h-3 w-3 text-[#7CB518]" />
               </div>
             </div>
