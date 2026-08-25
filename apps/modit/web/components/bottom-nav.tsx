@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { icon: Package, label: "Orders", href: "/orders" },
   { icon: User, label: "Account", href: "/auth" },
   { icon: ShoppingCart, label: "Cart", href: "/cart", isCart: true },
-] as const;
+];
 
 export function BottomNav() {
   const pathname = usePathname();
