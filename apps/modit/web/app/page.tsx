@@ -455,24 +455,31 @@ export default function ModitHomePage() {
             { icon: LayoutGrid, label: "Category", href: "/products" },
             { icon: Package, label: "Orders", href: "/orders" },
             { icon: User, label: "Account", href: "/auth" },
-            { icon: Wallet, label: "Wallet", href: "/payment/history", highlight: true },
+            { icon: ShoppingCart, label: "Cart", href: "/cart", isCart: true },
           ].map((item) => (
             <Link
               key={item.label}
               href={item.href}
               className="flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative hover:opacity-80"
               style={
-                item.highlight
-                  ? { color: "#7CB518", backgroundColor: "rgba(124,181,24,0.1)", borderTop: "2px solid #7CB518" }
-                  : item.active
+                item.active
+                  ? { color: "#7CB518" }
+                  : item.isCart
                   ? { color: "#7CB518" }
                   : { color: "rgba(255,255,255,0.4)" }
               }
             >
-              {(item.active || item.highlight) && (
+              {item.active && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#7CB518] rounded-full" />
               )}
-              <item.icon className="h-5 w-5" fill={item.active || item.highlight ? "currentColor" : "none"} strokeWidth={item.active || item.highlight ? 0 : 2} />
+              <div className="relative">
+                <item.icon className="h-5 w-5" fill={item.active || item.isCart ? "currentColor" : "none"} strokeWidth={item.active || item.isCart ? 0 : 2} />
+                {item.isCart && cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 rounded-full bg-[#E91E63] text-white text-[9px] font-bold flex items-center justify-center px-1 shadow-lg shadow-pink-500/30">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[9px] font-semibold">{item.label}</span>
             </Link>
           ))}

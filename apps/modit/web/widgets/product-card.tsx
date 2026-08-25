@@ -2,8 +2,10 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
+import { useWishlistStore } from "@/lib/wishlist-store";
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +20,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const [flashing, setFlashing] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
+
+  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
+  const wishlisted = isWishlisted(product.id);
 
   const discount = product.mrp > product.price
     ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
@@ -46,10 +52,20 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     removeItem(product.id);
   };
 
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
+  const isBulk = product.bulkMinQty && product.bulkMinQty > 1;
+  const isBestseller = product.rating >= 4.5 && product.reviewCount > 50;
+  const isFastDelivery = product.deliveryDays <= 1;
+
   return (
     <Link
       href={`/products/${product.id}`}
-      className={`product-card flex flex-col ${compact ? "w-[140px]" : "w-full"} group/card`}
+      className={`product-card-mobile flex flex-col ${compact ? "w-[140px]" : "w-full"} group/card`}
     >
       {/* Image zone */}
       <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
@@ -57,28 +73,34 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
             loading="lazy"
           />
         )}
 
-        {/* Discount badge — pink pill, top-left */}
-        {discount > 0 && (
-          <span className="badge-pill badge-pink absolute top-2 left-2 z-10 shadow-lg shadow-pink-500/20">
-            {discount}% OFF
-          </span>
-        )}
-
-        {/* Delivery time badge — top-right */}
-        <div className="absolute top-2 right-2 z-10 bg-white/90 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-white/50">
-          <span className="text-[9px] font-bold text-[#150726] flex items-center gap-0.5">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7CB518" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            60 Mins
-          </span>
+        {/* Badges — top area */}
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
+          {discount > 0 && (
+            <span className="badge-pill badge-pink shadow-lg shadow-pink-500/20">
+              {discount}% OFF
+            </span>
+          )}
+          {isBestseller && !compact && (
+            <span className="badge-bestseller">BESTSELLER</span>
+          )}
+          {isBulk && !compact && (
+            <span className="badge-bulk">BULK PRICE</span>
+          )}
         </div>
+
+        {/* Wishlist button — top-right */}
+        <button
+          onClick={handleWishlist}
+          className={`wishlist-btn ${wishlisted ? "active" : ""}`}
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
+        </button>
 
         {/* ADD button / Stepper — bottom-right overlapping image */}
         <div className="absolute bottom-2 right-2 z-10">
@@ -99,15 +121,24 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
 
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#150726]/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        {/* Fast delivery badge — bottom-left */}
+        {isFastDelivery && !compact && (
+          <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
+            <span className="text-[9px] font-bold text-[#00BCD4] flex items-center gap-0.5">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              60 Mins
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Info zone */}
       <div className="flex flex-col gap-1 p-3">
         {/* Brand */}
         {product.brand && (
-          <p className="text-[11px] font-normal text-[#9B8CB5] truncate">
+          <p className="text-[10px] font-semibold text-[#7CB518] uppercase tracking-wide truncate">
             {product.brand}
           </p>
         )}
@@ -122,34 +153,41 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
         {/* Price row */}
         <div className="flex items-center gap-2 mt-1">
-          <span className="price-main">₹{product.price}</span>
+          <span className="price-hero">₹{product.price.toLocaleString()}</span>
           {discount > 0 && (
             <>
-              <span className="price-mrp">₹{product.mrp}</span>
-              <span className="price-discount">{discount}% off</span>
+              <span className="price-strike">₹{product.mrp.toLocaleString()}</span>
+              <span className="price-save">{discount}% off</span>
             </>
           )}
         </div>
 
-        {/* Genuine tag */}
-        {product.seller?.isVerified && (
-          <span className="inline-flex items-center gap-1 text-[10px] text-[#00BCD4] font-medium mt-0.5">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            Genuine
-          </span>
+        {/* Bulk pricing indicator */}
+        {isBulk && !compact && product.bulkPrice && (
+          <p className="text-[10px] font-semibold text-[#FF9800]">
+            Bulk: ₹{product.bulkPrice.toLocaleString()}/unit (min {product.bulkMinQty} {product.unitCode})
+          </p>
         )}
 
-        {/* Free delivery tag */}
-        <div className="flex items-center gap-1 mt-0.5">
-          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#7CB518] bg-[#7CB518]/8 px-1.5 py-0.5 rounded-full">
-            <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-            FREE Delivery
-          </span>
+        {/* Genuine + Free delivery row */}
+        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+          {product.seller?.isVerified && (
+            <span className="inline-flex items-center gap-0.5 text-[10px] text-[#00BCD4] font-medium">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              Genuine
+            </span>
+          )}
+          {product.freeDelivery && (
+            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#7CB518] bg-[#7CB518]/8 px-1.5 py-0.5 rounded-full">
+              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              FREE Delivery
+            </span>
+          )}
         </div>
       </div>
     </Link>

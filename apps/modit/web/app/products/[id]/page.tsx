@@ -97,15 +97,15 @@ export default function ProductDetailPage({
   const specs = Object.entries(product.specifications);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6">
+    <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 pb-24 lg:pb-4">
       {/* Breadcrumb */}
-      <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-        <Link href="/" className="hover:text-[var(--brand)]">Home</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link href="/products" className="hover:text-[var(--brand)]">Products</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link href={`/products?category=${product.categorySlug}`} className="hover:text-[var(--brand)]">{product.category}</Link>
-        <ChevronRight className="h-3 w-3" />
+      <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)] overflow-x-auto scrollbar-hide pb-1">
+        <Link href="/" className="hover:text-[var(--brand)] whitespace-nowrap">Home</Link>
+        <ChevronRight className="h-3 w-3 flex-shrink-0" />
+        <Link href="/products" className="hover:text-[var(--brand)] whitespace-nowrap">Products</Link>
+        <ChevronRight className="h-3 w-3 flex-shrink-0" />
+        <Link href={`/products?category=${product.categorySlug}`} className="hover:text-[var(--brand)] whitespace-nowrap">{product.category}</Link>
+        <ChevronRight className="h-3 w-3 flex-shrink-0" />
         <span className="text-[var(--text-primary)] font-medium truncate max-w-[200px]">{product.name}</span>
       </nav>
 
@@ -114,7 +114,7 @@ export default function ProductDetailPage({
         <div className="lg:col-span-5">
           <div className="sticky top-24">
             {/* Main Image */}
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[#0A0A20] via-[#0D0D25] to-[#100820]">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9]">
               {product.images[selectedImage] ? (
                 <img
                   src={product.images[selectedImage]}
@@ -123,27 +123,33 @@ export default function ProductDetailPage({
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <Package className="h-32 w-32 text-[var(--brand)]/20" />
+                  <Package className="h-32 w-32 text-[var(--text-muted)]/20" />
                 </div>
               )}
               {product.discount > 0 && (
-                <span className="absolute top-4 left-4 rounded-xl bg-red-500 px-3 py-1 text-sm font-bold text-white">
+                <span className="absolute top-4 left-4 rounded-xl bg-[#E91E63] px-3 py-1 text-sm font-bold text-white shadow-lg shadow-pink-500/20">
                   {product.discount}% OFF
+                </span>
+              )}
+              {/* Image counter */}
+              {product.images.length > 1 && (
+                <span className="absolute bottom-3 right-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-white">
+                  {selectedImage + 1} / {product.images.length}
                 </span>
               )}
             </div>
 
-            {/* Thumbnails */}
+            {/* Thumbnails — horizontal scroll on mobile */}
             {product.images.length > 1 && (
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                 {product.images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 overflow-hidden rounded-lg border-2 transition-all ${
+                    className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
                       i === selectedImage
-                        ? "border-[var(--cyan)]"
-                        : "border-[var(--border)] hover:border-[var(--cyan)]/50"
+                        ? "border-[var(--green)] shadow-md shadow-green-500/20"
+                        : "border-[var(--border)] hover:border-[var(--green)]/50"
                     }`}
                   >
                     <img src={img} alt="" className="h-full w-full object-cover" />
@@ -151,6 +157,21 @@ export default function ProductDetailPage({
                 ))}
               </div>
             )}
+
+            {/* Trust badges — below gallery on mobile */}
+            <div className="mt-4 grid grid-cols-3 gap-2 lg:hidden">
+              {[
+                { icon: Shield, label: "Genuine", sub: "100% Verified" },
+                { icon: CreditCard, label: "Secure", sub: "SSL Payment" },
+                { icon: RotateCcw, label: "Returns", sub: "7 Days" },
+              ].map(({ icon: Icon, label, sub }) => (
+                <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-[var(--border)] bg-white p-2.5 text-center">
+                  <Icon className="h-4 w-4 text-[var(--green)]" />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{label}</span>
+                  <span className="text-[9px] text-[var(--text-muted)]">{sub}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -173,7 +194,7 @@ export default function ProductDetailPage({
           </div>
 
           {/* Price Block */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]/30 p-5">
+          <div className="rounded-xl border border-[var(--border)] bg-white p-5">
             <PriceDisplay
               price={product.price}
               mrp={product.mrp}
@@ -183,11 +204,21 @@ export default function ProductDetailPage({
               unit={product.unit}
               size="lg"
             />
-            <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-muted)]">
-              <span>Inclusive of {product.gstCode}</span>
+            <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-muted)] flex-wrap">
+              <span className="flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Inclusive of {product.gstCode}
+              </span>
               <span>·</span>
               <span>MOQ: {product.moq} {product.unitCode}</span>
             </div>
+            {/* B2B info */}
+            {product.bulkPrice && (
+              <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#FFF3E0] border border-[#FFE0B2] px-3 py-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF9800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span className="text-[11px] font-semibold text-[#E65100]">Bulk pricing available — {product.bulkLabel || `Min ${product.bulkMinQty} units`}</span>
+              </div>
+            )}
           </div>
 
           {/* Delivery Check */}
@@ -292,8 +323,8 @@ export default function ProductDetailPage({
           {/* Seller Info */}
           <div className="rounded-xl border border-[var(--border)] bg-white p-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--cyan)]/10">
-                <Store className="h-5 w-5 text-[var(--brand)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--green)]/10">
+                <Store className="h-5 w-5 text-[var(--green)]" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-[var(--text-primary)]">{product.seller.name}</p>
@@ -304,8 +335,37 @@ export default function ProductDetailPage({
                 </div>
               </div>
             </div>
+            {/* GST Invoice notice */}
+            <div className="mt-3 flex items-center gap-2 rounded-lg bg-[var(--bg-subtle)] px-3 py-2">
+              <CreditCard className="h-4 w-4 text-[var(--brand)]" />
+              <span className="text-[11px] font-medium text-[var(--text-secondary)]">GST invoice available for all orders</span>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile sticky add-to-cart bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--border)] px-4 py-3 flex items-center gap-3 lg:hidden" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+        <div className="flex-1">
+          <p className="text-[11px] text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
+          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(product.price * quantity).toLocaleString()}</p>
+        </div>
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-[14px] font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2"
+        >
+          {added ? (
+            <><CheckCircle2 className="h-5 w-5" /> Added</>
+          ) : (
+            <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
+          )}
+        </button>
+        <button
+          onClick={handleBuyNow}
+          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-[14px] font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2"
+        >
+          <Zap className="h-5 w-5" /> Buy Now
+        </button>
       </div>
 
       {/* Tabs: Details, Specifications, Delivery */}
