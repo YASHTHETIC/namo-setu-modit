@@ -4,7 +4,7 @@ import { use, useMemo } from "react";
 import Link from "next/link";
 import { useOrder } from "@/lib/modit-api";
 import {
-  ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, ChevronRight, AlertCircle, Calendar, MessageCircle,
+  ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle, Copy,
 } from "lucide-react";
 
 interface OrderItem {
@@ -69,13 +69,13 @@ const demoOrders: Record<string, OrderDetail> = {
   },
 };
 
-const statusConfig: Record<string, { label: string; color: string; bg: string; icon: typeof Package }> = {
-  confirmed: { label: "Confirmed", color: "text-[#2D1B69]", bg: "bg-[#2D1B69]/10", icon: CheckCircle2 },
-  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#E91E63]/10", icon: Clock },
-  dispatched: { label: "Dispatched", color: "text-[#00BCD4]", bg: "bg-[#00BCD4]/10", icon: Package },
-  in_transit: { label: "In Transit", color: "text-[#00BCD4]", bg: "bg-[#00BCD4]/10", icon: Truck },
-  delivered: { label: "Delivered", color: "text-[#7CB518]", bg: "bg-[#7CB518]/10", icon: CheckCircle2 },
-  cancelled: { label: "Cancelled", color: "text-red-500", bg: "bg-red-50", icon: AlertCircle },
+const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Package; dot: string }> = {
+  confirmed: { label: "Confirmed", color: "text-[#2D1B69]", bg: "bg-[#F0ECF9]", border: "border-[#2D1B69]/20", icon: CheckCircle2, dot: "bg-[#2D1B69]" },
+  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE8F0]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
+  dispatched: { label: "Dispatched", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Package, dot: "bg-[#00BCD4]" },
+  in_transit: { label: "In Transit", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Truck, dot: "bg-[#00BCD4]" },
+  delivered: { label: "Delivered", color: "text-[#7CB518]", bg: "bg-[#F0F9E8]", border: "border-[#7CB518]/20", icon: CheckCircle2, dot: "bg-[#7CB518]" },
+  cancelled: { label: "Cancelled", color: "text-red-500", bg: "bg-red-50", border: "border-red-200", icon: AlertCircle, dot: "bg-red-400" },
 };
 
 const timelineSteps = [
@@ -106,12 +106,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-            <Link href="/orders" className="text-white/70 hover:text-white"><ArrowLeft className="h-5 w-5" /></Link>
-            <h1 className="text-[16px] font-bold text-white">Order Details</h1>
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+          <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
+            <div className="flex items-center gap-3 animate-pulse">
+              <div className="h-5 w-5 bg-white/20 rounded" />
+              <div className="h-5 w-32 bg-white/20 rounded" />
+            </div>
           </div>
-        </header>
+        </div>
         <div className="mx-auto max-w-[800px] px-4 py-6 space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-2xl border border-[#DDD6EE] bg-white p-5 animate-pulse">
@@ -126,17 +128,21 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (!order) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-            <Link href="/orders" className="text-white/70 hover:text-white"><ArrowLeft className="h-5 w-5" /></Link>
-            <h1 className="text-[16px] font-bold text-white">Order Not Found</h1>
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+          <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
+            <Link href="/orders" className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2">
+              <ArrowLeft className="h-5 w-5" /> Back to orders
+            </Link>
           </div>
-        </header>
-        <div className="py-20 text-center">
-          <Package className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
+        </div>
+        <div className="py-20 text-center px-4">
+          <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
+            <Package className="h-10 w-10 text-[#2D1B69]" />
+          </div>
           <h2 className="text-[18px] font-bold text-[#150726]">Order Not Found</h2>
-          <p className="mt-1 text-[13px] text-[#9B8CB5]">This order does not exist or you do not have access.</p>
-          <Link href="/orders" className="mt-4 inline-flex items-center gap-2 bg-[#2D1B69] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
+          <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">This order does not exist or you do not have access.</p>
+          <Link href="/orders"
+            className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
             View All Orders
           </Link>
         </div>
@@ -149,87 +155,112 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
-      <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-          <Link href="/orders" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
-          <div className="flex-1">
-            <h1 className="text-[16px] font-bold text-white">{order.id}</h1>
+      {/* Gradient header */}
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+        <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />
+        <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Link href="/orders" className="text-white/60 hover:text-white transition-colors">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+            <div className="flex-1">
+              <h1 className="text-[16px] font-extrabold text-white">{order.id}</h1>
+            </div>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold border ${st.bg} ${st.color} ${st.border}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${st.dot}`} />
+              {st.label}
+            </span>
           </div>
-          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ${st.bg} ${st.color}`}>
-            <StatusIcon className="h-3 w-3" /> {st.label}
-          </span>
+
+          {/* Mini timeline */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+            <div className="flex items-center justify-between">
+              {timelineSteps.map((step, i) => {
+                const isActive = i <= currentStepIndex;
+                const isCurrent = i === currentStepIndex;
+                return (
+                  <div key={step.key} className="flex flex-1 items-center">
+                    <div className="flex flex-col items-center">
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                        isActive ? "bg-[#7CB518] text-white shadow-lg" : "bg-white/10 text-white/30"
+                      } ${isCurrent ? "ring-4 ring-[#7CB518]/30 scale-110" : ""}`}>
+                        <step.icon className="h-3.5 w-3.5" />
+                      </div>
+                      <span className={`mt-1 text-[8px] font-bold text-center ${isActive ? "text-white" : "text-white/30"}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < timelineSteps.length - 1 && (
+                      <div className={`mx-0.5 h-0.5 flex-1 ${i < currentStepIndex ? "bg-[#7CB518]" : "bg-white/10"}`} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </header>
+      </div>
 
       <div className="mx-auto max-w-[800px] px-4 py-4 space-y-4 sm:px-6">
-        {/* Timeline */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-4">Order Timeline</h3>
-          <div className="flex items-center justify-between">
-            {timelineSteps.map((step, i) => {
-              const isActive = i <= currentStepIndex;
-              const isCurrent = i === currentStepIndex;
-              return (
-                <div key={step.key} className="flex flex-1 items-center">
-                  <div className="flex flex-col items-center">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-full transition-all ${
-                      isActive ? "bg-[#2D1B69] text-white shadow-lg shadow-purple-900/20" : "bg-[#F0ECF9] text-[#9B8CB5]"
-                    } ${isCurrent ? "ring-4 ring-[#2D1B69]/20 scale-110" : ""}`}>
-                      <step.icon className="h-4 w-4" />
-                    </div>
-                    <span className={`mt-1.5 text-[9px] font-bold text-center ${isActive ? "text-[#2D1B69]" : "text-[#9B8CB5]"}`}>
-                      {step.label}
-                    </span>
-                  </div>
-                  {i < timelineSteps.length - 1 && (
-                    <div className={`mx-1 h-0.5 flex-1 ${i < currentStepIndex ? "bg-[#2D1B69]" : "bg-[#F0ECF9]"}`} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Items */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3">Items ({order.items.length})</h3>
-          <div className="space-y-3">
+        <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
+            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+              <Package className="h-4 w-4 text-[#2D1B69]" />
+              Items ({order.items.length})
+            </h3>
+          </div>
+          <div className="divide-y divide-[#F0ECF9]">
             {order.items.map((item, i) => (
-              <div key={i} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
-                <div className="h-12 w-12 rounded-lg bg-[#F0ECF9] flex items-center justify-center flex-shrink-0">
+              <div key={i} className="flex gap-3 p-4 hover:bg-[#FAFAFE] transition-colors">
+                <div className="h-12 w-12 rounded-xl bg-[#F0ECF9] flex items-center justify-center flex-shrink-0">
                   <Package className="h-5 w-5 text-[#2D1B69]/30" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  {item.brand && <p className="text-[10px] font-bold text-[#2D1B69]">{item.brand}</p>}
-                  <p className="text-[12px] font-semibold text-[#150726] truncate">{item.name}</p>
-                  <p className="text-[10px] text-[#9B8CB5]">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
+                  {item.brand && <p className="text-[10px] font-bold text-[#7CB518] uppercase tracking-wide">{item.brand}</p>}
+                  <p className="text-[13px] font-semibold text-[#150726] truncate">{item.name}</p>
+                  <p className="text-[11px] text-[#9B8CB5] mt-0.5">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
                 </div>
-                <p className="text-[13px] font-bold text-[#150726] whitespace-nowrap">₹{item.total.toLocaleString("en-IN")}</p>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[14px] font-extrabold text-[#150726]">₹{item.total.toLocaleString("en-IN")}</p>
+                  <p className="text-[10px] text-[#9B8CB5] mt-0.5">incl. GST {item.gstRate}%</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Payment Summary */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3">Price Summary</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726]">₹{order.subtotal.toLocaleString()}</span></div>
-            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726]">₹{order.gst.toLocaleString()}</span></div>
-            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">Delivery</span>
-              <span className={order.shipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>{order.shipping === 0 ? "FREE" : `₹${order.shipping}`}</span>
+        <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
+            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-[#2D1B69]" />
+              Payment Summary
+            </h3>
+          </div>
+          <div className="p-5 space-y-2.5">
+            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726] font-medium">₹{order.subtotal.toLocaleString()}</span></div>
+            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726] font-medium">₹{order.gst.toLocaleString()}</span></div>
+            <div className="flex justify-between text-[12px]">
+              <span className="text-[#9B8CB5]">Delivery</span>
+              <span className={order.shipping === 0 ? "text-[#7CB518] font-bold" : "text-[#150726] font-medium"}>
+                {order.shipping === 0 ? "FREE" : `₹${order.shipping.toLocaleString()}`}
+              </span>
             </div>
-            <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
+            <div className="border-t border-[#DDD6EE] pt-2.5 flex justify-between">
               <span className="text-[14px] font-bold text-[#150726]">Total</span>
-              <span className="text-[16px] font-extrabold text-[#2D1B69]">₹{order.total.toLocaleString("en-IN")}</span>
+              <span className="text-[18px] font-extrabold text-[#2D1B69]">₹{order.total.toLocaleString("en-IN")}</span>
             </div>
           </div>
-          <div className="mt-3 p-3 rounded-xl bg-[#F8F6FC]">
-            <div className="flex items-center gap-2 text-[11px] text-[#9B8CB5]">
-              <CreditCard className="h-3.5 w-3.5" /> {order.payment.method}
+
+          {/* Payment method */}
+          <div className="mx-5 mb-5 p-3.5 rounded-xl bg-[#F8F6FC] border border-[#F0ECF9]">
+            <div className="flex items-center gap-2 text-[12px] text-[#6B5B83]">
+              <CreditCard className="h-3.5 w-3.5 text-[#2D1B69]" /> {order.payment.method}
             </div>
-            <div className="flex items-center gap-2 text-[11px] mt-1">
-              <span className={`font-bold ${order.payment.status === "paid" ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
+            <div className="flex items-center gap-2 text-[11px] mt-1.5">
+              <span className={`inline-flex items-center gap-1 font-bold ${order.payment.status === "paid" ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${order.payment.status === "paid" ? "bg-[#7CB518]" : "bg-[#E91E63]"}`} />
                 {order.payment.status === "paid" ? "Paid" : "Pending"}
               </span>
               {order.payment.transactionId && <span className="text-[#9B8CB5]">· {order.payment.transactionId}</span>}
@@ -238,47 +269,66 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Delivery Address */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h4 className="flex items-center gap-2 text-[13px] font-bold text-[#150726] mb-2">
-            <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
-          </h4>
-          <div className="text-[12px] text-[#9B8CB5]">
-            <p className="font-semibold text-[#150726]">{order.address.name}</p>
-            <p>{order.address.phone}</p>
-            <p className="mt-0.5">{order.address.line1}</p>
-            <p>{order.address.city}, {order.address.state} - {order.address.pincode}</p>
+        <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
+            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-[#2D1B69]" />
+              Delivery Address
+            </h3>
+          </div>
+          <div className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="h-10 w-10 rounded-xl bg-[#F0ECF9] flex items-center justify-center flex-shrink-0">
+                <MapPin className="h-4 w-4 text-[#2D1B69]" />
+              </div>
+              <div className="text-[12px]">
+                <p className="font-bold text-[#150726]">{order.address.name}</p>
+                <p className="text-[#6B5B83]">{order.address.phone}</p>
+                <p className="text-[#9B8CB5] mt-0.5">{order.address.line1}</p>
+                <p className="text-[#9B8CB5]">{order.address.city}, {order.address.state} - {order.address.pincode}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Delivery */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h4 className="flex items-center gap-2 text-[13px] font-bold text-[#150726] mb-2">
-            <Calendar className="h-4 w-4 text-[#2D1B69]" /> Delivery
-          </h4>
-          <p className="text-[11px] text-[#9B8CB5]">{order.deliveredAt ? "Delivered on" : "Expected by"}</p>
-          <p className="text-[13px] font-bold text-[#150726]">{order.deliveredAt ? formatDateTime(order.deliveredAt) : formatDate(order.expectedDelivery)}</p>
+        {/* Delivery Date */}
+        <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
+          <div className="p-5 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-[#F0F9E8] flex items-center justify-center flex-shrink-0">
+              <Calendar className="h-4 w-4 text-[#7CB518]" />
+            </div>
+            <div>
+              <p className="text-[11px] text-[#9B8CB5]">{order.deliveredAt ? "Delivered on" : "Expected by"}</p>
+              <p className="text-[14px] font-bold text-[#150726]">{order.deliveredAt ? formatDateTime(order.deliveredAt) : formatDate(order.expectedDelivery)}</p>
+            </div>
+          </div>
         </div>
 
         {/* Special Instructions */}
         {order.specialInstructions && (
-          <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-            <h4 className="text-[13px] font-bold text-[#150726] mb-1">Special Instructions</h4>
-            <p className="text-[12px] text-[#9B8CB5]">{order.specialInstructions}</p>
+          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE8F0] overflow-hidden">
+            <div className="p-5 flex items-start gap-3">
+              <MessageCircle className="h-4 w-4 text-[#E91E63] mt-0.5" />
+              <div>
+                <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wide">Special Instructions</p>
+                <p className="text-[12px] text-[#6B5B83] mt-1">{order.specialInstructions}</p>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex gap-3">
-          <button className="flex-1 h-11 rounded-xl border-2 border-[#DDD6EE] bg-white text-[12px] font-bold text-[#150726] hover:border-[#2D1B69] transition-all flex items-center justify-center gap-2">
-            <Download className="h-4 w-4" /> Invoice
+        <div className="flex gap-3 pb-4">
+          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
+            <Download className="h-4 w-4 text-[#2D1B69]" /> Invoice
           </button>
           {order.status === "delivered" && (
-            <button className="flex-1 h-11 rounded-xl border-2 border-[#DDD6EE] bg-white text-[12px] font-bold text-[#150726] hover:border-[#2D1B69] transition-all flex items-center justify-center gap-2">
-              <RotateCcw className="h-4 w-4" /> Return
+            <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
+              <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Return
             </button>
           )}
-          <button className="flex-1 h-11 rounded-xl border-2 border-[#DDD6EE] bg-white text-[12px] font-bold text-[#150726] hover:border-[#2D1B69] transition-all flex items-center justify-center gap-2">
-            <Phone className="h-4 w-4" /> Support
+          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
+            <Phone className="h-4 w-4 text-[#00BCD4]" /> Support
           </button>
         </div>
       </div>
