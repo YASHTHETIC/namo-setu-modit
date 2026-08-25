@@ -137,7 +137,7 @@ export const products: Product[] = [
     gstRate: 28, gstCode: "GST 28%", rating: 4.6, reviewCount: 1700,
     inStock: true, stockLevel: 5000, moq: 10, deliveryDays: 1, freeDelivery: true,
     seller: { name: "JK Lakshmi Dealers", rating: 4.6, isVerified: true },
-    images: ["/products/cement/JK Lakshmi Pro+ Cement.png"],
+    images: ["/products/cement/JK Lakshmi Pro Cement.png"],
     specifications: { "Grade": "OPC 53", "Weight": "50 kg" },
     features: ["Pro+ formula", "High early strength", "ISI marked"],
     tags: ["cement", "opc", "jk-lakshmi"],

@@ -98,7 +98,7 @@ export const STATIC_HOME_LAYOUT: LayoutResponse = {
           { id: "cement-acc", name: "ACC Cement 50kg", brand: "ACC", price: 370, mrp: 400, discount: 8, rating: 4.6, review_count: 2100, image_url: "/products/cement/ACC Cement.png", badge: "Popular", delivery_text: "Tomorrow" },
           { id: "cement-ambuja", name: "Ambuja Cement 50kg", brand: "Ambuja", price: 365, mrp: 395, discount: 8, rating: 4.5, review_count: 1800, image_url: "/products/cement/Ambuja Cement.png", badge: "Trusted", delivery_text: "Tomorrow" },
           { id: "cement-dalmia", name: "Dalmia Cement 50kg", brand: "Dalmia", price: 355, mrp: 385, discount: 8, rating: 4.5, review_count: 1500, image_url: "/products/cement/Dalmia Cement.png", delivery_text: "Tomorrow" },
-          { id: "cement-jklakshmi", name: "JK Lakshmi Pro+ Cement 50kg", brand: "JK Lakshmi", price: 360, mrp: 390, discount: 8, rating: 4.6, review_count: 1700, image_url: "/products/cement/JK Lakshmi Pro+ Cement.png", badge: "Value", delivery_text: "Tomorrow" },
+          { id: "cement-jklakshmi", name: "JK Lakshmi Pro+ Cement 50kg", brand: "JK Lakshmi", price: 360, mrp: 390, discount: 8, rating: 4.6, review_count: 1700, image_url: "/products/cement/JK Lakshmi Pro Cement.png", badge: "Value", delivery_text: "Tomorrow" },
           { id: "cement-jksuper", name: "JK Super Cement 50kg", brand: "JK Super", price: 350, mrp: 380, discount: 8, rating: 4.4, review_count: 1400, image_url: "/products/cement/JK Super Cement.png", delivery_text: "Tomorrow" },
           { id: "cement-jsw", name: "JSW Cement 50kg", brand: "JSW", price: 365, mrp: 395, discount: 8, rating: 4.5, review_count: 1600, image_url: "/products/cement/JSW Cement.png", badge: "Deal", delivery_text: "Tomorrow" },
         ],
