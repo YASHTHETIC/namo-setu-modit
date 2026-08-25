@@ -88,7 +88,7 @@ const timelineSteps = [
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { data: apiOrder, isLoading } = useOrder(id);
+  const { data: apiOrder, isLoading } = useOrder(id, demoOrders[id] ?? null);
 
   const order = useMemo(() => {
     if (apiOrder) return apiOrder as unknown as OrderDetail;

@@ -21,7 +21,7 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; i
 };
 
 export default function OrdersPage() {
-  const { data: orders, isLoading } = useOrders();
+  const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
   const orderList = orders ?? fallbackOrders;
 
   return (

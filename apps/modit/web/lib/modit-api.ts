@@ -11,9 +11,14 @@ function getModitApi() {
     createApiClient({
       baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
       accessToken: getAccessToken(),
+      timeout: 5000,
+      maxRetries: 1,
+      retryDelay: 300,
     })
   );
 }
+
+const fastQueryOpts = { retry: false, staleTime: 30_000, gcTime: 60_000 } as const;
 
 export const moditKeys = {
   all: ["modit"] as const,
@@ -52,6 +57,7 @@ export function useProducts(params?: { search?: string; category_id?: string; br
   return useQuery({
     queryKey: moditKeys.products(params),
     queryFn: () => getModitApi().listProducts(params),
+    ...fastQueryOpts,
   });
 }
 
@@ -60,6 +66,7 @@ export function useProduct(productId: string | undefined) {
     queryKey: moditKeys.product(productId ?? ""),
     queryFn: () => getModitApi().getProduct(productId!),
     enabled: Boolean(productId),
+    ...fastQueryOpts,
   });
 }
 
@@ -105,6 +112,7 @@ export function useCategories() {
   return useQuery({
     queryKey: moditKeys.categories(),
     queryFn: () => getModitApi().listCategories(),
+    ...fastQueryOpts,
   });
 }
 
@@ -112,6 +120,7 @@ export function useSubCategories(categoryId?: string) {
   return useQuery({
     queryKey: moditKeys.subcategories(categoryId),
     queryFn: () => getModitApi().listSubCategories(categoryId),
+    ...fastQueryOpts,
   });
 }
 
@@ -119,6 +128,7 @@ export function useBrands() {
   return useQuery({
     queryKey: moditKeys.brands(),
     queryFn: () => getModitApi().listBrands(),
+    ...fastQueryOpts,
   });
 }
 
@@ -126,6 +136,7 @@ export function useUnits() {
   return useQuery({
     queryKey: moditKeys.units(),
     queryFn: () => getModitApi().listUnits(),
+    ...fastQueryOpts,
   });
 }
 
@@ -134,6 +145,7 @@ export function useSuppliers() {
   return useQuery({
     queryKey: moditKeys.suppliers(),
     queryFn: () => getModitApi().listSuppliers(),
+    ...fastQueryOpts,
   });
 }
 
@@ -150,6 +162,7 @@ export function useSupplierVendors(supplierId: string) {
     queryKey: ["modit", "supplier-vendors", supplierId],
     queryFn: () => getModitApi().listSupplierVendors(supplierId),
     enabled: Boolean(supplierId),
+    ...fastQueryOpts,
   });
 }
 
@@ -166,6 +179,7 @@ export function useWarehouses(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.warehouses(organizationId),
     queryFn: () => getModitApi().listWarehouses(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -182,6 +196,7 @@ export function useRFQs(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.rfqs(organizationId),
     queryFn: () => getModitApi().listRFQs(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -198,6 +213,7 @@ export function useRFQ(rfqId: string) {
     queryKey: moditKeys.rfq(rfqId),
     queryFn: () => getModitApi().getRFQ(rfqId),
     enabled: Boolean(rfqId),
+    ...fastQueryOpts,
   });
 }
 
@@ -206,6 +222,7 @@ export function useRFQQuotations(rfqId: string) {
     queryKey: moditKeys.quotations(rfqId),
     queryFn: () => getModitApi().listRFQQuotations(rfqId),
     enabled: Boolean(rfqId),
+    ...fastQueryOpts,
   });
 }
 
@@ -224,10 +241,12 @@ export function useCreateCart() {
   });
 }
 
-export function useOrders(organizationId?: string) {
+export function useOrders(organizationId?: string, fallbackData?: any[]) {
   return useQuery({
     queryKey: moditKeys.orders(organizationId),
     queryFn: () => getModitApi().listOrders(organizationId),
+    placeholderData: fallbackData,
+    ...fastQueryOpts,
   });
 }
 
@@ -239,11 +258,13 @@ export function useCreateOrder() {
   });
 }
 
-export function useOrder(orderId: string) {
+export function useOrder(orderId: string, fallbackData?: any) {
   return useQuery({
     queryKey: moditKeys.order(orderId),
     queryFn: () => getModitApi().getOrder(orderId),
     enabled: Boolean(orderId),
+    placeholderData: fallbackData,
+    ...fastQueryOpts,
   });
 }
 
@@ -251,6 +272,7 @@ export function usePurchaseOrders(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.purchaseOrders(organizationId),
     queryFn: () => getModitApi().listPurchaseOrders(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -266,6 +288,7 @@ export function useInvoices(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.invoices(organizationId),
     queryFn: () => getModitApi().listInvoices(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -290,6 +313,7 @@ export function useInventory(warehouseId?: string) {
   return useQuery({
     queryKey: moditKeys.inventory(warehouseId),
     queryFn: () => getModitApi().listInventory(warehouseId),
+    ...fastQueryOpts,
   });
 }
 
@@ -314,6 +338,7 @@ export function useInventoryAlerts(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.inventoryAlerts(organizationId),
     queryFn: () => getModitApi().getInventoryAlerts(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -321,6 +346,7 @@ export function useInventoryAnalytics(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.inventoryAnalytics(organizationId),
     queryFn: () => getModitApi().getInventoryAnalytics(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -329,6 +355,7 @@ export function useDeliveries(purchaseOrderId?: string) {
   return useQuery({
     queryKey: moditKeys.deliveries(purchaseOrderId),
     queryFn: () => getModitApi().listDeliveries(purchaseOrderId),
+    ...fastQueryOpts,
   });
 }
 
@@ -344,6 +371,7 @@ export function useDrivers(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.drivers(organizationId),
     queryFn: () => getModitApi().listDrivers(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -359,6 +387,7 @@ export function useVehicles(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.vehicles(organizationId),
     queryFn: () => getModitApi().listVehicles(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -375,6 +404,7 @@ export function useProjects(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.projects(organizationId),
     queryFn: () => getModitApi().listProjects(organizationId),
+    ...fastQueryOpts,
   });
 }
 
@@ -391,6 +421,7 @@ export function useProject(projectId: string) {
     queryKey: moditKeys.project(projectId),
     queryFn: () => getModitApi().getProject(projectId),
     enabled: Boolean(projectId),
+    ...fastQueryOpts,
   });
 }
 
@@ -420,6 +451,7 @@ export function useMaterialRequests(projectId: string) {
     queryKey: moditKeys.materialRequests(projectId),
     queryFn: () => getModitApi().listMaterialRequests(projectId),
     enabled: Boolean(projectId),
+    ...fastQueryOpts,
   });
 }
 
@@ -480,6 +512,7 @@ export function useModitAnalyticsSummary() {
   return useQuery({
     queryKey: moditKeys.analytics(),
     queryFn: () => getModitApi().analyticsSummary(),
+    ...fastQueryOpts,
   });
 }
 
@@ -496,6 +529,7 @@ export function useModitNotifications(organizationId: string) {
     queryKey: moditKeys.notifications(organizationId),
     queryFn: () => getModitApi().listNotifications(organizationId),
     enabled: Boolean(organizationId),
+    ...fastQueryOpts,
   });
 }
 

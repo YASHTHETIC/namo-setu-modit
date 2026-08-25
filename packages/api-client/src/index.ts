@@ -66,9 +66,9 @@ export class ApiClient {
   private isRefreshing = false;
 
   constructor(private readonly options: ApiClientOptions) {
-    this.timeout = options.timeout ?? 30000;
-    this.maxRetries = options.maxRetries ?? 3;
-    this.retryDelay = options.retryDelay ?? 1000;
+    this.timeout = options.timeout ?? 5000;
+    this.maxRetries = options.maxRetries ?? 1;
+    this.retryDelay = options.retryDelay ?? 500;
     this.onTokenRefresh = options.onTokenRefresh;
     this.onAuthError = options.onAuthError;
   }

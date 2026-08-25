@@ -28,10 +28,10 @@ export default function DashboardPage() {
   const fallbackSuppliers = [{ id: "s1", supplier_code: "Tata Steel", is_verified: true }];
 
   const products = productsData?.items ?? fallbackProducts;
-  const orders = ordersData ?? fallbackOrders;
-  const rfqs = rfqsData ?? fallbackRFQs;
-  const projects = projectsData ?? fallbackProjects;
-  const suppliers = suppliersData ?? fallbackSuppliers;
+  const orders = (ordersData ?? fallbackOrders) as typeof fallbackOrders;
+  const rfqs = (rfqsData ?? fallbackRFQs) as typeof fallbackRFQs;
+  const projects = (projectsData ?? fallbackProjects) as typeof fallbackProjects;
+  const suppliers = (suppliersData ?? fallbackSuppliers) as typeof fallbackSuppliers;
 
   const stats = [
     { label: "Products", value: products.length, icon: <Package className="h-5 w-5" />, link: "/products", delta: 12, deltaLabel: "vs last month" },
