@@ -237,6 +237,22 @@ export default function ModitHomePage() {
         </div>
       </div>
 
+      {/* ═══ TRUST STRIP ═══ */}
+      <div className="trust-strip mx-4 mt-3">
+        {[
+          { icon: "✓", text: "100% Genuine Products", color: "#7CB518" },
+          { icon: "🔒", text: "Secure Payments", color: "#2D1B69" },
+          { icon: "🚚", text: "Free Delivery 5000+", color: "#00BCD4" },
+          { icon: "↩", text: "7-Day Returns", color: "#E91E63" },
+          { icon: "📄", text: "GST Invoice", color: "#FF9800" },
+        ].map((item) => (
+          <div key={item.text} className="trust-item">
+            <span className="text-[12px]">{item.icon}</span>
+            <span style={{ color: item.color }}>{item.text}</span>
+          </div>
+        ))}
+      </div>
+
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <RevealSection>
         <div className="mx-4 mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>

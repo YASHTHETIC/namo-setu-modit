@@ -89,6 +89,32 @@ export default function CheckoutPage() {
       </header>
 
       <div className="mx-auto max-w-[1200px] px-4 py-4 sm:px-6">
+        {/* Checkout Steps */}
+        <div className="mb-6 flex items-center gap-0 overflow-x-auto scrollbar-hide">
+          {[
+            { step: 1, label: "Address", done: true },
+            { step: 2, label: "Delivery", done: false },
+            { step: 3, label: "Payment", done: false },
+            { step: 4, label: "Confirm", done: false },
+          ].map((s, i) => (
+            <div key={s.step} className="flex items-center flex-shrink-0">
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold transition-all ${
+                s.step === 1
+                  ? "bg-[#7CB518] text-white"
+                  : "bg-white text-[#9B8CB5] border border-[#E8E0F7]"
+              }`}>
+                <span className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                  s.step === 1 ? "bg-white/20" : "bg-[#F0ECF9]"
+                }`}>
+                  {s.done ? "✓" : s.step}
+                </span>
+                <span className="hidden sm:inline">{s.label}</span>
+              </div>
+              {i < 3 && <div className="w-6 h-px bg-[#E8E0F7] mx-1" />}
+            </div>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Left — Address + Items */}
           <div className="lg:col-span-8 space-y-4">
