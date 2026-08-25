@@ -60,6 +60,7 @@ function ProductsContent() {
   const [sort, setSort] = useState<SortOption>("relevance");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(true);
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
 
   const allBrands = useMemo(() => {
     const brandSet = new Set(products.map((p) => p.brand).filter(Boolean) as string[]);
@@ -426,7 +427,7 @@ function ProductsContent() {
           >
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => setShowMobileFilter(true)}
                 className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden border-[#C9B8E8] bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7]"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
@@ -560,6 +561,122 @@ function ProductsContent() {
           )}
         </div>
       </div>
+
+      {/* Mobile Filter Bottom Sheet */}
+      {showMobileFilter && (
+        <div className="fixed inset-0 z-[90] lg:hidden">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileFilter(false)} />
+          <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-[#2D1B69]" />
+                <span className="text-[14px] font-bold text-[#150726]">Filters</span>
+                {hasActiveFilters && <span className="rounded-full px-2 py-0.5 bg-[#2D1B69] text-[9px] font-bold text-white">Active</span>}
+              </div>
+              <button onClick={() => setShowMobileFilter(false)} className="p-2 rounded-full hover:bg-[#F0ECF9] transition-colors">
+                <X className="h-5 w-5 text-[#9B8CB5]" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+              {/* Search */}
+              <div>
+                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9B8CB5]" />
+                  <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search in results..." className="h-10 w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 text-xs font-medium focus:outline-none focus:ring-2 transition-all text-[#150726] focus:border-[#2D1B69] focus:ring-[#2D1B69]/10" />
+                </div>
+              </div>
+
+              {/* Category */}
+              <div>
+                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={() => setSelectedCategory("")} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${!selectedCategory ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                    All
+                  </button>
+                  {categories.map((cat) => (
+                    <button key={cat.slug} onClick={() => setSelectedCategory(cat.slug)} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${selectedCategory === cat.slug ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                      {cat.name.split("\n")[0]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price */}
+              <div>
+                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "Under ₹100", range: [0, 100] as [number, number] },
+                    { label: "₹100-500", range: [100, 500] as [number, number] },
+                    { label: "₹500-5K", range: [500, 5000] as [number, number] },
+                    { label: "₹5K-50K", range: [5000, 50000] as [number, number] },
+                    { label: "₹50K+", range: [50000, 100000] as [number, number] },
+                  ].map((preset) => {
+                    const isActive = priceRange[0] === preset.range[0] && priceRange[1] === preset.range[1];
+                    return (
+                      <button key={preset.label} onClick={() => setPriceRange(preset.range)} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${isActive ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                        {preset.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Brands */}
+              <div>
+                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
+                <div className="max-h-40 overflow-y-auto space-y-1">
+                  {allBrands.map((brand) => {
+                    const isSelected = selectedBrands.includes(brand);
+                    return (
+                      <label key={brand} className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 transition-all hover:bg-[#F0ECF9]">
+                        <div className="h-4 w-4 rounded border-2 flex items-center justify-center transition-all flex-shrink-0" style={{ borderColor: isSelected ? "#2D1B69" : "#D1D5DB", background: isSelected ? "#2D1B69" : "white" }}>
+                          {isSelected && <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                        </div>
+                        <span className={`text-xs ${isSelected ? "font-bold text-[#2D1B69]" : "font-medium text-[#9B8CB5]"}`}>{brand}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div>
+                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
+                <div className="flex flex-wrap gap-2">
+                  {[4, 3, 2, 1].map((r) => (
+                    <button key={r} onClick={() => setMinRating(minRating === r ? 0 : r)} className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${minRating === r ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                      <Star className="h-3 w-3" style={minRating === r ? { fill: "white", color: "white" } : { fill: "#FACC15", color: "#FACC15" }} /> {r}+
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* In Stock */}
+              <label className="flex items-center gap-2.5 cursor-pointer" onClick={() => setInStockOnly(!inStockOnly)}>
+                <div className="h-5 w-5 rounded border-2 flex items-center justify-center transition-all" style={{ borderColor: inStockOnly ? "#7CB518" : "#D1D5DB", background: inStockOnly ? "#7CB518" : "white" }}>
+                  {inStockOnly && <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                </div>
+                <span className={`text-xs font-bold ${inStockOnly ? "text-[#7CB518]" : "text-[#9B8CB5]"}`}>In Stock Only</span>
+              </label>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-[#E8E0F7] px-5 py-3 flex gap-3">
+              {hasActiveFilters && (
+                <button onClick={clearFilters} className="flex-1 h-11 rounded-xl border-2 border-[#E8E0F7] text-[12px] font-bold text-[#E91E63] bg-white hover:bg-[#FCE4EC] transition-all">
+                  Clear All
+                </button>
+              )}
+              <button onClick={() => setShowMobileFilter(false)} className="flex-1 h-11 rounded-xl bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E0F4A] transition-all shadow-lg shadow-purple-500/20">
+                Show {filteredProducts.length} Results
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
