@@ -348,7 +348,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="dark-nav border-t border-white/5">
-          <div className="market-container flex items-center gap-0 overflow-x-auto scrollbar-hide">
+          <div className="market-container flex items-center gap-0 overflow-x-auto scrollbar-hide pr-12 lg:pr-0">
             {[
               { label: "Products", href: "/products" },
               { label: "Suppliers", href: "/suppliers" },
