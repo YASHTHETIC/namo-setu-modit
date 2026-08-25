@@ -293,7 +293,7 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-[13px]">
-                    <span className="text-[#9B8CB5]">GST</span>
+                    <span className="text-[#9B8CB5]">GST (estimated)</span>
                     <span className="text-[#150726] font-medium">₹{getCartGST().toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                   {couponApplied && (
@@ -302,9 +302,25 @@ export default function CartPage() {
                       <span className="text-[#7CB518] font-medium">-₹{couponDiscount.toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="border-t border-[#DDD6EE] pt-3 flex justify-between">
+                  <div className="border-t border-[#DDD6EE] pt-3 flex justify-between items-center">
                     <span className="text-[15px] font-bold text-[#150726]">Total</span>
-                    <span className="text-[20px] font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                    <div className="text-right">
+                      <span className="text-[20px] font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      {getCartDiscount() > 0 && (
+                        <p className="text-[11px] font-semibold text-[#7CB518] mt-0.5">
+                          You save ₹{getCartDiscount().toLocaleString(undefined, { maximumFractionDigits: 0 })} on this order
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Estimated delivery */}
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] px-3 py-2.5">
+                  <Truck className="h-4 w-4 text-[#7CB518]" />
+                  <div>
+                    <p className="text-[12px] font-semibold text-[#5A8010]">Estimated delivery: Tomorrow</p>
+                    <p className="text-[10px] text-[#7CB518]">Order within 2h 15m for same-day dispatch</p>
                   </div>
                 </div>
 

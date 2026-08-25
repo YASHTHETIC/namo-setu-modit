@@ -94,10 +94,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className="sticky top-0 z-50 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-purple-200/60" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
-        <div className="market-container flex min-h-[76px] items-center gap-3 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-3">
-            <ModitLogo className="h-[46px] w-auto" />
+      <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-purple-200/60 transition-shadow duration-300" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
+        <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
+          <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
+            <ModitLogo className="h-[36px] sm:h-[42px] w-auto" />
           </Link>
 
           <div ref={megaMenuRef} className="relative hidden xl:block">
@@ -337,14 +337,28 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowMobileMenu((value) => !value)}
-            className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-secondary)] lg:hidden"
-            aria-label="Toggle navigation"
-          >
-            {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Mobile: search + cart + menu */}
+          <div className="flex items-center gap-1 lg:hidden ml-auto">
+            <Link href="/products" className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Search">
+              <Search className="h-5 w-5" />
+            </Link>
+            <Link href="/cart" className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Cart">
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-[9px] font-bold text-white shadow-lg shadow-pink-500/30">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
+            <button
+              type="button"
+              onClick={() => setShowMobileMenu((value) => !value)}
+              className="touch-target rounded-full border border-[var(--border)] text-[var(--text-secondary)]"
+              aria-label="Toggle navigation"
+            >
+              {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
 
         <div className="dark-nav border-t border-white/5">
