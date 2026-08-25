@@ -18,7 +18,7 @@ export function BottomNav() {
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#150726] border-t border-white/10 lg:hidden"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#150726] border-t border-white/10"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}>
       <div className="grid grid-cols-5 gap-0 w-full">
         {NAV_ITEMS.map((item) => {
