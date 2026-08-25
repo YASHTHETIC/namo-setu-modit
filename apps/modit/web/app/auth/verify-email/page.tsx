@@ -8,7 +8,6 @@ import { createApiClient } from "@foundation/api-client";
 import { CheckCircle, XCircle } from "lucide-react";
 import { setAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
-import { ModitLogo } from "@/components/modit-logo";
 
 function VerifyEmailForm() {
   const router = useRouter();
@@ -64,12 +63,6 @@ function VerifyEmailForm() {
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[420px]">
           <div className="mb-8 text-center">
-            <div className="relative inline-flex mb-6">
-              <div className="absolute -inset-8 bg-gradient-to-br from-[#2D1B69]/10 to-[#7CB518]/10 rounded-full blur-2xl" />
-              <div className="relative bg-white rounded-2xl px-8 py-5 shadow-lg shadow-purple-900/5 border border-[#E8E0F0]">
-                <ModitLogo className="h-[48px] w-auto" />
-              </div>
-            </div>
             <h1 className="text-[26px] font-extrabold text-[#150726] tracking-tight">Email Verification</h1>
           </div>
 
