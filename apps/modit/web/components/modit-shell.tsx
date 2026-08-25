@@ -377,7 +377,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   href={item.href}
                   className={`shrink-0 px-5 py-2.5 text-[12px] font-semibold transition-all ${
                     isActive
-                      ? "text-[var(--brand)] bg-[var(--brand)]/10 border-b-2 border-[var(--brand)]"
+                      ? "text-[#7CB518] bg-[#7CB518]/10 border-b-2 border-[#7CB518]"
                       : "text-white/70 hover:text-white hover:bg-white/10"
                   }`}
                 >
