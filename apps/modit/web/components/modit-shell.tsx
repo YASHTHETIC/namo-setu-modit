@@ -341,9 +341,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Mobile: search + cart + menu */}
           <div className="flex items-center gap-1 lg:hidden ml-auto">
-            <Link href="/products" className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Search">
+            <button
+              type="button"
+              onClick={() => setShowSearch(true)}
+              className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
+              aria-label="Search"
+            >
               <Search className="h-5 w-5" />
-            </Link>
+            </button>
             <Link href="/cart" className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -438,6 +443,101 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
             </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showSearch && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex flex-col lg:hidden" style={{ background: "rgba(21,7,38,0.97)" }}>
+            <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); }}
+                  placeholder="Search cement, paint, lighting..."
+                  autoFocus
+                  className="w-full h-12 rounded-xl bg-white/10 border border-white/10 pl-10 pr-10 text-[14px] text-white placeholder:text-white/40 focus:outline-none focus:border-[#7CB518] transition-colors"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <button onClick={() => { setShowSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-[14px] font-semibold">Cancel</button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-4 pb-6">
+              {searchResults.length > 0 ? (
+                <div className="space-y-1">
+                  {searchResults.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/products/${product.id}`}
+                      onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white/5"
+                    >
+                      <div className="h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
+                        <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate text-[13px] font-semibold text-white">{product.name}</p>
+                        <p className="text-[11px] text-white/40">{product.category}</p>
+                      </div>
+                      <p className="text-[13px] font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString()}</p>
+                    </Link>
+                  ))}
+                  <button
+                    onClick={submitSearch}
+                    className="w-full mt-2 py-3 rounded-xl bg-[#7CB518]/10 text-[#7CB518] text-[13px] font-bold hover:bg-[#7CB518]/20 transition-colors"
+                  >
+                    View all results →
+                  </button>
+                </div>
+              ) : searchQuery.length >= 2 ? (
+                <div className="py-16 text-center">
+                  <Search className="h-8 w-8 text-white/20 mx-auto mb-3" />
+                  <p className="text-[13px] text-white/50">No products found for &quot;{searchQuery}&quot;</p>
+                  <p className="text-[11px] text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
+                </div>
+              ) : (
+                <div className="space-y-6 pt-2">
+                  <div>
+                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-wider mb-3">Popular</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["Cement", "TMT Bars", "Paint", "Tiles", "Plywood", "LED Lights"].map((term) => (
+                        <button
+                          key={term}
+                          onClick={() => { setSearchQuery(term); }}
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[12px] text-white/60 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-colors"
+                        >
+                          {term}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-wider mb-3">Categories</p>
+                    <div className="space-y-1">
+                      {categories.slice(0, 6).map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/products?category=${cat.slug}`}
+                          onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5 transition-colors"
+                        >
+                          <span className="text-lg">{cat.icon}</span>
+                          <span className="text-[13px] text-white/60">{cat.name}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
