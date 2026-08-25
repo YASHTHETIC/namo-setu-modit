@@ -444,8 +444,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <main className="market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
 
-      <footer className="mt-6 bg-gradient-to-b from-[#0D0720] to-[#060314] border-t border-white/5 relative overflow-hidden">
-        {/* Decorative top glow */}
+      <footer className="mt-6 border-t border-white/5 relative overflow-hidden" style={{ background: "linear-gradient(to bottom, #0D0720, #060314)", color: "rgba(255,255,255,0.5)" }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
         <div className="market-container py-10">
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
@@ -453,49 +452,49 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-3">
                 <ModitLogo className="h-[42px] w-auto" light={true} />
               </div>
-              <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
+              <p className="mt-4 max-w-md text-sm leading-6" style={{ color: "rgba(255,255,255,0.5)" }}>
                 A production-grade procurement platform for building materials, supplier sourcing, bulk orders, and enterprise checkout.
               </p>
-              <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-[var(--text-secondary)]">
-                <span className="rounded-full border border-[var(--border)] bg-white px-3 py-1.5">GST invoices</span>
-                <span className="rounded-full border border-[var(--border)] bg-white px-3 py-1.5">Verified suppliers</span>
-                <span className="rounded-full border border-[var(--border)] bg-white px-3 py-1.5">Project workflows</span>
+              <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
+                <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>GST invoices</span>
+                <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Verified suppliers</span>
+                <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Project workflows</span>
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[var(--text)]">Marketplace</h4>
-              <ul className="mt-4 space-y-2 text-sm text-[var(--text-secondary)]">
-                <li><Link href="/products">Products</Link></li>
-                <li><Link href="/rfq">RFQ</Link></li>
-                <li><Link href="/suppliers">Suppliers</Link></li>
-                <li><Link href="/projects">Projects</Link></li>
+              <h4 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Marketplace</h4>
+              <ul className="mt-4 space-y-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <li><Link href="/products" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Products</Link></li>
+                <li><Link href="/rfq" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">RFQ</Link></li>
+                <li><Link href="/suppliers" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Suppliers</Link></li>
+                <li><Link href="/projects" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Projects</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[var(--text)]">Account</h4>
-              <ul className="mt-4 space-y-2 text-sm text-[var(--text-secondary)]">
-                <li><Link href="/dashboard">Dashboard</Link></li>
-                <li><Link href="/orders">Orders</Link></li>
-                <li><Link href="/cart">Cart</Link></li>
-                <li><Link href="/notifications">Notifications</Link></li>
+              <h4 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Account</h4>
+              <ul className="mt-4 space-y-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <li><Link href="/dashboard" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Dashboard</Link></li>
+                <li><Link href="/orders" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Orders</Link></li>
+                <li><Link href="/cart" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Cart</Link></li>
+                <li><Link href="/notifications" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Notifications</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[var(--text)]">Support</h4>
-              <ul className="mt-4 space-y-2 text-sm text-[var(--text-secondary)]">
-                <li><Link href="/auth">Login</Link></li>
-                <li><Link href="/auth/register">Create account</Link></li>
-                <li><Link href="/dashboard/profile">Profile settings</Link></li>
-                <li><Link href="/payment/history">Payment history</Link></li>
+              <h4 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Support</h4>
+              <ul className="mt-4 space-y-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <li><Link href="/auth" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Login</Link></li>
+                <li><Link href="/auth/register" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Create account</Link></li>
+                <li><Link href="/dashboard/profile" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Profile settings</Link></li>
+                <li><Link href="/payment/history" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Payment history</Link></li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 flex flex-col gap-3 border-t border-white/5 pt-6 text-sm text-white/30 md:flex-row md:items-center md:justify-between">
-            <p>© 2026 MODIT. All rights reserved.</p>
+          <div className="mt-8 flex flex-col gap-3 border-t border-white/5 pt-6 text-sm md:flex-row md:items-center md:justify-between" style={{ color: "rgba(255,255,255,0.3)" }}>
+            <p>&copy; 2026 MODIT. All rights reserved.</p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/terms" className="hover:text-white/50 transition-colors">Terms</Link>
-              <Link href="/privacy" className="hover:text-white/50 transition-colors">Privacy</Link>
-              <Link href="/shipping" className="hover:text-white/50 transition-colors">Shipping</Link>
+              <Link href="/terms" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Terms</Link>
+              <Link href="/privacy" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Privacy</Link>
+              <Link href="/shipping" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Shipping</Link>
             </div>
           </div>
         </div>
