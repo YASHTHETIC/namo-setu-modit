@@ -25,6 +25,7 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { categories, products as catalogProducts, searchProducts, type Product } from "@/lib/product-data";
 import { ModitLogo } from "@/components/modit-logo";
+import { BottomNav } from "@/components/bottom-nav";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -499,6 +500,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+
+      <BottomNav />
     </div>
   );
 }
