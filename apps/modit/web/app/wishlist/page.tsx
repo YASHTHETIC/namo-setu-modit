@@ -39,12 +39,14 @@ export default function WishlistPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-[1400px] px-4 py-20 text-center">
-        <Heart className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">Your wishlist is empty</h2>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">Save products you love for later.</p>
+        <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
+          <Heart className="h-10 w-10 text-[#E91E63]" />
+        </div>
+        <h2 className="text-[18px] font-bold text-[#150726]">Your wishlist is empty</h2>
+        <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">Save products you love for later. Tap the heart icon on any product to add it here.</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:underline"
+          className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-[13px] font-bold hover:bg-[#1E0F4A] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20"
         >
           <ArrowLeft className="h-4 w-4" /> Browse Products
         </Link>

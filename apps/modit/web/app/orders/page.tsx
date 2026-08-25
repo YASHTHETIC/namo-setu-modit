@@ -49,12 +49,14 @@ export default function OrdersPage() {
           </div>
         ) : orderList.length === 0 ? (
           <div className="py-20 text-center">
-            <ShoppingCart className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
+            <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
+              <Package className="h-10 w-10 text-[#2D1B69]" />
+            </div>
             <h2 className="text-[18px] font-bold text-[#150726]">No orders yet</h2>
-            <p className="mt-1 text-[13px] text-[#9B8CB5]">Your orders will appear here</p>
+            <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">When you place an order, it will appear here with tracking details and delivery updates.</p>
             <Link href="/products"
-              className="mt-4 inline-flex items-center gap-2 bg-[#2D1B69] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
-              <ArrowLeft className="h-4 w-4" /> Browse Products
+              className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-[13px] font-bold hover:bg-[#1E0F4A] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20">
+              Start Shopping
             </Link>
           </div>
         ) : (
