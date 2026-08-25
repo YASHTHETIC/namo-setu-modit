@@ -442,7 +442,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      <main className="market-container min-h-[60vh] py-6">{children}</main>
+      <main className="market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
 
       <footer className="mt-6 bg-gradient-to-b from-[#0D0720] to-[#060314] border-t border-white/5 relative overflow-hidden">
         {/* Decorative top glow */}
