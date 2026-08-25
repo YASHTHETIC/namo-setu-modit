@@ -63,7 +63,7 @@ export default function CartPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[600px] px-4 py-20 text-center">
+        <div className="mx-auto max-w-[600px] py-20 text-center">
           <div className="h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center mx-auto mb-4">
             <ShoppingCart className="h-10 w-10 text-[#9B8CB5]" />
           </div>
@@ -111,7 +111,7 @@ export default function CartPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-4 sm:px-6">
+      <div className="mx-auto max-w-[1200px] py-4 sm:px-6">
         {/* Breadcrumb */}
         <div className="mb-4">
           <Link href="/products" className="inline-flex items-center gap-1.5 text-[12px] text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">

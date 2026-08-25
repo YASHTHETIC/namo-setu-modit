@@ -105,7 +105,7 @@ export function ProductRail({
       {/* Horizontal scroll rail */}
       <div
         ref={scrollRef}
-        className="scroll-rail px-4"
+        className="scroll-rail"
       >
         {products.map((product, i) => (
           <div

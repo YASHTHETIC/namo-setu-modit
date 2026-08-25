@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { env } from "@/lib/env";
+import { ModitLogo } from "@/components/modit-logo";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -35,15 +36,28 @@ function ResetPasswordForm() {
 
   return (
     <div className="min-h-screen bg-[#F8F6FC] flex flex-col">
-      <div className="w-full bg-[#150726] py-3 px-6 flex items-center justify-center">
-        <Link href="/" className="flex items-center gap-2">
-          <img src="/modit-logo.png" alt="MODIT" className="h-[28px] w-auto" />
-        </Link>
+      <div className="w-full h-1 bg-gradient-to-r from-[#2D1B69] via-[#7CB518] to-[#E91E63]" />
+
+      <div className="w-full bg-[#150726] px-6 py-3">
+        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <ModitLogo className="h-[32px] w-auto" light />
+          </Link>
+          <Link href="/" className="text-[12px] font-semibold text-white/50 hover:text-white/80 transition-colors">
+            Back to home
+          </Link>
+        </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-4 py-10">
-        <div className="w-full max-w-[400px]">
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-[420px]">
           <div className="mb-8 text-center">
+            <div className="relative inline-flex mb-6">
+              <div className="absolute -inset-8 bg-gradient-to-br from-[#2D1B69]/10 to-[#7CB518]/10 rounded-full blur-2xl" />
+              <div className="relative bg-white rounded-2xl px-8 py-5 shadow-lg shadow-purple-900/5 border border-[#E8E0F0]">
+                <ModitLogo className="h-[48px] w-auto" />
+              </div>
+            </div>
             <h1 className="text-[26px] font-extrabold text-[#150726] tracking-tight">
               {success ? "Password reset" : "Reset password"}
             </h1>
@@ -65,7 +79,7 @@ function ResetPasswordForm() {
               </div>
             ) : success ? (
               <div className="space-y-4 text-center py-4">
-                <div className="mx-auto h-14 w-14 rounded-full bg-green-50 flex items-center justify-center">
+                <div className="mx-auto h-14 w-14 rounded-full bg-[#F0F9E8] flex items-center justify-center">
                   <CheckCircle className="h-8 w-8 text-[#7CB518]" />
                 </div>
                 <p className="text-[13px] text-[#6B5B83]">You can now sign in with your new password.</p>

@@ -83,7 +83,7 @@ export default function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-[1400px] px-4 py-20 text-center">
+      <div className="mx-auto max-w-[1400px] py-20 text-center">
         <Package className="mx-auto mb-4 h-16 w-16 text-[var(--text-muted)]/30" />
         <h2 className="text-xl font-bold text-[var(--text-primary)]">Product Not Found</h2>
         <p className="mt-2 text-sm text-[var(--text-muted)]">The product you are looking for does not exist.</p>
@@ -97,7 +97,7 @@ export default function ProductDetailPage({
   const specs = Object.entries(product.specifications);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 pb-24 lg:pb-4">
+    <div className="mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
       {/* Breadcrumb */}
       <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)] overflow-x-auto scrollbar-hide pb-1">
         <Link href="/" className="hover:text-[var(--brand)] whitespace-nowrap">Home</Link>

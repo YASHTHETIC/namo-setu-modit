@@ -35,7 +35,7 @@ export default function OrdersPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[800px] px-4 py-4 sm:px-6">
+      <div className="mx-auto max-w-[800px] py-4 sm:px-6">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (

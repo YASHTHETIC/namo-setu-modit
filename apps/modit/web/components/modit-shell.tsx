@@ -30,6 +30,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
+  const isAuth = pathname.startsWith("/auth");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
@@ -83,7 +84,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     router.push(`/products?search=${encodeURIComponent(query)}`);
   };
 
-  if (isHome) {
+  if (isHome || isAuth) {
     return <>{children}</>;
   }
 

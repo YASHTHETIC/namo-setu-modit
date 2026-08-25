@@ -38,7 +38,7 @@ export default function CheckoutPage() {
             <h1 className="text-[16px] font-bold text-white">Checkout</h1>
           </div>
         </header>
-        <div className="mx-auto max-w-[600px] px-4 py-20 text-center">
+        <div className="mx-auto max-w-[600px] py-20 text-center">
           <ShoppingCart className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
           <h2 className="text-[18px] font-bold text-[#150726]">Your cart is empty</h2>
           <Link href="/products" className="mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all">
@@ -57,7 +57,7 @@ export default function CheckoutPage() {
             <h1 className="text-[16px] font-bold text-white">Order Confirmed</h1>
           </div>
         </header>
-        <div className="mx-auto max-w-[600px] px-4 py-20 text-center">
+        <div className="mx-auto max-w-[600px] py-20 text-center">
           <div className="h-20 w-20 rounded-full bg-[#7CB518]/10 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="h-10 w-10 text-[#7CB518]" />
           </div>
@@ -88,7 +88,7 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-4 sm:px-6">
+      <div className="mx-auto max-w-[1200px] py-4 sm:px-6">
         {/* Checkout Steps */}
         <div className="mb-6 flex items-center gap-0 overflow-x-auto scrollbar-hide">
           {[

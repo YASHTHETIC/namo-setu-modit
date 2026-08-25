@@ -138,7 +138,7 @@ function ProductsContent() {
 
   return (
     <div
-      className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6"
+      className="mx-auto max-w-[1400px] py-4 sm:px-6"
       style={{
         background: selectedCategory
           ? `linear-gradient(180deg, ${catColor!.light} 0%, ${catColor!.bg.match(/#[A-Fa-f0-9]+/)?.[0] || '#FFFBF5'}33 200px, #FFF8F0 500px)`

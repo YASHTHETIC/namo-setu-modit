@@ -238,7 +238,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
-      <div className="trust-strip mx-4 mt-3">
+      <div className="trust-strip mt-3">
         {[
           { icon: "✓", text: "100% Genuine Products", color: "#7CB518" },
           { icon: "🔒", text: "Secure Payments", color: "#2D1B69" },
@@ -255,7 +255,7 @@ export default function ModitHomePage() {
 
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <RevealSection>
-        <div className="mx-4 mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
+        <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
           {/* Animated mesh gradient overlay */}
           <div className="absolute inset-0 opacity-30" style={{
             background: "radial-gradient(circle at 20% 50%, rgba(124,181,24,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.2), transparent 50%)",
@@ -295,7 +295,7 @@ export default function ModitHomePage() {
 
       {/* ═══ ASSURED STRIP ═══ */}
       <RevealSection delay={100}>
-        <div className="mt-4 mx-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E0A3C] to-[#150726] border border-white/10 relative group">
+        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E0A3C] to-[#150726] border border-white/10 relative group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
           <div className="absolute -top-4 -right-2 w-20 h-32 bg-[#E91E63]/20 rotate-[25deg] rounded-full blur-xl group-hover:rotate-[35deg] transition-transform duration-500" />
           <div className="absolute -bottom-4 -left-2 w-20 h-32 bg-[#7CB518]/20 rotate-[-25deg] rounded-full blur-xl group-hover:rotate-[-35deg] transition-transform duration-500" />
@@ -335,7 +335,7 @@ export default function ModitHomePage() {
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-3 px-4">
+          <div className="grid grid-cols-4 gap-3">
             {categories.map((cat, i) => (
               <Link
                 key={cat.slug}
@@ -406,7 +406,7 @@ export default function ModitHomePage() {
 
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <RevealSection>
-        <div ref={featureCountRef.ref} className="mx-4 mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden">
+        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-[#E91E63]/10 rounded-full blur-xl" />
           <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#7CB518]/10 rounded-full blur-xl" />
           {/* Animated gradient line */}
@@ -434,7 +434,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BRAND STRIP ═══ */}
       <RevealSection>
-        <div className="mx-4 mb-6 pb-20">
+        <div className="mb-6 pb-20">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
           </div>
