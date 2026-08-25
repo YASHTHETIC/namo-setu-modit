@@ -189,7 +189,7 @@ export default function ModitHomePage() {
           </RippleButton>
           <div className="flex-1 flex justify-center">
             <Link href="/" className="transition-all hover:scale-105 active:scale-95">
-              <ModitLogo className="h-[40px] w-auto" dark={true} />
+              <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
           <div className="flex items-center gap-1">
@@ -560,7 +560,7 @@ export default function ModitHomePage() {
           <div className="w-72 h-full bg-[#150726] p-5 animate-slide-in-left overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <Link href="/" onClick={() => setShowMenu(false)}>
-                <ModitLogo className="h-[36px] w-auto" dark={true} />
+                <ModitLogo className="h-[36px] w-auto" light={true} />
               </Link>
               <button onClick={() => setShowMenu(false)} className="p-1 text-white/60 hover:text-white transition-colors">
                 <X className="h-5 w-5" />

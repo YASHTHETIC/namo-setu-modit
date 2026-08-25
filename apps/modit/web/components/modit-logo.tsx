@@ -1,10 +1,10 @@
-export function ModitLogo({ className = "h-[42px] w-auto", dark = true }: { className?: string; dark?: boolean }) {
+export function ModitLogo({ className = "h-[42px] w-auto", dark = true, light = false }: { className?: string; dark?: boolean; light?: boolean }) {
   return (
     <img
-      src="/modit-logo.png"
+      src={light ? "/modit-logo-light.png" : "/modit-logo.png"}
       alt="MODIT — Materials On Door"
       className={className}
-      style={dark ? {} : { filter: "brightness(0) saturate(100%)" }}
+      style={dark && !light ? {} : { filter: "brightness(0) saturate(100%)" }}
     />
   );
 }

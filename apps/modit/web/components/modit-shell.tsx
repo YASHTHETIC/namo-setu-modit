@@ -449,7 +449,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
-                <ModitLogo className="h-[42px] w-auto" dark={true} />
+                <ModitLogo className="h-[42px] w-auto" light={true} />
               </div>
               <p className="mt-4 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
                 A production-grade procurement platform for building materials, supplier sourcing, bulk orders, and enterprise checkout.
