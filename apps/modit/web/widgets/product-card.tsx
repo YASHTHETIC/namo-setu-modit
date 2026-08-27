@@ -191,6 +191,23 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             : product.unit}
         </p>
 
+        {/* Shade color dots */}
+        {product.hasShades && product.shades && product.shades.length > 0 && !compact && (
+          <div className="flex items-center gap-1 mt-1" onClick={(e) => e.preventDefault()}>
+            {product.shades.slice(0, 7).map((shade) => (
+              <button
+                key={shade.code}
+                title={shade.name}
+                className="h-4 w-4 rounded-full border-2 border-white shadow-sm hover:scale-125 transition-transform"
+                style={{ backgroundColor: shade.code }}
+              />
+            ))}
+            {product.shades.length > 7 && (
+              <span className="text-[9px] font-bold text-[#9B8CB5]">+{product.shades.length - 7}</span>
+            )}
+          </div>
+        )}
+
         {/* Price row */}
         <div className="flex items-center gap-2 mt-1">
           <span className="price-hero">₹{activePrice.toLocaleString()}</span>
