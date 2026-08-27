@@ -15,24 +15,36 @@ interface ProductCardProps {
 export function ProductCard({ product, compact = false }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
-  const existing = items.find((i) => i.product.id === product.id);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    product.variants?.[0]?.id ?? null
+  );
+  const existing = items.find(
+    (i) => i.product.id === product.id && i.variantId === selectedVariantId
+  );
   const qty = existing?.quantity ?? 0;
   const [flashing, setFlashing] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
 
+  const selectedVariant = selectedVariantId
+    ? product.variants?.find((v) => v.id === selectedVariantId) ?? null
+    : null;
+  const activePrice = selectedVariant?.price ?? product.price;
+  const activeMrp = selectedVariant?.mrp ?? product.mrp;
+  const activeStock = selectedVariant?.stockLevel ?? product.stockLevel;
+
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = isWishlisted(product.id);
 
-  const discount = product.mrp > product.price
-    ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+  const discount = activeMrp > activePrice
+    ? Math.round(((activeMrp - activePrice) / activeMrp) * 100)
     : 0;
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product);
+    addItem(product, 1, selectedVariantId ?? undefined);
     setFlashing(true);
     setJustAdded(true);
     setTimeout(() => setFlashing(false), 400);
@@ -42,14 +54,14 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product);
+    addItem(product, 1, selectedVariantId ?? undefined);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const removeItem = useCartStore.getState().removeItem;
-    removeItem(product.id);
+    removeItem(product.id, selectedVariantId ?? undefined);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -149,17 +161,42 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           {product.name}
         </h3>
 
+        {/* Size options — inline for variant products */}
+        {hasVariants && !compact && (
+          <div className="flex flex-wrap gap-1 mt-1" onClick={(e) => e.preventDefault()}>
+            {product.variants!.map((v) => (
+              <button
+                key={v.id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedVariantId(v.id);
+                }}
+                className={`px-2 py-0.5 rounded-full text-[9px] font-bold border-2 transition-all ${
+                  selectedVariantId === v.id
+                    ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                    : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Pack size / Variants count */}
         <p className="text-[11px] text-[#9B8CB5]">
-          {hasVariants ? `${product.variants!.length} options available` : product.unit}
+          {hasVariants
+            ? `${product.variants!.length} options · ${product.unit}`
+            : product.unit}
         </p>
 
         {/* Price row */}
         <div className="flex items-center gap-2 mt-1">
-          <span className="price-hero">₹{product.price.toLocaleString()}</span>
+          <span className="price-hero">₹{activePrice.toLocaleString()}</span>
           {discount > 0 && (
             <>
-              <span className="price-strike">₹{product.mrp.toLocaleString()}</span>
+              <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
               <span className="price-save">{discount}% off</span>
             </>
           )}

@@ -162,23 +162,35 @@ export default function CheckoutPage() {
               </h3>
               <div className="space-y-3">
                 {items.map((item) => {
-                  const discount = item.product.mrp > item.product.price
-                    ? Math.round(((item.product.mrp - item.product.price) / item.product.mrp) * 100)
+                  const itemPrice = item.unitPrice ?? item.product.price;
+                  const variant = item.variantId ? item.product.variants?.find((v) => v.id === item.variantId) : null;
+                  const discount = (variant?.mrp ?? item.product.mrp) > itemPrice
+                    ? Math.round((((variant?.mrp ?? item.product.mrp) - itemPrice) / (variant?.mrp ?? item.product.mrp)) * 100)
                     : 0;
                   return (
-                    <div key={item.product.id} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
+                    <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
                       <img src={item.product.images[0]} alt="" className="h-14 w-14 rounded-lg object-cover bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
                         <p className="text-[11px] font-semibold text-[#2D1B69]">{item.product.brand}</p>
                         <p className="text-[12px] font-semibold text-[#150726] truncate">{item.product.name}</p>
+                        {variant && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-[9px] font-bold text-[#2D1B69]">
+                            {variant.label}
+                          </span>
+                        )}
+                        {item.shade && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-[9px] font-bold text-[#2D1B69] ml-1">
+                            {item.shade}
+                          </span>
+                        )}
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[12px] font-bold text-[#150726]">₹{item.product.price.toLocaleString()}</span>
+                          <span className="text-[12px] font-bold text-[#150726]">₹{itemPrice.toLocaleString()}</span>
                           {discount > 0 && <span className="text-[10px] font-bold text-[#E91E63]">{discount}% OFF</span>}
                           <span className="text-[10px] text-[#9B8CB5]">× {item.quantity}</span>
                         </div>
                       </div>
                       <p className="text-[13px] font-bold text-[#150726] whitespace-nowrap">
-                        ₹{(item.product.price * item.quantity).toLocaleString()}
+                        ₹{(itemPrice * item.quantity).toLocaleString()}
                       </p>
                     </div>
                   );

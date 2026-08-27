@@ -11,6 +11,7 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { RecentlyViewed } from "@/components/recently-viewed";
 import { ProductRail } from "@/widgets/product-rail";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { products, searchProducts } from "@/lib/product-data";
@@ -447,6 +448,37 @@ export default function ModitHomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </RevealSection>
+
+      {/* ═══ RECENTLY VIEWED ═══ */}
+      <div className="market-container px-4 py-6 sm:px-6">
+        <RecentlyViewed />
+      </div>
+
+      {/* ═══ MATERIAL CALCULATOR ═══ */}
+      <RevealSection>
+        <div className="market-container px-4 py-6 sm:px-6">
+          <div className="rounded-2xl border-2 border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-6 flex flex-col sm:flex-row items-center gap-4">
+            <div className="h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <line x1="8" y1="6" x2="16" y2="6"/>
+                <line x1="8" y1="10" x2="16" y2="10"/>
+                <line x1="8" y1="14" x2="12" y2="14"/>
+              </svg>
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="text-[14px] font-extrabold text-[#150726]">Material Calculator</h3>
+              <p className="text-[12px] text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
+            </div>
+            <Link
+              href="/calculator"
+              className="flex items-center gap-2 bg-[#2D1B69] text-white text-[12px] font-bold px-5 py-2.5 rounded-full hover:bg-[#1E0F4A] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
+            >
+              Calculate <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </RevealSection>

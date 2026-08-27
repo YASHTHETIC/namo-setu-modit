@@ -8,6 +8,9 @@ export interface CartItem {
   product: Product;
   quantity: number;
   addedAt: number;
+  variantId?: string;
+  shade?: string;
+  unitPrice?: number;
 }
 
 export interface SavedItem {
@@ -20,9 +23,9 @@ interface CartState {
   savedItems: SavedItem[];
   pincode: string;
 
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (product: Product, quantity?: number, variantId?: string, shade?: string) => void;
+  removeItem: (productId: string, variantId?: string) => void;
+  updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
   clearCart: () => void;
 
   saveForLater: (productId: string) => void;
@@ -47,41 +50,55 @@ export const useCartStore = create<CartState>()(
       savedItems: [],
       pincode: "110001",
 
-      addItem: (product, quantity = 1) => {
+      addItem: (product, quantity = 1, variantId, shade) => {
         set((state) => {
-          const existing = state.items.find((i) => i.product.id === product.id);
+          const variant = variantId ? product.variants?.find((v) => v.id === variantId) : null;
+          const unitPrice = variant?.price ?? product.price;
+          const key = `${product.id}:${variantId || "default"}`;
+          const existing = state.items.find((i) => `${i.product.id}:${i.variantId || "default"}` === key);
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.product.id === product.id
-                  ? { ...i, quantity: Math.min(i.quantity + quantity, product.stockLevel) }
+                `${i.product.id}:${i.variantId || "default"}` === key
+                  ? { ...i, quantity: Math.min(i.quantity + quantity, variant?.stockLevel ?? product.stockLevel), unitPrice, shade: shade || i.shade }
                   : i
               ),
             };
           }
           return {
-            items: [...state.items, { product, quantity, addedAt: Date.now() }],
+            items: [...state.items, { product, quantity, addedAt: Date.now(), variantId, shade, unitPrice }],
           };
         });
       },
 
-      removeItem: (productId) => {
+      removeItem: (productId, variantId) => {
         set((state) => ({
-          items: state.items.filter((i) => i.product.id !== productId),
+          items: state.items.filter((i) => {
+            if (variantId) return !(i.product.id === productId && i.variantId === variantId);
+            return i.product.id !== productId;
+          }),
         }));
       },
 
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (productId, quantity, variantId) => {
         set((state) => {
           if (quantity <= 0) {
-            return { items: state.items.filter((i) => i.product.id !== productId) };
+            return {
+              items: state.items.filter((i) => {
+                if (variantId) return !(i.product.id === productId && i.variantId === variantId);
+                return i.product.id !== productId;
+              }),
+            };
           }
           return {
-            items: state.items.map((i) =>
-              i.product.id === productId
+            items: state.items.map((i) => {
+              const match = variantId
+                ? i.product.id === productId && i.variantId === variantId
+                : i.product.id === productId;
+              return match
                 ? { ...i, quantity: Math.min(quantity, i.product.stockLevel) }
-                : i
-            ),
+                : i;
+            }),
           };
         });
       },
@@ -128,11 +145,14 @@ export const useCartStore = create<CartState>()(
       setPincode: (pincode) => set({ pincode }),
 
       getCartTotal: () => {
-        return get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+        return get().items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
       },
 
       getCartMRP: () => {
-        return get().items.reduce((sum, i) => sum + i.product.mrp * i.quantity, 0);
+        return get().items.reduce((sum, i) => {
+          const variant = i.variantId ? i.product.variants?.find((v) => v.id === i.variantId) : null;
+          return sum + (variant?.mrp ?? i.product.mrp) * i.quantity;
+        }, 0);
       },
 
       getCartDiscount: () => {
@@ -141,7 +161,7 @@ export const useCartStore = create<CartState>()(
 
       getCartGST: () => {
         return get().items.reduce(
-          (sum, i) => sum + i.product.price * i.quantity * (i.product.gstRate / 100),
+          (sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity * (i.product.gstRate / 100),
           0
         );
       },

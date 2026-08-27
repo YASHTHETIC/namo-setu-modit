@@ -373,6 +373,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             {[
               { label: "Products", href: "/products" },
               { label: "Suppliers", href: "/suppliers" },
+              { label: "Calculator", href: "/calculator" },
               { label: "Get Quote", href: "/rfq" },
               { label: "Orders", href: "/orders" },
               { label: "Inventory", href: "/inventory" },
@@ -567,6 +568,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <li><Link href="/products" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Products</Link></li>
                 <li><Link href="/rfq" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">RFQ</Link></li>
                 <li><Link href="/suppliers" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Suppliers</Link></li>
+                <li><Link href="/calculator" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Material Calculator</Link></li>
                 <li><Link href="/projects" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Projects</Link></li>
               </ul>
             </div>

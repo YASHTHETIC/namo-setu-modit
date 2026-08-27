@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useMemo, useCallback } from "react";
+import { use, useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -30,6 +30,7 @@ import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantityS
 import { ShadePicker } from "@/components/shade-picker";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
+import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { getProductById, products } from "@/lib/product-data";
 
 export default function ProductDetailPage({
@@ -40,6 +41,7 @@ export default function ProductDetailPage({
   const { id } = use(params);
   const product = getProductById(id);
   const addItem = useCartStore((s) => s.addItem);
+  const addRecentlyViewed = useRecentlyViewed((s) => s.addProduct);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -50,6 +52,10 @@ export default function ProductDetailPage({
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedShade, setSelectedShade] = useState<string | null>(null);
   const [customColorCode, setCustomColorCode] = useState("");
+
+  useEffect(() => {
+    if (product) addRecentlyViewed(product);
+  }, [product?.id]);
 
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
@@ -72,16 +78,16 @@ export default function ProductDetailPage({
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
-    addItem(product, quantity);
+    addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
     setAdded(true);
     setTimeout(() => setAdded(false), 3000);
-  }, [product, quantity, addItem]);
+  }, [product, quantity, addItem, selectedVariant, selectedShade]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
-    addItem(product, quantity);
+    addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
     window.location.href = "/checkout";
-  }, [product, quantity, addItem]);
+  }, [product, quantity, addItem, selectedVariant, selectedShade]);
 
   const handleCheckDelivery = useCallback(() => {
     if (pincode.length === 6) setPincodeChecked(true);

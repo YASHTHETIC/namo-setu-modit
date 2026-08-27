@@ -129,11 +129,13 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-3">
             {items.map((item) => {
-              const discount = item.product.mrp > item.product.price
-                ? Math.round(((item.product.mrp - item.product.price) / item.product.mrp) * 100)
+              const itemPrice = item.unitPrice ?? item.product.price;
+              const variant = item.variantId ? item.product.variants?.find((v) => v.id === item.variantId) : null;
+              const discount = (variant?.mrp ?? item.product.mrp) > itemPrice
+                ? Math.round((((variant?.mrp ?? item.product.mrp) - itemPrice) / (variant?.mrp ?? item.product.mrp)) * 100)
                 : 0;
               return (
-                <div key={item.product.id} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
+                <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={`/products/${item.product.id}`} className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
                     <img src={item.product.images[0]} alt="" className="h-full w-full object-cover" />
@@ -149,22 +151,33 @@ export default function CartPage() {
                         <Link href={`/products/${item.product.id}`} className="text-[14px] font-bold text-[#150726] hover:text-[#2D1B69] line-clamp-2 leading-tight">
                           {item.product.name}
                         </Link>
+                        {variant && (
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                            Size: {variant.label} · {variant.unit}
+                          </span>
+                        )}
+                        {item.shade && (
+                          <span className="inline-flex items-center gap-1 mt-1 ml-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                            Shade: {item.shade}
+                          </span>
+                        )}
                         <p className="text-[11px] text-[#9B8CB5] mt-0.5">Seller: {item.product.seller.name}</p>
                       </div>
                       <p className="text-[18px] font-extrabold text-[#150726] whitespace-nowrap">
-                        ₹{(item.product.price * item.quantity).toLocaleString()}
+                        ₹{(itemPrice * item.quantity).toLocaleString()}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 mt-1.5">
-                      {item.product.mrp > item.product.price && (
-                        <span className="text-[12px] text-[#9B8CB5] line-through">₹{item.product.mrp.toLocaleString()}</span>
+                      {(variant?.mrp ?? item.product.mrp) > itemPrice && (
+                        <span className="text-[12px] text-[#9B8CB5] line-through">₹{(variant?.mrp ?? item.product.mrp).toLocaleString()}</span>
                       )}
                       {discount > 0 && (
                         <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-[10px] font-bold text-[#E91E63]">
                           {discount}% OFF
                         </span>
                       )}
+                      <span className="text-[11px] text-[#9B8CB5]">₹{itemPrice.toLocaleString()} each</span>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between">
@@ -172,7 +185,7 @@ export default function CartPage() {
                         {/* Quantity selector */}
                         <div className="flex items-center border-2 border-[#DDD6EE] rounded-lg overflow-hidden">
                           <button
-                            onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1))}
+                            onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1), item.variantId)}
                             disabled={item.quantity <= item.product.moq}
                             className="h-8 w-8 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
@@ -182,7 +195,7 @@ export default function CartPage() {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1))}
+                            onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1), item.variantId)}
                             className="h-8 w-8 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors"
                           >
                             <Plus className="h-3.5 w-3.5" />
@@ -207,7 +220,7 @@ export default function CartPage() {
                           <Heart className="h-3.5 w-3.5" /> Save for later
                         </button>
                         <button
-                          onClick={() => removeItem(item.product.id)}
+                          onClick={() => removeItem(item.product.id, item.variantId)}
                           className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Remove
