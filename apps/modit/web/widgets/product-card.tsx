@@ -19,7 +19,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     product.variants?.[0]?.id ?? null
   );
   const existing = items.find(
-    (i) => i.product.id === product.id && i.variantId === selectedVariantId
+    (i) => i.product.id === product.id && (i.variantId ?? null) === selectedVariantId
   );
   const qty = existing?.quantity ?? 0;
   const [flashing, setFlashing] = useState(false);

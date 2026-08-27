@@ -1,11 +1,20 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { ProductCard } from "@/widgets/product-card";
 
 export function RecentlyViewed() {
-  const items = useRecentlyViewed((s) => s.getRecent(6));
+  const [mounted, setMounted] = useState(false);
+  const allItems = useRecentlyViewed((s) => s.items);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const items = allItems.slice(0, 6);
   if (items.length === 0) return null;
 
   return (
