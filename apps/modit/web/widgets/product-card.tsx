@@ -60,7 +60,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
   const isBulk = product.bulkMinQty && product.bulkMinQty > 1;
   const isBestseller = product.rating >= 4.5 && product.reviewCount > 50;
-  const isFastDelivery = product.deliveryDays <= 1;
+  const hasVariants = product.variants && product.variants.length > 0;
+  const hasFreeDeliveryThreshold = product.freeDeliveryThreshold && !product.freeDelivery;
 
   return (
     <Link
@@ -121,8 +122,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
 
-        {/* Fast delivery badge — bottom-left */}
-        {isFastDelivery && !compact && (
+        {/* Delivery badge — bottom-left */}
+        {!compact && (
           <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
             <span className="text-[9px] font-bold text-[#00BCD4] flex items-center gap-0.5">
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -148,8 +149,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           {product.name}
         </h3>
 
-        {/* Pack size */}
-        <p className="text-[11px] text-[#9B8CB5]">{product.unit}</p>
+        {/* Pack size / Variants count */}
+        <p className="text-[11px] text-[#9B8CB5]">
+          {hasVariants ? `${product.variants!.length} options available` : product.unit}
+        </p>
 
         {/* Price row */}
         <div className="flex items-center gap-2 mt-1">
@@ -165,11 +168,11 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Bulk pricing indicator */}
         {isBulk && !compact && product.bulkPrice && (
           <p className="text-[10px] font-semibold text-[#FF9800]">
-            Bulk: ₹{product.bulkPrice.toLocaleString()}/unit (min {product.bulkMinQty} {product.unitCode})
+            Bulk: ₹{product.bulkPrice.toLocaleString()}/unit (min {product.bulkMinQty})
           </p>
         )}
 
-        {/* Genuine + Free delivery row */}
+        {/* Genuine + Free delivery + Cashback row */}
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
           {product.seller?.isVerified && (
             <span className="inline-flex items-center gap-0.5 text-[10px] text-[#00BCD4] font-medium">
@@ -186,6 +189,16 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
               </svg>
               FREE Delivery
+            </span>
+          )}
+          {hasFreeDeliveryThreshold && !compact && (
+            <span className="text-[8px] text-[#9B8CB5]">
+              Free above ₹{product.freeDeliveryThreshold!.toLocaleString()}
+            </span>
+          )}
+          {product.cashbackPercent && product.cashbackPercent > 0 && !compact && (
+            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#E91E63] bg-[#E91E63]/8 px-1.5 py-0.5 rounded-full">
+              {product.cashbackPercent}% Cashback
             </span>
           )}
         </div>

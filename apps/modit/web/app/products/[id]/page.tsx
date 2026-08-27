@@ -23,8 +23,11 @@ import {
   Clock,
   CreditCard,
   ArrowLeft,
+  Palette,
+  Ruler,
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
+import { ShadePicker } from "@/components/shade-picker";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { getProductById, products } from "@/lib/product-data";
@@ -44,6 +47,9 @@ export default function ProductDetailPage({
   const [pincodeChecked, setPincodeChecked] = useState(false);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  const [customColorCode, setCustomColorCode] = useState("");
 
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
@@ -80,6 +86,17 @@ export default function ProductDetailPage({
   const handleCheckDelivery = useCallback(() => {
     if (pincode.length === 6) setPincodeChecked(true);
   }, [pincode]);
+
+  const activeVariant = useMemo(() => {
+    if (!product?.variants || !selectedVariant) return null;
+    return product.variants.find((v) => v.id === selectedVariant) ?? null;
+  }, [product, selectedVariant]);
+
+  const displayPrice = activeVariant?.price ?? product?.price ?? 0;
+  const displayMrp = activeVariant?.mrp ?? product?.mrp ?? 0;
+  const displayUnit = activeVariant?.unit ?? product?.unit ?? "";
+  const displayDiscount = activeVariant?.discount ?? product?.discount ?? 0;
+  const displayStock = activeVariant?.stockLevel ?? product?.stockLevel ?? 0;
 
   if (!product) {
     return (
@@ -195,13 +212,30 @@ export default function ProductDetailPage({
 
           {/* Price Block */}
           <div className="rounded-xl border border-[var(--border)] bg-white p-5">
+            {/* Delivery + Cashback badges */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F9FC] border border-[#00BCD4]/20 px-2.5 py-1 text-[11px] font-bold text-[#00BCD4]">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                60 Min Delivery
+              </span>
+              {product.cashbackPercent && product.cashbackPercent > 0 && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE8F0] border border-[#E91E63]/20 px-2.5 py-1 text-[11px] font-bold text-[#E91E63]">
+                  Assured {product.cashbackPercent}% Cashback
+                </span>
+              )}
+              {product.freeDelivery && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#F0F9E8] border border-[#7CB518]/20 px-2.5 py-1 text-[11px] font-bold text-[#7CB518]">
+                  Free Delivery
+                </span>
+              )}
+            </div>
             <PriceDisplay
-              price={product.price}
-              mrp={product.mrp}
-              discount={product.discount}
-              bulkPrice={product.bulkPrice}
-              bulkLabel={product.bulkLabel}
-              unit={product.unit}
+              price={displayPrice}
+              mrp={displayMrp}
+              discount={displayDiscount}
+              bulkPrice={activeVariant?.bulkPrice ?? product.bulkPrice}
+              bulkLabel={activeVariant ? `Bulk: ₹${activeVariant.bulkPrice?.toLocaleString()} at ${activeVariant.bulkMinQty}+` : product.bulkLabel}
+              unit={displayUnit}
               size="lg"
             />
             <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-muted)] flex-wrap">
@@ -210,16 +244,76 @@ export default function ProductDetailPage({
                 Inclusive of {product.gstCode}
               </span>
               <span>·</span>
-              <span>MOQ: {product.moq} {product.unitCode}</span>
+              <span>MOQ: {product.moq} {activeVariant?.unitCode ?? product.unitCode}</span>
+              {displayStock <= 100 && displayStock > 0 && (
+                <>
+                  <span>·</span>
+                  <span className="text-[#E91E63] font-semibold">Only {displayStock} left</span>
+                </>
+              )}
             </div>
-            {/* B2B info */}
-            {product.bulkPrice && (
+            {/* B2B bulk info */}
+            {(activeVariant?.bulkPrice ?? product.bulkPrice) && (
               <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#FFF3E0] border border-[#FFE0B2] px-3 py-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF9800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <span className="text-[11px] font-semibold text-[#E65100]">Bulk pricing available — {product.bulkLabel || `Min ${product.bulkMinQty} units`}</span>
+                <span className="text-[11px] font-semibold text-[#E65100]">
+                  Bulk pricing — {activeVariant ? `₹${activeVariant.bulkPrice?.toLocaleString()} at ${activeVariant.bulkMinQty}+ units` : product.bulkLabel || `Min ${product.bulkMinQty} units`}
+                </span>
               </div>
             )}
           </div>
+
+          {/* Size Selector */}
+          {product.variants && product.variants.length > 0 && (
+            <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+              <h4 className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)] mb-3">
+                <Ruler className="h-4 w-4 text-[var(--brand)]" />
+                Select Size
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {product.variants.map((variant) => {
+                  const isSelected = selectedVariant === variant.id;
+                  const variantDiscount = variant.mrp > variant.price
+                    ? Math.round(((variant.mrp - variant.price) / variant.mrp) * 100)
+                    : 0;
+                  return (
+                    <button
+                      key={variant.id}
+                      onClick={() => setSelectedVariant(variant.id)}
+                      className={`relative flex flex-col items-center rounded-xl border-2 px-4 py-3 transition-all ${
+                        isSelected
+                          ? "border-[var(--brand)] bg-[var(--brand-50)] shadow-md"
+                          : "border-[var(--border)] bg-white hover:border-[var(--brand-200)]"
+                      }`}
+                    >
+                      <span className={`text-sm font-bold ${isSelected ? "text-[var(--brand)]" : "text-[var(--text-primary)]"}`}>
+                        {variant.label}
+                      </span>
+                      <span className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                        ₹{variant.price.toLocaleString()}
+                      </span>
+                      {variantDiscount > 0 && (
+                        <span className="absolute -top-2 -right-2 rounded-full bg-[#E91E63] px-1.5 py-0.5 text-[8px] font-bold text-white">
+                          {variantDiscount}% off
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Shade/Color Picker — only for paint products with shades */}
+          {product.hasShades && product.shades && product.shades.length > 0 && (
+            <ShadePicker
+              shades={product.shades}
+              selectedShade={selectedShade}
+              onSelectShade={setSelectedShade}
+              customColorCode={customColorCode}
+              onCustomColorCodeChange={setCustomColorCode}
+            />
+          )}
 
           {/* Delivery Check */}
           <div className="rounded-xl border border-[var(--border)] bg-white p-4">
