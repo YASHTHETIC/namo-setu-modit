@@ -218,6 +218,28 @@ export default function ProductDetailPage({
 
           {/* Price Block */}
           <div className="rounded-xl border border-[var(--border)] bg-white p-5">
+            {/* Delivery promise bar */}
+            <div className="rounded-xl bg-gradient-to-r from-[#7CB518]/10 to-[#00BCD4]/10 border border-[#7CB518]/20 p-3 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-[#7CB518] flex items-center justify-center">
+                    <Truck className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-bold text-[#150726]">Delivery in 60 minutes</p>
+                    <p className="text-[10px] text-[#9B8CB5]">Order within <span className="text-[#E91E63] font-bold">47:23</span> for fastest delivery</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-[#9B8CB5]">Tomorrow by</p>
+                  <p className="text-[12px] font-bold text-[#7CB518]">10:00 AM</p>
+                </div>
+              </div>
+              <div className="mt-2 h-1.5 bg-[#E8E0F7] rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-[#7CB518] to-[#00BCD4] rounded-full" style={{ width: "65%" }} />
+              </div>
+            </div>
+
             {/* Delivery + Cashback badges */}
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F9FC] border border-[#00BCD4]/20 px-2.5 py-1 text-[11px] font-bold text-[#00BCD4]">
@@ -344,15 +366,33 @@ export default function ProductDetailPage({
             </div>
             {pincodeChecked && (
               <div className="mt-3 space-y-2">
-                <div className="flex items-center gap-2 text-sm text-emerald-700">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Delivery by <strong>{new Date(Date.now() + product.deliveryDays * 86400000).toLocaleDateString("en-IN", { weekday: "short", month: "short", day: "numeric" })}</strong></span>
-                </div>
-                {product.freeDelivery && (
-                  <div className="flex items-center gap-2 text-xs text-emerald-600">
-                    <Truck className="h-3.5 w-3.5" /> Free delivery on this order
+                <div className="rounded-xl bg-[#F0F9E8] border border-[#7CB518]/20 p-3">
+                  <div className="flex items-center gap-2 text-sm text-[#150726]">
+                    <CheckCircle2 className="h-4 w-4 text-[#7CB518]" />
+                    <span className="font-bold">Delivering to {pincode}</span>
                   </div>
-                )}
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-[#7CB518]/10">
+                      <Truck className="h-4 w-4 text-[#7CB518]" />
+                      <div>
+                        <p className="text-[10px] text-[#9B8CB5]">Express</p>
+                        <p className="text-[11px] font-bold text-[#150726]">60 min</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-[#00BCD4]/10">
+                      <Clock className="h-4 w-4 text-[#00BCD4]" />
+                      <div>
+                        <p className="text-[10px] text-[#9B8CB5]">Scheduled</p>
+                        <p className="text-[11px] font-bold text-[#150726]">Tomorrow</p>
+                      </div>
+                    </div>
+                  </div>
+                  {product.freeDelivery && (
+                    <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#7CB518] font-semibold">
+                      <Truck className="h-3.5 w-3.5" /> Free delivery on this order
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
