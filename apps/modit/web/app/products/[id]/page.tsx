@@ -29,6 +29,7 @@ import {
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
+import { usePincode } from "@/lib/pincode-context";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
@@ -59,6 +60,7 @@ export default function ProductDetailPage({
   }, [product?.id]);
 
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const { setPincode: setContextPincode } = usePincode();
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = product ? isWishlisted(product.id) : false;
 
@@ -91,8 +93,11 @@ export default function ProductDetailPage({
   }, [product, quantity, addItem, selectedVariant, selectedShade]);
 
   const handleCheckDelivery = useCallback(() => {
-    if (pincode.length === 6) setPincodeChecked(true);
-  }, [pincode]);
+    if (pincode.length === 6) {
+      setPincodeChecked(true);
+      setContextPincode(pincode);
+    }
+  }, [pincode, setContextPincode]);
 
   const activeVariant = useMemo(() => {
     if (!product?.variants || !selectedVariant) return null;

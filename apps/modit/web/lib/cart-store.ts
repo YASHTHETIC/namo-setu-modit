@@ -16,6 +16,9 @@ export interface CartItem {
 export interface SavedItem {
   product: Product;
   savedAt: number;
+  variantId?: string;
+  shade?: string;
+  unitPrice?: number;
 }
 
 interface CartState {
@@ -96,7 +99,7 @@ export const useCartStore = create<CartState>()(
                 ? i.product.id === productId && i.variantId === variantId
                 : i.product.id === productId;
               return match
-                ? { ...i, quantity: Math.min(quantity, i.product.stockLevel) }
+                ? { ...i, quantity: Math.min(quantity, i.variantId ? (i.product.variants?.find((v) => v.id === i.variantId)?.stockLevel ?? i.product.stockLevel) : i.product.stockLevel) }
                 : i;
             }),
           };
@@ -113,7 +116,7 @@ export const useCartStore = create<CartState>()(
             items: state.items.filter((i) => i.product.id !== productId),
             savedItems: [
               ...state.savedItems.filter((s) => s.product.id !== productId),
-              { product: item.product, savedAt: Date.now() },
+              { product: item.product, savedAt: Date.now(), variantId: item.variantId, shade: item.shade, unitPrice: item.unitPrice },
             ],
           };
         });
@@ -131,7 +134,7 @@ export const useCartStore = create<CartState>()(
           }
           return {
             savedItems: state.savedItems.filter((s) => s.product.id !== productId),
-            items: [...state.items, { product: saved.product, quantity: 1, addedAt: Date.now() }],
+            items: [...state.items, { product: saved.product, quantity: 1, addedAt: Date.now(), variantId: saved.variantId, shade: saved.shade, unitPrice: saved.unitPrice }],
           };
         });
       },

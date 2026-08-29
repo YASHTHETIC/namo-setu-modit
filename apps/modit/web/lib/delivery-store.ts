@@ -40,11 +40,18 @@ export const useDeliveryStore = create<DeliveryState>()(
       slots: defaultSlots,
       expressMinutes: 60,
 
-      selectSlot: (id) => set({ selectedSlotId: id }),
+      selectSlot: (id) => {
+        const slot = get().slots.find((s) => s.id === id);
+        if (slot && slot.available) {
+          set({ selectedSlotId: id });
+        }
+      },
 
       getSelected: () => {
         const state = get();
-        return state.slots.find((s) => s.id === state.selectedSlotId) ?? state.slots[1];
+        return state.slots.find((s) => s.id === state.selectedSlotId && s.available)
+          ?? state.slots.find((s) => s.available)
+          ?? null;
       },
 
       getExpressSlots: () => get().slots.filter((s) => s.type === "express"),

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOrders } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
-import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, TrendingUp, MapPin, Repeat, Check } from "lucide-react";
+import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check } from "lucide-react";
 
 const fallbackOrders = [
   { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, MapPin, Check, Plus, Package, Truck, Shield, Clock, CheckCircle2, ShoppingCart,
-  Tag, Wallet, Calendar, Zap, X, Edit3, Trash2, ChevronDown, Gift, Repeat
+  ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
+  Tag, Wallet, Calendar, Zap, X, Trash2, Gift, Repeat
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useAddressStore, type Address } from "@/lib/address-store";
@@ -43,8 +43,10 @@ export default function CheckoutPage() {
   const slot = getSlot();
   const deliveryFee = slot?.fee ?? 0;
   const couponDiscount = getDiscount(subtotal);
-  const walletDeduct = useWallet ? Math.min(balance, subtotal + gst + shipping + deliveryFee - couponDiscount) : 0;
-  const total = Math.max(0, subtotal + gst + shipping + deliveryFee - couponDiscount - walletDeduct);
+  const isFreeShipping = appliedCoupon?.discountType === "free_shipping";
+  const effectiveShipping = isFreeShipping ? 0 : shipping;
+  const walletDeduct = useWallet ? Math.min(balance, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount) : 0;
+  const total = Math.max(0, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount - walletDeduct);
   const bestCoupon = getBestCoupon(subtotal);
   const selectedAddr = getSelected();
 
@@ -55,13 +57,14 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePlaceOrder = () => {
-    const id = `ORD-${Date.now().toString(36).toUpperCase()}`;
+  const handlePlaceOrder = (apiOrderId?: string) => {
+    const id = apiOrderId || `ORD-${Date.now().toString(36).toUpperCase()}`;
+    const cartItems = [...items];
+    if (subscribe) {
+      cartItems.forEach((item) => addSubscription(item.product, item.quantity, subscribeFreq, item.variantId));
+    }
     if (useWallet && walletDeduct > 0) deductBalance(walletDeduct, `Order ${id}`);
     addPoints(Math.floor(total / 10), `Points for order ${id}`);
-    if (subscribe) {
-      items.forEach((item) => addSubscription(item.product, item.quantity, subscribeFreq, item.variantId));
-    }
     clearCart();
     setOrderId(id);
     setOrderPlaced(true);
@@ -215,7 +218,7 @@ export default function CheckoutPage() {
                         <input placeholder="State" value={newAddr.state} onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                       </div>
                       <button onClick={() => {
-                        if (newAddr.label && newAddr.name && newAddr.line1 && newAddr.city && newAddr.pincode) {
+                        if (newAddr.label && newAddr.name && newAddr.line1 && newAddr.city && newAddr.state && newAddr.pincode) {
                           addAddress({ ...newAddr, isDefault: addresses.length === 0 });
                           setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
                           setShowAddAddress(false);
@@ -263,7 +266,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Scheduled</p>
+                  <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Standard & Scheduled</p>
                   <div className="grid grid-cols-1 gap-2">
                     {slots.filter((s) => s.type === "scheduled" || s.type === "standard").map((s) => (
                       <button key={s.id} onClick={() => selectSlot(s.id)} className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
@@ -445,6 +448,12 @@ export default function CheckoutPage() {
                     <span className="text-[#150726]">₹{gst.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                   <div className="flex justify-between text-[13px]">
+                    <span className="text-[#9B8CB5]">Shipping</span>
+                    <span className={effectiveShipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
+                      {effectiveShipping === 0 ? "FREE" : `₹${effectiveShipping}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[13px]">
                     <span className="text-[#9B8CB5]">Delivery</span>
                     <span className={deliveryFee === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
                       {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
@@ -475,7 +484,14 @@ export default function CheckoutPage() {
                   onPaymentComplete={handlePlaceOrder}
                 />
               ) : (
-                <button onClick={() => setActiveStep(Math.min(activeStep + 1, 3))} className="w-full py-3 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
+                <button onClick={() => {
+                  if (activeStep === 1 && !selectedAddr) return;
+                  setActiveStep(Math.min(activeStep + 1, 3));
+                }} className={`w-full py-3 rounded-xl text-white text-[14px] font-bold transition-all shadow-lg ${
+                  activeStep === 1 && !selectedAddr
+                    ? "bg-[#9B8CB5] cursor-not-allowed shadow-none"
+                    : "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25"
+                }`}>
                   {activeStep === 1 ? "Continue to Delivery" : "Continue to Payment"}
                 </button>
               )}

@@ -22,11 +22,14 @@ export const useComparisonStore = create<ComparisonState>()(
       maxItems: 4,
 
       addToCompare: (product) => {
-        const state = get();
-        if (state.items.length >= state.maxItems) return false;
-        if (state.items.some((i) => i.id === product.id)) return false;
-        set({ items: [...state.items, product] });
-        return true;
+        let added = false;
+        set((state) => {
+          if (state.items.length >= state.maxItems) return state;
+          if (state.items.some((i) => i.id === product.id)) return state;
+          added = true;
+          return { items: [...state.items, product] };
+        });
+        return added;
       },
 
       removeFromCompare: (productId) => {

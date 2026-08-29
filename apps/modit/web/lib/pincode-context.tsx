@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 
 interface PincodeContextType {
   pincode: string | null;
@@ -11,16 +11,17 @@ interface PincodeContextType {
 const PincodeContext = createContext<PincodeContextType>({
   pincode: null,
   setPincode: () => {},
-  getStock: () => 100,
+  getStock: () => -1,
 });
 
 export function PincodeProvider({ children }: { children: ReactNode }) {
   const [pincode, setPincode] = useState<string | null>(null);
 
-  const getStock = (pincodeStock?: Record<string, number>): number => {
-    if (!pincode || !pincodeStock) return 100;
-    return pincodeStock[pincode] ?? 0;
-  };
+  const getStock = useCallback((pincodeStock?: Record<string, number>): number => {
+    if (!pincode || !pincodeStock) return -1;
+    if (!(pincode in pincodeStock)) return -1;
+    return pincodeStock[pincode];
+  }, [pincode]);
 
   return (
     <PincodeContext.Provider value={{ pincode, setPincode, getStock }}>

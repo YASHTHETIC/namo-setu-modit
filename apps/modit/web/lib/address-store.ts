@@ -77,23 +77,34 @@ export const useAddressStore = create<AddressState>()(
 
       updateAddress: (id, updates) => {
         set((state) => ({
-          addresses: state.addresses.map((a) =>
-            a.id === id ? { ...a, ...updates } : a
-          ),
+          addresses: state.addresses.map((a) => {
+            if (a.id !== id) return a;
+            const updated = { ...a, ...updates };
+            if (updates.isDefault === true) {
+              return updated;
+            }
+            return updated;
+          }).map((a) => {
+            if (updates?.isDefault === true && a.id !== id) {
+              return { ...a, isDefault: false };
+            }
+            return a;
+          }),
         }));
       },
 
       deleteAddress: (id) => {
         set((state) => {
           const filtered = state.addresses.filter((a) => a.id !== id);
-          if (filtered.length > 0 && !filtered.some((a) => a.isDefault)) {
-            filtered[0].isDefault = true;
-          }
+          const hasDefault = filtered.some((a) => a.isDefault);
+          const finalAddresses = !hasDefault && filtered.length > 0
+            ? filtered.map((a, i) => i === 0 ? { ...a, isDefault: true } : a)
+            : filtered;
           return {
-            addresses: filtered,
+            addresses: finalAddresses,
             selectedAddressId:
               state.selectedAddressId === id
-                ? filtered[0]?.id ?? null
+                ? finalAddresses[0]?.id ?? null
                 : state.selectedAddressId,
           };
         });

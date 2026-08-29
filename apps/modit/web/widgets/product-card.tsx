@@ -122,7 +122,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
         {/* Pincode stock indicator */}
         {product.pincodeStock && !compact && (
-          <div className="absolute top-2 left-2 z-10">
+          <div className="absolute bottom-10 left-2 z-10">
             <PincodeStockIndicator pincodeStock={product.pincodeStock} />
           </div>
         )}

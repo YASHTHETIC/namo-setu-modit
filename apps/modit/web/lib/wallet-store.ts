@@ -56,21 +56,22 @@ export const useWalletStore = create<WalletState>()(
       },
 
       deductBalance: (amount, description, orderId) => {
-        const state = get();
-        if (state.balance < amount) return;
-        set({
-          balance: state.balance - amount,
-          transactions: [
-            {
-              id: `t${Date.now()}`,
-              type: "debit",
-              amount,
-              description,
-              orderId,
-              createdAt: Date.now(),
-            },
-            ...state.transactions,
-          ],
+        set((state) => {
+          if (state.balance < amount) return state;
+          return {
+            balance: state.balance - amount,
+            transactions: [
+              {
+                id: `t${Date.now()}`,
+                type: "debit",
+                amount,
+                description,
+                orderId,
+                createdAt: Date.now(),
+              },
+              ...state.transactions,
+            ],
+          };
         });
       },
 

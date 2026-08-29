@@ -13,6 +13,7 @@ import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
+import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { products, searchProducts } from "@/lib/product-data";
@@ -102,7 +103,12 @@ export default function ModitHomePage() {
   const [showSearch, setShowSearch] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [pincode, setPincode] = useState("201301");
+  const { setPincode: setContextPincode } = usePincode();
+  const [pincode, setPincodeLocal] = useState("201301");
+  const setPincode = useCallback((val: string) => {
+    setPincodeLocal(val);
+    if (val.length === 6) setContextPincode(val);
+  }, [setContextPincode]);
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [deliveryPulse, setDeliveryPulse] = useState(true);
@@ -113,6 +119,7 @@ export default function ModitHomePage() {
   const searchResults = useMemo(() => searchQuery.length >= 2 ? searchProducts(searchQuery).slice(0, 8) : [], [searchQuery]);
 
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { setContextPincode("201301"); }, [setContextPincode]);
   useEffect(() => {
     if (showSearch) setTimeout(() => searchInputRef.current?.focus(), 100);
   }, [showSearch]);
@@ -659,53 +666,7 @@ export default function ModitHomePage() {
                 </button>
               </div>
 
-              {/* Trending searches — when empty */}
-              {!searchQuery && (
-                <div className="mt-3 space-y-3">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <p className="text-[11px] font-bold text-white/40 uppercase mb-3 flex items-center gap-1.5">
-                      <TrendingUp className="h-3 w-3" /> Trending
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {["UltraTech Cement", "Asian Paints", "Philips LED", "Kajaria Tiles", "Pipe Fittings", "Waterproofing"].map((term) => (
-                        <button
-                          key={term}
-                          onClick={() => { setSearchQuery(term); setHighlightIdx(-1); }}
-                          className="px-3 py-1.5 rounded-full bg-white/10 text-[11px] font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:text-[#7CB518] border border-white/10 transition-all"
-                        >
-                          {term}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                    <div className="px-4 py-2.5 border-b border-white/5">
-                      <p className="text-[11px] font-bold text-white/40 uppercase">Popular in your area</p>
-                    </div>
-                    {products.slice(0, 4).map((p, idx) => (
-                      <Link
-                        key={p.id}
-                        href={`/products/${p.id}`}
-                        onClick={() => handleSearchSubmit(p.name)}
-                        className={`flex items-center gap-3 px-4 py-3 transition-colors border-b border-white/5 last:border-0 ${
-                          highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"
-                        }`}
-                      >
-                        <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center">
-                          <span className="text-[11px] font-bold text-[#FF9800]">#{idx + 1}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-white truncate">{p.name}</p>
-                          <p className="text-[10px] text-white/40">{p.brand} · ₹{p.price.toLocaleString("en-IN")}</p>
-                        </div>
-                        <ArrowRight className="h-3 w-3 text-white/20" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Autocomplete suggestions — when typing < 2 chars */}
+              {/* Autocomplete suggestions — when typing 1 char */}
               {searchQuery.length === 1 && (
                 <div className="mt-3 bg-white/5 border border-white/10 rounded-xl overflow-hidden">
                   {products

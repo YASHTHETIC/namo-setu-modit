@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, AlertTriangle } from "lucide-react";
+import { MapPin, AlertTriangle, HelpCircle } from "lucide-react";
 import { usePincode } from "@/lib/pincode-context";
 
 interface PincodeStockIndicatorProps {
@@ -13,6 +13,15 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
   if (!pincode || !pincodeStock) return null;
 
   const stock = getStock(pincodeStock);
+
+  if (stock === -1) {
+    return (
+      <div className="flex items-center gap-1 text-[9px] font-bold text-[#9B8CB5] bg-white/90 px-1.5 py-0.5 rounded-full border border-[#DDD6EE]">
+        <HelpCircle className="h-2.5 w-2.5" />
+        <span>Check availability</span>
+      </div>
+    );
+  }
 
   if (stock === 0) {
     return (
