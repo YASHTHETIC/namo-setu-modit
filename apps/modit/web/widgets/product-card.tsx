@@ -2,10 +2,12 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, GitCompareArrows } from "lucide-react";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
+import { useComparisonStore } from "@/lib/comparison-store";
+import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 
 interface ProductCardProps {
   product: Product;
@@ -70,6 +72,18 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     toggleWishlist(product);
   };
 
+  const { addToCompare, removeFromCompare, isInCompare, canAdd } = useComparisonStore();
+  const inCompare = isInCompare(product.id);
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (inCompare) {
+      removeFromCompare(product.id);
+    } else {
+      addToCompare(product);
+    }
+  };
+
   const isBulk = product.bulkMinQty && product.bulkMinQty > 1;
   const isBestseller = product.rating >= 4.5 && product.reviewCount > 50;
   const hasVariants = product.variants && product.variants.length > 0;
@@ -106,6 +120,13 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
 
+        {/* Pincode stock indicator */}
+        {product.pincodeStock && !compact && (
+          <div className="absolute top-2 left-2 z-10">
+            <PincodeStockIndicator pincodeStock={product.pincodeStock} />
+          </div>
+        )}
+
         {/* Wishlist button — top-right */}
         <button
           onClick={handleWishlist}
@@ -114,6 +135,21 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         >
           <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
         </button>
+
+        {/* Compare button — below wishlist */}
+        {!compact && (
+          <button
+            onClick={handleCompare}
+            className={`absolute top-10 right-2 z-10 h-7 w-7 rounded-full flex items-center justify-center transition-all ${
+              inCompare
+                ? "bg-[#2D1B69] text-white"
+                : "bg-white/90 text-[#9B8CB5] hover:bg-[#2D1B69] hover:text-white border border-[#DDD6EE]"
+            }`}
+            aria-label={inCompare ? "Remove from compare" : "Add to compare"}
+          >
+            <GitCompareArrows className="h-3 w-3" />
+          </button>
+        )}
 
         {/* ADD button / Stepper — bottom-right overlapping image */}
         <div className="absolute bottom-2 right-2 z-10">

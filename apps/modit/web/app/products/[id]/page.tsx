@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
+import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
@@ -506,6 +507,11 @@ export default function ProductDetailPage({
         >
           <Zap className="h-5 w-5" /> Buy Now
         </button>
+      </div>
+
+      {/* Out of stock substitutes */}
+      <div className="mt-4">
+        <OutOfStockSubstitutes product={product} />
       </div>
 
       {/* Tabs: Details, Specifications, Delivery */}

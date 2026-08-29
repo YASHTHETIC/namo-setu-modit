@@ -1,4 +1,10 @@
-﻿export interface ProductVariant {
+﻿export interface Seller {
+  name: string;
+  rating: number;
+  isVerified: boolean;
+}
+
+export interface ProductVariant {
   id: string;
   label: string;
   unit: string;
@@ -48,17 +54,19 @@ export interface Product {
   moq: number;
   deliveryDays: number;
   freeDelivery: boolean;
-  seller: { name: string; rating: number; isVerified: boolean };
+  seller: Seller;
   images: string[];
   specifications: Record<string, string>;
   features: string[];
   tags: string[];
   variants?: ProductVariant[];
   shades?: PaintShade[];
-  hasShades?: boolean;
-  deliveryMinutes?: number;
-  freeDeliveryThreshold?: number;
+  pincodeStock?: Record<string, number>;
+  substitutes?: string[];
   cashbackPercent?: number;
+  deliveryMinutes?: number;
+  hasShades?: boolean;
+  freeDeliveryThreshold?: number;
 }
 
 export interface Category {
@@ -120,6 +128,8 @@ export const products: Product[] = [
     tags: ["cement", "ppc", "acc"],
     deliveryMinutes: 60,
     cashbackPercent: 1,
+    pincodeStock: { "110001": 50, "400001": 80, "560001": 30, "600001": 65, "700001": 45 },
+    substitutes: ["cement-ambuja", "cement-ultratech"],
   },
   {
     id: "cement-ambuja", name: "Ambuja Cement 50kg", slug: "ambuja-cement-50kg", sku: "CEM-AMB-50",
@@ -136,6 +146,8 @@ export const products: Product[] = [
     specifications: { "Grade": "PPC", "Weight": "50 kg" },
     features: ["Trusted brand", "ISI marked", "Consistent quality"],
     tags: ["cement", "ppc", "ambuja"],
+    pincodeStock: { "110001": 45, "400001": 70, "560001": 25, "600001": 60, "700001": 50 },
+    substitutes: ["cement-acc", "cement-ultratech"],
   },
   {
     id: "cement-dalmia", name: "Dalmia Cement 50kg", slug: "dalmia-cement-50kg", sku: "CEM-DAL-50",
@@ -252,6 +264,8 @@ export const products: Product[] = [
     tags: ["cement", "opc", "ultratech"],
     deliveryMinutes: 60,
     cashbackPercent: 1,
+    pincodeStock: { "110001": 60, "400001": 85, "560001": 40, "600001": 70, "700001": 55 },
+    substitutes: ["cement-acc", "cement-ambuja"],
   },
   {
     id: "cement-wonder", name: "Wonder Cement 50kg", slug: "wonder-cement-50kg", sku: "CEM-WON-50",

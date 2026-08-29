@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { Providers } from "@/components/providers";
 import { ModitShell } from "@/components/modit-shell";
+import { PincodeProvider } from "@/lib/pincode-context";
 
 import "./globals.css";
 
@@ -45,7 +46,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="antialiased bg-[var(--bg)] text-[var(--text)]">
         <Providers>
-          <ModitShell>{children}</ModitShell>
+          <PincodeProvider>
+            <ModitShell>{children}</ModitShell>
+          </PincodeProvider>
         </Providers>
         <script
           dangerouslySetInnerHTML={{

@@ -26,6 +26,9 @@ import { useCartStore } from "@/lib/cart-store";
 import { categories, products as catalogProducts, searchProducts, type Product } from "@/lib/product-data";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { ComparisonBar } from "@/components/comparison-bar";
+import { ReferralModal } from "@/components/referral-modal";
+import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -39,6 +42,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showReferral, setShowReferral] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
@@ -588,6 +592,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <li><Link href="/auth/register" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Create account</Link></li>
                 <li><Link href="/dashboard/profile" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Profile settings</Link></li>
                 <li><Link href="/payment/history" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Payment history</Link></li>
+                <li><button onClick={() => setShowReferral(true)} style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Refer & Earn ₹200</button></li>
               </ul>
             </div>
           </div>
@@ -602,6 +607,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
 
+      <ReferralModal open={showReferral} onClose={() => setShowReferral(false)} />
+      <PushNotificationPrompt />
+      <ComparisonBar />
       <BottomNav />
     </div>
   );

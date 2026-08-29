@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useOrders } from "@/lib/modit-api";
-import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, TrendingUp, MapPin } from "lucide-react";
+import { useCartStore } from "@/lib/cart-store";
+import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, TrendingUp, MapPin, Repeat, Check } from "lucide-react";
 
 const fallbackOrders = [
   { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
@@ -21,6 +24,9 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
 };
 
 export default function OrdersPage() {
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+  const [reorderedId, setReorderedId] = useState<string | null>(null);
   const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
   const orderList = orders ?? fallbackOrders;
 
@@ -166,13 +172,67 @@ export default function OrdersPage() {
                         </div>
                       )}
 
-                      {/* Delivered checkmark */}
+                      {/* Delivered checkmark + Reorder */}
                       {order.status === "delivered" && (
-                        <div className="mt-3 pt-3 border-t border-[#F0ECF9] flex items-center gap-2">
-                          <div className="h-5 w-5 rounded-full bg-[#F0F9E8] flex items-center justify-center">
-                            <CheckCircle2 className="h-3 w-3 text-[#7CB518]" />
+                        <div className="mt-3 pt-3 border-t border-[#F0ECF9] flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="h-5 w-5 rounded-full bg-[#F0F9E8] flex items-center justify-center">
+                              <CheckCircle2 className="h-3 w-3 text-[#7CB518]" />
+                            </div>
+                            <span className="text-[12px] font-semibold text-[#7CB518]">Delivered successfully</span>
                           </div>
-                          <span className="text-[12px] font-semibold text-[#7CB518]">Delivered successfully</span>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              const fallbackProduct = {
+                                id: `reorder-${order.id}`,
+                                name: `${itemCount} items from ${order.order_number || order.id}`,
+                                slug: "reorder",
+                                sku: "",
+                                description: "",
+                                shortDescription: "",
+                                brand: null,
+                                brandSlug: null,
+                                category: "",
+                                categorySlug: "",
+                                subCategory: null,
+                                subCategorySlug: null,
+                                unit: "unit",
+                                unitCode: "unit",
+                                unitSymbol: null,
+                                price: Math.round(total / itemCount || 1),
+                                mrp: Math.round(total / itemCount || 1),
+                                discount: 0,
+                                bulkPrice: null,
+                                bulkMinQty: null,
+                                bulkLabel: null,
+                                gstRate: 18,
+                                gstCode: "GST18",
+                                rating: 4.5,
+                                reviewCount: 100,
+                                inStock: true,
+                                stockLevel: 100,
+                                moq: 1,
+                                deliveryDays: 1,
+                                freeDelivery: true,
+                                seller: { name: "MODIT", rating: 5, isVerified: true },
+                                images: ["/products/cement/Ambuja Cement.png"],
+                                specifications: {},
+                                features: [],
+                                tags: ["reorder"],
+                              };
+                              addItem(fallbackProduct, 1);
+                              setReorderedId(order.id);
+                              setTimeout(() => router.push("/cart"), 600);
+                            }}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
+                              reorderedId === order.id
+                                ? "bg-[#7CB518] text-white"
+                                : "bg-[#7CB518]/10 text-[#7CB518] hover:bg-[#7CB518] hover:text-white"
+                            }`}
+                          >
+                            {reorderedId === order.id ? <><Check className="h-3 w-3" /> Added</> : <><Repeat className="h-3 w-3" /> Reorder</>}
+                          </button>
                         </div>
                       )}
                     </div>
