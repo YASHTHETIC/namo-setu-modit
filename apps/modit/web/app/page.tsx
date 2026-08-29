@@ -470,7 +470,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <RevealSection>
-        <div className="market-container px-4 py-6 sm:px-6">
+        <div className="market-container px-4 pt-6 pb-28 sm:px-6">
           <div className="rounded-2xl border-2 border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-6 flex flex-col sm:flex-row items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
