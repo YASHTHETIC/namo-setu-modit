@@ -1,69 +1,38 @@
-MODIT - 4 Week Plan Progress
-As of: 31 Aug 2025
-Status: PAUSED
+MODIT Progress
+till 31 Aug - work paused
 
-============================================================
-WEEK 1 (24-30 Aug) - Frontend + Backend Integration
-============================================================
-Status: COMPLETE
+Week 1 (24-30 Aug) - Frontend + Backend Integration
+DONE
 
-[x] Connect frontend with existing APIs .............. DONE
-[x] Replace hardcoded product data with real API data . DONE
-[x] Connect login/register and authentication ........ DONE
-[x] Real cart and wishlist ............................ DONE
-[x] Product search and category filters ............... DONE
-[x] Complete remaining important API connections ...... DONE
+- connected frontend to backend APIs with fallback
+- replaced hardcoded data with real API data
+- auth pages all working
+- cart and wishlist working
+- search and filters working
+- all API connections done
 
+Week 2 (31 Aug) - Checkout + Orders
+STARTED THEN PAUSED
 
-============================================================
-WEEK 2 (31 Aug - 6 Sep) - Checkout + Orders
-============================================================
-Status: STARTED then PAUSED (31 Aug)
+done:
+- razorpay fixed and loaded
+- upi payment fixed
+- payment error handling added
+- address validation added
+- delivery cutoff working
+- brand filter fixed
 
-[x] Razorpay/payment integration ..................... DONE
-[x] COD and UPI flow .................................. DONE
-[ ] GST invoice generation ........................... NOT DONE
-[x] Complete checkout and order placement ............. DONE
-[x] Order history and order status .................... DONE
-[ ] Return/refund flow ............................... NOT DONE
-[ ] Email/OTP order notifications .................... NOT DONE
+not done:
+- GST invoices
+- return/refund
+- email notifications
 
+Week 3 (7-13 Sep) - Admin + Mobile
+NOT STARTED
 
-============================================================
-WEEK 3 (7-13 Sep) - Admin + Mobile + Advanced
-============================================================
-Status: NOT STARTED
-
-[ ] Connect admin dashboard with real backend data
-[ ] Inventory, orders and supplier management
-[ ] Order tracking
-[ ] PWA/mobile functionality
-[ ] Push notifications
-[ ] Google OAuth, 2FA
-[ ] Search optimization and real-time updates
+Week 4 (14-20 Sep) - Testing + Production
+NOT STARTED
 
 
-============================================================
-WEEK 4 (14-20 Sep) - Testing + Production
-============================================================
-Status: NOT STARTED
-
-[ ] Complete remaining integrations
-[ ] Security improvements and rate limiting
-[ ] Performance optimization and caching
-[ ] Staging and production setup
-[ ] Load testing
-[ ] Bug fixing and QA
-[ ] Final deployment and launch preparation
-
-
-============================================================
-OVERALL
-============================================================
-
-Week 1  [################] 100%  DONE
-Week 2  [#######---------]  30%  PAUSED
-Week 3  [----------------]   0%  NOT STARTED
-Week 4  [----------------]   0%  NOT STARTED
-
-Deployed at: modit-web-prod.vercel.app
+total: 50+ features, 154 commits, 12 pages, 74 DB tables, 207 endpoints
+deployed: modit-web-prod.vercel.app

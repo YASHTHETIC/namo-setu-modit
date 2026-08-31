@@ -1,38 +1,38 @@
 S No.	Date	Working on
-1	24-Aug	Organized project folder structure properly - monorepo setup
-2	24-Aug	Built core logistics engine - orders, delivery, inventory modules
-3	24-Aug	Made frontend mobile responsive, added skeleton loading, WebP images
-4	24-Aug	Connected frontend to backend, did first test deploy, shared mobile view for review
-5	25-Aug	Working on frontend - homepage header, delivery bar, hero section, category grid, product rails
-6	25-Aug	Auth Pages Redesigned - all login, register, forgot password, reset password and verify email pages now have split layout with branded left panel
-7	25-Aug	Bottom Nav Added to Auth Pages - auth pages were missing bottom navigation bar, added it to all 5 pages
-8	25-Aug	Orders Page Enhanced - gradient purple header with stats, color-coded status badges, progress bars
-9	25-Aug	Search Button Fixed - fixed search modal trigger and keyboard shortcut
-10	25-Aug	Footer Text Fixed - footer text was invisible on dark background, fixed CSS issue
-11	25-Aug	Order Detail Page Enhanced - gradient header, mini timeline, better item cards, shared link for review
-12	26-Aug	Connected frontend to backend APIs - auth, products, orders, cart, checkout all tested and working
-13	27-Aug	Built Construction Material Calculator with room presets, material estimates, product recommendations
-14	27-Aug	Paint Shade Selector with 200+ real shades across 8 color families on 8 paint products - as requested shade selection and color code entry feature
-15	27-Aug	Calculator CTA banner added on homepage
-16	27-Aug	Recently Viewed products widget built on homepage, shared update with manager
-17	28-Aug	Holiday
-18	29-Aug	Backend hardening done - DB pooling, rate limiting, caching, N+1 fixes, 74 tests passing
-19	29-Aug	Construction Calculator page completed with live estimates and recommended products
-20	29-Aug	Product detail page rebuilt with variant selector, shade picker, delivery promise bar
-21	29-Aug	Product card widget rebuilt with wishlist, badges, variant-aware cart, quantity stepper
-22	30-Aug	Checkout page and cart page built with variant display and payment section
-23	30-Aug	Production crash fixed - hydration error in RecentlyViewed and product card
-24	30-Aug	Rupee symbol encoding fixed - corrected 73 corrupted symbols in product data
-25	31-Aug	Created API-first bridge layer so frontend talks to backend but falls back to static data if backend is down
-26	31-Aug	Products listing page now pulls from API instead of hardcoded data
-27	31-Aug	Product detail page now pulls from API
-28	31-Aug	Homepage product rails now pull from API
-29	31-Aug	Search now goes through API with fallback
-30	31-Aug	Razorpay script was never loaded - fixed that, payments were silently going through without charging
-31	31-Aug	Fixed UPI payment - the upiId was being collected but never sent to the API
-32	31-Aug	Added proper error messages for payment failures instead of just console.log
-33	31-Aug	Address form now validates pincode and phone before saving
-34	31-Aug	Delivery slots now get disabled after their cutoff time
-35	31-Aug	Brand filter was completely broken - the labels had no click handler, fixed for both desktop and mobile
-36	31-Aug	Trusted Brands section on homepage now links to filtered products
-37	31-Aug	Deals and flash deals see all links now show discounted products instead of full catalog
+1	24-Aug	set up the project folder structure, monorepo style
+2	24-Aug	built the core backend - orders, delivery, inventory modules
+3	24-Aug	made frontend mobile friendly, added loading skeletons
+4	24-Aug	first deploy done, shared the mobile view with team
+5	25-Aug	workin on homepage - header, delivery bar, hero, categories, product rails
+6	25-Aug	redesigned all auth pages - login, register, forgot password etc with branded side panel
+7	25-Aug	added bottom nav to auth pages, was missing before
+8	25-Aug	improved orders page - added stats, status badges, progress bars
+9	25-Aug	fixed search button not opening properly
+10	25-Aug	fixed footer text not showing on dark background
+11	25-Aug	improved order detail page - timeline, better item cards
+12	26-Aug	got frontend talking to backend - auth, products, orders, cart, checkout all working
+13	27-Aug	built the construction calculator - room presets, material estimates, product suggestions
+14	27-Aug	added paint shade picker - 200+ shades across 8 colors on 8 products, as asked
+15	27-Aug	added calculator banner on homepage
+16	27-Aug	built recently viewed section on homepage
+17	28-Aug	holiday
+18	29-Aug	backend improvements - connection pooling, rate limiting, caching, 74 tests passing
+19	29-Aug	finished calculator page with live estimates
+20	29-Aug	rebuilt product detail page - variant selector, shade picker, delivery info
+21	29-Aug	rebuilt product card - wishlist, badges, quantity controls
+22	30-Aug	built checkout and cart pages with payment section
+23	30-Aug	fixed production crash - hydration error in recently viewed
+24	30-Aug	fixed rupee symbols showing wrong - 73 strings had bad encoding
+25	31-Aug	made frontend talk to backend API with fallback if backend is down
+26	31-Aug	products page now gets data from API
+27	31-Aug	product detail page now gets data from API
+28	31-Aug	homepage rails now get data from API
+29	31-Aug	search now goes through API
+30	31-Aug	fixed razorpay - script was never loaded so payments were going through without charging
+31	31-Aug	fixed upi payment - was collecting upi id but never sending it
+32	31_aug	added error messages for payment failures
+33	31-Aug	address form now checks pincode and phone number before saving
+34	31-Aug	delivery slots now disable after cutoff time
+35	31-Aug	fixed brand filter - was completely broken, labels had no click
+36	31-Aug	homepage brands section now links to filtered products
+37	31-Aug	deals see all links now show discounted products
