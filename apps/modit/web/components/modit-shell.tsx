@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 
 import { useCartStore } from "@/lib/cart-store";
-import { categories, products as catalogProducts, searchProducts, type Product } from "@/lib/product-data";
+import { categories, type Product } from "@/lib/product-data";
+import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
@@ -37,12 +38,16 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const isAuth = pathname.startsWith("/auth");
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showSearch, setShowSearch] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showReferral, setShowReferral] = useState(false);
+
+  const { data: apiSearchResults = [] } = useSearchProducts(searchQuery);
+  const searchResults = apiSearchResults as Product[];
+  const { data: apiCategories = [] } = useCategories();
+  const categoriesList = (apiCategories.length > 0 ? apiCategories : categories) as typeof categories;
 
   const searchRef = useRef<HTMLDivElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
@@ -53,20 +58,17 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
   const megaMenuItems = useMemo(
     () =>
-      categories.slice(0, 10).map((category) => ({
+      categoriesList.slice(0, 10).map((category) => ({
         ...category,
-        image: catalogProducts.find((product) => product.categorySlug === category.slug)?.images?.[0],
+        image: undefined,
       })),
-    []
+    [categoriesList]
   );
 
   useEffect(() => {
     if (searchQuery.length >= 2) {
-      const results = searchProducts(searchQuery).slice(0, 6);
-      setSearchResults(results);
-      setShowSearch(results.length > 0);
+      setShowSearch(true);
     } else {
-      setSearchResults([]);
       setShowSearch(false);
     }
   }, [searchQuery]);

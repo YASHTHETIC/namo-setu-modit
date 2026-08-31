@@ -25,7 +25,7 @@ import {
 import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
-import { products, categories, type Product } from "@/lib/product-data";
+import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -49,6 +49,14 @@ function ProductsContent() {
   const [search, setSearch] = useState(searchParams.get("search") || searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
 
+  const { data: apiProducts = [] } = useProducts({
+    search: search || undefined,
+    category_id: selectedCategory || undefined,
+  });
+  const { data: apiCategories = [] } = useCategories();
+  const products = apiProducts as Product[];
+  const categories = apiCategories as { name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
+
   useEffect(() => {
     setSelectedCategory(searchParams.get("category") || "");
     setSearch(searchParams.get("search") || searchParams.get("q") || "");
@@ -65,7 +73,7 @@ function ProductsContent() {
   const allBrands = useMemo(() => {
     const brandSet = new Set(products.map((p) => p.brand).filter(Boolean) as string[]);
     return Array.from(brandSet).sort();
-  }, []);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];

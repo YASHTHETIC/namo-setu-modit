@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Zap, Clock, ArrowRight, Flame } from "lucide-react";
-import { products } from "@/lib/product-data";
+import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
 
 function Countdown({ target }: { target: number }) {
@@ -31,8 +31,10 @@ function Countdown({ target }: { target: number }) {
 export function FlashDeals() {
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
+  const { data: allProducts = [] } = useProducts({});
+  const allProductsList = allProducts as Product[];
 
-  const flashProducts = products
+  const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)
     .sort((a, b) => b.discount - a.discount)
     .slice(0, 6);

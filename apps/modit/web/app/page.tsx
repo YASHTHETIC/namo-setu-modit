@@ -16,7 +16,7 @@ import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
-import { products, searchProducts } from "@/lib/product-data";
+import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
 /* ── Scroll-reveal hook ──────────────────────────────────────────── */
 function useScrollReveal(threshold = 0.15) {
@@ -109,6 +109,10 @@ export default function ModitHomePage() {
     setPincodeLocal(val);
     if (val.length === 6) setContextPincode(val);
   }, [setContextPincode]);
+
+  const { data: allProducts = [] } = useProducts({});
+  const products = allProducts as Product[];
+  const { data: searchResults = [] } = useSearchProducts(searchQuery);
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [deliveryPulse, setDeliveryPulse] = useState(true);
@@ -116,7 +120,6 @@ export default function ModitHomePage() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchResults = useMemo(() => searchQuery.length >= 2 ? searchProducts(searchQuery).slice(0, 8) : [], [searchQuery]);
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => { setContextPincode("201301"); }, [setContextPincode]);

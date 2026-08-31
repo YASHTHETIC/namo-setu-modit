@@ -33,7 +33,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
-import { getProductById, products } from "@/lib/product-data";
+import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
 
 export default function ProductDetailPage({
   params,
@@ -41,7 +41,7 @@ export default function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const product = getProductById(id);
+  const { data: product, isLoading } = useProduct(id);
   const addItem = useCartStore((s) => s.addItem);
   const addRecentlyViewed = useRecentlyViewed((s) => s.addProduct);
 
@@ -64,20 +64,23 @@ export default function ProductDetailPage({
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = product ? isWishlisted(product.id) : false;
 
+  const { data: allProducts = [] } = useProducts({});
+  const allProductsList = allProducts as Product[];
+
   const relatedProducts = useMemo(() => {
     if (!product) return [];
-    return products
+    return allProductsList
       .filter((p) => p.categorySlug === product.categorySlug && p.id !== product.id)
       .slice(0, 6);
-  }, [product]);
+  }, [product, allProductsList]);
 
   const frequentlyBought = useMemo(() => {
     if (!product) return [];
-    return products
+    return allProductsList
       .filter((p) => p.categorySlug !== product.categorySlug && p.inStock)
       .sort(() => Math.random() - 0.5)
       .slice(0, 4);
-  }, [product]);
+  }, [product, allProductsList]);
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
