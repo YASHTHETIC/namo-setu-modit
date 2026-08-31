@@ -106,7 +106,7 @@ export function FlashDeals() {
 
         {/* Footer */}
         <div className="p-3 border-t border-white/10 text-center">
-          <Link href="/products" className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#E91E63] hover:text-white transition-colors">
+          <Link href="/products?sort=discount" className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#E91E63] hover:text-white transition-colors">
             View all deals <ArrowRight className="h-3 w-3" />
           </Link>
         </div>

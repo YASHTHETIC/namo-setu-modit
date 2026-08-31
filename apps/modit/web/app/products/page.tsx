@@ -60,12 +60,14 @@ function ProductsContent() {
   useEffect(() => {
     setSelectedCategory(searchParams.get("category") || "");
     setSearch(searchParams.get("search") || searchParams.get("q") || "");
+    const urlSort = searchParams.get("sort") as SortOption;
+    if (urlSort) setSort(urlSort);
   }, [searchParams]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [minRating, setMinRating] = useState(0);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [sort, setSort] = useState<SortOption>("relevance");
+  const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "relevance");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -329,7 +331,7 @@ function ProductsContent() {
                     {allBrands.map((brand) => {
                       const isSelected = selectedBrands.includes(brand);
                       return (
-                        <label key={brand} className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 transition-all hover:bg-white/80">
+                        <label key={brand} onClick={() => toggleBrand(brand)} className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 transition-all hover:bg-white/80">
                           <div
                             className="h-4 w-4 rounded border-2 flex items-center justify-center transition-all flex-shrink-0"
                             style={{
@@ -639,7 +641,7 @@ function ProductsContent() {
                   {allBrands.map((brand) => {
                     const isSelected = selectedBrands.includes(brand);
                     return (
-                      <label key={brand} className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 transition-all hover:bg-[#F0ECF9]">
+                      <label key={brand} onClick={() => toggleBrand(brand)} className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 transition-all hover:bg-[#F0ECF9]">
                         <div className="h-4 w-4 rounded border-2 flex items-center justify-center transition-all flex-shrink-0" style={{ borderColor: isSelected ? "#2D1B69" : "#D1D5DB", background: isSelected ? "#2D1B69" : "white" }}>
                           {isSelected && <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                         </div>

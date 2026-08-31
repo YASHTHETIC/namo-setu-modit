@@ -384,7 +384,7 @@ export default function ModitHomePage() {
           <ProductRail
             title="Deals of the Day"
             products={discountedProducts}
-            seeAllHref="/products"
+            seeAllHref="/products?sort=discount"
             accentColor="pink"
           />
         </RevealSection>
@@ -456,11 +456,11 @@ export default function ModitHomePage() {
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
             {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
-              <div key={brand} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
+              <Link key={brand} href={`/products?search=${encodeURIComponent(brand)}`} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
                   <span className="text-[11px] font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
