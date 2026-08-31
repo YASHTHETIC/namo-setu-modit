@@ -57,21 +57,21 @@ export default function WishlistPage() {
   return (
     <div className="mx-auto max-w-[1400px] py-4 sm:px-6">
       {/* Breadcrumb */}
-      <div className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-        <Link href="/" className="hover:text-[var(--brand)]">Home</Link>
+      <div className="mb-4 flex items-center gap-2 text-xs text-[#9B8CB5]">
+        <Link href="/" className="hover:text-[#2D1B69]">Home</Link>
         <span>/</span>
-        <span className="font-medium text-[var(--text-primary)]">Wishlist</span>
+        <span className="font-medium text-[#150726]">Wishlist</span>
       </div>
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">My Wishlist</h1>
-          <p className="text-sm text-[var(--text-muted)] mt-1">{items.length} item{items.length !== 1 ? "s" : ""} saved</p>
+          <h1 className="text-2xl font-bold text-[#150726]">My Wishlist</h1>
+          <p className="text-sm text-[#9B8CB5] mt-1">{items.length} item{items.length !== 1 ? "s" : ""} saved</p>
         </div>
         {items.length > 1 && (
           <button
             onClick={clearWishlist}
-            className="text-sm font-medium text-[var(--danger)] hover:underline flex items-center gap-1.5"
+            className="text-sm font-medium text-[#E91E63] hover:underline flex items-center gap-1.5"
           >
             <Trash2 className="h-4 w-4" /> Clear All
           </button>
@@ -82,10 +82,10 @@ export default function WishlistPage() {
         {items.map((product) => (
           <div
             key={product.id}
-            className="group rounded-xl border border-[var(--border)] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+            className="group rounded-xl border border-[#DDD6EE] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
           >
             {/* Image */}
-            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[var(--brand-50)] via-[var(--brand-100)] to-[var(--brand-50)]">
+            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#F0ECF9] via-[#E8E0F7] to-[#F0ECF9]">
               <Link href={`/products/${product.id}`} className="absolute inset-0 z-[1]">
                 {product.images[0] ? (
                   <img
@@ -95,7 +95,7 @@ export default function WishlistPage() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
-                    <Package className="h-16 w-16 text-[var(--brand)]/20" />
+                    <Package className="h-16 w-16 text-[#2D1B69]/20" />
                   </div>
                 )}
               </Link>
@@ -112,7 +112,7 @@ export default function WishlistPage() {
                 </span>
               )}
               {product.seller.isVerified && (
-                <span className="absolute bottom-2 left-2 z-[2] rounded-lg bg-[var(--success-light)] px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
+                <span className="absolute bottom-2 left-2 z-[2] rounded-lg bg-[#7CB518]/10 px-2 py-0.5 text-[10px] font-bold text-[#7CB518]">
                   <CheckCircle className="mr-0.5 inline h-2.5 w-2.5" /> Verified
                 </span>
               )}
@@ -121,29 +121,29 @@ export default function WishlistPage() {
             {/* Info */}
             <div className="p-4">
               {product.brand && (
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--brand)]">{product.brand}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#2D1B69]">{product.brand}</p>
               )}
               <Link href={`/products/${product.id}`}>
-                <h3 className="mt-1 text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors">
+                <h3 className="mt-1 text-sm font-bold text-[#150726] line-clamp-2 leading-tight hover:text-[#2D1B69] transition-colors">
                   {product.name}
                 </h3>
               </Link>
 
               <div className="mt-2 flex items-center gap-2">
-                <div className="flex items-center gap-0.5 rounded bg-[var(--brand)]/10 px-1.5 py-0.5">
-                  <span className="text-xs font-bold text-[var(--brand)]">{product.rating}</span>
-                  <Star className="h-2.5 w-2.5 fill-[var(--brand)] text-[var(--brand)]" />
+                <div className="flex items-center gap-0.5 rounded bg-[#2D1B69]/10 px-1.5 py-0.5">
+                  <span className="text-xs font-bold text-[#2D1B69]">{product.rating}</span>
+                  <Star className="h-2.5 w-2.5 fill-[#2D1B69] text-[#2D1B69]" />
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)]">({product.reviewCount.toLocaleString()})</span>
+                <span className="text-[10px] text-[#9B8CB5]">({product.reviewCount.toLocaleString()})</span>
               </div>
 
               <div className="mt-3">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-xl font-extrabold text-[var(--text-primary)]">
+                  <span className="text-xl font-extrabold text-[#150726]">
                     ₹{product.price.toLocaleString()}
                   </span>
                   {product.mrp > product.price && (
-                    <span className="text-xs text-[var(--text-muted)] line-through">
+                    <span className="text-xs text-[#9B8CB5] line-through">
                       ₹{product.mrp.toLocaleString()}
                     </span>
                   )}
@@ -153,16 +153,16 @@ export default function WishlistPage() {
                 )}
               </div>
 
-              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--text-muted)]">
+              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#9B8CB5]">
                 <Truck className="h-3 w-3" />
-                <span className="font-medium text-[var(--success)]">Free delivery</span>
+                <span className="font-medium text-[#7CB518]">Free delivery</span>
                 <span>· {product.deliveryDays} day{product.deliveryDays > 1 ? "s" : ""}</span>
               </div>
 
-              <p className="mt-1.5 text-[10px] text-[var(--text-muted)] flex items-center gap-1">
+              <p className="mt-1.5 text-[10px] text-[#9B8CB5] flex items-center gap-1">
                 <Building2 className="h-3 w-3" /> {product.seller.name}
                 {product.seller.isVerified && (
-                  <span className="ml-1 inline-flex items-center gap-0.5 text-[var(--success)] font-semibold">
+                  <span className="ml-1 inline-flex items-center gap-0.5 text-[#7CB518] font-semibold">
                     <CheckCircle className="h-2.5 w-2.5" /> Verified
                   </span>
                 )}
@@ -173,8 +173,8 @@ export default function WishlistPage() {
                   onClick={() => handleAddToCart(product)}
                   className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-[11px] font-semibold transition-all ${
                     addedId === product.id
-                      ? "bg-[var(--success)] text-white"
-                      : "bg-[var(--brand)] text-white hover:bg-[var(--brand-hover)]"
+                      ? "bg-[#7CB518] text-white"
+                      : "bg-[#2D1B69] text-white hover:bg-[#1E1245]"
                   }`}
                 >
                   {addedId === product.id ? (
@@ -187,7 +187,7 @@ export default function WishlistPage() {
                 </button>
                 <button
                   onClick={() => handleBuyNow(product)}
-                  className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-[11px] font-semibold border border-[var(--border)] text-[var(--text)] hover:bg-gray-50 transition-all"
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-[11px] font-semibold border border-[#DDD6EE] text-[#150726] hover:bg-gray-50 transition-all"
                 >
                   Buy Now
                 </button>
