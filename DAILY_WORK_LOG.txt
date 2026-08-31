@@ -31,25 +31,21 @@ S No.	Date	Working on
 30	30-Aug	Checkout page and cart page built with variant display and payment section
 31	30-Aug	Production crash fixed - hydration error in RecentlyViewed and product card
 32	30-Aug	Rupee symbol encoding fixed - corrected 73 corrupted symbols in product data
-33	31-Aug	Working on checkout 3-step flow with address, delivery and payment steps
-34	31-Aug	Building address management with add, delete, set default functionality
-35	1-Sep	Building delivery time slots - express, standard, scheduled options
-36	1-Sep	Building coupon and promo code system with 7 demo codes
-37	2-Sep	Building loyalty wallet with points, balance and transaction history
-38	2-Sep	Building recurring order subscriptions with weekly, biweekly, monthly options
-39	3-Sep	Building flash deals section with countdown timers on homepage
-40	3-Sep	Building product comparison page for side-by-side comparison
-41	4-Sep	Building smart search with trending searches and autocomplete
-42	4-Sep	Building pincode stock availability indicator on product cards
-43	5-Sep	Building out-of-stock substitutes on product detail page
-44	5-Sep	Building referral program modal - invite and earn feature
-45	6-Sep	Building push notification prompt and service worker handlers
-46	6-Sep	Building quick reorder button on delivered orders
-47	7-Sep	Building live tracking bar and delivery rating feature
-48	7-Sep	Full platform audit done, fixing critical bugs found
-49	8-Sep	Working on Razorpay payment integration and UPI flow
-50	8-Sep	Final testing, cross-browser check, performance optimization, deployment
-51	31-Aug	Fixed brand filter not working on desktop and mobile - labels had no onClick handler
-52	31-Aug	Fixed all See All links across pages - Trusted Brands clickable, Deals show discounted products
-53	31-Aug	Added sort=discount URL param to products page for deal filtering
-54	31-Aug	Week 1 report created - all frontend+backend integration tasks completed
+33	31-Aug	Created API-first bridge layer so frontend talks to backend but falls back to static data if backend is down
+34	31-Aug	Products listing page now pulls from API instead of hardcoded data
+35	31-Aug	Product detail page now pulls from API
+36	31-Aug	Homepage product rails now pull from API
+37	31-Aug	Search now goes through API with fallback
+38	31-Aug	Flash deals component updated to use API
+39	31-Aug	Shell search updated to use API hooks
+40	31-Aug	Razorpay script was never loaded - fixed that, payments were silently going through without charging
+41	31-Aug	Fixed UPI payment - the upiId was being collected but never sent to the API
+42	31-Aug	Added proper error messages for payment failures instead of just console.log
+43	31-Aug	Added toast notifications for payment, coupon and address actions
+44	31-Aug	Address form now validates pincode (6 digits) and phone (10 digits) before saving
+45	31-Aug	Delivery slots now get disabled after their cutoff time
+46	31-Aug	Coupon usage counter now actually increments when applied
+47	31-Aug	Coupon gets cleared after order is placed so it cant be reused
+48	31-Aug	Brand filter was completely broken - the labels had no click handler, fixed for both desktop and mobile
+49	31-Aug	Trusted Brands section on homepage was just show pieces, now they actually link to filtered products
+50	31-Aug	Deals and flash deals "see all" links now show discounted products instead of full catalog

@@ -1,0 +1,98 @@
+MODIT - Weekly Report
+Week: 1 (24 Aug - 30 Aug)
+Status: Done
+
+Hey, so here's what I got done this week. The main goal was to connect the frontend with the backend APIs and replace all the hardcoded stuff with real data. Got most of it done, a few things carried over to next week.
+
+---
+
+
+WHAT GOT DONE THIS WEEK:
+
+1. Monorepo setup
+   - Organized the whole project into a proper monorepo structure
+   - apps/modit/web for frontend, packages/ui for shared components, packages/database for backend
+   - Was messy before, now its clean
+
+2. Backend hardening
+   - Added DB connection pooling so it doesnt crash under load
+   - Rate limiting on all endpoints
+   - GZip compression enabled
+   - Caching layer added
+   - Fixed N+1 query issues
+   - 74 tests all passing now
+
+3. Frontend pages built
+   - Homepage - hero, categories, 5 product rails, feature bar, recently viewed
+   - Auth pages - all 5 pages (login, register, forgot/reset password, verify email) with split layout
+   - Orders page - gradient header, stats, status badges, progress bars
+   - Order detail - timeline, item cards, live tracking placeholder
+   - Calculator - room presets, material estimates, product recommendations
+   - Product detail - variant selector, shade picker (200+ shades), delivery promise
+   - Cart and checkout - variant display, payment section
+
+4. API connection done
+   - Created api-hooks.ts bridge layer - tries backend first, falls back to static data
+   - Products, categories, search all go through API now
+   - Auth pages connected to backend
+   - All consumer pages API-ready
+
+5. Paint shade feature
+   - 200+ real paint shades across 8 color families
+   - Added to 8 paint products
+   - Shade picker on product detail page
+   - Color code entry feature as requested
+
+6. Bug fixes
+   - Hydration crash in RecentlyViewed - fixed with mounted guard
+   - Rupee symbols were corrupted (73 strings had wrong encoding) - fixed all
+   - Product image paths corrected
+   - Search modal keyboard shortcut fixed
+   - Footer text was invisible on dark background - fixed
+
+7. Backend tested
+   - All APIs connected and tested - auth, products, orders, cart, checkout
+   - First deploy done on Vercel
+   - Shared mobile view for review
+
+
+WHAT DIDNT GET DONE / CARRIED OVER:
+
+- Checkout flow is basic - need to add address validation, delivery cutoff, coupon cleanup
+- Payment section is just UI - Razorpay script was never loaded
+- Brand filter was broken (found later)
+- Some see all links were just going to unfiltered products
+
+
+DAILY BREAKDOWN:
+
+24 Aug - Set up monorepo, built core logistics engine, made frontend responsive, first deploy
+25 Aug - Homepage, auth pages, orders page, search fix, footer fix, order detail
+26 Aug - Connected frontend to backend APIs - everything tested and working
+27 Aug - Calculator, paint shades (200+), recently viewed widget
+28 Aug - Holiday
+29 Aug - Backend hardening (74 tests), calculator page, product detail rebuild, product card rebuild
+30 Aug - Checkout/cart pages, hydration fix, rupee symbol fix
+
+
+TOOLS USED:
+- Next.js 15 with App Router
+- Tailwind CSS
+- FastAPI (Python) backend
+- PostgreSQL database
+- Zustand for state management
+- React Query for API calls
+- Razorpay for payments
+- Deployed on Vercel
+
+
+NEXT WEEK (Week 2 - Checkout + Orders):
+
+Main things to tackle:
+- Fix the checkout flow properly - address validation, delivery slots, coupon system
+- Get Razorpay actually working (script was never loaded)
+- COD and UPI payment flows
+- Order history and status tracking
+- Maybe start on return/refund if time permits
+
+---
