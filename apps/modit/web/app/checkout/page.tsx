@@ -12,6 +12,7 @@ import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
 import { useWalletStore } from "@/lib/wallet-store";
 import { useSubscriptionStore } from "@/lib/subscription-store";
+import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
 
 export default function CheckoutPage() {
@@ -26,6 +27,7 @@ export default function CheckoutPage() {
   const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon } = useCouponStore();
   const { balance, points, addPoints, deductBalance } = useWalletStore();
   const { addSubscription } = useSubscriptionStore();
+  const toast = useToast();
 
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -53,7 +55,12 @@ export default function CheckoutPage() {
 
   const handleApplyCoupon = () => {
     if (couponInput.trim()) {
-      applyCoupon(couponInput.trim().toUpperCase(), subtotal);
+      const result = applyCoupon(couponInput.trim().toUpperCase(), subtotal);
+      if (result.success) {
+        toast.success("Coupon applied!", result.message);
+      } else {
+        toast.error("Coupon failed", result.message);
+      }
       setCouponInput("");
     }
   };
@@ -235,6 +242,7 @@ export default function CheckoutPage() {
                         }
                         setAddressError("");
                         addAddress({ ...newAddr, isDefault: addresses.length === 0 });
+                        toast.success("Address saved!", `${newAddr.label} added successfully`);
                         setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
                         setShowAddAddress(false);
                       }} className="w-full py-2 rounded-lg bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] transition-all">
@@ -361,7 +369,7 @@ export default function CheckoutPage() {
                       </div>
                       {couponError && <p className="text-[11px] text-red-500 mt-2">{couponError}</p>}
                       {bestCoupon && (
-                        <button onClick={() => { applyCoupon(bestCoupon.code, subtotal); }} className="mt-2 w-full flex items-center gap-2 p-2 rounded-lg bg-[#E91E63]/5 border border-[#E91E63]/20 text-left hover:bg-[#E91E63]/10 transition-all">
+                        <button onClick={() => { applyCoupon(bestCoupon.code, subtotal); toast.success("Coupon applied!", `Best offer ${bestCoupon.code} applied`); }} className="mt-2 w-full flex items-center gap-2 p-2 rounded-lg bg-[#E91E63]/5 border border-[#E91E63]/20 text-left hover:bg-[#E91E63]/10 transition-all">
                           <Gift className="h-4 w-4 text-[#E91E63]" />
                           <div>
                             <span className="text-[11px] font-bold text-[#E91E63]">Best offer: {bestCoupon.code}</span>

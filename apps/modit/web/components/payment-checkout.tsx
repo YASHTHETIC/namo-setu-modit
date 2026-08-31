@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { placeOrder } from "@/lib/hybrid-api";
+import { useToast } from "@foundation/ui";
 import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone } from "lucide-react";
 
 declare global {
@@ -19,6 +20,7 @@ interface PaymentProps {
 export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
+  const toast = useToast();
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi">("razorpay");
   const [processing, setProcessing] = useState(false);
   const [upiId, setUpiId] = useState("");
@@ -53,6 +55,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
           order_id: result.orderId,
           handler: function (response: any) {
             clearCart();
+            toast.success("Payment successful!", `Order ${result.orderId} confirmed`);
             onPaymentComplete(result.orderId!);
           },
           prefill: {
@@ -74,6 +77,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
           const rzp = new window.Razorpay(options);
           rzp.on("payment.failed", function () {
             setError("Payment failed. Please try again.");
+            toast.error("Payment failed", "Please try again or use a different method");
             setProcessing(false);
           });
           rzp.open();
@@ -105,13 +109,16 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
       });
       if (result.success && result.orderId) {
         clearCart();
+        toast.success("Order placed!", `Order ${result.orderId} confirmed — pay on delivery`);
         onPaymentComplete(result.orderId);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
+        toast.error("Order failed", result.error || "Please try again");
         setProcessing(false);
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong", "Please try again");
       setProcessing(false);
     }
   };
@@ -135,13 +142,16 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
       });
       if (result.success && result.orderId) {
         clearCart();
+        toast.success("Order placed!", `Order ${result.orderId} confirmed — UPI payment pending`);
         onPaymentComplete(result.orderId);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
+        toast.error("Order failed", result.error || "Please try again");
         setProcessing(false);
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong", "Please try again");
       setProcessing(false);
     }
   };
