@@ -1,0 +1,85 @@
+S No.	Date	Week	Status	Working on
+1	24-Aug	Week 1	DONE	Organized project folder structure - monorepo setup with apps/modit/web, packages/ui, packages/database
+2	24-Aug	Week 1	DONE	Built core logistics engine - orders, delivery, inventory modules in FastAPI backend
+3	24-Aug	Week 1	DONE	Made frontend mobile responsive, added skeleton loading, WebP image support
+4	24-Aug	Week 1	DONE	Connected frontend to backend, did first test deploy on Vercel, shared mobile view for review
+5	25-Aug	Week 1	DONE	Homepage built - header, delivery bar, hero section, category grid, 5 product rails, feature bar
+6	25-Aug	Week 1	DONE	Auth Pages Redesigned - all 5 pages (login, register, forgot/reset password, verify email) with split layout branded left panel
+7	25-Aug	Week 1	DONE	Bottom Nav Added to all Auth Pages - auth pages were missing bottom navigation bar
+8	25-Aug	Week 1	DONE	Orders Page Enhanced - gradient purple header with stats, color-coded status badges, progress bars
+9	25-Aug	Week 1	DONE	Search Button Fixed - fixed search modal trigger and keyboard shortcut
+10	25-Aug	Week 1	DONE	Footer Text Fixed - footer text was invisible on dark background, fixed CSS issue
+11	25-Aug	Week 1	DONE	Order Detail Page Enhanced - gradient header, mini timeline, better item cards
+12	26-Aug	Week 1	DONE	Connected frontend to backend APIs - auth, products, orders, cart, checkout all tested and working
+13	27-Aug	Week 1	DONE	Built Construction Material Calculator with room presets, material estimates, product recommendations
+14	27-Aug	Week 1	DONE	Paint Shade Selector - 200+ real shades across 8 color families on 8 paint products
+15	27-Aug	Week 1	DONE	Calculator CTA banner added on homepage
+16	27-Aug	Week 1	DONE	Recently Viewed products widget built on homepage
+17	28-Aug	Week 1	DONE	Holiday
+18	29-Aug	Week 1	DONE	Backend hardening - DB pooling, rate limiting, GZip compression, caching, N+1 query fixes, 74 tests passing
+19	29-Aug	Week 1	DONE	Construction Calculator page completed with live material estimates and recommended products
+20	29-Aug	Week 1	DONE	Product detail page rebuilt - variant selector, shade picker, delivery promise bar, badges
+21	29-Aug	Week 1	DONE	Product card widget rebuilt - wishlist, badges, variant-aware cart, quantity stepper
+22	30-Aug	Week 1	DONE	Checkout page and cart page built with variant display and payment section
+23	30-Aug	Week 1	DONE	Production crash fixed - hydration error in RecentlyViewed and product card
+24	30-Aug	Week 1	DONE	Rupee symbol encoding fixed - corrected 73 corrupted symbols in product data
+25	31-Aug	Week 2	IN PROGRESS	Created API-first bridge layer (api-hooks.ts) - connects products, categories, search to backend with static fallback
+26	31-Aug	Week 2	IN PROGRESS	Products listing page migrated to useProducts() hook
+27	31-Aug	Week 2	IN PROGRESS	Product detail page migrated to useProduct(id) hook
+28	31-Aug	Week 2	IN PROGRESS	Homepage product rails migrated to useProducts() hook
+29	31-Aug	Week 2	IN PROGRESS	Search migrated to useSearchProducts() hook (API + fallback)
+30	31-Aug	Week 2	IN PROGRESS	Flash deals component migrated to API hooks
+31	31-Aug	Week 2	IN PROGRESS	ModitShell search migrated to API hooks
+32	31-Aug	Week 2	IN PROGRESS	Razorpay script loaded in layout.tsx (payments were silently free before)
+33	31-Aug	Week 2	IN PROGRESS	Fixed UPI payment - upiId now sent to API (was being collected but discarded)
+34	31-Aug	Week 2	IN PROGRESS	Payment error handling - user-facing error messages, retry option, Razorpay failure callback
+35	31-Aug	Week 2	IN PROGRESS	Toast notifications wired to payment success/failure, coupon apply, address save
+36	31-Aug	Week 2	IN PROGRESS	Address form validation - 6-digit pincode, 10-digit phone, required fields with error states
+37	31-Aug	Week 2	IN PROGRESS	Address selection guard on Continue to Delivery button
+38	31-Aug	Week 2	IN PROGRESS	Delivery slot cutoff enforcement - slots disabled past cutoff time
+39	31-Aug	Week 2	IN PROGRESS	Coupon usage limits enforced - usedCount incremented on apply
+40	31-Aug	Week 2	IN PROGRESS	Coupon cleared after order placement (prevents reuse)
+41	31-Aug	Week 2	IN PROGRESS	Brand filter fixed - labels had no onClick handler, now works on desktop + mobile
+42	31-Aug	Week 2	IN PROGRESS	Trusted Brands section brands now clickable - link to /products?search=brandname
+43	31-Aug	Week 2	IN PROGRESS	Deals of the Day and Flash Deals See All links now show discounted products
+44	31-Aug	Week 2	IN PROGRESS	Products page now reads sort=discount from URL parameter
+45	31-Aug	Week 2	IN PROGRESS	Week1 report created - all 6 frontend+backend integration tasks completed
+46	1-Sep	Week 2	PLANNED	Building delivery time slots - express 30min/60min, standard 2hr, scheduled morning/afternoon/evening
+47	1-Sep	Week 2	PLANNED	Building coupon and promo code system with 7 demo codes (FIRST100, BULK10, CEMENT50, etc.)
+48	2-Sep	Week 2	PLANNED	Building loyalty wallet with points, balance, transaction history
+49	2-Sep	Week 2	PLANNED	Building recurring order subscriptions with weekly, biweekly, monthly options
+50	3-Sep	Week 2	PLANNED	Building flash deals section with countdown timers on homepage
+51	3-Sep	Week 2	PLANNED	Building product comparison page for side-by-side comparison
+52	4-Sep	Week 2	PLANNED	Building smart search with trending searches and autocomplete
+53	4-Sep	Week 2	PLANNED	Building pincode stock availability indicator on product cards
+54	5-Sep	Week 2	PLANNED	Building out-of-stock substitutes on product detail page
+55	5-Sep	Week 2	PLANNED	Building referral program modal - invite and earn feature
+56	6-Sep	Week 2	PLANNED	Building push notification prompt and service worker handlers
+57	6-Sep	Week 2	PLANNED	Building quick reorder button on delivered orders
+58	7-Sep	Week 2	PLANNED	Building live tracking bar and delivery rating feature
+59	7-Sep	Week 2	PLANNED	Full platform audit - 58 issues found, 20 critical bugs fixed
+60	8-Sep	Week 2	PLANNED	Working on Razorpay payment integration and UPI flow
+61	8-Sep	Week 2	PLANNED	Final testing, cross-browser check, performance optimization, deployment
+62	9-Sep	Week 3	PLANNED	Connect admin dashboard with real backend data
+63	10-Sep	Week 3	PLANNED	Inventory management - stock levels, add/edit products, bulk upload
+64	11-Sep	Week 3	PLANNED	Order management - view all orders, update status, assign delivery
+65	12-Sep	Week 3	PLANNED	Supplier management - supplier profiles, ratings, product catalog
+66	13-Sep	Week 3	PLANNED	Order tracking with real-time status updates
+67	14-Sep	Week 3	PLANNED	PWA functionality - service worker, offline support, install prompt
+68	15-Sep	Week 3	PLANNED	Push notifications - order status, delivery updates, promotions
+69	16-Sep	Week 3	PLANNED	Google OAuth login integration
+70	17-Sep	Week 3	PLANNED	Two-factor authentication (2FA) setup
+71	18-Sep	Week 3	PLANNED	Search optimization - typo tolerance, synonyms, search analytics
+72	19-Sep	Week 3	PLANNED	Real-time inventory updates via WebSocket
+73	20-Sep	Week 3	PLANNED	Email notifications - order confirmation, delivery updates, promotions
+74	21-Sep	Week 4	PLANNED	Security improvements - input sanitization, CSRF protection, XSS prevention
+75	22-Sep	Week 4	PLANNED	Rate limiting refinement - API throttle, DDoS protection
+76	23-Sep	Week 4	PLANNED	Performance optimization - code splitting, lazy loading, bundle analysis
+77	24-Sep	Week 4	PLANNED	Caching strategy - Redis for API responses, CDN for static assets
+78	25-Sep	Week 4	PLANNED	Staging environment setup
+79	26-Sep	Week 4	PLANNED	Production environment setup with real Razorpay keys
+80	27-Sep	Week 4	PLANNED	Load testing - simulate 1000 concurrent users
+81	28-Sep	Week 4	PLANNED	Bug fixing and QA - cross-browser testing, mobile testing
+82	29-Sep	Week 4	PLANNED	User acceptance testing
+83	30-Sep	Week 4	PLANNED	Final deployment and launch preparation
+84	1-Oct	Week 4	PLANNED	Go-live and monitoring
