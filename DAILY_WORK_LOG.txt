@@ -49,3 +49,7 @@ S No.	Date	Working on
 48	7-Sep	Full platform audit done, fixing critical bugs found
 49	8-Sep	Working on Razorpay payment integration and UPI flow
 50	8-Sep	Final testing, cross-browser check, performance optimization, deployment
+51	31-Aug	Fixed brand filter not working on desktop and mobile - labels had no onClick handler
+52	31-Aug	Fixed all See All links across pages - Trusted Brands clickable, Deals show discounted products
+53	31-Aug	Added sort=discount URL param to products page for deal filtering
+54	31-Aug	Week 1 report created - all frontend+backend integration tasks completed
