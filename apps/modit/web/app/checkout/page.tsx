@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const [subscribeFreq, setSubscribeFreq] = useState<"weekly" | "biweekly" | "monthly">("monthly");
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
   const [activeStep, setActiveStep] = useState(1);
+  const [addressError, setAddressError] = useState("");
 
   const subtotal = getCartTotal();
   const gst = getCartGST();
@@ -65,6 +66,7 @@ export default function CheckoutPage() {
     }
     if (useWallet && walletDeduct > 0) deductBalance(walletDeduct, `Order ${id}`);
     addPoints(Math.floor(total / 10), `Points for order ${id}`);
+    removeCoupon();
     clearCart();
     setOrderId(id);
     setOrderPlaced(true);
@@ -211,18 +213,30 @@ export default function CheckoutPage() {
                         </select>
                         <input placeholder="Label (e.g. Site A)" value={newAddr.label} onChange={(e) => setNewAddr({ ...newAddr, label: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                         <input placeholder="Full Name" value={newAddr.name} onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="Phone" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="Pincode" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
+                        <input placeholder="Phone" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
+                        <input placeholder="6-digit Pincode" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                         <input placeholder="Address Line 1" value={newAddr.line1} onChange={(e) => setNewAddr({ ...newAddr, line1: e.target.value })} className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                         <input placeholder="City" value={newAddr.city} onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                         <input placeholder="State" value={newAddr.state} onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
                       </div>
+                      {addressError && <p className="text-[11px] text-red-500">{addressError}</p>}
                       <button onClick={() => {
-                        if (newAddr.label && newAddr.name && newAddr.line1 && newAddr.city && newAddr.state && newAddr.pincode) {
-                          addAddress({ ...newAddr, isDefault: addresses.length === 0 });
-                          setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
-                          setShowAddAddress(false);
+                        if (!newAddr.label || !newAddr.name || !newAddr.line1 || !newAddr.city || !newAddr.state || !newAddr.pincode) {
+                          setAddressError("Please fill in all required fields");
+                          return;
                         }
+                        if (newAddr.pincode.length !== 6) {
+                          setAddressError("Pincode must be 6 digits");
+                          return;
+                        }
+                        if (newAddr.phone && newAddr.phone.length !== 10) {
+                          setAddressError("Phone must be 10 digits");
+                          return;
+                        }
+                        setAddressError("");
+                        addAddress({ ...newAddr, isDefault: addresses.length === 0 });
+                        setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
+                        setShowAddAddress(false);
                       }} className="w-full py-2 rounded-lg bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] transition-all">
                         Save Address
                       </button>
@@ -233,9 +247,17 @@ export default function CheckoutPage() {
                     </button>
                   )}
                 </div>
-                <button onClick={() => setActiveStep(2)} className="mt-4 w-full py-2.5 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all">
+                <button onClick={() => {
+                  if (!selectedAddr) {
+                    setAddressError("Please select or add a delivery address");
+                    return;
+                  }
+                  setAddressError("");
+                  setActiveStep(2);
+                }} className="mt-4 w-full py-2.5 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all">
                   Continue to Delivery
                 </button>
+                {addressError && !showAddAddress && <p className="text-[11px] text-red-500 mt-2">{addressError}</p>}
               </div>
             )}
 
@@ -249,37 +271,58 @@ export default function CheckoutPage() {
                 <div className="mb-4">
                   <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Express</p>
                   <div className="grid grid-cols-2 gap-2">
-                    {slots.filter((s) => s.type === "express").map((s) => (
-                      <button key={s.id} onClick={() => selectSlot(s.id)} className={`p-3 rounded-xl border-2 text-left transition-all ${
-                        selectedSlotId === s.id ? "border-[#7CB518] bg-[#7CB518]/5" : "border-[#DDD6EE] hover:border-[#C9B8E8]"
-                      }`}>
-                        <div className="flex items-center gap-2">
-                          <Zap className={`h-3.5 w-3.5 ${selectedSlotId === s.id ? "text-[#7CB518]" : "text-[#9B8CB5]"}`} />
-                          <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
-                        </div>
-                        <p className="text-[11px] text-[#9B8CB5] mt-1">{s.time}</p>
-                        {s.fee > 0 && <p className="text-[10px] font-bold text-[#E91E63] mt-0.5">+₹{s.fee}</p>}
-                        {s.fee === 0 && <p className="text-[10px] font-bold text-[#7CB518] mt-0.5">FREE</p>}
-                      </button>
-                    ))}
+                    {slots.filter((s) => s.type === "express").map((s) => {
+                      const now = new Date();
+                      const hour = now.getHours();
+                      const isAvailable = s.id === "express-30" || s.id === "express-60" ? (hour >= 8 && hour < 22) : true;
+                      return (
+                        <button key={s.id} onClick={() => isAvailable && selectSlot(s.id)} disabled={!isAvailable} className={`p-3 rounded-xl border-2 text-left transition-all ${
+                          !isAvailable ? "border-[#E8E0F7] bg-[#F8F6FC] opacity-50 cursor-not-allowed" :
+                          selectedSlotId === s.id ? "border-[#7CB518] bg-[#7CB518]/5" : "border-[#DDD6EE] hover:border-[#C9B8E8]"
+                        }`}>
+                          <div className="flex items-center gap-2">
+                            <Zap className={`h-3.5 w-3.5 ${selectedSlotId === s.id ? "text-[#7CB518]" : "text-[#9B8CB5]"}`} />
+                            <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
+                          </div>
+                          <p className="text-[11px] text-[#9B8CB5] mt-1">{s.time}</p>
+                          {s.fee > 0 && <p className="text-[10px] font-bold text-[#E91E63] mt-0.5">+₹{s.fee}</p>}
+                          {s.fee === 0 && <p className="text-[10px] font-bold text-[#7CB518] mt-0.5">FREE</p>}
+                          {!isAvailable && <p className="text-[10px] font-bold text-[#9B8CB5] mt-0.5">Unavailable now</p>}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <div>
                   <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Standard & Scheduled</p>
                   <div className="grid grid-cols-1 gap-2">
-                    {slots.filter((s) => s.type === "scheduled" || s.type === "standard").map((s) => (
-                      <button key={s.id} onClick={() => selectSlot(s.id)} className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
-                        selectedSlotId === s.id ? "border-[#2D1B69] bg-[#F0ECF9]" : "border-[#DDD6EE] hover:border-[#C9B8E8]"
-                      }`}>
-                        <Calendar className={`h-4 w-4 ${selectedSlotId === s.id ? "text-[#2D1B69]" : "text-[#9B8CB5]"}`} />
-                        <div className="flex-1">
-                          <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
-                          <p className="text-[11px] text-[#9B8CB5]">{s.time}</p>
-                        </div>
-                        <span className="text-[10px] text-[#9B8CB5]">{s.cutoff}</span>
-                      </button>
-                    ))}
+                    {slots.filter((s) => s.type === "scheduled" || s.type === "standard").map((s) => {
+                      const now = new Date();
+                      const hour = now.getHours();
+                      let isAvailable = true;
+                      if (s.id === "standard-2hr") isAvailable = hour < 18;
+                      else if (s.id === "scheduled-morning") isAvailable = hour < 22;
+                      else if (s.id === "scheduled-afternoon") isAvailable = hour < 14;
+                      else if (s.id === "scheduled-evening") isAvailable = hour < 18;
+                      return (
+                        <button key={s.id} onClick={() => isAvailable && selectSlot(s.id)} disabled={!isAvailable} className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
+                          !isAvailable ? "border-[#E8E0F7] bg-[#F8F6FC] opacity-50 cursor-not-allowed" :
+                          selectedSlotId === s.id ? "border-[#2D1B69] bg-[#F0ECF9]" : "border-[#DDD6EE] hover:border-[#C9B8E8]"
+                        }`}>
+                          <Calendar className={`h-4 w-4 ${selectedSlotId === s.id ? "text-[#2D1B69]" : "text-[#9B8CB5]"}`} />
+                          <div className="flex-1">
+                            <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
+                            <p className="text-[11px] text-[#9B8CB5]">{s.time}</p>
+                          </div>
+                          {isAvailable ? (
+                            <span className="text-[10px] text-[#9B8CB5]">{s.cutoff}</span>
+                          ) : (
+                            <span className="text-[10px] font-bold text-[#E91E63]">Past cutoff</span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

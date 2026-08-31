@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 
 import { Providers } from "@/components/providers";
 import { ModitShell } from "@/components/modit-shell";
@@ -60,6 +61,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               }
             `,
           }}
+        />
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="lazyOnload"
         />
       </body>
     </html>

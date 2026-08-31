@@ -22,8 +22,10 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi">("razorpay");
   const [processing, setProcessing] = useState(false);
   const [upiId, setUpiId] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleRazorpayPayment = async () => {
+    setError(null);
     setProcessing(true);
     try {
       const orderData = {
@@ -37,6 +39,11 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
 
       const result = await placeOrder(orderData);
       if (result.success && result.orderId) {
+        if (total <= 0) {
+          clearCart();
+          onPaymentComplete(result.orderId);
+          return;
+        }
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo",
           amount: total * 100,
@@ -65,20 +72,27 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
 
         if (typeof window !== "undefined" && window.Razorpay) {
           const rzp = new window.Razorpay(options);
+          rzp.on("payment.failed", function () {
+            setError("Payment failed. Please try again.");
+            setProcessing(false);
+          });
           rzp.open();
         } else {
           clearCart();
           onPaymentComplete(result.orderId);
         }
+      } else {
+        setError(result.error || "Failed to create order. Please try again.");
+        setProcessing(false);
       }
     } catch (err) {
-      console.error("Payment failed:", err);
-    } finally {
+      setError("Something went wrong. Please try again.");
       setProcessing(false);
     }
   };
 
   const handleCOD = async () => {
+    setError(null);
     setProcessing(true);
     try {
       const result = await placeOrder({
@@ -92,15 +106,22 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
       if (result.success && result.orderId) {
         clearCart();
         onPaymentComplete(result.orderId);
+      } else {
+        setError(result.error || "Failed to place order. Please try again.");
+        setProcessing(false);
       }
     } catch (err) {
-      console.error("Order failed:", err);
-    } finally {
+      setError("Something went wrong. Please try again.");
       setProcessing(false);
     }
   };
 
   const handleUPI = async () => {
+    if (!upiId || !upiId.includes("@")) {
+      setError("Please enter a valid UPI ID (e.g. name@upi)");
+      return;
+    }
+    setError(null);
     setProcessing(true);
     try {
       const result = await placeOrder({
@@ -110,14 +131,17 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
           price: i.product.price,
         })),
         paymentMethod: "upi",
+        upiId: upiId,
       });
       if (result.success && result.orderId) {
         clearCart();
         onPaymentComplete(result.orderId);
+      } else {
+        setError(result.error || "Failed to place order. Please try again.");
+        setProcessing(false);
       }
     } catch (err) {
-      console.error("Order failed:", err);
-    } finally {
+      setError("Something went wrong. Please try again.");
       setProcessing(false);
     }
   };
@@ -172,10 +196,18 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
         )}
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-[13px] text-red-700 flex items-center gap-2">
+          <span className="text-red-500 font-bold">!</span>
+          {error}
+        </div>
+      )}
+
       {/* Place Order Button */}
       <button
         onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : handleUPI}
-        disabled={processing || items.length === 0}
+        disabled={processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")))}
         className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {processing ? (

@@ -70,7 +70,13 @@ export const useCouponStore = create<CouponState>()(
           set({ couponError: msg });
           return { success: false, message: msg };
         }
-        set({ appliedCoupon: coupon, couponError: "" });
+        set({
+          appliedCoupon: coupon,
+          couponError: "",
+          availableCoupons: get().availableCoupons.map((c) =>
+            c.code === coupon.code ? { ...c, usedCount: c.usedCount + 1 } : c
+          ),
+        });
         return { success: true, message: `Coupon "${coupon.code}" applied!` };
       },
 

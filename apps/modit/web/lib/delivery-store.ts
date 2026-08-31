@@ -33,6 +33,18 @@ const defaultSlots: DeliverySlot[] = [
   { id: "scheduled-evening", label: "Tomorrow Evening", time: "4 PM - 8 PM", cutoff: "Order by 6 PM", type: "scheduled", fee: 0, available: true },
 ];
 
+function isSlotAvailable(slot: DeliverySlot): boolean {
+  const now = new Date();
+  const hour = now.getHours();
+  if (slot.id === "express-30") return hour >= 8 && hour < 22;
+  if (slot.id === "express-60") return hour >= 8 && hour < 22;
+  if (slot.id === "standard-2hr") return hour < 18;
+  if (slot.id === "scheduled-morning") return hour < 22;
+  if (slot.id === "scheduled-afternoon") return hour < 14;
+  if (slot.id === "scheduled-evening") return hour < 18;
+  return true;
+}
+
 export const useDeliveryStore = create<DeliveryState>()(
   persist(
     (set, get) => ({
@@ -49,14 +61,15 @@ export const useDeliveryStore = create<DeliveryState>()(
 
       getSelected: () => {
         const state = get();
-        return state.slots.find((s) => s.id === state.selectedSlotId && s.available)
-          ?? state.slots.find((s) => s.available)
+        const enriched = state.slots.map((s) => ({ ...s, available: isSlotAvailable(s) }));
+        return enriched.find((s) => s.id === state.selectedSlotId && s.available)
+          ?? enriched.find((s) => s.available)
           ?? null;
       },
 
-      getExpressSlots: () => get().slots.filter((s) => s.type === "express"),
+      getExpressSlots: () => get().slots.map((s) => ({ ...s, available: isSlotAvailable(s) })).filter((s) => s.type === "express"),
 
-      getScheduledSlots: () => get().slots.filter((s) => s.type === "scheduled" || s.type === "standard"),
+      getScheduledSlots: () => get().slots.map((s) => ({ ...s, available: isSlotAvailable(s) })).filter((s) => s.type === "scheduled" || s.type === "standard"),
     }),
     {
       name: "modit-delivery",
