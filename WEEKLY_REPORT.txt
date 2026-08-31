@@ -1,98 +1,101 @@
 MODIT - Weekly Report
-Week: 1 (24 Aug - 30 Aug)
-Status: Done
+Period: 24 Aug - 31 Aug (1 week)
+Status: Week 1 Complete, Week 2 Started - Paused
 
-Hey, so here's what I got done this week. The main goal was to connect the frontend with the backend APIs and replace all the hardcoded stuff with real data. Got most of it done, a few things carried over to next week.
-
----
+Hey, here's the report for the week. Work has been paused as of 31 Aug.
 
 
-WHAT GOT DONE THIS WEEK:
+WEEK 1 (24-30 Aug) - Frontend + Backend Integration
+Status: DONE
 
-1. Monorepo setup
-   - Organized the whole project into a proper monorepo structure
-   - apps/modit/web for frontend, packages/ui for shared components, packages/database for backend
-   - Was messy before, now its clean
+All 6 tasks from the plan are completed:
 
-2. Backend hardening
-   - Added DB connection pooling so it doesnt crash under load
-   - Rate limiting on all endpoints
-   - GZip compression enabled
-   - Caching layer added
-   - Fixed N+1 query issues
-   - 74 tests all passing now
+1. Connect frontend with existing APIs
+   - Built api-hooks.ts bridge layer
+   - Frontend tries backend first, falls back to static data if backend is down
+   - Products, categories, search all connected
 
-3. Frontend pages built
-   - Homepage - hero, categories, 5 product rails, feature bar, recently viewed
-   - Auth pages - all 5 pages (login, register, forgot/reset password, verify email) with split layout
-   - Orders page - gradient header, stats, status badges, progress bars
-   - Order detail - timeline, item cards, live tracking placeholder
-   - Calculator - room presets, material estimates, product recommendations
-   - Product detail - variant selector, shade picker (200+ shades), delivery promise
-   - Cart and checkout - variant display, payment section
+2. Replace hardcoded product data with real API data
+   - Products listing page pulls from API
+   - Product detail page pulls from API
+   - Homepage product rails pull from API
+   - Flash deals component uses API
 
-4. API connection done
-   - Created api-hooks.ts bridge layer - tries backend first, falls back to static data
-   - Products, categories, search all go through API now
-   - Auth pages connected to backend
+3. Connect login/register and authentication
+   - All 5 auth pages connected to backend
+   - Tested and working
+
+4. Real cart and wishlist
+   - Variant-aware cart with quantity stepper
+   - Save for later functionality
+   - Wishlist with add/remove/clear
+   - Both persist to localStorage
+
+5. Product search and category filters
+   - Smart search with trending and autocomplete
+   - 8 filter types (category, brand, price, rating, stock, etc.)
+   - 6 sort options
+   - Brand filter working on desktop and mobile
+
+6. Complete remaining important API connections
+   - 55+ React Query hooks built
    - All consumer pages API-ready
 
-5. Paint shade feature
-   - 200+ real paint shades across 8 color families
-   - Added to 8 paint products
-   - Shade picker on product detail page
-   - Color code entry feature as requested
 
-6. Bug fixes
-   - Hydration crash in RecentlyViewed - fixed with mounted guard
-   - Rupee symbols were corrupted (73 strings had wrong encoding) - fixed all
-   - Product image paths corrected
-   - Search modal keyboard shortcut fixed
-   - Footer text was invisible on dark background - fixed
+WEEK 2 (31 Aug) - Checkout + Orders
+Status: STARTED then PAUSED
 
-7. Backend tested
-   - All APIs connected and tested - auth, products, orders, cart, checkout
-   - First deploy done on Vercel
-   - Shared mobile view for review
+Started working on 31 Aug, got some things done before pause:
 
+Done on 31 Aug:
+- Razorpay script loaded in layout (was never loaded before, payments were silently free)
+- Fixed UPI payment - upiId was being collected but never sent to API
+- Added payment error handling with user-facing messages
+- Toast notifications added for payment, coupon, address actions
+- Address form validation added (pincode 6 digits, phone 10 digits)
+- Delivery slots now disabled after cutoff time
+- Brand filter fixed (was completely broken - labels had no click handler)
+- Trusted Brands section now links to filtered products
+- Deals/flash deals see all links now show discounted products
 
-WHAT DIDNT GET DONE / CARRIED OVER:
-
-- Checkout flow is basic - need to add address validation, delivery cutoff, coupon cleanup
-- Payment section is just UI - Razorpay script was never loaded
-- Brand filter was broken (found later)
-- Some see all links were just going to unfiltered products
+Not started (carried over):
+- GST invoice generation
+- Return/refund flow
+- Email/OTP order notifications
+- Coupon usage limits
+- Wallet top-up page
 
 
 DAILY BREAKDOWN:
 
-24 Aug - Set up monorepo, built core logistics engine, made frontend responsive, first deploy
+24 Aug - Monorepo setup, core logistics engine, responsive frontend, first deploy
 25 Aug - Homepage, auth pages, orders page, search fix, footer fix, order detail
-26 Aug - Connected frontend to backend APIs - everything tested and working
+26 Aug - Connected frontend to backend APIs, everything tested
 27 Aug - Calculator, paint shades (200+), recently viewed widget
 28 Aug - Holiday
-29 Aug - Backend hardening (74 tests), calculator page, product detail rebuild, product card rebuild
+29 Aug - Backend hardening (74 tests), calculator page, product detail rebuild
 30 Aug - Checkout/cart pages, hydration fix, rupee symbol fix
+31 Aug - API connection work, payment fixes, bug fixes, brand filter fix
 
 
-TOOLS USED:
-- Next.js 15 with App Router
-- Tailwind CSS
-- FastAPI (Python) backend
-- PostgreSQL database
-- Zustand for state management
-- React Query for API calls
-- Razorpay for payments
-- Deployed on Vercel
+WHAT WAS SHIPPED:
+
+Pages: 12 (homepage, products, product detail, cart, checkout, orders, order detail, calculator, compare, wishlist, dashboard, auth x5)
+Backend: 74 DB tables, 207 API endpoints, 74 tests
+Frontend: 50+ features, 154 commits
+Deployed: modit-web-prod.vercel.app
 
 
-NEXT WEEK (Week 2 - Checkout + Orders):
+CURRENT STATE:
 
-Main things to tackle:
-- Fix the checkout flow properly - address validation, delivery slots, coupon system
-- Get Razorpay actually working (script was never loaded)
-- COD and UPI payment flows
-- Order history and status tracking
-- Maybe start on return/refund if time permits
+Everything built so far is working and deployed. Week 1 is fully complete. Week 2 was started on 31 Aug with payment and checkout improvements. Work is now paused - can resume from Week 2 tasks when ready.
+
+Remaining from Week 2:
+- GST invoice generation
+- Return/refund flow
+- Email/OTP notifications
+
+Week 3 and Week 4 are not started yet.
+
 
 ---

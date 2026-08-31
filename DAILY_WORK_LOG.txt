@@ -1,51 +1,38 @@
 S No.	Date	Working on
-1	20-Aug	Started working on Modit project, set up backend with FastAPI and PostgreSQL
-2	20-Aug	Changed theme to truck-branded colors as shared (purple, green, pink, cyan)
-3	21-Aug	Fixed backend issues and updated theme across frontend
-4	21-Aug	Updated logo - made two versions, colored one and white one as shared
-5	21-Aug	Worked on interface design - homepage, product cards, navigation flow
-6	22-Aug	Set up React frontend with Next.js and Tailwind CSS, made it fast and light
-7	23-Aug	Sunday
-8	24-Aug	Organized project folder structure properly - monorepo setup
-9	24-Aug	Built core logistics engine - orders, delivery, inventory modules
-10	24-Aug	Made frontend mobile responsive, added skeleton loading, WebP images
-11	24-Aug	Connected frontend to backend, did first test deploy, shared mobile view for review
-12	25-Aug	Working on frontend - homepage header, delivery bar, hero section, category grid, product rails
-13	25-Aug	Auth Pages Redesigned - all login, register, forgot password, reset password and verify email pages now have split layout with branded left panel
-14	25-Aug	Bottom Nav Added to Auth Pages - auth pages were missing bottom navigation bar, added it to all 5 pages
-15	25-Aug	Orders Page Enhanced - gradient purple header with stats, color-coded status badges, progress bars
-16	25-Aug	JK Lakshmi Image Fixed - corrected product image path
-17	25-Aug	Search Button Fixed - fixed search modal trigger and keyboard shortcut
-18	25-Aug	Footer Text Fixed - footer text was invisible on dark background, fixed CSS issue
-19	25-Aug	Order Detail Page Enhanced - gradient header, mini timeline, better item cards, shared link for review
-20	26-Aug	Connected frontend to backend APIs - auth, products, orders, cart, checkout all tested and working
-21	27-Aug	Built Construction Material Calculator with room presets, material estimates, product recommendations
-22	27-Aug	Paint Shade Selector with 200+ real shades across 8 color families on 8 paint products - as requested shade selection and color code entry feature
-23	27-Aug	Calculator CTA banner added on homepage
-24	27-Aug	Recently Viewed products widget built on homepage, shared update with manager
-25	28-Aug	Holiday
-26	29-Aug	Backend hardening done - DB pooling, rate limiting, caching, N+1 fixes, 74 tests passing
-27	29-Aug	Construction Calculator page completed with live estimates and recommended products
-28	29-Aug	Product detail page rebuilt with variant selector, shade picker, delivery promise bar
-29	29-Aug	Product card widget rebuilt with wishlist, badges, variant-aware cart, quantity stepper
-30	30-Aug	Checkout page and cart page built with variant display and payment section
-31	30-Aug	Production crash fixed - hydration error in RecentlyViewed and product card
-32	30-Aug	Rupee symbol encoding fixed - corrected 73 corrupted symbols in product data
-33	31-Aug	Created API-first bridge layer so frontend talks to backend but falls back to static data if backend is down
-34	31-Aug	Products listing page now pulls from API instead of hardcoded data
-35	31-Aug	Product detail page now pulls from API
-36	31-Aug	Homepage product rails now pull from API
-37	31-Aug	Search now goes through API with fallback
-38	31-Aug	Flash deals component updated to use API
-39	31-Aug	Shell search updated to use API hooks
-40	31-Aug	Razorpay script was never loaded - fixed that, payments were silently going through without charging
-41	31-Aug	Fixed UPI payment - the upiId was being collected but never sent to the API
-42	31-Aug	Added proper error messages for payment failures instead of just console.log
-43	31-Aug	Added toast notifications for payment, coupon and address actions
-44	31-Aug	Address form now validates pincode (6 digits) and phone (10 digits) before saving
-45	31-Aug	Delivery slots now get disabled after their cutoff time
-46	31-Aug	Coupon usage counter now actually increments when applied
-47	31-Aug	Coupon gets cleared after order is placed so it cant be reused
-48	31-Aug	Brand filter was completely broken - the labels had no click handler, fixed for both desktop and mobile
-49	31-Aug	Trusted Brands section on homepage was just show pieces, now they actually link to filtered products
-50	31-Aug	Deals and flash deals "see all" links now show discounted products instead of full catalog
+1	24-Aug	Organized project folder structure properly - monorepo setup
+2	24-Aug	Built core logistics engine - orders, delivery, inventory modules
+3	24-Aug	Made frontend mobile responsive, added skeleton loading, WebP images
+4	24-Aug	Connected frontend to backend, did first test deploy, shared mobile view for review
+5	25-Aug	Working on frontend - homepage header, delivery bar, hero section, category grid, product rails
+6	25-Aug	Auth Pages Redesigned - all login, register, forgot password, reset password and verify email pages now have split layout with branded left panel
+7	25-Aug	Bottom Nav Added to Auth Pages - auth pages were missing bottom navigation bar, added it to all 5 pages
+8	25-Aug	Orders Page Enhanced - gradient purple header with stats, color-coded status badges, progress bars
+9	25-Aug	Search Button Fixed - fixed search modal trigger and keyboard shortcut
+10	25-Aug	Footer Text Fixed - footer text was invisible on dark background, fixed CSS issue
+11	25-Aug	Order Detail Page Enhanced - gradient header, mini timeline, better item cards, shared link for review
+12	26-Aug	Connected frontend to backend APIs - auth, products, orders, cart, checkout all tested and working
+13	27-Aug	Built Construction Material Calculator with room presets, material estimates, product recommendations
+14	27-Aug	Paint Shade Selector with 200+ real shades across 8 color families on 8 paint products - as requested shade selection and color code entry feature
+15	27-Aug	Calculator CTA banner added on homepage
+16	27-Aug	Recently Viewed products widget built on homepage, shared update with manager
+17	28-Aug	Holiday
+18	29-Aug	Backend hardening done - DB pooling, rate limiting, caching, N+1 fixes, 74 tests passing
+19	29-Aug	Construction Calculator page completed with live estimates and recommended products
+20	29-Aug	Product detail page rebuilt with variant selector, shade picker, delivery promise bar
+21	29-Aug	Product card widget rebuilt with wishlist, badges, variant-aware cart, quantity stepper
+22	30-Aug	Checkout page and cart page built with variant display and payment section
+23	30-Aug	Production crash fixed - hydration error in RecentlyViewed and product card
+24	30-Aug	Rupee symbol encoding fixed - corrected 73 corrupted symbols in product data
+25	31-Aug	Created API-first bridge layer so frontend talks to backend but falls back to static data if backend is down
+26	31-Aug	Products listing page now pulls from API instead of hardcoded data
+27	31-Aug	Product detail page now pulls from API
+28	31-Aug	Homepage product rails now pull from API
+29	31-Aug	Search now goes through API with fallback
+30	31-Aug	Razorpay script was never loaded - fixed that, payments were silently going through without charging
+31	31-Aug	Fixed UPI payment - the upiId was being collected but never sent to the API
+32	31-Aug	Added proper error messages for payment failures instead of just console.log
+33	31-Aug	Address form now validates pincode and phone before saving
+34	31-Aug	Delivery slots now get disabled after their cutoff time
+35	31-Aug	Brand filter was completely broken - the labels had no click handler, fixed for both desktop and mobile
+36	31-Aug	Trusted Brands section on homepage now links to filtered products
+37	31-Aug	Deals and flash deals see all links now show discounted products instead of full catalog
