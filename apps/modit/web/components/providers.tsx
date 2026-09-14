@@ -2,7 +2,13 @@
 
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ErrorBoundary, ToastProvider } from "@foundation/ui";
+import { ErrorBoundary } from "@foundation/ui";
+
+let ToastProvider: React.ComponentType<{ children: React.ReactNode }> | null = null;
+try {
+  const ui = require("@foundation/ui");
+  ToastProvider = ui.ToastProvider || null;
+} catch {}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -13,7 +19,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
             staleTime: 30_000,
             refetchOnWindowFocus: false,
             retry: (failureCount, error) => {
-              // Don't retry on 4xx errors except 408 (timeout)
               if (error instanceof Error && "status" in error) {
                 const status = (error as any).status;
                 if (status >= 400 && status < 500 && status !== 408) {
@@ -27,11 +32,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   );
 
+  const content = (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </ToastProvider>
+      {ToastProvider ? <ToastProvider>{content}</ToastProvider> : content}
     </ErrorBoundary>
   );
 }
