@@ -16,7 +16,7 @@ import {
   Plus,
   Check,
 } from "lucide-react";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, getBulkUnitPrice, isBulkApplied } from "@/lib/cart-store";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -32,6 +32,7 @@ export default function CartPage() {
   const getCartGST = useCartStore((s) => s.getCartGST);
   const getCartShipping = useCartStore((s) => s.getCartShipping);
   const getCartGrandTotal = useCartStore((s) => s.getCartGrandTotal);
+  const getBulkSavings = useCartStore((s) => s.getBulkSavings);
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [couponCode, setCouponCode] = useState("");
@@ -129,11 +130,16 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-3">
             {items.map((item) => {
-              const itemPrice = item.unitPrice ?? item.product.price;
+              const basePrice = item.unitPrice ?? item.product.price;
+              const itemPrice = getBulkUnitPrice(item);
+              const bulkApplied = isBulkApplied(item);
               const variant = item.variantId ? item.product.variants?.find((v) => v.id === item.variantId) : null;
-              const discount = (variant?.mrp ?? item.product.mrp) > itemPrice
-                ? Math.round((((variant?.mrp ?? item.product.mrp) - itemPrice) / (variant?.mrp ?? item.product.mrp)) * 100)
-                : 0;
+              const unitMrp = variant?.mrp ?? item.product.mrp;
+              const discount = unitMrp > itemPrice
+                ? Math.round(((unitMrp - itemPrice) / unitMrp) * 100)
+                : bulkApplied
+                  ? Math.round(((basePrice - itemPrice) / basePrice) * 100)
+                  : 0;
               return (
                 <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
@@ -169,12 +175,18 @@ export default function CartPage() {
                     </div>
 
                     <div className="flex items-center gap-2 mt-1.5">
-                      {(variant?.mrp ?? item.product.mrp) > itemPrice && (
-                        <span className="text-[12px] text-[#9B8CB5] line-through">₹{(variant?.mrp ?? item.product.mrp).toLocaleString()}</span>
+                      {unitMrp > itemPrice && (
+                        <span className="text-[12px] text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString()}</span>
                       )}
                       {discount > 0 && (
                         <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-[10px] font-bold text-[#E91E63]">
                           {discount}% OFF
+                        </span>
+                      )}
+                      {bulkApplied && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF9800]/10 text-[10px] font-bold text-[#FF9800]">
+                          <Tag className="h-2.5 w-2.5" />
+                          Bulk rate ₹{itemPrice.toLocaleString()}
                         </span>
                       )}
                       <span className="text-[11px] text-[#9B8CB5]">₹{itemPrice.toLocaleString()} each</span>
@@ -299,6 +311,12 @@ export default function CartPage() {
                     <span className="text-[#7CB518]">Discount</span>
                     <span className="text-[#7CB518] font-medium">-₹{getCartDiscount().toLocaleString()}</span>
                   </div>
+                  {getBulkSavings() > 0 && (
+                    <div className="flex justify-between text-[13px]">
+                      <span className="text-[#FF9800]">Bulk quantity savings</span>
+                      <span className="text-[#FF9800] font-medium">-₹{getBulkSavings().toLocaleString()}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-[13px]">
                     <span className="text-[#9B8CB5]">Delivery</span>
                     <span className={getCartShipping() === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726] font-medium"}>

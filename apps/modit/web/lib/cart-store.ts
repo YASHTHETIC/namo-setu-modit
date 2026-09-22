@@ -13,6 +13,32 @@ export interface CartItem {
   unitPrice?: number;
 }
 
+export function getBulkUnitPrice(item: CartItem): number {
+  const unitPrice = item.unitPrice ?? item.product.price;
+  const bulk = item.variantId
+    ? item.product.variants?.find((v) => v.id === item.variantId)?.bulkPrice ?? item.product.bulkPrice
+    : item.product.bulkPrice;
+  const bulkMin = item.variantId
+    ? item.product.variants?.find((v) => v.id === item.variantId)?.bulkMinQty ?? item.product.bulkMinQty
+    : item.product.bulkMinQty;
+  if (bulk != null && bulkMin != null && item.quantity >= bulkMin) {
+    return bulk;
+  }
+  return unitPrice;
+}
+
+export function isBulkApplied(item: CartItem): boolean {
+  const effective = getBulkUnitPrice(item);
+  const unitPrice = item.unitPrice ?? item.product.price;
+  return effective < unitPrice;
+}
+
+export function bulkSavingsForItem(item: CartItem): number {
+  const unitPrice = item.unitPrice ?? item.product.price;
+  const effective = getBulkUnitPrice(item);
+  return (unitPrice - effective) * item.quantity;
+}
+
 export interface SavedItem {
   product: Product;
   savedAt: number;
@@ -40,6 +66,7 @@ interface CartState {
   getCartTotal: () => number;
   getCartMRP: () => number;
   getCartDiscount: () => number;
+  getBulkSavings: () => number;
   getCartGST: () => number;
   getCartCount: () => number;
   getCartShipping: () => number;
@@ -148,7 +175,7 @@ export const useCartStore = create<CartState>()(
       setPincode: (pincode) => set({ pincode }),
 
       getCartTotal: () => {
-        return get().items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
+        return get().items.reduce((sum, i) => sum + getBulkUnitPrice(i) * i.quantity, 0);
       },
 
       getCartMRP: () => {
@@ -162,9 +189,13 @@ export const useCartStore = create<CartState>()(
         return get().getCartMRP() - get().getCartTotal();
       },
 
+      getBulkSavings: () => {
+        return get().items.reduce((sum, i) => sum + bulkSavingsForItem(i), 0);
+      },
+
       getCartGST: () => {
         return get().items.reduce(
-          (sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity * (i.product.gstRate / 100),
+          (sum, i) => sum + getBulkUnitPrice(i) * i.quantity * (i.product.gstRate / 100),
           0
         );
       },

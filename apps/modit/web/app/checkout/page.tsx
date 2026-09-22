@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
-  Tag, Wallet, Calendar, Zap, X, Trash2, Gift, Repeat
+  Tag, Wallet, Calendar, Zap, X, Trash2, Gift, Repeat, FileText
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useAddressStore, type Address } from "@/lib/address-store";
@@ -39,6 +39,7 @@ export default function CheckoutPage() {
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
   const [activeStep, setActiveStep] = useState(1);
   const [addressError, setAddressError] = useState("");
+  const [gstin, setGstin] = useState("");
 
   const subtotal = getCartTotal();
   const gst = getCartGST();
@@ -348,6 +349,29 @@ export default function CheckoutPage() {
             {/* Payment Section */}
             {activeStep === 3 && (
               <>
+                {/* Business GSTIN */}
+                <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+                  <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                    <FileText className="h-4 w-4 text-[#2D1B69]" /> Business Details (optional)
+                  </h3>
+                  <p className="text-[11px] text-[#9B8CB5] -mt-1 mb-3">Provide your GSTIN to receive a proper GST invoice for input tax credit.</p>
+                  <input
+                    value={gstin}
+                    onChange={(e) => setGstin(e.target.value.toUpperCase())}
+                    placeholder="15-digit GSTIN e.g. 27AABCU9603R1ZM"
+                    maxLength={15}
+                    className="w-full px-3 py-2.5 rounded-lg border border-[#DDD6EE] text-[12px] font-semibold tracking-wider focus:outline-none focus:border-[#2D1B69]"
+                  />
+                  {gstin && gstin.length > 0 && gstin.length < 15 && (
+                    <p className="text-[10px] text-red-500 mt-1.5">GSTIN must be 15 characters</p>
+                  )}
+                  {gstin.length === 15 && (
+                    <p className="text-[11px] text-[#7CB518] font-semibold mt-1.5 flex items-center gap-1">
+                      <Check className="h-3 w-3" /> GST invoice will be issued for this order
+                    </p>
+                  )}
+                </div>
+
                 {/* Coupon */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
@@ -533,6 +557,7 @@ export default function CheckoutPage() {
                 <PaymentSection
                   total={total}
                   onPaymentComplete={handlePlaceOrder}
+                  gstin={gstin || undefined}
                 />
               ) : (
                 <button onClick={() => {

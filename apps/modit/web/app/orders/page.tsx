@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOrders } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
-import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check } from "lucide-react";
+import { getProductById } from "@/lib/product-data";
+import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
-  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2 },
-  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1 },
+  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3, expected_delivery: "2026-08-02T14:00:00Z", items: [{ productId: "cement-acc", quantity: 200 }, { productId: "paint-asian-apex", quantity: 5 }, { productId: "hardware-tools-stanley-94-248-65-piece-homeowner-s-22", quantity: 500 }] },
+  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2, expected_delivery: "2026-08-07T14:00:00Z", items: [{ productId: "cement-ultratech", quantity: 100 }, { productId: "tile-kajaria-1", quantity: 200 }] },
+  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1, expected_delivery: "2026-08-10T14:00:00Z", items: [{ productId: "tile-drfixit", quantity: 20 }] },
 ];
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Package; dot: string }> = {
@@ -33,6 +34,59 @@ export default function OrdersPage() {
   const totalSpent = orderList.reduce((sum, o) => sum + ((o as any).total || 0), 0);
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
   const activeCount = orderList.filter(o => ["in_transit", "confirmed", "processing", "dispatched"].includes(o.status)).length;
+
+  const handleReorder = (order: any) => {
+    const items = (order as any).items as Array<{ productId: string; quantity: number }> | undefined;
+    if (items && items.length > 0 && items.every((it) => getProductById(it.productId))) {
+      items.forEach((it) => {
+        const p = getProductById(it.productId);
+        if (p) addItem(p, it.quantity);
+      });
+    } else {
+      const itemCount = (order as any).items_count || 1;
+      const total = (order as any).total || 1;
+      const fallbackProduct = {
+        id: `reorder-${order.id}`,
+        name: `${itemCount} items from ${order.order_number || order.id}`,
+        slug: "reorder",
+        sku: "",
+        description: "",
+        shortDescription: "",
+        brand: null,
+        brandSlug: null,
+        category: "",
+        categorySlug: "",
+        subCategory: null,
+        subCategorySlug: null,
+        unit: "unit",
+        unitCode: "unit",
+        unitSymbol: null,
+        price: Math.round(total / itemCount),
+        mrp: Math.round(total / itemCount),
+        discount: 0,
+        bulkPrice: null,
+        bulkMinQty: null,
+        bulkLabel: null,
+        gstRate: 18,
+        gstCode: "GST18",
+        rating: 4.5,
+        reviewCount: 100,
+        inStock: true,
+        stockLevel: 100,
+        moq: 1,
+        deliveryDays: 1,
+        freeDelivery: true,
+        seller: { name: "MODIT", rating: 5, isVerified: true },
+        images: ["/products/cement/Ambuja Cement.png"],
+        specifications: {},
+        features: [],
+        tags: ["reorder"],
+      };
+      addItem(fallbackProduct, 1);
+    }
+    setReorderedId(order.id);
+    setTimeout(() => router.push("/cart"), 600);
+  };
 
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
@@ -169,6 +223,12 @@ export default function OrdersPage() {
                               {order.status === "in_transit" ? "Arriving soon" : order.status === "dispatched" ? "On the way" : order.status === "processing" ? "Being prepared" : "Order confirmed"}
                             </span>
                           </div>
+                          {(order as any).expected_delivery && (
+                            <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#00BCD4]">
+                              <CalendarClock className="h-3.5 w-3.5" />
+                              Estimated delivery by {new Date((order as any).expected_delivery).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -184,46 +244,7 @@ export default function OrdersPage() {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
-                              const fallbackProduct = {
-                                id: `reorder-${order.id}`,
-                                name: `${itemCount} items from ${order.order_number || order.id}`,
-                                slug: "reorder",
-                                sku: "",
-                                description: "",
-                                shortDescription: "",
-                                brand: null,
-                                brandSlug: null,
-                                category: "",
-                                categorySlug: "",
-                                subCategory: null,
-                                subCategorySlug: null,
-                                unit: "unit",
-                                unitCode: "unit",
-                                unitSymbol: null,
-                                price: Math.round(total / itemCount || 1),
-                                mrp: Math.round(total / itemCount || 1),
-                                discount: 0,
-                                bulkPrice: null,
-                                bulkMinQty: null,
-                                bulkLabel: null,
-                                gstRate: 18,
-                                gstCode: "GST18",
-                                rating: 4.5,
-                                reviewCount: 100,
-                                inStock: true,
-                                stockLevel: 100,
-                                moq: 1,
-                                deliveryDays: 1,
-                                freeDelivery: true,
-                                seller: { name: "MODIT", rating: 5, isVerified: true },
-                                images: ["/products/cement/Ambuja Cement.png"],
-                                specifications: {},
-                                features: [],
-                                tags: ["reorder"],
-                              };
-                              addItem(fallbackProduct, 1);
-                              setReorderedId(order.id);
-                              setTimeout(() => router.push("/cart"), 600);
+                              handleReorder(order);
                             }}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
                               reorderedId === order.id

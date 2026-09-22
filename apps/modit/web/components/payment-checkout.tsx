@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { placeOrder } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
-import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone } from "lucide-react";
+import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2 } from "lucide-react";
 
 declare global {
   interface Window {
@@ -15,16 +15,46 @@ declare global {
 interface PaymentProps {
   total: number;
   onPaymentComplete: (orderId: string) => void;
+  gstin?: string;
 }
 
-export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
+export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps) {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const toast = useToast();
-  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi">("razorpay");
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi" | "credit">("razorpay");
   const [processing, setProcessing] = useState(false);
   const [upiId, setUpiId] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const handleCredit = async () => {
+    setError(null);
+    setProcessing(true);
+    try {
+      const result = await placeOrder({
+        items: items.map((i) => ({
+          productId: i.product.id,
+          quantity: i.quantity,
+          price: i.product.price,
+        })),
+        paymentMethod: "credit",
+        gstin,
+      });
+      if (result.success && result.orderId) {
+        clearCart();
+        toast.success("Order placed!", `Order ${result.orderId} confirmed — credit terms (net 30 days)`);
+        onPaymentComplete(result.orderId);
+      } else {
+        setError(result.error || "Failed to place order. Please try again.");
+        toast.error("Order failed", result.error || "Please try again");
+        setProcessing(false);
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong", "Please try again");
+      setProcessing(false);
+    }
+  };
 
   const handleRazorpayPayment = async () => {
     setError(null);
@@ -37,6 +67,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
           price: i.product.price,
         })),
         paymentMethod: "razorpay",
+        gstin,
       };
 
       const result = await placeOrder(orderData);
@@ -106,6 +137,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
           price: i.product.price,
         })),
         paymentMethod: "cod",
+        gstin,
       });
       if (result.success && result.orderId) {
         clearCart();
@@ -139,6 +171,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
         })),
         paymentMethod: "upi",
         upiId: upiId,
+        gstin,
       });
       if (result.success && result.orderId) {
         clearCart();
@@ -166,6 +199,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
             { id: "razorpay", label: "UPI / Card / Netbanking", icon: CreditCard, desc: "Powered by Razorpay" },
             { id: "upi", label: "Pay by UPI ID", icon: Smartphone, desc: "Google Pay, PhonePe, Paytm" },
             { id: "cod", label: "Cash on Delivery", icon: Banknote, desc: "Pay when order arrives" },
+            { id: "credit", label: "Business Credit Terms", icon: Building2, desc: "Net 30 for verified organizations" },
           ].map((method) => (
             <button
               key={method.id}
@@ -204,6 +238,18 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
             />
           </div>
         )}
+
+        {/* Credit terms note */}
+        {paymentMethod === "credit" && (
+          <div className="mt-3 rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3">
+            <p className="text-[12px] font-semibold text-[#5f8f12] flex items-center gap-1.5">
+              <Building2 className="h-4 w-4" /> Credit Terms — Net 30
+            </p>
+            <p className="text-[11px] text-[#6B5B83] mt-1">
+              For verified business/organization accounts. Invoice due in 30 days from delivery. Our credit team verifies GSTIN before approval.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Error Message */}
@@ -216,7 +262,7 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
 
       {/* Place Order Button */}
       <button
-        onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : handleUPI}
+        onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : paymentMethod === "upi" ? handleUPI : handleCredit}
         disabled={processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")))}
         className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -225,10 +271,10 @@ export function PaymentSection({ total, onPaymentComplete }: PaymentProps) {
             <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Processing...
           </span>
-        ) : paymentMethod === "cod" ? (
-          `Place Order — ₹${total.toLocaleString("en-IN")}`
-        ) : (
+        ) : paymentMethod === "razorpay" ? (
           `Pay ₹${total.toLocaleString("en-IN")}`
+        ) : (
+          `Place Order — ₹${total.toLocaleString("en-IN")}`
         )}
       </button>
 

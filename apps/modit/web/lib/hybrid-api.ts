@@ -166,6 +166,7 @@ export async function placeOrder(orderData: {
   paymentMethod: string;
   couponCode?: string;
   upiId?: string;
+  gstin?: string;
 }): Promise<{ success: boolean; orderId?: string; error?: string }> {
   const apiData = await apiFetch<any>("/orders", {
     method: "POST",

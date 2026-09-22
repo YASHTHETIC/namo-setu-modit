@@ -34,6 +34,9 @@ import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
+import { RFQModal } from "@/components/rfq-modal";
+import { MessageSquareQuote, Bell } from "lucide-react";
+import { useStockAlertStore } from "@/lib/stock-alert-store";
 
 export default function ProductDetailPage({
   params,
@@ -53,6 +56,12 @@ export default function ProductDetailPage({
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  const [rfqOpen, setRfqOpen] = useState(false);
+  const [stockEmail, setStockEmail] = useState("");
+  const [stockNotifyAsked, setStockNotifyAsked] = useState(false);
+  const addStockAlert = useStockAlertStore((s) => s.addAlert);
+  const hasStockAlert = useStockAlertStore((s) => s.hasAlert(product?.id ?? ""));
+  const removeStockAlert = useStockAlertStore((s) => s.removeAlert);
   const [customColorCode, setCustomColorCode] = useState("");
 
   useEffect(() => {
@@ -436,7 +445,62 @@ export default function ProductDetailPage({
               <Button onClick={handleBuyNow} variant="secondary" className="flex-1 h-12 text-base font-semibold">
                 <Zap className="h-5 w-5" /> Buy Now
               </Button>
+              <Button onClick={() => setRfqOpen(true)} variant="ghost" className="flex-1 h-12 text-base font-semibold" title="Request a competitive bulk quote from sellers">
+                <MessageSquareQuote className="h-5 w-5" /> Request Quote
+              </Button>
             </div>
+
+            {!product.inStock && (
+              <div className="rounded-xl border border-[#FECACA] bg-red-50 p-4">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <Bell className="h-4 w-4 text-red-500" />
+                  <span className="text-[12px] font-bold text-red-600">Currently out of stock</span>
+                </div>
+                {hasStockAlert ? (
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[12px] text-[#6B5B83]">You&apos;ll be notified when it&apos;s back.</span>
+                    <button
+                      onClick={() => {
+                        removeStockAlert(product.id);
+                        setStockNotifyAsked(false);
+                      }}
+                      className="text-[11px] font-bold text-red-500 hover:underline"
+                    >
+                      Cancel alert
+                    </button>
+                  </div>
+                ) : stockNotifyAsked ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={stockEmail}
+                      onChange={(e) => setStockEmail(e.target.value)}
+                      placeholder="you@email.com"
+                      className="flex-1 px-3 py-2 rounded-lg border border-[#FECACA] text-[12px] focus:outline-none focus:border-red-400"
+                    />
+                    <button
+                      onClick={() => {
+                        if (stockEmail && stockEmail.includes("@")) {
+                          addStockAlert(product.id, product.name, stockEmail);
+                          setStockNotifyAsked(false);
+                        }
+                      }}
+                      disabled={!stockEmail?.includes("@")}
+                      className="px-3 py-2 rounded-lg bg-red-500 text-white text-[11px] font-bold hover:bg-red-600 disabled:opacity-50 transition-colors"
+                    >
+                      Notify Me
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setStockNotifyAsked(true)}
+                    className="flex items-center gap-1.5 text-[12px] font-bold text-red-600 hover:underline"
+                  >
+                    <Bell className="h-3.5 w-3.5" /> Notify me when back in stock
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="flex gap-2">
               <Button
@@ -646,6 +710,13 @@ export default function ProductDetailPage({
           </div>
         </div>
       )}
+
+      <RFQModal
+        open={rfqOpen}
+        onClose={() => setRfqOpen(false)}
+        productName={product.name}
+        sku={product.id}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
 import { useOrder } from "@/lib/modit-api";
+import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import {
   ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
   Star, Navigation, MessageSquare, RefreshCcw, Check
@@ -103,6 +104,31 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     if (!order) return -1;
     return timelineSteps.findIndex((s) => s.key === order.status);
   }, [order]);
+
+  const handleDownloadInvoice = () => {
+    if (!order) return;
+    downloadInvoiceHtml({
+      invoiceNumber: order.invoiceNumber || `${order.id}-INV`,
+      orderId: order.id,
+      date: formatDate(order.placedAt),
+      gstin: (order as any).gstin || "",
+      buyerName: order.address.name,
+      buyerAddress: `${order.address.line1}, ${order.address.city}, ${order.address.state}`,
+      buyerPincode: order.address.pincode,
+      items: order.items.map((i) => ({
+        name: i.name,
+        sku: i.sku,
+        quantity: i.quantity,
+        unit: i.unitCode,
+        price: i.unitPrice,
+        gstRate: i.gstRate,
+      })) as InvoiceItem[],
+      subtotal: order.subtotal,
+      gst: order.gst,
+      shipping: order.shipping,
+      total: order.total,
+    });
+  };
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
   const formatDateTime = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -401,8 +427,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Actions */}
         <div className="flex gap-3 pb-4">
-          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
-            <Download className="h-4 w-4 text-[#2D1B69]" /> Invoice
+          <button onClick={handleDownloadInvoice} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
+            <Download className="h-4 w-4 text-[#2D1B69]" /> GST Invoice
           </button>
           {order.status === "delivered" && (
             <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">

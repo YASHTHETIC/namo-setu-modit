@@ -26,6 +26,8 @@ import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/mod
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
+import { downloadPricelistCsv, downloadPricelistHtml, buildPricelistRows, getCategoryName } from "@/lib/pricelist";
+import { FileDown, Download } from "lucide-react";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -145,6 +147,28 @@ function ProductsContent() {
   const hasActiveFilters = search || selectedCategory || selectedBrands.length > 0 || priceRange[0] > 0 || priceRange[1] < 100000 || minRating > 0 || inStockOnly;
 
   const catColor = selectedCategory ? getCatColor(selectedCategory) : null;
+
+  const handleExport = (kind: "html" | "csv") => {
+    const rows = buildPricelistRows(filteredProducts.map((p) => ({
+      sku: p.sku,
+      name: p.name,
+      brand: p.brand,
+      category: p.category,
+      unit: p.unit,
+      price: p.price,
+      mrp: p.mrp,
+      discount: p.discount,
+      bulkPrice: p.bulkPrice,
+      bulkMinQty: p.bulkMinQty,
+      inStock: p.inStock,
+    })));
+    const title = selectedCategory
+      ? `${getCategoryName(selectedCategory, Object.fromEntries(categories.map((c) => [c.slug, c.name])))} Catalogue`
+      : "MODIT Full Catalogue";
+    const subtitle = "B2B Building Material Price List — GST extra as applicable, bulk rates included";
+    if (kind === "html") downloadPricelistHtml(title, subtitle, rows);
+    else downloadPricelistCsv(title, rows);
+  };
 
   return (
     <div
@@ -485,6 +509,23 @@ function ProductsContent() {
                   <List className="h-4 w-4" />
                 </button>
               </div>
+
+              <div className="hidden items-center gap-1.5 sm:flex">
+                <button
+                  onClick={() => handleExport("html")}
+                  title="Download price list (HTML / printable)"
+                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-[11px] font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
+                >
+                  <Download className="h-3.5 w-3.5" /> Price List
+                </button>
+                <button
+                  onClick={() => handleExport("csv")}
+                  title="Download price list as CSV"
+                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-[11px] font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
+                >
+                  <FileDown className="h-3.5 w-3.5" /> CSV
+                </button>
+              </div>
             </div>
           </div>
 
@@ -691,6 +732,8 @@ function ProductsContent() {
   );
 }
 
+import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
+
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
@@ -864,6 +907,12 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           freeDelivery={product.freeDelivery}
           className="mt-2.5"
         />
+
+        {product.pincodeStock && (
+          <div className="mt-2">
+            <PincodeStockIndicator pincodeStock={product.pincodeStock} />
+          </div>
+        )}
 
         {/* Add to Cart */}
         <button
