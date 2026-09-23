@@ -37,6 +37,7 @@ import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
 import { RFQModal } from "@/components/rfq-modal";
 import { MessageSquareQuote, Bell } from "lucide-react";
 import { useStockAlertStore } from "@/lib/stock-alert-store";
+import { notifyOrderEvent } from "@/lib/order-notifications";
 
 export default function ProductDetailPage({
   params,
@@ -482,6 +483,11 @@ export default function ProductDetailPage({
                       onClick={() => {
                         if (stockEmail && stockEmail.includes("@")) {
                           addStockAlert(product.id, product.name, stockEmail);
+                          notifyOrderEvent({
+                            title: "Back-in-stock alert armed",
+                            body: `We'll notify ${stockEmail} when "${product.name}" is back in stock.`,
+                            type: "alert",
+                          });
                           setStockNotifyAsked(false);
                         }
                       }}

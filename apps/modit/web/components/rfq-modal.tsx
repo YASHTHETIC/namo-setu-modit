@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCreateRFQ } from "@/lib/modit-api";
 import { X, Send, Check } from "lucide-react";
+import { notifyOrderEvent } from "@/lib/order-notifications";
 
 interface RFQModalProps {
   open: boolean;
@@ -28,6 +29,11 @@ export function RFQModal({ open, onClose, productName, sku }: RFQModalProps) {
         description: description.trim() || undefined,
         due_date: dueDate || undefined,
       } as never);
+      notifyOrderEvent({
+        title: "Quote request sent",
+        body: `"${title.trim()}" sent to verified sellers — expect responses within 24 hours. Track it under Requests for Quotation.`,
+        type: "rfq",
+      });
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);

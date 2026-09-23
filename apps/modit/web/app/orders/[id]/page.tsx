@@ -4,6 +4,8 @@ import { use, useMemo, useState } from "react";
 import Link from "next/link";
 import { useOrder } from "@/lib/modit-api";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
+import { ReturnModal } from "@/components/return-modal";
+import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
 import {
   ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
   Star, Navigation, MessageSquare, RefreshCcw, Check
@@ -94,6 +96,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [returnOpen, setReturnOpen] = useState(false);
+  const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
 
   const order = useMemo(() => {
     if (apiOrder) return apiOrder as unknown as OrderDetail;
@@ -425,13 +429,42 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
 
+        {/* Return status */}
+        {existingReturn && (
+          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE8F0] overflow-hidden">
+            <div className="p-5">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wide flex items-center gap-1.5">
+                  <RotateCcw className="h-3.5 w-3.5" /> Return {existingReturn.id}
+                </p>
+                <span className="text-[11px] font-bold text-[#C2185B] bg-white rounded-full px-2.5 py-1">{RETURN_STATUS_LABEL[existingReturn.status]}</span>
+              </div>
+              <p className="text-[12px] text-[#6B5B83] mt-2">
+                {existingReturn.items.length} item{existingReturn.items.length !== 1 ? "s" : ""} · {existingReturn.reason} · Est. refund ₹{refundAmount(existingReturn).toLocaleString("en-IN")}
+              </p>
+              <div className="mt-3 space-y-1.5">
+                {existingReturn.statusHistory.map((h, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-[11px]">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#E91E63] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <span className="font-bold text-[#150726]">{RETURN_STATUS_LABEL[h.status]}</span>
+                      <span className="text-[#9B8CB5]"> — {new Date(h.at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                      <p className="text-[#6B5B83]">{h.note}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex gap-3 pb-4">
           <button onClick={handleDownloadInvoice} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
             <Download className="h-4 w-4 text-[#2D1B69]" /> GST Invoice
           </button>
-          {order.status === "delivered" && (
-            <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
+          {order.status === "delivered" && !existingReturn && (
+            <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
               <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Return
             </button>
           )}
@@ -440,6 +473,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           </button>
         </div>
       </div>
+
+      {order && (
+        <ReturnModal
+          open={returnOpen}
+          onClose={() => setReturnOpen(false)}
+          orderId={order.id}
+          items={order.items.map((i) => ({ sku: i.sku, name: i.name, quantity: i.quantity, unitPrice: i.unitPrice, unitCode: i.unitCode }))}
+        />
+      )}
     </div>
   );
 }

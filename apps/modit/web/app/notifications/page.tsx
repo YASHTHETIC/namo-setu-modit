@@ -10,6 +10,7 @@ import {
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
+import { useOrderNotificationStore } from "@/lib/order-notifications";
 
 function getClient() {
   return createApiClient({
@@ -41,6 +42,21 @@ export default function NotificationsPage() {
     },
   });
 
+  // Local order-event notifications (order placed, returns, RFQs, stock alerts)
+  const localEvents = useOrderNotificationStore((s) => s.events);
+  const markLocalRead = useOrderNotificationStore((s) => s.markRead);
+  const markAllLocalRead = useOrderNotificationStore((s) => s.markAllRead);
+  const localAsNotifications: Notification[] = localEvents.map((e) => ({
+    id: e.id,
+    title: e.title,
+    body: e.body,
+    read: e.read,
+    created_at: new Date(e.createdAt).toISOString(),
+    type: e.type,
+  }));
+  const combined = [...localAsNotifications, ...(notifications ?? [])];
+  const visible = filter === "unread" ? combined.filter((n) => !n.read) : combined;
+
   const markReadMutation = useMutation({
     mutationFn: async (id: string) => {
       const client = getClient();
@@ -61,7 +77,17 @@ export default function NotificationsPage() {
     },
   });
 
-  const unreadCount = notifications?.filter((n) => !n.read).length ?? 0;
+  const unreadCount = combined.filter((n) => !n.read).length ?? 0;
+
+  const handleMarkRead = (id: string) => {
+    if (id.startsWith("EVT-")) markLocalRead(id);
+    else markReadMutation.mutate(id);
+  };
+
+  const handleMarkAllRead = () => {
+    markAllLocalRead();
+    markAllReadMutation.mutate();
+  };
 
   return (
     <div>
@@ -99,7 +125,7 @@ export default function NotificationsPage() {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => markAllReadMutation.mutate()}
+              onClick={handleMarkAllRead}
               disabled={markAllReadMutation.isPending}
             >
               <CheckCheck className="h-4 w-4" />
@@ -111,7 +137,7 @@ export default function NotificationsPage() {
 
       {isLoading ? (
         <LoadingSpinner />
-      ) : !notifications || notifications.length === 0 ? (
+      ) : visible.length === 0 ? (
         <Card>
           <CardContent>
             <EmptyState
@@ -123,7 +149,7 @@ export default function NotificationsPage() {
         </Card>
       ) : (
         <div className="space-y-2">
-          {notifications.map((notification) => (
+          {visible.map((notification) => (
             <Card
               key={notification.id}
               className={cn(
@@ -152,7 +178,7 @@ export default function NotificationsPage() {
                     </h3>
                     {!notification.read && (
                       <button
-                        onClick={() => markReadMutation.mutate(notification.id)}
+                        onClick={() => handleMarkRead(notification.id)}
                         className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--brand)]"
                         title="Mark as read"
                       >

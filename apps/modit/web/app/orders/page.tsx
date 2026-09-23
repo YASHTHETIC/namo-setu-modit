@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useOrders } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { getProductById } from "@/lib/product-data";
+import { notifyOrderEvent } from "@/lib/order-notifications";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
@@ -37,10 +38,11 @@ export default function OrdersPage() {
 
   const handleReorder = (order: any) => {
     const items = (order as any).items as Array<{ productId: string; quantity: number }> | undefined;
+    let addedCount = 0;
     if (items && items.length > 0 && items.every((it) => getProductById(it.productId))) {
       items.forEach((it) => {
         const p = getProductById(it.productId);
-        if (p) addItem(p, it.quantity);
+        if (p) { addItem(p, it.quantity); addedCount += 1; }
       });
     } else {
       const itemCount = (order as any).items_count || 1;
@@ -84,6 +86,12 @@ export default function OrdersPage() {
       };
       addItem(fallbackProduct, 1);
     }
+    notifyOrderEvent({
+      title: "Items reordered",
+      body: `${addedCount > 0 ? addedCount : (order as any).items_count || 1} item(s) from order ${order.order_number || order.id} added back to your cart.`,
+      type: "order",
+      orderId: order.id,
+    });
     setReorderedId(order.id);
     setTimeout(() => router.push("/cart"), 600);
   };
