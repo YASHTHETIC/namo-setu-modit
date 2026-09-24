@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "./product-data";
+import { resolveProduct } from "./pricing";
 
 export interface CartItem {
   product: Product;
@@ -13,14 +14,25 @@ export interface CartItem {
   unitPrice?: number;
 }
 
+/** Live unit price: admin overrides + active sale always win over the add-time snapshot. */
+export function getLiveUnitPrice(item: CartItem): number {
+  const resolved = resolveProduct(item.product);
+  if (item.variantId) {
+    const variant = resolved.variants?.find((v) => v.id === item.variantId);
+    if (variant) return variant.price;
+  }
+  return resolved.price;
+}
+
 export function getBulkUnitPrice(item: CartItem): number {
-  const unitPrice = item.unitPrice ?? item.product.price;
+  const resolved = resolveProduct(item.product);
+  const unitPrice = getLiveUnitPrice(item);
   const bulk = item.variantId
-    ? item.product.variants?.find((v) => v.id === item.variantId)?.bulkPrice ?? item.product.bulkPrice
-    : item.product.bulkPrice;
+    ? resolved.variants?.find((v) => v.id === item.variantId)?.bulkPrice ?? resolved.bulkPrice
+    : resolved.bulkPrice;
   const bulkMin = item.variantId
-    ? item.product.variants?.find((v) => v.id === item.variantId)?.bulkMinQty ?? item.product.bulkMinQty
-    : item.product.bulkMinQty;
+    ? resolved.variants?.find((v) => v.id === item.variantId)?.bulkMinQty ?? resolved.bulkMinQty
+    : resolved.bulkMinQty;
   if (bulk != null && bulkMin != null && item.quantity >= bulkMin) {
     return bulk;
   }
@@ -29,12 +41,12 @@ export function getBulkUnitPrice(item: CartItem): number {
 
 export function isBulkApplied(item: CartItem): boolean {
   const effective = getBulkUnitPrice(item);
-  const unitPrice = item.unitPrice ?? item.product.price;
+  const unitPrice = getLiveUnitPrice(item);
   return effective < unitPrice;
 }
 
 export function bulkSavingsForItem(item: CartItem): number {
-  const unitPrice = item.unitPrice ?? item.product.price;
+  const unitPrice = getLiveUnitPrice(item);
   const effective = getBulkUnitPrice(item);
   return (unitPrice - effective) * item.quantity;
 }
@@ -180,8 +192,9 @@ export const useCartStore = create<CartState>()(
 
       getCartMRP: () => {
         return get().items.reduce((sum, i) => {
-          const variant = i.variantId ? i.product.variants?.find((v) => v.id === i.variantId) : null;
-          return sum + (variant?.mrp ?? i.product.mrp) * i.quantity;
+          const resolved = resolveProduct(i.product);
+          const variant = i.variantId ? resolved.variants?.find((v) => v.id === i.variantId) : null;
+          return sum + (variant?.mrp ?? resolved.mrp) * i.quantity;
         }, 0);
       },
 
@@ -195,7 +208,7 @@ export const useCartStore = create<CartState>()(
 
       getCartGST: () => {
         return get().items.reduce(
-          (sum, i) => sum + getBulkUnitPrice(i) * i.quantity * (i.product.gstRate / 100),
+          (sum, i) => sum + getBulkUnitPrice(i) * i.quantity * (resolveProduct(i.product).gstRate / 100),
           0
         );
       },

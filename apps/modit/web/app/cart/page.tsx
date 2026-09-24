@@ -16,7 +16,9 @@ import {
   Plus,
   Check,
 } from "lucide-react";
-import { useCartStore, getBulkUnitPrice, isBulkApplied } from "@/lib/cart-store";
+import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
+import { useCouponStore } from "@/lib/coupon-store";
+import { resolveProduct } from "@/lib/pricing";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -36,18 +38,18 @@ export default function CartPage() {
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [couponCode, setCouponCode] = useState("");
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [couponDiscount, setCouponDiscount] = useState(0);
+  const appliedCoupon = useCouponStore((s) => s.appliedCoupon);
+  const couponError = useCouponStore((s) => s.couponError);
+  const applyCoupon = useCouponStore((s) => s.applyCoupon);
+  const removeCoupon = useCouponStore((s) => s.removeCoupon);
+  const getCouponDiscount = useCouponStore((s) => s.getDiscount);
 
   const handleApplyCoupon = () => {
-    if (couponCode.toUpperCase() === "FIRST10") {
-      setCouponApplied(true);
-      setCouponDiscount(getCartTotal() * 0.1);
-    } else if (couponCode.toUpperCase() === "BULK5") {
-      setCouponApplied(true);
-      setCouponDiscount(getCartTotal() * 0.05);
-    }
+    applyCoupon(couponCode.trim(), getCartTotal());
   };
+
+  const couponDiscount = appliedCoupon ? getCouponDiscount(getCartTotal()) : 0;
+  const couponApplied = Boolean(appliedCoupon);
 
   const grandTotal = getCartGrandTotal() - (couponApplied ? couponDiscount : 0);
 
@@ -130,11 +132,12 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-3">
             {items.map((item) => {
-              const basePrice = item.unitPrice ?? item.product.price;
+              const resolved = resolveProduct(item.product);
+              const basePrice = getLiveUnitPrice(item);
               const itemPrice = getBulkUnitPrice(item);
               const bulkApplied = isBulkApplied(item);
-              const variant = item.variantId ? item.product.variants?.find((v) => v.id === item.variantId) : null;
-              const unitMrp = variant?.mrp ?? item.product.mrp;
+              const variant = item.variantId ? resolved.variants?.find((v) => v.id === item.variantId) : null;
+              const unitMrp = variant?.mrp ?? resolved.mrp;
               const discount = unitMrp > itemPrice
                 ? Math.round(((unitMrp - itemPrice) / unitMrp) * 100)
                 : bulkApplied
@@ -181,6 +184,11 @@ export default function CartPage() {
                       {discount > 0 && (
                         <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-[10px] font-bold text-[#E91E63]">
                           {discount}% OFF
+                        </span>
+                      )}
+                      {resolved.onSale && resolved.saleName && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#7CB518] text-[10px] font-bold text-white">
+                          {resolved.saleName}
                         </span>
                       )}
                       {bulkApplied && (
@@ -289,13 +297,17 @@ export default function CartPage() {
                     Apply
                   </button>
                 </div>
-                {couponApplied && (
-                  <div className="mt-2 flex items-center gap-1.5 text-[12px] text-[#7CB518] font-semibold">
-                    <Check className="h-3.5 w-3.5" /> Coupon applied! You save ₹{couponDiscount.toLocaleString()}
+                {couponApplied && appliedCoupon && (
+                  <div className="mt-2 flex items-center justify-between gap-1.5 text-[12px] text-[#7CB518] font-semibold">
+                    <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! You save ₹{couponDiscount.toLocaleString()}</span>
+                    <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-[11px] text-[#9B8CB5] hover:text-red-500 font-bold">Remove</button>
                   </div>
                 )}
-                {!couponApplied && couponCode && (
-                  <p className="mt-2 text-[11px] text-[#9B8CB5]">Try FIRST10 or BULK5</p>
+                {!couponApplied && couponError && (
+                  <p className="mt-2 text-[11px] text-red-500 font-semibold">{couponError}</p>
+                )}
+                {!couponApplied && !couponError && couponCode && (
+                  <p className="mt-2 text-[11px] text-[#9B8CB5]">Try FIRST100 or BULK10</p>
                 )}
               </div>
 

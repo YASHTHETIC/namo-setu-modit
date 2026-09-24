@@ -30,6 +30,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { ReferralModal } from "@/components/referral-modal";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
+import { SaleBanner } from "@/components/sale-banner";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -382,7 +383,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               { label: "Calculator", href: "/calculator" },
               { label: "Get Quote", href: "/rfq" },
               { label: "Orders", href: "/orders" },
-              { label: "Inventory", href: "/inventory" },
             ].map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/") || (item.href === "/products" && pathname.startsWith("/products"));
               return (
@@ -402,6 +402,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+
+      <SaleBanner />
 
       <AnimatePresence>
         {showMobileMenu && (

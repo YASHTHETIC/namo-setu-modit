@@ -6,6 +6,7 @@ import { useOrder } from "@/lib/modit-api";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
+import { useAdminStore } from "@/lib/admin-store";
 import {
   ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
   Star, Navigation, MessageSquare, RefreshCcw, Check
@@ -98,11 +99,13 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [refreshing, setRefreshing] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
   const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
+  const adminOrderStatus = useAdminStore((s) => s.orderStatuses[id]?.status);
 
   const order = useMemo(() => {
-    if (apiOrder) return apiOrder as unknown as OrderDetail;
-    return demoOrders[id] ?? null;
-  }, [apiOrder, id]);
+    const base = apiOrder ? (apiOrder as unknown as OrderDetail) : (demoOrders[id] ?? null);
+    if (!base) return null;
+    return adminOrderStatus ? { ...base, status: adminOrderStatus } : base;
+  }, [apiOrder, id, adminOrderStatus]);
 
   const currentStepIndex = useMemo(() => {
     if (!order) return -1;

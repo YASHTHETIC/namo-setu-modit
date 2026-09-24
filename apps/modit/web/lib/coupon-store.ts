@@ -28,6 +28,12 @@ interface CouponState {
   removeCoupon: () => void;
   getDiscount: (subtotal: number) => number;
   getBestCoupon: (subtotal: number) => Coupon | null;
+
+  addCoupon: (coupon: Coupon) => { success: boolean; message: string };
+  updateCoupon: (code: string, patch: Partial<Coupon>) => void;
+  toggleCoupon: (code: string) => void;
+  deleteCoupon: (code: string) => void;
+  resetCoupons: () => void;
 }
 
 const defaultCoupons: Coupon[] = [
@@ -122,11 +128,47 @@ export const useCouponStore = create<CouponState>()(
           return curDisc > bestDisc ? c : best;
         });
       },
+
+      addCoupon: (coupon) => {
+        const code = coupon.code.trim().toUpperCase();
+        if (!code) return { success: false, message: "Coupon code is required." };
+        if (get().availableCoupons.some((c) => c.code.toUpperCase() === code)) {
+          return { success: false, message: `Coupon "${code}" already exists.` };
+        }
+        set((state) => ({ availableCoupons: [{ ...coupon, code }, ...state.availableCoupons] }));
+        return { success: true, message: `Coupon "${code}" created.` };
+      },
+
+      updateCoupon: (code, patch) =>
+        set((state) => ({
+          availableCoupons: state.availableCoupons.map((c) =>
+            c.code.toUpperCase() === code.toUpperCase() ? { ...c, ...patch } : c
+          ),
+        })),
+
+      toggleCoupon: (code) =>
+        set((state) => ({
+          availableCoupons: state.availableCoupons.map((c) =>
+            c.code.toUpperCase() === code.toUpperCase() ? { ...c, active: !c.active } : c
+          ),
+        })),
+
+      deleteCoupon: (code) =>
+        set((state) => ({
+          availableCoupons: state.availableCoupons.filter(
+            (c) => c.code.toUpperCase() !== code.toUpperCase()
+          ),
+          appliedCoupon:
+            state.appliedCoupon?.code.toUpperCase() === code.toUpperCase() ? null : state.appliedCoupon,
+        })),
+
+      resetCoupons: () => set({ availableCoupons: defaultCoupons, appliedCoupon: null, couponError: "" }),
     }),
     {
       name: "modit-coupons",
       partialize: (state) => ({
         appliedCoupon: state.appliedCoupon,
+        availableCoupons: state.availableCoupons,
       }),
     }
   )

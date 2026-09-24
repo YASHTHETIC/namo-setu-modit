@@ -26,6 +26,7 @@ import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/mod
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
+import { useDisplayProducts } from "@/lib/pricing";
 import { downloadPricelistCsv, downloadPricelistHtml, buildPricelistRows, getCategoryName } from "@/lib/pricelist";
 import { FileDown, Download } from "lucide-react";
 
@@ -56,7 +57,9 @@ function ProductsContent() {
     category_id: selectedCategory || undefined,
   });
   const { data: apiCategories = [] } = useCategories();
-  const products = apiProducts as Product[];
+  const rawProducts = apiProducts as Product[];
+  // Admin overrides + active sale applied; hidden products dropped
+  const products = useDisplayProducts(rawProducts);
   const categories = apiCategories as { name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
   useEffect(() => {
@@ -819,6 +822,13 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           >
             <TrendingDown className="h-3 w-3" />
             {savingsPercent}% OFF
+          </span>
+        )}
+
+        {/* Sale badge */}
+        {"onSale" in product && (product as unknown as { onSale: boolean; saleName: string | null }).onSale && (
+          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-[2] rounded-lg px-2.5 py-1 text-[10px] font-black text-white shadow-lg bg-[#7CB518]">
+            {(product as unknown as { saleName: string | null }).saleName ?? "SALE"}
           </span>
         )}
 

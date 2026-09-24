@@ -7,6 +7,7 @@ import { useOrders } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { getProductById } from "@/lib/product-data";
 import { notifyOrderEvent } from "@/lib/order-notifications";
+import { useAdminStore } from "@/lib/admin-store";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
@@ -31,6 +32,7 @@ export default function OrdersPage() {
   const [reorderedId, setReorderedId] = useState<string | null>(null);
   const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
   const orderList = orders ?? fallbackOrders;
+  const adminOrderStatuses = useAdminStore((s) => s.orderStatuses);
 
   const totalSpent = orderList.reduce((sum, o) => sum + ((o as any).total || 0), 0);
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
@@ -170,7 +172,8 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-3 px-4 sm:px-0">
             {orderList.map((order) => {
-              const st = statusConfig[order.status] || statusConfig.placed;
+              const liveStatus = adminOrderStatuses[order.id]?.status ?? order.status;
+              const st = statusConfig[liveStatus] || statusConfig.placed;
               const Icon = st.icon;
               const date = order.placed_at
                 ? new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
@@ -211,24 +214,24 @@ export default function OrdersPage() {
                       </div>
 
                       {/* Progress bar for active orders */}
-                      {["in_transit", "confirmed", "processing", "dispatched"].includes(order.status) && (
+                      {["in_transit", "confirmed", "processing", "dispatched"].includes(liveStatus) && (
                         <div className="mt-4 pt-3 border-t border-[#F0ECF9]">
                           <div className="flex items-center gap-3">
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-1.5">
                                 <span className="text-[10px] font-semibold text-[#9B8CB5] uppercase tracking-wide">Progress</span>
                                 <span className="text-[10px] font-bold text-[#2D1B69]">
-                                  {order.status === "confirmed" ? "30%" : order.status === "processing" ? "50%" : order.status === "dispatched" ? "70%" : "85%"}
+                                  {liveStatus === "confirmed" ? "30%" : liveStatus === "processing" ? "50%" : liveStatus === "dispatched" ? "70%" : "85%"}
                                 </span>
                               </div>
                               <div className="h-1.5 rounded-full bg-[#F0ECF9] overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full transition-all ${order.status === "in_transit" ? "w-[85%] bg-gradient-to-r from-[#00BCD4] to-[#7CB518]" : order.status === "dispatched" ? "w-[70%] bg-[#00BCD4]" : order.status === "processing" ? "w-[50%] bg-[#E91E63]" : "w-[30%] bg-[#2D1B69]"}`}
+                                  className={`h-full rounded-full transition-all ${liveStatus === "in_transit" ? "w-[85%] bg-gradient-to-r from-[#00BCD4] to-[#7CB518]" : liveStatus === "dispatched" ? "w-[70%] bg-[#00BCD4]" : liveStatus === "processing" ? "w-[50%] bg-[#E91E63]" : "w-[30%] bg-[#2D1B69]"}`}
                                 />
                               </div>
                             </div>
                             <span className="text-[11px] font-semibold text-[#6B5B83] whitespace-nowrap">
-                              {order.status === "in_transit" ? "Arriving soon" : order.status === "dispatched" ? "On the way" : order.status === "processing" ? "Being prepared" : "Order confirmed"}
+                              {liveStatus === "in_transit" ? "Arriving soon" : liveStatus === "dispatched" ? "On the way" : liveStatus === "processing" ? "Being prepared" : "Order confirmed"}
                             </span>
                           </div>
                           {(order as any).expected_delivery && (
@@ -241,7 +244,7 @@ export default function OrdersPage() {
                       )}
 
                       {/* Delivered checkmark + Reorder */}
-                      {order.status === "delivered" && (
+                      {liveStatus === "delivered" && (
                         <div className="mt-3 pt-3 border-t border-[#F0ECF9] flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <div className="h-5 w-5 rounded-full bg-[#F0F9E8] flex items-center justify-center">
