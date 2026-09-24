@@ -4,9 +4,11 @@ import Link from "next/link";
 import { ArrowLeft, X, Star, Truck, Shield, Package, Trash2 } from "lucide-react";
 import { useComparisonStore } from "@/lib/comparison-store";
 import { useCartStore } from "@/lib/cart-store";
+import { useDisplayProducts } from "@/lib/pricing";
 
 export default function ComparePage() {
-  const { items, removeFromCompare, clearCompare } = useComparisonStore();
+  const { items: rawItems, removeFromCompare, clearCompare } = useComparisonStore();
+  const items = useDisplayProducts(rawItems as import("@/lib/product-data").Product[]);
   const addItem = useCartStore((s) => s.addItem);
 
   if (items.length === 0) {

@@ -1,6 +1,7 @@
 "use client";
 
 import type { Product } from "./product-data";
+import { getProductById } from "./product-data";
 import { useAdminStore, getActiveSaleAt, type Sale } from "./admin-store";
 
 export interface DisplayProduct extends Product {
@@ -87,4 +88,57 @@ export function useDisplayProducts(products: Product[]): DisplayProduct[] {
 export function useActiveSale(): Sale | null {
   const sales = useAdminStore((s) => s.sales);
   return getActiveSaleAt(sales, Date.now());
+}
+
+export interface LiveSummary {
+  price: number;
+  mrp: number;
+  discount: number;
+  onSale: boolean;
+  saleName: string | null;
+  hidden: boolean;
+}
+
+/**
+ * Live pricing for lightweight summary cards (home rails) that only carry
+ * id + fallback price/mrp/discount. Falls back to the baked-in values when
+ * the full product is unavailable. Reactive — re-renders on admin changes.
+ */
+export function useLiveSummary(
+  id: string,
+  fallback: { price: number; mrp: number; discount: number }
+): LiveSummary {
+  const overrides = useAdminStore((s) => s.overrides);
+  const sales = useAdminStore((s) => s.sales);
+  void overrides;
+  void sales;
+  const full = getProductById(id);
+  if (!full) return { ...fallback, onSale: false, saleName: null, hidden: false };
+  const r = resolveProduct(full);
+  return {
+    price: r.price,
+    mrp: r.mrp,
+    discount: r.discount,
+    onSale: r.onSale,
+    saleName: r.saleName,
+    hidden: r.hidden,
+  };
+}
+
+/** Non-reactive version for event handlers. */
+export function getLiveSummary(
+  id: string,
+  fallback: { price: number; mrp: number; discount: number }
+): LiveSummary {
+  const full = getProductById(id);
+  if (!full) return { ...fallback, onSale: false, saleName: null, hidden: false };
+  const r = resolveProduct(full);
+  return {
+    price: r.price,
+    mrp: r.mrp,
+    discount: r.discount,
+    onSale: r.onSale,
+    saleName: r.saleName,
+    hidden: r.hidden,
+  };
 }

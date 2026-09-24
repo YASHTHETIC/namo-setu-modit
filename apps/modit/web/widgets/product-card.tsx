@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { Heart, GitCompareArrows } from "lucide-react";
 import type { Product } from "@/lib/product-data";
@@ -8,6 +8,8 @@ import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useComparisonStore } from "@/lib/comparison-store";
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
+import { resolveProduct } from "@/lib/pricing";
+import { useAdminStore } from "@/lib/admin-store";
 
 interface ProductCardProps {
   product: Product;
@@ -17,6 +19,11 @@ interface ProductCardProps {
 export function ProductCard({ product, compact = false }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
+  const adminOverrides = useAdminStore((s) => s.overrides);
+  const adminSales = useAdminStore((s) => s.sales);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const live = useMemo(() => resolveProduct(product), [product, adminOverrides, adminSales]);
+  if (live.hidden) return null;
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     product.variants?.[0]?.id ?? null
   );
@@ -29,11 +36,11 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const selectedVariant = selectedVariantId
-    ? product.variants?.find((v) => v.id === selectedVariantId) ?? null
+    ? live.variants?.find((v) => v.id === selectedVariantId) ?? null
     : null;
-  const activePrice = selectedVariant?.price ?? product.price;
-  const activeMrp = selectedVariant?.mrp ?? product.mrp;
-  const activeStock = selectedVariant?.stockLevel ?? product.stockLevel;
+  const activePrice = selectedVariant?.price ?? live.price;
+  const activeMrp = selectedVariant?.mrp ?? live.mrp;
+  const activeStock = selectedVariant?.stockLevel ?? live.stockLevel;
 
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
@@ -46,7 +53,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product, 1, selectedVariantId ?? undefined);
+    addItem(live, 1, selectedVariantId ?? undefined);
     setFlashing(true);
     setJustAdded(true);
     setTimeout(() => setFlashing(false), 400);
@@ -56,7 +63,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product, 1, selectedVariantId ?? undefined);
+    addItem(live, 1, selectedVariantId ?? undefined);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
@@ -84,7 +91,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     }
   };
 
-  const isBulk = product.bulkMinQty && product.bulkMinQty > 1;
+  const isBulk = live.bulkMinQty && live.bulkMinQty > 1;
   const isBestseller = product.rating >= 4.5 && product.reviewCount > 50;
   const hasVariants = product.variants && product.variants.length > 0;
   const hasFreeDeliveryThreshold = product.freeDeliveryThreshold && !product.freeDelivery;
@@ -117,6 +124,11 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
           {isBulk && !compact && (
             <span className="badge-bulk">BULK PRICE</span>
+          )}
+          {live.onSale && !compact && (
+            <span className="badge-pill bg-[#7CB518] text-white shadow-lg shadow-green-500/20">
+              {live.saleName ?? "SALE"}
+            </span>
           )}
         </div>
 
@@ -256,9 +268,9 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         </div>
 
         {/* Bulk pricing indicator */}
-        {isBulk && !compact && product.bulkPrice && (
+        {isBulk && !compact && live.bulkPrice && (
           <p className="text-[10px] font-semibold text-[#FF9800]">
-            Bulk: ₹{product.bulkPrice.toLocaleString()}/unit (min {product.bulkMinQty})
+            Bulk: ₹{live.bulkPrice.toLocaleString()}/unit (min {live.bulkMinQty})
           </p>
         )}
 

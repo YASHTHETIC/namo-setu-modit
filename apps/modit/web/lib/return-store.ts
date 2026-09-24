@@ -30,7 +30,23 @@ interface ReturnState {
   returns: ReturnRequest[];
   createReturn: (input: Omit<ReturnRequest, "id" | "status" | "statusHistory" | "createdAt">) => ReturnRequest;
   getReturnForOrder: (orderId: string) => ReturnRequest | undefined;
+  advanceReturn: (id: string, status: ReturnStatus, note: string) => void;
 }
+
+export const RETURN_NEXT: Record<ReturnStatus, { status: ReturnStatus; label: string; note: string }[]> = {
+  requested: [
+    { status: "approved", label: "Approve & schedule pickup", note: "Approved. Pickup agent will call before arriving." },
+    { status: "rejected", label: "Reject", note: "Return rejected after review. Contact support for help." },
+  ],
+  approved: [
+    { status: "picked_up", label: "Mark picked up", note: "Items picked up from site. Quality check in progress." },
+  ],
+  picked_up: [
+    { status: "refunded", label: "Complete refund", note: "Refund processed. Amount reaches in 3–5 working days." },
+  ],
+  refunded: [],
+  rejected: [],
+};
 
 export const RETURN_REASONS = [
   "Damaged in transit",
@@ -66,6 +82,14 @@ export const useReturnStore = create<ReturnState>()(
         return req;
       },
       getReturnForOrder: (orderId) => get().returns.find((r) => r.orderId === orderId),
+      advanceReturn: (id, status, note) =>
+        set((state) => ({
+          returns: state.returns.map((r) =>
+            r.id === id
+              ? { ...r, status, statusHistory: [...r.statusHistory, { status, at: Date.now(), note }] }
+              : r
+          ),
+        })),
     }),
     { name: "modit-returns" }
   )

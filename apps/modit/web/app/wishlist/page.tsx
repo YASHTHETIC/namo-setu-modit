@@ -15,10 +15,12 @@ import {
 } from "lucide-react";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useCartStore } from "@/lib/cart-store";
+import { useDisplayProducts } from "@/lib/pricing";
 import { useState } from "react";
 
 export default function WishlistPage() {
-  const items = useWishlistStore((s) => s.items);
+  const rawItems = useWishlistStore((s) => s.items);
+  const items = useDisplayProducts(rawItems as import("@/lib/product-data").Product[]);
   const removeWishlist = useWishlistStore((s) => s.removeWishlist);
   const clearWishlist = useWishlistStore((s) => s.clearWishlist);
   const addItem = useCartStore((s) => s.addItem);

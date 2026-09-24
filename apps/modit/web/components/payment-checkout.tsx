@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, getBulkUnitPrice } from "@/lib/cart-store";
 import { placeOrder } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
 import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2, KeyRound, Phone } from "lucide-react";
@@ -65,7 +65,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
         items: items.map((i) => ({
           productId: i.product.id,
           quantity: i.quantity,
-          price: i.product.price,
+          price: getBulkUnitPrice(i),
         })),
         paymentMethod: "credit",
         gstin,
@@ -100,7 +100,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
         items: items.map((i) => ({
           productId: i.product.id,
           quantity: i.quantity,
-          price: i.product.price,
+          price: getBulkUnitPrice(i),
         })),
         paymentMethod: "razorpay",
         gstin,
@@ -182,7 +182,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
         items: items.map((i) => ({
           productId: i.product.id,
           quantity: i.quantity,
-          price: i.product.price,
+          price: getBulkUnitPrice(i),
         })),
         paymentMethod: "cod",
         gstin,
@@ -221,7 +221,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
         items: items.map((i) => ({
           productId: i.product.id,
           quantity: i.quantity,
-          price: i.product.price,
+          price: getBulkUnitPrice(i),
         })),
         paymentMethod: "upi",
         upiId: upiId,

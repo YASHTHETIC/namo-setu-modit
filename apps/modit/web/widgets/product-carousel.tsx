@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight, Star, Truck } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { products as allProducts } from "@/lib/product-data";
+import { useLiveSummary, getLiveSummary } from "@/lib/pricing";
 import type { ProductCarouselData, ProductSummary } from "@/lib/layout-types";
 import { castSectionData } from "@/lib/layout-types";
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { useState } from "react";
 function MiniProductCard({ p }: { p: ProductSummary }) {
   const addItem = useCartStore((s) => s.addItem);
   const [added, setAdded] = useState(false);
+  const live = useLiveSummary(p.id, { price: p.price, mrp: p.mrp, discount: p.discount });
 
   const handleAdd = () => {
     const full = allProducts.find((ap) => ap.id === p.id);
@@ -21,6 +23,8 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
     }
   };
 
+  if (live.hidden) return null;
+
   return (
     <div className="min-w-[160px] max-w-[160px] bg-white rounded-2xl border border-[var(--border)] overflow-hidden shrink-0">
       <div className="relative aspect-square bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
@@ -30,6 +34,9 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
         {p.badge && (
           <span className="absolute top-1.5 left-1.5 bg-[var(--green)] text-white text-[8px] font-bold px-1.5 py-0.5 rounded">{p.badge}</span>
         )}
+        {live.onSale && (
+          <span className="absolute bottom-1.5 left-1.5 bg-[#7CB518] text-white text-[8px] font-bold px-1.5 py-0.5 rounded">{live.saleName ?? "SALE"}</span>
+        )}
       </div>
       <div className="p-2.5">
         <p className="text-[9px] font-bold text-[var(--green)] uppercase">{p.brand}</p>
@@ -38,8 +45,8 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
           <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-[8px] font-bold px-1 py-0.5 rounded">{p.rating} <Star className="h-1.5 w-1.5 fill-white" /></span>
         </div>
         <div className="flex items-baseline gap-1 mt-1">
-          <span className="text-[14px] font-extrabold text-[var(--text)]">₹{p.price.toLocaleString()}</span>
-          {p.mrp > p.price && <span className="text-[10px] text-[var(--text-muted)] line-through">₹{p.mrp.toLocaleString()}</span>}
+          <span className="text-[14px] font-extrabold text-[var(--text)]">₹{live.price.toLocaleString()}</span>
+          {live.mrp > live.price && <span className="text-[10px] text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString()}</span>}
         </div>
         <p className="text-[9px] text-[var(--green)] font-semibold mt-0.5 flex items-center gap-0.5">
           <Truck className="h-2.5 w-2.5" /> {p.delivery_text}

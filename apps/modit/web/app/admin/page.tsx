@@ -3,18 +3,21 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import {
-  Package, ShoppingCart, Ticket, Zap, AlertTriangle, ArrowRight, IndianRupee, TrendingUp,
+  Package, ShoppingCart, Ticket, Zap, AlertTriangle, ArrowRight, IndianRupee, TrendingUp, RotateCcw,
 } from "lucide-react";
 import { products } from "@/lib/product-data";
 import { useAdminStore, getActiveSaleAt, getUpcomingSaleAt } from "@/lib/admin-store";
 import { resolveProduct } from "@/lib/pricing";
 import { useCouponStore } from "@/lib/coupon-store";
+import { useReturnStore } from "@/lib/return-store";
 
 export default function AdminDashboard() {
   const overrides = useAdminStore((s) => s.overrides);
   const sales = useAdminStore((s) => s.sales);
   const orderStatuses = useAdminStore((s) => s.orderStatuses);
   const coupons = useCouponStore((s) => s.availableCoupons);
+  const returns = useReturnStore((s) => s.returns);
+  const openReturns = returns.filter((r) => !["refunded", "rejected"].includes(r.status)).length;
 
   const stats = useMemo(() => {
     const now = Date.now();
@@ -40,6 +43,7 @@ export default function AdminDashboard() {
     { label: "Low stock (≤10)", value: stats.lowStock, icon: AlertTriangle, color: "#FF9800", bg: "#FFF4E5", href: "/admin/products" },
     { label: "Active coupons", value: stats.activeCoupons, icon: Ticket, color: "#E91E63", bg: "#FCE8F0", href: "/admin/coupons" },
     { label: "Orders updated", value: Object.keys(orderStatuses).length, icon: ShoppingCart, color: "#7CB518", bg: "#F0F9E8", href: "/admin/orders" },
+    { label: "Open returns", value: openReturns, icon: RotateCcw, color: "#E91E63", bg: "#FCE8F0", href: "/admin/returns" },
   ];
 
   return (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Zap, Clock, ArrowRight, Flame } from "lucide-react";
 import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
+import { useDisplayProducts } from "@/lib/pricing";
 
 function Countdown({ target }: { target: number }) {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -32,7 +33,7 @@ export function FlashDeals() {
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
   const { data: allProducts = [] } = useProducts({});
-  const allProductsList = allProducts as Product[];
+  const allProductsList = useDisplayProducts(allProducts as Product[]);
 
   const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)

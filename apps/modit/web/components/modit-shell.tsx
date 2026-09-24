@@ -25,6 +25,7 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { categories, type Product } from "@/lib/product-data";
 import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
+import { useDisplayProducts } from "@/lib/pricing";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
@@ -46,7 +47,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const [showReferral, setShowReferral] = useState(false);
 
   const { data: apiSearchResults = [] } = useSearchProducts(searchQuery);
-  const searchResults = apiSearchResults as Product[];
+  const searchResults = useDisplayProducts(apiSearchResults as Product[]);
   const { data: apiCategories = [] } = useCategories();
   const categoriesList = (apiCategories.length > 0 ? apiCategories : categories) as typeof categories;
 
@@ -262,7 +263,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString()}</p>
-                          <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>
+                          {product.onSale
+                            ? <p className="text-[10px] font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
+                            : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
                         </div>
                       </Link>
                     ))}
