@@ -283,7 +283,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="ml-auto hidden items-center gap-1 lg:flex">
-            <Link href="/auth" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]">
+            <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]">
               Supplier Login
             </Link>
             <Link href="/notifications" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Notifications">
