@@ -5,6 +5,8 @@ import { Plus, X, Zap, Power, Trash2, CalendarClock, Tag } from "lucide-react";
 import { useAdminStore, type Sale, type SaleScope } from "@/lib/admin-store";
 import { products } from "@/lib/product-data";
 import { useCategories } from "@/lib/api-hooks";
+import { logAdminActivity } from "@/lib/admin-activity";
+import { saleAppliesTo } from "@/lib/pricing";
 
 function toLocalInput(ts: number) {
   const d = new Date(ts);
@@ -63,6 +65,7 @@ export default function AdminSalesPage() {
         )}
         {sales.map((s) => {
           const st = statusOf(s);
+          const affected = products.filter((p) => saleAppliesTo(s, p)).length;
           return (
             <div key={s.id} className="rounded-2xl border border-[#DDD6EE] bg-white p-4">
               <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -72,6 +75,9 @@ export default function AdminSalesPage() {
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${st.cls}`}>{st.label}</span>
                     <span className="rounded-full bg-[#F0ECF9] px-2 py-0.5 text-[10px] font-bold text-[#2D1B69]">
                       {s.type === "percent" ? `${s.value}% OFF` : `₹${s.value} OFF`} · {scopeText(s)}
+                    </span>
+                    <span className="rounded-full bg-[#F0F9E8] px-2 py-0.5 text-[10px] font-bold text-[#5f8f12]">
+                      {affected.toLocaleString()} products affected
                     </span>
                   </div>
                   <p className="text-[11px] text-[#9B8CB5] mt-1 flex items-center gap-1.5 flex-wrap">
@@ -83,11 +89,11 @@ export default function AdminSalesPage() {
                   </p>
                 </div>
                 <div className="flex gap-1.5">
-                  <button onClick={() => toggleSale(s.id)} title={s.active ? "Pause" : "Activate"} className={`p-2 rounded-lg border transition-all ${s.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+                  <button onClick={() => { toggleSale(s.id); logAdminActivity("sale.toggle", `Sale "${s.name}" ${s.active ? "paused" : "activated"}`); }} title={s.active ? "Pause" : "Activate"} className={`p-2 rounded-lg border transition-all ${s.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                     <Power className="h-3.5 w-3.5" />
                   </button>
                   <button onClick={() => { setEditingId(s.id); setShowForm(true); }} className="px-3 py-2 rounded-lg bg-[#2D1B69] text-white text-[11px] font-bold hover:bg-[#1E1245]">Edit</button>
-                  <button onClick={() => { if (confirm(`Delete sale "${s.name}"?`)) deleteSale(s.id); }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+                  <button onClick={() => { if (confirm(`Delete sale "${s.name}"?`)) { deleteSale(s.id); logAdminActivity("sale.delete", `Sale "${s.name}" deleted`); } }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
@@ -104,8 +110,13 @@ export default function AdminSalesPage() {
           categories={categories}
           onClose={() => { setShowForm(false); setEditingId(null); }}
           onSave={(data) => {
-            if (editingId) updateSale(editingId, data);
-            else addSale(data);
+            if (editingId) {
+              updateSale(editingId, data);
+              logAdminActivity("sale.update", `Sale "${data.name}" updated`, `${data.type === "percent" ? `${data.value}% off` : `₹${data.value} off`} · ${data.scope}`);
+            } else {
+              const created = addSale(data);
+              logAdminActivity("sale.create", `Sale "${data.name}" launched`, `${data.type === "percent" ? `${data.value}% off` : `₹${data.value} off`} · ${data.scope} · ${created.id}`);
+            }
             setShowForm(false);
             setEditingId(null);
           }}

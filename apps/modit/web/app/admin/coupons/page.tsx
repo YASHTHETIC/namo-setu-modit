@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, X, Power, Trash2, Ticket, Check } from "lucide-react";
 import { useCouponStore, type Coupon } from "@/lib/coupon-store";
+import { logAdminActivity } from "@/lib/admin-activity";
 
 const emptyForm = {
   code: "",
@@ -51,6 +52,7 @@ export default function AdminCouponsPage() {
       active: true,
     });
     if (!res.success) return setError(res.message);
+    logAdminActivity("coupon.create", `Coupon "${form.code.trim().toUpperCase()}" created`, form.description.trim() || `${form.discountType} ${form.discountValue}`);
     setError("");
     setForm(emptyForm);
     setShowForm(false);
@@ -84,10 +86,10 @@ export default function AdminCouponsPage() {
                 </div>
               </div>
               <div className="flex gap-1.5">
-                <button onClick={() => toggleCoupon(c.code)} title={c.active ? "Deactivate" : "Activate"} className={`p-2 rounded-lg border transition-all ${c.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+                <button onClick={() => { toggleCoupon(c.code); logAdminActivity("coupon.toggle", `Coupon "${c.code}" ${c.active ? "paused" : "activated"}`); }} title={c.active ? "Deactivate" : "Activate"} className={`p-2 rounded-lg border transition-all ${c.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                   <Power className="h-3.5 w-3.5" />
                 </button>
-                <button onClick={() => { if (confirm(`Delete coupon "${c.code}"?`)) deleteCoupon(c.code); }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+                <button onClick={() => { if (confirm(`Delete coupon "${c.code}"?`)) { deleteCoupon(c.code); logAdminActivity("coupon.delete", `Coupon "${c.code}" deleted`); } }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -112,7 +114,10 @@ export default function AdminCouponsPage() {
                   <button
                     onClick={() => {
                       const n = Number(limitValue);
-                      if (Number.isFinite(n) && n >= c.usedCount && n >= 1) updateCoupon(c.code, { usageLimit: n });
+                      if (Number.isFinite(n) && n >= c.usedCount && n >= 1) {
+                        updateCoupon(c.code, { usageLimit: n });
+                        logAdminActivity("coupon.update", `Coupon "${c.code}" limit → ${n}`);
+                      }
                       setEditingLimit(null);
                     }}
                     className="p-1.5 rounded-lg bg-[#7CB518] text-white"><Check className="h-3.5 w-3.5" /></button>

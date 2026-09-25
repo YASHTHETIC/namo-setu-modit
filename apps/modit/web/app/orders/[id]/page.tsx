@@ -93,7 +93,7 @@ const timelineSteps = [
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { data: apiOrder, isLoading } = useOrder(id, demoOrders[id] ?? null);
+  const { data: apiOrder, isLoading, refetch: refetchOrder, dataUpdatedAt } = useOrder(id, demoOrders[id] ?? null);
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -247,8 +247,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <div className="flex items-center gap-2">
                   <Navigation className="h-4 w-4 animate-pulse" />
                   <span className="text-[13px] font-bold">Live Tracking</span>
+                  <span className="text-[10px] text-white/60">· auto-updates every 30s</span>
                 </div>
-                <button onClick={() => { setRefreshing(true); setTimeout(() => setRefreshing(false), 1000); }} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all">
+                <button onClick={() => { setRefreshing(true); refetchOrder().finally(() => setRefreshing(false)); }} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all" title="Refresh status">
                   <RefreshCcw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
                 </button>
               </div>

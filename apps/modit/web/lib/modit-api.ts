@@ -246,6 +246,8 @@ export function useOrders(organizationId?: string, fallbackData?: any[]) {
     queryKey: moditKeys.orders(organizationId),
     queryFn: () => getModitApi().listOrders(organizationId),
     placeholderData: fallbackData,
+    // Keep the order list fresh while it is open
+    refetchInterval: 60_000,
     ...fastQueryOpts,
   });
 }
@@ -264,6 +266,8 @@ export function useOrder(orderId: string, fallbackData?: any) {
     queryFn: () => getModitApi().getOrder(orderId),
     enabled: Boolean(orderId),
     placeholderData: fallbackData,
+    // Live tracking: re-check status every 30s while the page is open
+    refetchInterval: 30_000,
     ...fastQueryOpts,
   });
 }

@@ -1,305 +1,111 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { createApiClient } from "@foundation/api-client";
-import {
-  FileText, ChevronDown, ChevronUp, Filter, Calendar, Search,
-} from "lucide-react";
-import {
-  Card, CardContent, Button, Badge, Table, TableHead, TableBody,
-  TableRow, TableCell, TableHeaderCell, LoadingSpinner, EmptyState, Input,
-} from "@/lib/modit-ui";
-import { getAccessToken } from "@/lib/auth";
-import { env } from "@/lib/env";
-import { cn } from "@/lib/utils";
+import { FileText, Search, Trash2 } from "lucide-react";
+import { useAdminActivity, ADMIN_ACTION_LABEL, type AdminActionType } from "@/lib/admin-activity";
 
-function getClient() {
-  return createApiClient({
-    baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
-    accessToken: getAccessToken(),
-  });
-}
-
-interface AuditLog {
-  id: string;
-  entity_type: string;
-  entity_id: string;
-  action: string;
-  user_id: string;
-  user_name?: string;
-  user_email?: string;
-  changes?: Record<string, { old: unknown; new: unknown }>;
-  metadata?: Record<string, unknown>;
-  ip_address?: string;
-  created_at: string;
-}
-
-const ACTION_COLORS: Record<string, string> = {
-  create: "bg-emerald-50 text-emerald-700",
-  update: "bg-blue-50 text-blue-700",
-  delete: "bg-red-50 text-red-700",
-  login: "bg-purple-50 text-purple-700",
-  logout: "bg-slate-100 text-slate-600",
+const TYPE_COLORS: Record<string, string> = {
+  "product.update": "bg-[#E8F9FC] text-[#00BCD4]",
+  "product.reset": "bg-[#F0ECF9] text-[#9B8CB5]",
+  "product.bulk_update": "bg-[#E8F9FC] text-[#00BCD4]",
+  "sale.create": "bg-[#FCE8F0] text-[#E91E63]",
+  "sale.update": "bg-[#FCE8F0] text-[#E91E63]",
+  "sale.toggle": "bg-[#FFF4E5] text-[#FF9800]",
+  "sale.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
+  "order.status": "bg-[#F0F9E8] text-[#7CB518]",
+  "coupon.create": "bg-[#F0ECF9] text-[#2D1B69]",
+  "coupon.update": "bg-[#F0ECF9] text-[#2D1B69]",
+  "coupon.toggle": "bg-[#FFF4E5] text-[#FF9800]",
+  "coupon.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
+  "return.advance": "bg-[#FCE8F0] text-[#C2185B]",
+  "admin.unlock": "bg-[#F0ECF9] text-[#2D1B69]",
 };
 
-export default function AuditLogsPage() {
-  const [entityType, setEntityType] = useState("");
-  const [action, setAction] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  const [page, setPage] = useState(1);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const perPage = 20;
+export default function AdminAuditPage() {
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const entries = useAdminActivity((s) => s.entries);
+  const clear = useAdminActivity((s) => s.clear);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["modit", "audit-logs", entityType, action, dateFrom, dateTo, page],
-    queryFn: async () => {
-      const client = getClient();
-      const params = new URLSearchParams();
-      params.set("page", String(page));
-      params.set("page_size", String(perPage));
-      if (entityType) params.set("entity_type", entityType);
-      if (action) params.set("action", action);
-      if (dateFrom) params.set("date_from", dateFrom);
-      if (dateTo) params.set("date_to", dateTo);
-      return client.request<{ items: AuditLog[]; total: number }>(`/api/v1/admin/audit-logs?${params.toString()}`);
-    },
+  const filtered = entries.filter((e) => {
+    if (typeFilter && e.type !== typeFilter) return false;
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      return e.summary.toLowerCase().includes(q) || (e.detail ?? "").toLowerCase().includes(q);
+    }
+    return true;
   });
 
-  const logs = data?.items ?? [];
-  const total = data?.total ?? 0;
-  const totalPages = Math.ceil(total / perPage);
+  const groups = new Map<string, typeof entries>();
+  filtered.forEach((e) => {
+    const day = new Date(e.at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    if (!groups.has(day)) groups.set(day, []);
+    groups.get(day)!.push(e);
+  });
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-h1 text-[var(--text-primary)]">Audit Logs</h1>
-        <p className="text-[var(--text-secondary)]">Track all system activities and changes</p>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-[20px] font-extrabold text-[#150726]">Activity Log</h1>
+          <p className="text-[12px] text-[#9B8CB5] mt-0.5">{entries.length} staff actions recorded · who changed what, when</p>
+        </div>
+        {entries.length > 0 && (
+          <button onClick={() => { if (confirm("Clear the activity log?")) clear(); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[11px] font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+            <Trash2 className="h-3.5 w-3.5" /> Clear log
+          </button>
+        )}
       </div>
 
-      {/* Filters */}
-      <Card className="mb-6">
-        <CardContent>
-          <div className="flex flex-wrap items-end gap-4">
-            <div className="flex-1 min-w-[200px] space-y-1.5">
-              <label className="text-xs font-medium text-[var(--text-muted)]">Entity Type</label>
-              <select
-                value={entityType}
-                onChange={(e) => { setEntityType(e.target.value); setPage(1); }}
-                className="flex h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]"
-              >
-                <option value="">All entities</option>
-                <option value="user">User</option>
-                <option value="product">Product</option>
-                <option value="order">Order</option>
-                <option value="supplier">Supplier</option>
-                <option value="project">Project</option>
-                <option value="role">Role</option>
-                <option value="inventory">Inventory</option>
-              </select>
-            </div>
-            <div className="flex-1 min-w-[200px] space-y-1.5">
-              <label className="text-xs font-medium text-[var(--text-muted)]">Action</label>
-              <select
-                value={action}
-                onChange={(e) => { setAction(e.target.value); setPage(1); }}
-                className="flex h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]"
-              >
-                <option value="">All actions</option>
-                <option value="create">Create</option>
-                <option value="update">Update</option>
-                <option value="delete">Delete</option>
-                <option value="login">Login</option>
-                <option value="logout">Logout</option>
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[var(--text-muted)]">From</label>
-              <Input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-                className="w-40"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[var(--text-muted)]">To</label>
-              <Input
-                type="date"
-                value={dateTo}
-                onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-                className="w-40"
-              />
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setEntityType("");
-                setAction("");
-                setDateFrom("");
-                setDateTo("");
-                setPage(1);
-              }}
-            >
-              Clear filters
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mt-4 flex gap-2 flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search actions..."
+            className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:border-[#2D1B69]"
+          />
+        </div>
+        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="rounded-xl border border-[#DDD6EE] bg-white px-3 py-2.5 text-[12px] font-bold text-[#6B5B83] focus:outline-none focus:border-[#2D1B69]">
+          <option value="">All actions</option>
+          {(Object.keys(ADMIN_ACTION_LABEL) as AdminActionType[]).map((t) => (
+            <option key={t} value={t}>{ADMIN_ACTION_LABEL[t]}</option>
+          ))}
+        </select>
+      </div>
 
-      {/* Logs table */}
-      <Card>
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : logs.length === 0 ? (
-          <CardContent>
-            <EmptyState
-              icon={<FileText className="h-8 w-8" />}
-              title="No audit logs"
-              description="No activities match your filters."
-            />
-          </CardContent>
-        ) : (
-          <>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableHeaderCell>Timestamp</TableHeaderCell>
-                  <TableHeaderCell>User</TableHeaderCell>
-                  <TableHeaderCell>Action</TableHeaderCell>
-                  <TableHeaderCell>Entity</TableHeaderCell>
-                  <TableHeaderCell>Entity ID</TableHeaderCell>
-                  <TableHeaderCell>IP</TableHeaderCell>
-                  <TableHeaderCell className="w-10"> </TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {logs.map((log) => (
-                  <>
-                    <TableRow key={log.id}>
-                      <TableCell>
-                        <span className="text-xs text-[var(--text-muted)]">
-                          {new Date(log.created_at).toLocaleString()}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="text-sm font-medium">{log.user_name || "System"}</p>
-                          {log.user_email && (
-                            <p className="text-xs text-[var(--text-muted)]">{log.user_email}</p>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={cn(
-                            "capitalize",
-                            ACTION_COLORS[log.action] || "bg-slate-100 text-slate-600"
-                          )}
-                        >
-                          {log.action}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="capitalize">{log.entity_type}</TableCell>
-                      <TableCell>
-                        <span className="font-mono text-xs text-[var(--text-muted)]">
-                          {log.entity_id?.slice(0, 8)}...
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-xs text-[var(--text-muted)]">
-                          {log.ip_address ?? "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <button
-                          onClick={() =>
-                            setExpandedId(expandedId === log.id ? null : log.id)
-                          }
-                          className="rounded-lg p-1 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
-                        >
-                          {expandedId === log.id ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                    {expandedId === log.id && (
-                      <TableRow key={`${log.id}-expanded`}>
-                        <TableCell colSpan={7}>
-                          <div className="rounded-xl bg-[var(--bg-subtle)] p-4 space-y-3">
-                            <div>
-                              <p className="text-xs font-semibold text-[var(--text-muted)]">Entity ID</p>
-                              <p className="font-mono text-sm text-[var(--text-primary)]">{log.entity_id}</p>
-                            </div>
-                            {log.changes && Object.keys(log.changes).length > 0 && (
-                              <div>
-                                <p className="text-xs font-semibold text-[var(--text-muted)]">Changes</p>
-                                <div className="mt-1 space-y-1">
-                                  {Object.entries(log.changes).map(([field, change]) => (
-                                    <div key={field} className="flex items-center gap-2 text-sm">
-                                      <span className="font-medium text-[var(--text-primary)]">{field}:</span>
-                                      <span className="text-red-500 line-through">{String(change.old)}</span>
-                                      <span className="text-[var(--text-muted)]">&rarr;</span>
-                                      <span className="text-emerald-600">{String(change.new)}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            {log.metadata && Object.keys(log.metadata).length > 0 && (
-                              <div>
-                                <p className="text-xs font-semibold text-[var(--text-muted)]">Metadata</p>
-                                <pre className="mt-1 rounded-lg bg-[var(--bg-card)] p-2 text-xs text-[var(--text-secondary)] overflow-x-auto">
-                                  {JSON.stringify(log.metadata, null, 2)}
-                                </pre>
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </>
+      {filtered.length === 0 ? (
+        <div className="mt-4 rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
+          <FileText className="h-8 w-8 text-[#9B8CB5] mx-auto mb-2" />
+          <p className="text-[14px] font-bold text-[#150726]">No activity yet</p>
+          <p className="text-[12px] text-[#9B8CB5] mt-1">Price edits, sales, order updates, coupons and returns will appear here automatically.</p>
+        </div>
+      ) : (
+        <div className="mt-4 space-y-5">
+          {Array.from(groups.entries()).map(([day, list]) => (
+            <div key={day}>
+              <p className="text-[11px] font-black uppercase tracking-wider text-[#9B8CB5] mb-2">{day}</p>
+              <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
+                {list.map((e, idx) => (
+                  <div key={e.id} className={`px-4 py-3 ${idx > 0 ? "border-t border-[#F0ECF9]" : ""}`}>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${TYPE_COLORS[e.type] ?? "bg-[#F0ECF9] text-[#9B8CB5]"}`}>
+                        {ADMIN_ACTION_LABEL[e.type]}
+                      </span>
+                      <span className="text-[11px] text-[#9B8CB5] tabular-nums">
+                        {new Date(e.at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                      </span>
+                    </div>
+                    <p className="text-[13px] font-bold text-[#150726] mt-1">{e.summary}</p>
+                    {e.detail && <p className="text-[11px] text-[#6B5B83] mt-0.5">{e.detail}</p>}
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-[var(--border-subtle)] px-6 py-4">
-                <p className="text-sm text-[var(--text-muted)]">
-                  Showing {(page - 1) * perPage + 1} to {Math.min(page * perPage, total)} of {total}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-sm text-[var(--text-secondary)]">
-                    Page {page} of {totalPages}
-                  </span>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                  >
-                    Next
-                  </Button>
-                </div>
               </div>
-            )}
-          </>
-        )}
-      </Card>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

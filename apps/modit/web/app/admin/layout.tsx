@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
-  Lock, RotateCcw, LogOut,
+  Lock, RotateCcw, LogOut, IndianRupee, FileText,
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
+import { logAdminActivity } from "@/lib/admin-activity";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -16,6 +17,8 @@ const links = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/returns", label: "Returns", icon: RotateCcw },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
+  { href: "/admin/payouts", label: "Payouts", icon: IndianRupee },
+  { href: "/admin/audit", label: "Activity Log", icon: FileText },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -40,7 +43,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onChange={(e) => { setPin(e.target.value.replace(/\D/g, "").slice(0, 8)); setPinError(""); }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                if (!unlock(pin)) setPinError("Incorrect PIN. Try again.");
+                if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel");
+                else setPinError("Incorrect PIN. Try again.");
               }
             }}
             inputMode="numeric"
@@ -51,7 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           />
           {pinError && <p className="mt-2 text-[11px] font-bold text-red-500">{pinError}</p>}
           <button
-            onClick={() => { if (!unlock(pin)) setPinError("Incorrect PIN. Try again."); }}
+            onClick={() => { if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel"); else setPinError("Incorrect PIN. Try again."); }}
             className="mt-3 w-full h-12 rounded-xl bg-[#2D1B69] text-white text-[14px] font-bold hover:bg-[#1E1245]"
           >
             Unlock panel

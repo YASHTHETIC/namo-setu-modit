@@ -7,6 +7,7 @@ import {
   useReturnStore, RETURN_STATUS_LABEL, RETURN_NEXT, refundAmount, type ReturnStatus, type ReturnRequest,
 } from "@/lib/return-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
+import { logAdminActivity } from "@/lib/admin-activity";
 
 export default function AdminReturnsPage() {
   const returns = useReturnStore((s) => s.returns);
@@ -15,6 +16,7 @@ export default function AdminReturnsPage() {
 
   const handleAdvance = (id: string, orderId: string, status: ReturnStatus, label: string, note: string) => {
     advanceReturn(id, status, note);
+    logAdminActivity("return.advance", `Return ${id} → ${RETURN_STATUS_LABEL[status]}`, `Order ${orderId}`);
     notifyOrderEvent({
       title: `Return ${RETURN_STATUS_LABEL[status].toLowerCase()}`,
       body: `Return ${id} for order ${orderId}: ${note}`,

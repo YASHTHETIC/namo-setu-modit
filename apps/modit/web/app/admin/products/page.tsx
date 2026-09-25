@@ -1,14 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, Pencil, EyeOff, Eye, RotateCcw, Check, X } from "lucide-react";
+import { Search, Pencil, EyeOff, Eye, RotateCcw, Check, X, Upload } from "lucide-react";
 import { products, type Product } from "@/lib/product-data";
 import { useAdminStore, type ProductOverride } from "@/lib/admin-store";
 import { resolveProduct } from "@/lib/pricing";
+import { logAdminActivity } from "@/lib/admin-activity";
 
 export default function AdminProductsPage() {
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<Product | null>(null);
+  const [bulkRows, setBulkRows] = useState<{ sku: string; name: string; price?: number; mrp?: number; stock?: number; matched: boolean; id?: string }[] | null>(null);
+  const [bulkError, setBulkError] = useState("");
   const overrides = useAdminStore((s) => s.overrides);
   const setOverride = useAdminStore((s) => s.setOverride);
   const clearOverride = useAdminStore((s) => s.clearOverride);
@@ -26,6 +29,70 @@ export default function AdminProductsPage() {
       : products;
     return list.slice(0, 60);
   }, [query]);
+
+  const handleBulkFile = (file: File) => {
+    setBulkError("");
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = String(reader.result || "");
+        const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+        if (lines.length < 2) {
+          setBulkError("CSV needs a header row plus at least one product row.");
+          return;
+        }
+        const header = lines[0].split(",").map((h) => h.trim().toLowerCase());
+        const skuIdx = header.indexOf("sku");
+        if (skuIdx === -1) {
+          setBulkError("CSV must have a 'sku' column. Format: sku,price,mrp,stock");
+          return;
+        }
+        const priceIdx = header.indexOf("price");
+        const mrpIdx = header.indexOf("mrp");
+        const stockIdx = header.indexOf("stock");
+        const parsed = lines.slice(1, 501).map((line) => {
+          const cols = line.split(",").map((c) => c.trim());
+          const sku = (cols[skuIdx] || "").toUpperCase();
+          const match = products.find((p) => p.sku.toUpperCase() === sku || p.id.toLowerCase() === sku.toLowerCase());
+          const num = (i: number) => (i >= 0 && cols[i] !== "" && Number.isFinite(Number(cols[i])) ? Number(cols[i]) : undefined);
+          return {
+            sku,
+            name: match?.name ?? "— not found —",
+            price: priceIdx >= 0 ? num(priceIdx) : undefined,
+            mrp: mrpIdx >= 0 ? num(mrpIdx) : undefined,
+            stock: stockIdx >= 0 ? num(stockIdx) : undefined,
+            matched: Boolean(match),
+            id: match?.id,
+          };
+        });
+        setBulkRows(parsed);
+      } catch {
+        setBulkError("Could not read this file. Upload a simple comma-separated CSV.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const applyBulk = () => {
+    if (!bulkRows) return;
+    let count = 0;
+    bulkRows.forEach((r) => {
+      if (!r.matched || !r.id) return;
+      const patch: ProductOverride = {};
+      if (r.price !== undefined && r.price > 0) patch.price = Math.round(r.price);
+      if (r.mrp !== undefined && r.mrp > 0) patch.mrp = Math.round(r.mrp);
+      if (r.stock !== undefined && r.stock >= 0) {
+        patch.stockLevel = Math.round(r.stock);
+        patch.inStock = r.stock > 0;
+      }
+      if (Object.keys(patch).length > 0) {
+        setOverride(r.id, patch);
+        count += 1;
+      }
+    });
+    logAdminActivity("product.bulk_update", `Bulk update applied to ${count} products`, "via CSV upload");
+    setBulkRows(null);
+  };
 
   return (
     <div>
@@ -45,7 +112,21 @@ export default function AdminProductsPage() {
             className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:border-[#2D1B69]"
           />
         </div>
+        <label className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-dashed border-[#DDD6EE] text-[#2D1B69] text-[12px] font-bold hover:border-[#2D1B69] cursor-pointer bg-white">
+          <Upload className="h-4 w-4" /> Bulk upload
+          <input
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleBulkFile(f);
+              e.target.value = "";
+            }}
+          />
+        </label>
       </div>
+      {bulkError && <p className="mt-2 text-[12px] font-bold text-red-500">{bulkError}</p>}
 
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
         <div className="overflow-x-auto">
@@ -90,7 +171,7 @@ export default function AdminProductsPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex gap-1.5">
                         {edited && (
-                          <button onClick={() => clearOverride(p.id)} title="Reset to default" className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+                          <button onClick={() => { clearOverride(p.id); logAdminActivity("product.reset", `${p.name} reset to default`); }} title="Reset to default" className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
                             <RotateCcw className="h-3.5 w-3.5" />
                           </button>
                         )}
@@ -116,9 +197,59 @@ export default function AdminProductsPage() {
           onClose={() => setEditing(null)}
           onSave={(patch) => {
             setOverride(editing.id, patch);
+            logAdminActivity(
+              "product.update",
+              `${editing.name} updated`,
+              `Price ₹${patch.price?.toLocaleString()} · MRP ₹${patch.mrp?.toLocaleString()} · Stock ${patch.stockLevel}${patch.hidden ? " · HIDDEN" : ""}`
+            );
             setEditing(null);
           }}
         />
+      )}
+
+      {bulkRows && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={() => setBulkRows(null)}>
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-[15px] font-bold text-[#150726]">Bulk upload preview</h2>
+              <button onClick={() => setBulkRows(null)} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+            </div>
+            <p className="text-[12px] text-[#9B8CB5] mb-3">
+              {bulkRows.filter((r) => r.matched).length} of {bulkRows.length} SKUs matched · only matched rows will update
+            </p>
+            <div className="rounded-xl border border-[#DDD6EE] overflow-hidden mb-4">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-[#F7F4FC] text-[10px] uppercase tracking-wider text-[#9B8CB5]">
+                    <th className="px-3 py-2 font-bold">SKU</th>
+                    <th className="px-3 py-2 font-bold">Product</th>
+                    <th className="px-3 py-2 font-bold text-right">Price</th>
+                    <th className="px-3 py-2 font-bold text-right">MRP</th>
+                    <th className="px-3 py-2 font-bold text-right">Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bulkRows.slice(0, 50).map((r) => (
+                    <tr key={r.sku} className={`border-t border-[#F0ECF9] ${r.matched ? "" : "bg-red-50/50"}`}>
+                      <td className="px-3 py-2 text-[11px] font-bold text-[#150726]">{r.sku}</td>
+                      <td className="px-3 py-2 text-[11px] text-[#6B5B83] max-w-[160px] truncate">{r.name}</td>
+                      <td className="px-3 py-2 text-[11px] text-right font-semibold">{r.price ?? "—"}</td>
+                      <td className="px-3 py-2 text-[11px] text-right font-semibold">{r.mrp ?? "—"}</td>
+                      <td className="px-3 py-2 text-[11px] text-right font-semibold">{r.stock ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[11px] text-[#9B8CB5] mb-3">CSV format: <span className="font-mono font-bold text-[#2D1B69]">sku,price,mrp,stock</span> — e.g. CEM-ACC-50,365,395,120</p>
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setBulkRows(null)} className="px-4 py-2.5 rounded-lg text-[12px] font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
+              <button onClick={applyBulk} disabled={bulkRows.filter((r) => r.matched).length === 0} className="px-5 py-2.5 rounded-lg bg-[#7CB518] text-white text-[12px] font-bold hover:bg-[#6aa514] disabled:opacity-50 flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5" /> Apply to {bulkRows.filter((r) => r.matched).length} products
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
