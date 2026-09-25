@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Warehouse, Store, ChevronRight,
+  LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
   Lock, RotateCcw, LogOut,
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
@@ -16,7 +16,6 @@ const links = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/returns", label: "Returns", icon: RotateCcw },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
-  { href: "/inventory", label: "Inventory", icon: Warehouse },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
