@@ -1,16 +1,17 @@
-const CACHE_NAME = "modit-v2";
+const CACHE_NAME = "modit-v3";
 const STATIC_ASSETS = [
   "/",
   "/products",
   "/cart",
   "/orders",
   "/manifest.json",
+  "/icons/icon-192.png",
   "/modit-logo.png",
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)).catch(() => {})
   );
   self.skipWaiting();
 });
@@ -19,21 +20,37 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  if (event.request.url.includes("/api/")) return;
+  const { request } = event;
+  if (request.method !== "GET") return;
+  if (request.url.includes("/api/")) return;
+
+  // Navigations: network first, fall back to cached home shell offline
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match("/").then((cached) => cached || Response.error()))
+    );
+    return;
+  }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((response) => {
+    caches.match(request).then((cached) => {
+      const fetched = fetch(request).then((response) => {
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
       }).catch(() => cached);
@@ -42,9 +59,9 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Push notification handlers
+// Push notification handlers (server push lands here once a backend/VAPID key exists)
 self.addEventListener("push", (event) => {
-  let data = { title: "MODIT", body: "You have a new notification", icon: "/modit-logo.png", url: "/" };
+  let data = { title: "MODIT", body: "You have a new notification", icon: "/icons/icon-192.png", url: "/" };
   if (event.data) {
     try {
       data = { ...data, ...event.data.json() };
@@ -56,7 +73,7 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: data.icon,
-      badge: "/modit-logo.png",
+      badge: "/icons/icon-192.png",
       data: { url: data.url },
       actions: [
         { action: "open", title: "View" },

@@ -31,6 +31,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { ReferralModal } from "@/components/referral-modal";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { SaleBanner } from "@/components/sale-banner";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
@@ -616,6 +617,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <ReferralModal open={showReferral} onClose={() => setShowReferral(false)} />
       <PushNotificationPrompt />
+      <PwaInstallPrompt />
       <ComparisonBar />
       <BottomNav />
     </div>

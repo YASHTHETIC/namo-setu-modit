@@ -28,7 +28,7 @@ export function PushNotificationPrompt() {
       if (result === "granted") {
         new Notification("MODIT Notifications Enabled", {
           body: "You'll receive updates on orders, deals, and delivery status.",
-          icon: "/modit-logo.png",
+          icon: "/icons/icon-192.png",
         });
       }
     }

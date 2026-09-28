@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { showSystemNotification } from "./pwa";
 
 export interface OrderEventNotification {
   id: string;
@@ -52,5 +53,12 @@ export function notifyOrderEvent(input: Omit<OrderEventNotification, "id" | "rea
     useOrderNotificationStore.getState().push(input);
   } catch {
     /* storage unavailable — ignore */
+  }
+  // Mirror to the OS notification tray when permission was granted
+  try {
+    const url = input.orderId ? `/orders/${input.orderId}` : "/notifications";
+    void showSystemNotification(`MODIT · ${input.title}`, input.body, url);
+  } catch {
+    /* notifications unavailable — ignore */
   }
 }
