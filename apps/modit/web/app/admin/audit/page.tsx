@@ -18,6 +18,8 @@ const TYPE_COLORS: Record<string, string> = {
   "coupon.toggle": "bg-[#FFF4E5] text-[#FF9800]",
   "coupon.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
   "return.advance": "bg-[#FCE8F0] text-[#C2185B]",
+  "supplier.status": "bg-[#E8F9FC] text-[#00838F]",
+  "supplier.add": "bg-[#F0F9E8] text-[#5f8f12]",
   "admin.unlock": "bg-[#F0ECF9] text-[#2D1B69]",
 };
 

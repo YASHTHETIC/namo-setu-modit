@@ -17,6 +17,8 @@ export type AdminActionType =
   | "coupon.toggle"
   | "coupon.delete"
   | "return.advance"
+  | "supplier.status"
+  | "supplier.add"
   | "admin.unlock";
 
 export interface AdminActivity {
@@ -47,6 +49,8 @@ export const ADMIN_ACTION_LABEL: Record<AdminActionType, string> = {
   "coupon.toggle": "Coupon paused / activated",
   "coupon.delete": "Coupon deleted",
   "return.advance": "Return advanced",
+  "supplier.status": "Supplier status changed",
+  "supplier.add": "Supplier onboarded",
   "admin.unlock": "Panel unlocked",
 };
 

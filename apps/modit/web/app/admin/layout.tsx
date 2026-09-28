@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
-  Lock, RotateCcw, LogOut, IndianRupee, FileText,
+  Lock, RotateCcw, LogOut, IndianRupee, FileText, Building2,
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
@@ -15,6 +15,7 @@ const links = [
   { href: "/admin/products", label: "Products & Pricing", icon: Package },
   { href: "/admin/sales", label: "Sales & Banners", icon: Zap },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/suppliers", label: "Suppliers", icon: Building2 },
   { href: "/admin/returns", label: "Returns", icon: RotateCcw },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
   { href: "/admin/payouts", label: "Payouts", icon: IndianRupee },

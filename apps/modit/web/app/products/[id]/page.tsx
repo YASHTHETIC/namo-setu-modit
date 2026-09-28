@@ -36,6 +36,7 @@ import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
 import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
+import { useSupplierStore } from "@/lib/supplier-store";
 import { RFQModal } from "@/components/rfq-modal";
 import { MessageSquareQuote, Bell } from "lucide-react";
 import { useStockAlertStore } from "@/lib/stock-alert-store";
@@ -50,11 +51,12 @@ export default function ProductDetailPage({
   const { data: rawProduct, isLoading } = useProduct(id);
   const adminOverrides = useAdminStore((s) => s.overrides);
   const adminSales = useAdminStore((s) => s.sales);
+  const adminSuppliers = useSupplierStore((s) => s.suppliers);
   // Admin overrides + active sale applied live
   const product = useMemo(
     () => (rawProduct ? resolveProduct(rawProduct as Product) : undefined),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rawProduct, adminOverrides, adminSales]
+    [rawProduct, adminOverrides, adminSales, adminSuppliers]
   );
   const addItem = useCartStore((s) => s.addItem);
   const addRecentlyViewed = useRecentlyViewed((s) => s.addProduct);

@@ -3,6 +3,7 @@
 import type { Product } from "./product-data";
 import { getProductById } from "./product-data";
 import { useAdminStore, getActiveSaleAt, type Sale } from "./admin-store";
+import { useSupplierStore, isBrandPaused } from "./supplier-store";
 
 export interface DisplayProduct extends Product {
   onSale: boolean;
@@ -29,7 +30,7 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
   const bulkMinQty = ov && "bulkMinQty" in ov ? ov.bulkMinQty ?? null : product.bulkMinQty;
   const stockLevel = ov?.stockLevel ?? product.stockLevel;
   const inStock = ov?.inStock ?? product.inStock;
-  const hidden = ov?.hidden ?? false;
+  const hidden = ov?.hidden === true || isBrandPaused(product.brand);
 
   let onSale = false;
   let saleName: string | null = null;
@@ -76,9 +77,11 @@ export function isHidden(product: Product): boolean {
 export function useDisplayProducts(products: Product[]): DisplayProduct[] {
   const overrides = useAdminStore((s) => s.overrides);
   const sales = useAdminStore((s) => s.sales);
+  const suppliers = useSupplierStore((s) => s.suppliers);
   // subscribe so components re-render when admin changes anything
   void overrides;
   void sales;
+  void suppliers;
   return products
     .map((p) => resolveProduct(p))
     .filter((p) => !p.hidden);
@@ -110,8 +113,10 @@ export function useLiveSummary(
 ): LiveSummary {
   const overrides = useAdminStore((s) => s.overrides);
   const sales = useAdminStore((s) => s.sales);
+  const suppliers = useSupplierStore((s) => s.suppliers);
   void overrides;
   void sales;
+  void suppliers;
   const full = getProductById(id);
   if (!full) return { ...fallback, onSale: false, saleName: null, hidden: false };
   const r = resolveProduct(full);

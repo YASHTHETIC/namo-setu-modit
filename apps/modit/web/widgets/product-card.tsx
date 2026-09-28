@@ -10,6 +10,7 @@ import { useComparisonStore } from "@/lib/comparison-store";
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
+import { useSupplierStore } from "@/lib/supplier-store";
 
 interface ProductCardProps {
   product: Product;
@@ -21,8 +22,9 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const items = useCartStore((s) => s.items);
   const adminOverrides = useAdminStore((s) => s.overrides);
   const adminSales = useAdminStore((s) => s.sales);
+  const adminSuppliers = useSupplierStore((s) => s.suppliers);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const live = useMemo(() => resolveProduct(product), [product, adminOverrides, adminSales]);
+  const live = useMemo(() => resolveProduct(product), [product, adminOverrides, adminSales, adminSuppliers]);
   if (live.hidden) return null;
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     product.variants?.[0]?.id ?? null
