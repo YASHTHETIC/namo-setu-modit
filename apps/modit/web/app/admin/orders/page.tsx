@@ -7,6 +7,7 @@ import { useOrders } from "@/lib/modit-api";
 import { useAdminStore, ORDER_STATUSES } from "@/lib/admin-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { broadcastPush } from "@/lib/pwa";
 
 const fallbackOrders = [
   { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
@@ -44,6 +45,11 @@ export default function AdminOrdersPage() {
   const handleStatus = (order: any, status: string) => {
     setOrderStatus(order.id, status);
     logAdminActivity("order.status", `Order ${order.order_number || order.id} → ${STATUS_LABEL[status] ?? status}`);
+    broadcastPush(
+      `Order ${STATUS_LABEL[status] ?? status}`,
+      `Order ${order.order_number || order.id} is now ${STATUS_LABEL[status] ?? status}. Tap to track.`,
+      `/orders/${order.id}`
+    );
     notifyOrderEvent({
       title: `Order ${STATUS_LABEL[status] ?? status}`,
       body: `Order ${order.order_number || order.id} is now ${STATUS_LABEL[status] ?? status}.`,

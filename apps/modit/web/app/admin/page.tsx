@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Package, ShoppingCart, Ticket, Zap, AlertTriangle, ArrowRight, IndianRupee,
-  RotateCcw, Plus, Activity,
+  RotateCcw, Plus, Activity, BellRing, Send,
 } from "lucide-react";
 import { products } from "@/lib/product-data";
 import { useAdminStore, getActiveSaleAt, getUpcomingSaleAt, ORDER_STATUSES } from "@/lib/admin-store";
@@ -40,6 +40,47 @@ export default function AdminDashboard() {
   const returns = useReturnStore((s) => s.returns);
   const activity = useAdminActivity((s) => s.entries);
   const { data: apiOrders } = useOrders(undefined, fallbackOrders);
+  const [pushTitle, setPushTitle] = useState("");
+  const [pushBody, setPushBody] = useState("");
+  const [pushStatus, setPushStatus] = useState("");
+  const [pushSending, setPushSending] = useState(false);
+  const [subCount, setSubCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/push/send")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.subscribers === "number") setSubCount(d.subscribers);
+      })
+      .catch(() => {});
+  }, []);
+
+  const sendAnnouncement = async () => {
+    if (!pushTitle.trim() || !pushBody.trim()) {
+      setPushStatus("Enter a title and message first.");
+      return;
+    }
+    setPushSending(true);
+    setPushStatus("");
+    try {
+      const res = await fetch("/api/push/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: pushTitle.trim(), body: pushBody.trim(), url: "/products" }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPushStatus(`Sent to ${data.sent} device(s).`);
+        setPushTitle("");
+        setPushBody("");
+      } else {
+        setPushStatus(data.error || "Could not send.");
+      }
+    } catch {
+      setPushStatus("Network error — try again.");
+    }
+    setPushSending(false);
+  };
 
   const orders = useMemo(() => {
     const list = (apiOrders ?? fallbackOrders) as any[];
@@ -237,6 +278,43 @@ export default function AdminDashboard() {
             <Link href="/admin/sales" className="px-3 py-1.5 rounded-lg bg-[#E91E63] text-white text-[11px] font-bold hover:bg-[#C2185B]">Create sale</Link>
           </div>
         )}
+      </div>
+
+{/* Push announcements */}
+      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+            <BellRing className="h-4 w-4 text-[#E91E63]" /> Push announcement
+          </h2>
+          <span className="text-[11px] font-bold text-[#9B8CB5]">
+            {subCount === null ? "checking devices..." : `${subCount} device(s) subscribed`}
+          </span>
+        </div>
+        <p className="text-[11px] text-[#9B8CB5] mt-1">Reaches buyers even with the app closed — like Zepto sale alerts.</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
+          <input
+            value={pushTitle}
+            onChange={(e) => setPushTitle(e.target.value)}
+            placeholder="Title e.g. Diwali Sale is LIVE"
+            maxLength={80}
+            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] font-semibold focus:outline-none focus:border-[#E91E63]"
+          />
+          <input
+            value={pushBody}
+            onChange={(e) => setPushBody(e.target.value)}
+            placeholder="Message e.g. Up to 20% off cement till Sunday"
+            maxLength={200}
+            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] focus:outline-none focus:border-[#E91E63]"
+          />
+          <button
+            onClick={sendAnnouncement}
+            disabled={pushSending}
+            className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B] disabled:opacity-50"
+          >
+            <Send className="h-3.5 w-3.5" /> {pushSending ? "Sending..." : "Send"}
+          </button>
+        </div>
+        {pushStatus && <p className="mt-2 text-[11px] font-bold text-[#2D1B69]">{pushStatus}</p>}
       </div>
 
       {/* Recent activity */}

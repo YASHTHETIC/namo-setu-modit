@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Bell, BellRing, X, Check } from "lucide-react";
+import { subscribeForServerPush } from "@/lib/pwa";
 
 export function PushNotificationPrompt() {
   const [show, setShow] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
+  const [status, setStatus] = useState("");
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     if ("Notification" in window) {
@@ -30,6 +33,13 @@ export function PushNotificationPrompt() {
           body: "You'll receive updates on orders, deals, and delivery status.",
           icon: "/icons/icon-192.png",
         });
+        setConfirming(true);
+        const sub = await subscribeForServerPush();
+        setStatus(sub.ok ? "Server push active — alerts arrive even with the app closed." : sub.reason ?? "");
+        setTimeout(() => {
+          setShow(false);
+          setConfirming(false);
+        }, 4000);
       }
     }
   };
@@ -39,11 +49,23 @@ export function PushNotificationPrompt() {
     localStorage.setItem("modit_push_dismissed", "true");
   };
 
-  if (!show || permission !== "default") return null;
+  if ((!show && !confirming) || (permission !== "default" && !confirming)) return null;
 
   return (
     <div className="fixed bottom-20 left-4 right-4 z-[90] max-w-[400px] mx-auto">
       <div className="bg-[#150726] rounded-2xl border border-white/10 p-4 shadow-2xl shadow-black/40">
+        {confirming ? (
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-full bg-[#7CB518]/20 flex items-center justify-center flex-shrink-0">
+              <Check className="h-5 w-5 text-[#7CB518]" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] font-bold text-white">Notifications on</p>
+              <p className="text-[11px] text-white/50 mt-0.5">{status || "Setting up..."}</p>
+            </div>
+          </div>
+        ) : (
+        <>
         <button onClick={handleDismiss} className="absolute top-2 right-2 p-1 text-white/30 hover:text-white transition-colors">
           <X className="h-4 w-4" />
         </button>
@@ -64,6 +86,8 @@ export function PushNotificationPrompt() {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

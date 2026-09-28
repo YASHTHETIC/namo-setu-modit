@@ -7,6 +7,7 @@ import { products } from "@/lib/product-data";
 import { useCategories } from "@/lib/api-hooks";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { saleAppliesTo } from "@/lib/pricing";
+import { broadcastPush } from "@/lib/pwa";
 
 function toLocalInput(ts: number) {
   const d = new Date(ts);
@@ -116,6 +117,11 @@ export default function AdminSalesPage() {
             } else {
               const created = addSale(data);
               logAdminActivity("sale.create", `Sale "${data.name}" launched`, `${data.type === "percent" ? `${data.value}% off` : `₹${data.value} off`} · ${data.scope} · ${created.id}`);
+              broadcastPush(
+                `${data.bannerTitle}`,
+                `${data.bannerSubtitle} · Tap to shop the sale.`,
+                "/products"
+              );
             }
             setShowForm(false);
             setEditingId(null);
