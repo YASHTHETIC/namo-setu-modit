@@ -227,11 +227,8 @@ export default function DashboardPage() {
               <div className="h-8 w-8 rounded-lg bg-[#7CB518]/10 flex items-center justify-center">
                 <Users className="h-4 w-4 text-[#7CB518]" />
               </div>
-              <h2 className="text-[14px] font-bold text-[#150726]">Suppliers</h2>
+              <h2 className="text-[14px] font-bold text-[#150726]">Verified Suppliers</h2>
             </div>
-            <Link href="/suppliers" className="flex items-center gap-1 text-[12px] font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
-              View all <ArrowRight className="h-3 w-3" />
-            </Link>
           </div>
           <div className="p-4">
             {suppliers.length === 0 ? (

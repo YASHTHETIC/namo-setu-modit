@@ -383,7 +383,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="market-container flex items-center gap-0 overflow-x-auto scrollbar-hide pr-12 lg:pr-0">
             {[
               { label: "Products", href: "/products" },
-              { label: "Suppliers", href: "/suppliers" },
               { label: "Calculator", href: "/calculator" },
               { label: "Get Quote", href: "/rfq" },
               { label: "Orders", href: "/orders" },
@@ -579,7 +578,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <ul className="mt-4 space-y-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
                 <li><Link href="/products" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Products</Link></li>
                 <li><Link href="/rfq" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">RFQ</Link></li>
-                <li><Link href="/suppliers" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Suppliers</Link></li>
                 <li><Link href="/calculator" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Material Calculator</Link></li>
                 <li><Link href="/projects" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Projects</Link></li>
               </ul>

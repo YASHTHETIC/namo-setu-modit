@@ -60,6 +60,10 @@ function ProductsContent() {
   const rawProducts = apiProducts as Product[];
   // Admin overrides + active sale applied; hidden products dropped
   const products = useDisplayProducts(rawProducts);
+  // Counts must come from the unfiltered-by-category list, else every other
+  // category shows 0 the moment one category is selected
+  const { data: apiCountBase = [] } = useProducts({ search: search || undefined });
+  const countProducts = useDisplayProducts(apiCountBase as Product[]);
   const categories = apiCategories as { name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
   useEffect(() => {
@@ -256,7 +260,7 @@ function ProductsContent() {
                 {/* Category */}
                 <div>
                   <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
-                  <div className="space-y-1">
+                  <div className="space-y-1 max-h-[320px] overflow-y-auto pr-1 thin-scroll">
                     <button
                       onClick={() => setSelectedCategory("")}
                       className="flex items-center w-full rounded-xl px-3 py-2.5 text-left text-xs font-bold transition-all"
@@ -272,7 +276,7 @@ function ProductsContent() {
                     {categories.map((cat) => {
                       const cc = getCatColor(cat.slug);
                       const isActive = selectedCategory === cat.slug;
-                      const count = products.filter((p) => p.categorySlug === cat.slug).length;
+                      const count = countProducts.filter((p) => p.categorySlug === cat.slug).length;
                       return (
                         <button
                           key={cat.slug}

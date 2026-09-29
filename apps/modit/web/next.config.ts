@@ -9,8 +9,9 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // Inventory page removed — stock is managed in admin products
+      // Removed buyer pages — managed in admin only
       { source: "/inventory", destination: "/admin/products", permanent: false },
+      { source: "/suppliers", destination: "/admin/suppliers", permanent: false },
     ];
   },
 };
