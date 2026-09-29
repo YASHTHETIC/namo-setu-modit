@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   const stats = [
     { label: "Products", value: products.length, icon: Package, link: "/products", delta: 12, color: "#2D1B69", bg: "#F0ECF9" },
-    { label: "Suppliers", value: suppliers.length, icon: Users, link: "/suppliers", delta: 5, color: "#7CB518", bg: "#F0F9E8" },
+    { label: "Suppliers", value: suppliers.length, icon: Users, link: "/products", delta: 5, color: "#7CB518", bg: "#F0F9E8" },
     { label: "Active RFQs", value: rfqs.length, icon: FileText, link: "/rfq", delta: -3, color: "#E91E63", bg: "#FCE4EC" },
     { label: "Orders", value: orders.length, icon: ShoppingCart, link: "/orders", delta: 8, color: "#00BCD4", bg: "#E0F7FA" },
     { label: "Projects", value: projects.length, icon: FolderOpen, link: "/projects", delta: 2, color: "#FF9800", bg: "#FFF3E0" },
