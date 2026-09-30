@@ -1,8 +1,7 @@
-.PHONY: help backend-dev frontend-namo-dev frontend-modit-dev test lint build compose-up compose-down migrate
+.PHONY: help backend-dev frontend-modit-dev test lint build compose-up compose-down migrate
 
 help:
 	@echo "backend-dev        Run the FastAPI backend"
-	@echo "frontend-namo-dev  Run the Namo Setu frontend"
 	@echo "frontend-modit-dev Run the MODIT frontend"
 	@echo "test               Run backend tests"
 	@echo "lint               Run workspace linting"
@@ -13,9 +12,6 @@ help:
 
 backend-dev:
 	python -m uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
-
-frontend-namo-dev:
-	npm run dev --workspace @namo-setu/web
 
 frontend-modit-dev:
 	npm run dev --workspace @modit/web

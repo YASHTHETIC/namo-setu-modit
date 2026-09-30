@@ -46,7 +46,7 @@ class ProductAnalyticsItem(BaseModel):
     revenue: float = 0.0
 
 
-class NamoAnalyticsResponse(BaseModel):
+class ModitAnalyticsResponse(BaseModel):
     revenue: RevenueMetric
     bookings: BookingMetric
     donations_total: float = 0.0

@@ -74,3 +74,6 @@ portfolio-check/
 .env*
 
 .env*
+
+# TypeScript build cache
+*.tsbuildinfo

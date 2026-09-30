@@ -12,7 +12,7 @@ Everything is automated. Total hands-on time: **~5 minutes** (plus ~10 min of un
 ## Deploy (one command)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh)
 ```
 
 It asks 3 things, then works alone:
@@ -32,7 +32,7 @@ Skip prompts (non-interactive):
 
 ```bash
 DOMAIN=modit.in CERTBOT_EMAIL=you@example.com RAZORPAY_KEY_ID=rzp_test_xxx \
-bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh)
 ```
 
 ## Verify
@@ -88,3 +88,26 @@ pm2 restart modit-web modit-api
   never shipped to browsers.
 - Rotate JWT/database passwords by editing `/opt/modit/.env` + Postgres, then
   `pm2 restart modit-api`.
+
+## Private repo access (server updates)
+
+The repo is private, so the server authenticates with a read-only **deploy key**
+(no passwords/tokens to remember):
+
+```bash
+# 1. on the server: create a key (Enter x3 at prompts)
+ssh-keygen -t ed25519 -f /root/.ssh/modit_deploy -N ""
+cat /root/.ssh/modit_deploy.pub        # copy this output
+# 2. on your PC: GitHub repo → Settings → Deploy keys → Add deploy key
+#    (title "vps", paste key, leave "Allow write access" UNCHECKED) → Add key
+# 3. on the server: use the key for github + point at the renamed repo
+echo "Host github.com" >> /root/.ssh/config
+echo "  IdentityFile /root/.ssh/modit_deploy" >> /root/.ssh/config
+ssh-keyscan github.com >> /root/.ssh/known_hosts
+git -C /opt/modit remote set-url origin git@github.com:YASHTHETIC/modit.git
+git -C /opt/modit pull                 # "Already up to date" = working
+```
+
+Alternative for a fresh clone without SSH: export a read-only tokeninline —
+`GITHUB_TOKEN=<token> bash setup.sh` — or download the script with
+`curl -H "Authorization: Bearer <token>" -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh`.

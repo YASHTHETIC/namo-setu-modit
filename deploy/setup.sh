@@ -8,7 +8,7 @@
 #          given).
 #
 # Usage (as root, on the VPS):
-#   bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh)
 #
 # Non-interactive:
 #   DOMAIN=modit.in CERTBOT_EMAIL=you@x.com RAZORPAY_KEY_ID=rzp_test_xxx \
@@ -18,7 +18,14 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 export NEXT_TELEMETRY_DISABLED=1
 
-REPO_URL="https://github.com/YASHTHETIC/namo-setu-modit.git"
+REPO_URL="https://github.com/YASHTHETIC/modit.git"
+# Private repo? Export GITHUB_TOKEN (repo read-only is enough) and the clone
+# below authenticates with it. (For daily pulls an SSH deploy key works too —
+# see DEPLOY.md.)
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+if [ -n "$GITHUB_TOKEN" ]; then
+  REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/YASHTHETIC/modit.git"
+fi
 APP_DIR="/opt/modit"
 ENV_FILE="$APP_DIR/.env"
 WEB_ENV="$APP_DIR/apps/modit/web/.env.local"
@@ -112,7 +119,8 @@ fi
 stage "Code"
 mkdir -p /opt
 if [ -d "$APP_DIR/.git" ]; then
-  git -C "$APP_DIR" pull --ff-only
+  git -C "$APP_DIR" pull --ff-only \
+    || die "git pull failed — private repo without access? See DEPLOY.md (deploy key or GITHUB_TOKEN)."
 else
   git clone "$REPO_URL" "$APP_DIR"
 fi

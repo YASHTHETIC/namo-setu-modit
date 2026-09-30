@@ -136,7 +136,7 @@ def seed_sample_data(session: Session) -> None:
         )
         session.add(warehouse)
 
-    brand = _get_or_create(session, Brand, {"slug": "namobuild"}, {"name": "NamoBuild", "description": "Sample brand", "is_active": True})
+    brand = _get_or_create(session, Brand, {"slug": "moditbuild"}, {"name": "ModitBuild", "description": "Sample brand", "is_active": True})
     category = _get_or_create(session, Category, {"slug": "construction-materials"}, {"name": "Construction Materials", "description": "Sample category", "is_active": True})
     sub_category = _get_or_create(session, SubCategory, {"category_id": category.id, "slug": "electrical"}, {"name": "Electrical", "description": "Sample subcategory", "is_active": True})
     unit = _get_or_create(session, Unit, {"code": "pcs"}, {"name": "Pieces", "symbol": "pcs", "is_active": True})

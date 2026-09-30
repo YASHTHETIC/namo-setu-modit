@@ -51,32 +51,32 @@ def seed_modit(session: Session):
     print("[MODIT] Seeding organizations, suppliers, brands...")
 
     # Map MODIT city names to existing city IDs
-    namo_cities = {c["name"]: c["id"] for c in ms.CITIES}
+    modit_cities = {c["name"]: c["id"] for c in ms.CITIES}
     # Add Delhi if not present in seed data
-    if "Delhi" not in namo_cities:
+    if "Delhi" not in modit_cities:
         from backend.app.models.shared import City as CityModel
         delhi = session.query(CityModel).filter_by(name="Delhi").first()
         if delhi:
-            namo_cities["Delhi"] = delhi.id
+            modit_cities["Delhi"] = delhi.id
         else:
-            namo_cities["Delhi"] = namo_cities.get("Mumbai", ms.CITIES[0]["id"])
+            modit_cities["Delhi"] = modit_cities.get("Mumbai", ms.CITIES[0]["id"])
     # Map warehouse city names to existing IDs
     wh_city_map = {
-        "Mumbai": namo_cities.get("Mumbai", ms.CITIES[0]["id"]),
-        "Pune": namo_cities.get("Pune", ms.CITIES[1]["id"]),
-        "Delhi": namo_cities.get("Delhi", ms.CITIES[0]["id"]),
-        "Bangalore": namo_cities.get("Bangalore", ms.CITIES[3]["id"]),
-        "Chennai": namo_cities.get("Chennai", ms.CITIES[4]["id"]),
-        "Hyderabad": namo_cities.get("Hyderabad", ms.CITIES[5]["id"]),
-        "Ahmedabad": namo_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
-        "Kolkata": namo_cities.get("Kolkata", ms.CITIES[7]["id"]),
-        "Jaipur": namo_cities.get("Jaipur", ms.CITIES[8]["id"]),
-        "Lucknow": namo_cities.get("Lucknow", ms.CITIES[0]["id"]),
-        "Nagpur": namo_cities.get("Nagpur", ms.CITIES[2]["id"]),
-        "Indore": namo_cities.get("Indore", ms.CITIES[0]["id"]),
-        "Coimbatore": namo_cities.get("Chennai", ms.CITIES[4]["id"]),
-        "Surat": namo_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
-        "Visakhapatnam": namo_cities.get("Hyderabad", ms.CITIES[5]["id"]),
+        "Mumbai": modit_cities.get("Mumbai", ms.CITIES[0]["id"]),
+        "Pune": modit_cities.get("Pune", ms.CITIES[1]["id"]),
+        "Delhi": modit_cities.get("Delhi", ms.CITIES[0]["id"]),
+        "Bangalore": modit_cities.get("Bangalore", ms.CITIES[3]["id"]),
+        "Chennai": modit_cities.get("Chennai", ms.CITIES[4]["id"]),
+        "Hyderabad": modit_cities.get("Hyderabad", ms.CITIES[5]["id"]),
+        "Ahmedabad": modit_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
+        "Kolkata": modit_cities.get("Kolkata", ms.CITIES[7]["id"]),
+        "Jaipur": modit_cities.get("Jaipur", ms.CITIES[8]["id"]),
+        "Lucknow": modit_cities.get("Lucknow", ms.CITIES[0]["id"]),
+        "Nagpur": modit_cities.get("Nagpur", ms.CITIES[2]["id"]),
+        "Indore": modit_cities.get("Indore", ms.CITIES[0]["id"]),
+        "Coimbatore": modit_cities.get("Chennai", ms.CITIES[4]["id"]),
+        "Surat": modit_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
+        "Visakhapatnam": modit_cities.get("Hyderabad", ms.CITIES[5]["id"]),
     }
 
     # Users

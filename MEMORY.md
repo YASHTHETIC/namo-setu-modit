@@ -8,7 +8,7 @@
 - Construction materials delivery platform ("Blinkit for construction")
 - Cement, paint, lighting, tiling - delivered to site
 - Website: modit-web-prod.vercel.app
-- GitHub: YASHTHETIC/namo-setu-modit
+- GitHub: YASHTHETIC/modit (private)
 
 ## TECH STACK
 - Frontend: Next.js 15, React, Tailwind CSS

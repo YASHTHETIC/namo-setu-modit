@@ -46,7 +46,7 @@ ORGANIZATIONS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════════
-# CITIES (referencing namo_seeds CITIES)
+# CITIES (city master for seeding)
 # ═══════════════════════════════════════════════════════════════════
 
 CITIES = [
