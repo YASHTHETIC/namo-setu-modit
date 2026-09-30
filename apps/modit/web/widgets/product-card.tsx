@@ -12,6 +12,7 @@ import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
+import { useRequireLogin } from "@/lib/use-auth";
 
 interface ProductCardProps {
   product: Product;
@@ -37,6 +38,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const [flashing, setFlashing] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const requireLogin = useRequireLogin();
   const btnRef = useRef<HTMLButtonElement>(null);
   const optLabel = optionsLabel(live);
 
@@ -58,6 +60,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!requireLogin()) return;
     addItem(live, 1, selectedVariantId ?? undefined);
     setFlashing(true);
     setJustAdded(true);
@@ -68,6 +71,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!requireLogin()) return;
     addItem(live, 1, selectedVariantId ?? undefined);
   };
 

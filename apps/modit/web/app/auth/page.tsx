@@ -1,18 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import { Mail, Lock, Eye, EyeOff, Truck, Shield, Clock } from "lucide-react";
 import { setAccessToken } from "@/lib/auth";
+import { fetchLivePincode } from "@/lib/pincode-context";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-[#DDD6EE] border-t-[#2D1B69]" /></div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/products";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +41,17 @@ export default function LoginPage() {
     },
     onSuccess: (data) => {
       setAccessToken(data.access_token);
-      router.push("/products");
+      // Auto-fetch delivery location right after login (best effort)
+      try {
+        void fetchLivePincode().then((pin) => {
+          if (pin) {
+            try {
+              localStorage.setItem("modit_pincode", pin);
+            } catch { /* ignore */ }
+          }
+        });
+      } catch { /* geolocation unavailable */ }
+      router.push(next.startsWith("/") ? next : "/products");
     },
     onError: (err: Error) => {
       setError(err.message || "Invalid email or password");

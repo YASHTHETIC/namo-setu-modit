@@ -755,9 +755,11 @@ function ProductsContent() {
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { MobileProductCard } from "@/components/mobile-product-card";
+import { useRequireLogin } from "@/lib/use-auth";
 
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
+  const requireLogin = useRequireLogin();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
@@ -769,6 +771,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!requireLogin()) return;
     onAddToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -1007,6 +1010,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
 function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
+  const requireLogin = useRequireLogin();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optLabel = optionsLabel(product);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
@@ -1018,6 +1022,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!requireLogin()) return;
     onAddToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);

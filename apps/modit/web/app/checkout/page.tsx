@@ -14,8 +14,10 @@ import { useWalletStore } from "@/lib/wallet-store";
 import { useSubscriptionStore } from "@/lib/subscription-store";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
+import { useAuthReady } from "@/lib/use-auth";
 
 export default function CheckoutPage() {
+  const loggedIn = useAuthReady();
   const items = useCartStore((s) => s.items);
   const getCartTotal = useCartStore((s) => s.getCartTotal);
   const getCartGST = useCartStore((s) => s.getCartGST);
@@ -79,6 +81,29 @@ export default function CheckoutPage() {
     setOrderId(id);
     setOrderPlaced(true);
   };
+
+  if (!loggedIn) {
+    return (
+      <div className="min-h-screen bg-[#F8F6FC]">
+        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+            <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
+            <h1 className="text-[16px] font-bold text-white">Checkout</h1>
+          </div>
+        </header>
+        <div className="mx-auto max-w-[600px] py-20 text-center px-4">
+          <div className="h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center mx-auto mb-4">
+            <MapPin className="h-10 w-10 text-[#2D1B69]" />
+          </div>
+          <h2 className="text-[18px] font-bold text-[#150726]">Login to checkout</h2>
+          <p className="text-[13px] text-[#9B8CB5] mt-2 max-w-xs mx-auto">Orders, delivery tracking and invoices need your account. Your cart is saved.</p>
+          <Link href="/auth?next=%2Fcheckout" className="mt-6 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[14px] font-bold px-8 py-3 rounded-xl hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
+            Login / Sign up
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0 && !orderPlaced) {
     return (

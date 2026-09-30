@@ -13,6 +13,7 @@ import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
+import { AppDownload } from "@/components/app-download";
 import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
@@ -494,6 +495,13 @@ export default function ModitHomePage() {
               Calculate <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
+        </div>
+      </RevealSection>
+
+      {/* ═══ GET THE APP ═══ */}
+      <RevealSection>
+        <div id="get-app" className="pb-6 scroll-mt-24">
+          <AppDownload />
         </div>
       </RevealSection>
 

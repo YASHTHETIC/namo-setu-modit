@@ -7,6 +7,7 @@ import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
+import { useRequireLogin } from "@/lib/use-auth";
 
 function Countdown({ target }: { target: number }) {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -36,6 +37,7 @@ export function FlashDeals() {
   const { data: allProducts = [] } = useProducts({});
   const allProductsList = useDisplayProducts(allProducts as Product[]);
   const [optionsFor, setOptionsFor] = useState<(typeof allProductsList)[number] | null>(null);
+  const requireLogin = useRequireLogin();
 
   const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)
@@ -95,7 +97,7 @@ export function FlashDeals() {
                     <span className="text-[10px] text-white/30 line-through">₹{product.mrp.toLocaleString()}</span>
                   </div>
                   <button
-                    onClick={() => addItem(product)}
+                    onClick={() => { if (requireLogin()) addItem(product); }}
                     className={`mt-2 w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
                       inCart
                         ? "bg-[#7CB518]/20 text-[#7CB518]"

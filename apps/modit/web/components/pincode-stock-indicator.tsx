@@ -8,9 +8,18 @@ interface PincodeStockIndicatorProps {
 }
 
 export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorProps) {
-  const { pincode, getStock } = usePincode();
+  const { pincode, getStock, serviceable } = usePincode();
 
   if (!pincode || !pincodeStock) return null;
+
+  if (!serviceable) {
+    return (
+      <div className="flex items-center gap-1 text-[9px] font-bold text-[#E91E63] bg-[#E91E63]/10 px-1.5 py-0.5 rounded-full border border-[#E91E63]/20">
+        <MapPin className="h-2.5 w-2.5" />
+        <span>Not serving {pincode} yet</span>
+      </div>
+    );
+  }
 
   const stock = getStock(pincodeStock);
 

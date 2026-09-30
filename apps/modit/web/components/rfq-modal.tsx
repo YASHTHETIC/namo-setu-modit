@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCreateRFQ } from "@/lib/modit-api";
 import { X, Send, Check } from "lucide-react";
 import { notifyOrderEvent } from "@/lib/order-notifications";
+import { useRequireLogin } from "@/lib/use-auth";
 
 interface RFQModalProps {
   open: boolean;
@@ -19,10 +20,15 @@ export function RFQModal({ open, onClose, productName, sku }: RFQModalProps) {
   const [dueDate, setDueDate] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const createRFQ = useCreateRFQ();
+  const requireLogin = useRequireLogin();
 
   if (!open) return null;
 
   const handleSubmit = async () => {
+    if (!requireLogin()) {
+      onClose();
+      return;
+    }
     try {
       await createRFQ.mutateAsync({
         title: title.trim(),

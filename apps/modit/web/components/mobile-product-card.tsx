@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Star, Clock, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
+import { usePincode } from "@/lib/pincode-context";
+import { useRequireLogin } from "@/lib/use-auth";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 
@@ -40,6 +42,9 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
 
   const wishlisted = isWishlisted(product.id);
   const optLabel = optionsLabel(product);
+  const requireLogin = useRequireLogin();
+  const { pincode: myPin, serviceable: myAreaOk } = usePincode();
+  const blocked = Boolean(myPin) && !myAreaOk;
 
   const lines = items.filter((i) => i.product.id === product.id);
   const qty = lines.reduce((s, i) => s + i.quantity, 0);
@@ -79,10 +84,11 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </span>
           {qty === 0 ? (
             <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); addItem(product); }}
-              className="rounded-lg bg-white px-5 py-1.5 text-[12px] font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
+              disabled={blocked}
+              className="rounded-lg bg-white px-5 py-1.5 text-[12px] font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
             >
-              ADD
+              {blocked ? "N/A" : "ADD"}
             </button>
           ) : (
             <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-md overflow-hidden">
@@ -95,7 +101,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
               </button>
               <span className="px-1 text-[12px] font-black tabular-nums min-w-[18px] text-center">{qty}</span>
               <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); addItem(product); }}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
                 className="px-2.5 py-1.5 text-[14px] font-black leading-none"
                 aria-label="Increase"
               >
@@ -147,6 +153,9 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             <span className="text-[9px] font-black text-[#E91E63] border border-[#E91E63]/40 rounded px-1">
               {product.stockLevel} left
             </span>
+          )}
+          {blocked && (
+            <span className="text-[9px] font-black text-[#E91E63]">Unavailable in your area</span>
           )}
         </div>
         {product.onSale && product.saleName && (

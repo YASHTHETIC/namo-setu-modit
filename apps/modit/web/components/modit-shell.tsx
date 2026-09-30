@@ -32,6 +32,7 @@ import { ComparisonBar } from "@/components/comparison-bar";
 import { ReferralModal } from "@/components/referral-modal";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { LocationMenu } from "@/components/location-menu";
 import { SaleBanner } from "@/components/sale-banner";
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
@@ -203,11 +204,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="hidden flex-1 items-center xl:flex">
             <div ref={searchRef} className="relative w-full">
               <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-sm)] transition-shadow focus-within:shadow-[var(--shadow-md)]">
-                <button className="flex items-center gap-2 border-r border-[var(--border-subtle)] px-4 text-sm font-semibold text-[var(--text)]">
-                  <MapPin className="h-4 w-4 text-[var(--brand)]" />
-                  <span className="hidden 2xl:inline">Delhi NCR</span>
-                  <ChevronDown className="h-4 w-4 text-[var(--text-muted)]" />
-                </button>
+                <LocationMenu />
                 <input
                   type="text"
                   value={searchQuery}
@@ -598,6 +595,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <li><Link href="/auth/register" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Create account</Link></li>
                 <li><Link href="/dashboard/profile" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Profile settings</Link></li>
                 <li><Link href="/payment/history" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Payment history</Link></li>
+                <li><Link href="/#get-app" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Get the app</Link></li>
                 <li><button onClick={() => setShowReferral(true)} style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Refer & Earn ₹200</button></li>
               </ul>
             </div>

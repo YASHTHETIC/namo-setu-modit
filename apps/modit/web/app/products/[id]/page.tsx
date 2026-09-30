@@ -31,6 +31,7 @@ import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantityS
 import { ShadePicker } from "@/components/shade-picker";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
+import { useRequireLogin } from "@/lib/use-auth";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
@@ -64,8 +65,6 @@ export default function ProductDetailPage({
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [pincode, setPincode] = useState("");
-  const [pincodeChecked, setPincodeChecked] = useState(false);
   const [added, setAdded] = useState(false);
   const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
@@ -84,7 +83,9 @@ export default function ProductDetailPage({
   }, [product?.id]);
 
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
-  const { setPincode: setContextPincode } = usePincode();
+  const { pincode: deliveryPincode, serviceable: areaServiceable } = usePincode();
+  const requireLogin = useRequireLogin();
+  const areaBlocked = Boolean(deliveryPincode) && !areaServiceable;
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = product ? isWishlisted(product.id) : false;
 
@@ -108,23 +109,18 @@ export default function ProductDetailPage({
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
+    if (!requireLogin()) return;
     addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
     setAdded(true);
     setTimeout(() => setAdded(false), 3000);
-  }, [product, quantity, addItem, selectedVariant, selectedShade]);
+  }, [product, quantity, addItem, selectedVariant, selectedShade, requireLogin]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
+    if (!requireLogin()) return;
     addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
     window.location.href = "/checkout";
-  }, [product, quantity, addItem, selectedVariant, selectedShade]);
-
-  const handleCheckDelivery = useCallback(() => {
-    if (pincode.length === 6) {
-      setPincodeChecked(true);
-      setContextPincode(pincode);
-    }
-  }, [pincode, setContextPincode]);
+  }, [product, quantity, addItem, selectedVariant, selectedShade, requireLogin]);
 
   const handleShare = useCallback(async () => {
     if (!product) return;
@@ -411,59 +407,48 @@ export default function ProductDetailPage({
             />
           )}
 
-          {/* Delivery Check */}
-          <div className="rounded-xl border border-[var(--border)] bg-white p-4">
-            <h4 className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)]">
-              <Truck className="h-4 w-4 text-[var(--brand)]" />
-              Delivery
-            </h4>
-            <div className="mt-3 flex gap-2">
-              <div className="relative flex-1">
-                <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="text"
-                  placeholder="Enter pincode"
-                  value={pincode}
-                  onChange={(e) => { setPincode(e.target.value.replace(/\D/g, "").slice(0, 6)); setPincodeChecked(false); }}
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-white pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
-                />
+          {/* Delivery status — location comes from login auto-fetch, no manual entry */}
+          {deliveryPincode && !areaServiceable ? (
+            <div className="rounded-xl border border-[#FECACA] bg-red-50 p-4">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-red-500" />
+                <span className="text-[12px] font-bold text-red-600">Not deliverable to {deliveryPincode}</span>
               </div>
-              <Button variant="secondary" onClick={handleCheckDelivery} disabled={pincode.length < 6}>
-                Check
-              </Button>
+              <p className="text-[11px] text-[#6B5B83] mt-1">We don&apos;t serve this area yet — this item is unavailable for your location. App users get notified when we launch nearby.</p>
             </div>
-            {pincodeChecked && (
-              <div className="mt-3 space-y-2">
-                <div className="rounded-xl bg-[#F0F9E8] border border-[#7CB518]/20 p-3">
-                  <div className="flex items-center gap-2 text-sm text-[#150726]">
-                    <CheckCircle2 className="h-4 w-4 text-[#7CB518]" />
-                    <span className="font-bold">Delivering to {pincode}</span>
+          ) : (
+            <div className="rounded-xl border border-[var(--border)] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <Truck className="h-4 w-4 text-[var(--brand)]" />
+                {deliveryPincode ? (
+                  <span className="text-[12px] font-bold text-[#150726]">Delivering to {deliveryPincode}</span>
+                ) : (
+                  <span className="text-[12px] text-[var(--text-muted)]">Login to set your delivery location automatically</span>
+                )}
+              </div>
+              <div className="mt-2.5 grid grid-cols-2 gap-2">
+                <div className="flex items-center gap-2 rounded-lg bg-[#F7F4FC] p-2">
+                  <Truck className="h-4 w-4 text-[#7CB518]" />
+                  <div>
+                    <p className="text-[10px] text-[#9B8CB5]">Express</p>
+                    <p className="text-[11px] font-bold text-[#150726]">60 min</p>
                   </div>
-                  <div className="mt-2 grid grid-cols-2 gap-2">
-                    <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-[#7CB518]/10">
-                      <Truck className="h-4 w-4 text-[#7CB518]" />
-                      <div>
-                        <p className="text-[10px] text-[#9B8CB5]">Express</p>
-                        <p className="text-[11px] font-bold text-[#150726]">60 min</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-lg bg-white p-2 border border-[#00BCD4]/10">
-                      <Clock className="h-4 w-4 text-[#00BCD4]" />
-                      <div>
-                        <p className="text-[10px] text-[#9B8CB5]">Scheduled</p>
-                        <p className="text-[11px] font-bold text-[#150726]">Tomorrow</p>
-                      </div>
-                    </div>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-[#F7F4FC] p-2">
+                  <Clock className="h-4 w-4 text-[#00BCD4]" />
+                  <div>
+                    <p className="text-[10px] text-[#9B8CB5]">Scheduled</p>
+                    <p className="text-[11px] font-bold text-[#150726]">Tomorrow</p>
                   </div>
-                  {product.freeDelivery && (
-                    <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#7CB518] font-semibold">
-                      <Truck className="h-3.5 w-3.5" /> Free delivery on this order
-                    </div>
-                  )}
                 </div>
               </div>
-            )}
-          </div>
+              {product.freeDelivery && (
+                <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#7CB518] font-semibold">
+                  <Truck className="h-3.5 w-3.5" /> Free delivery on this order
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Quantity + Add to Cart */}
           <div className="space-y-3">
@@ -484,7 +469,8 @@ export default function ProductDetailPage({
               <Button
                 onClick={handleAddToCart}
                 className="h-12 text-[15px] font-semibold"
-                disabled={!product.inStock}
+                disabled={!product.inStock || areaBlocked}
+                title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}
               >
                 {added ? (
                   <><CheckCircle2 className="h-5 w-5" /> Added</>
@@ -492,10 +478,10 @@ export default function ProductDetailPage({
                   <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
                 )}
               </Button>
-              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-[15px] font-semibold">
+              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-[15px] font-semibold" disabled={areaBlocked} title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}>
                 <Zap className="h-5 w-5" /> Buy Now
               </Button>
-              <Button onClick={() => setRfqOpen(true)} variant="secondary" className="col-span-2 h-11 text-sm font-semibold" title="Request a competitive bulk quote from sellers">
+              <Button onClick={() => { if (requireLogin()) setRfqOpen(true); }} variant="secondary" className="col-span-2 h-11 text-sm font-semibold" title="Request a competitive bulk quote from sellers">
                 <MessageSquareQuote className="h-4 w-4" /> Request Quote for bulk order
               </Button>
             </div>
@@ -605,7 +591,8 @@ export default function ProductDetailPage({
         </div>
         <button
           onClick={handleAddToCart}
-          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-[14px] font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2"
+          disabled={areaBlocked}
+          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-[14px] font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           {added ? (
             <><CheckCircle2 className="h-5 w-5" /> Added</>
@@ -615,7 +602,8 @@ export default function ProductDetailPage({
         </button>
         <button
           onClick={handleBuyNow}
-          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-[14px] font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2"
+          disabled={areaBlocked}
+          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-[14px] font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           <Zap className="h-5 w-5" /> Buy Now
         </button>
