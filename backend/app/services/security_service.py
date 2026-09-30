@@ -7,7 +7,18 @@ import re
 import secrets
 import time
 
-from backend.app.core.redis import get_redis
+from backend.app.core.redis import (
+    get_redis,
+    note_redis_failure,
+    note_redis_success,
+    redis_circuit_open,
+)
+
+# In-process fallback stores, used only while the Redis circuit is open.
+# Rate limits and CSRF must keep working (fail-open is not an option for
+# brute-force protection) even with Redis down.
+_mem_rate: dict[str, list[float]] = {}
+_mem_csrf: dict[str, tuple[str, float]] = {}
 
 
 class SecurityService:
@@ -17,37 +28,87 @@ class SecurityService:
     async def _redis(self):
         return await get_redis()
 
+    @staticmethod
+    def _mem_incr(key: str, window_seconds: int) -> int:
+        now = time.time()
+        times = [t for t in _mem_rate.get(key, []) if now - t < window_seconds]
+        times.append(now)
+        _mem_rate[key] = times
+        if len(_mem_rate) > 10_000:  # bound memory
+            cutoff = now - window_seconds
+            _mem_rate.clear()
+        return len(times)
+
     async def check_rate_limit(self, key: str, max_requests: int, window_seconds: int) -> bool:
-        r = await self._redis()
-        current = await r.incr(key)
-        if current == 1:
-            await r.expire(key, window_seconds)
-        return current <= max_requests
+        if redis_circuit_open():
+            return self._mem_incr(key, window_seconds) <= max_requests
+        try:
+            r = await self._redis()
+            current = await r.incr(key)
+            if current == 1:
+                await r.expire(key, window_seconds)
+            note_redis_success()
+            return current <= max_requests
+        except Exception as e:
+            note_redis_failure(e)
+            return self._mem_incr(key, window_seconds) <= max_requests
 
     async def increment_rate_limit(self, key: str, window_seconds: int) -> int:
-        r = await self._redis()
-        current = await r.incr(key)
-        if current == 1:
-            await r.expire(key, window_seconds)
-        return current
+        if redis_circuit_open():
+            return self._mem_incr(key, window_seconds)
+        try:
+            r = await self._redis()
+            current = await r.incr(key)
+            if current == 1:
+                await r.expire(key, window_seconds)
+            note_redis_success()
+            return current
+        except Exception as e:
+            note_redis_failure(e)
+            return self._mem_incr(key, window_seconds)
 
     async def get_rate_limit_remaining(self, key: str, max_requests: int, window_seconds: int) -> int:
-        r = await self._redis()
-        current = await r.get(key)
-        if current is None:
-            return max_requests
-        remaining = max_requests - int(current)
-        return max(0, remaining)
+        if redis_circuit_open():
+            used = len(_mem_rate.get(key, []))
+            return max(0, max_requests - used)
+        try:
+            r = await self._redis()
+            current = await r.get(key)
+            note_redis_success()
+            if current is None:
+                return max_requests
+            return max(0, max_requests - int(current))
+        except Exception as e:
+            note_redis_failure(e)
+            used = len(_mem_rate.get(key, []))
+            return max(0, max_requests - used)
 
     async def generate_csrf_token(self, session_id: str) -> str:
-        r = await self._redis()
         token = secrets.token_urlsafe(32)
-        await r.setex(f"csrf:{session_id}", 3600, token)
+        if redis_circuit_open():
+            _mem_csrf[session_id] = (token, time.time() + 3600)
+            return token
+        try:
+            r = await self._redis()
+            await r.setex(f"csrf:{session_id}", 3600, token)
+            note_redis_success()
+        except Exception as e:
+            note_redis_failure(e)
+            _mem_csrf[session_id] = (token, time.time() + 3600)
         return token
 
     async def validate_csrf_token(self, session_id: str, token: str) -> bool:
-        r = await self._redis()
-        stored = await r.get(f"csrf:{session_id}")
+        if redis_circuit_open():
+            stored, expires = _mem_csrf.get(session_id, ("", 0))
+            return bool(stored) and time.time() < expires and secrets.compare_digest(stored, token)
+        try:
+            r = await self._redis()
+            stored = await r.get(f"csrf:{session_id}")
+            note_redis_success()
+        except Exception as e:
+            note_redis_failure(e)
+            stored_t, expires = _mem_csrf.get(session_id, ("", 0))
+            return bool(stored_t) and time.time() < expires and secrets.compare_digest(stored_t, token)
         if stored is None:
             return False
         return secrets.compare_digest(stored, token)

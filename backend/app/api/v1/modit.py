@@ -449,8 +449,15 @@ async def create_cart(payload: CartCreate, db: AsyncSession = Depends(get_db)) -
     subtotal = 0.0
     gst_total = 0.0
 
+    # One query for all products instead of a query per item (N+1).
+    product_ids = {item.product_id for item in payload.items}
+    products_by_id = {}
+    if product_ids:
+        product_rows = await db.execute(select(Product).where(Product.id.in_(product_ids)))
+        products_by_id = {p.id: p for p in product_rows.scalars()}
+
     for item in payload.items:
-        product = await db.get(Product, item.product_id)
+        product = products_by_id.get(item.product_id)
         if product:
             line_total = item.quantity * item.unit_price
             subtotal += line_total

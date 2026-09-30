@@ -353,7 +353,11 @@ async def ai_material_recommendation(session: AsyncSession, request: dict) -> AI
     # Build smart query based on requirements keywords
     keywords = [w.strip().lower() for w in requirements.split() if len(w.strip()) > 2] if requirements else []
     
-    stmt = select(Product).where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+    stmt = (
+        select(Product)
+        .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+        .options(selectinload(Product.brand))
+    )
     
     if keywords:
         keyword_filters = [Product.name.ilike(f"%{kw}%") for kw in keywords[:5]]
@@ -377,13 +381,18 @@ async def ai_material_recommendation(session: AsyncSession, request: dict) -> AI
     
     # Fallback: if no matches, get top products by category
     if not products:
-        fallback_stmt = select(Product).where(Product.is_active.is_(True), Product.deleted_at.is_(None)).order_by(Product.name.asc()).limit(10)
+        fallback_stmt = (
+            select(Product)
+            .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+            .options(selectinload(Product.brand))
+            .order_by(Product.name.asc())
+            .limit(10)
+        )
         result = await session.execute(fallback_stmt)
         products = result.scalars().all()
-    
+
     recommendations = []
     for product in products:
-        await session.refresh(product, ["brand", "category", "unit"])
         recommendations.append({
             "product_id": product.id,
             "name": product.name,

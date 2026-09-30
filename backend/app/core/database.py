@@ -20,7 +20,19 @@ db_url = db_url.strip('"').strip("'")
 
 _needs_ssl = False
 if 'postgresql' in db_url or 'postgres' in db_url:
-    _needs_ssl = 'neon.tech' in db_url or 'sslmode=require' in db_url or 'sslmode=verify' in db_url or '/cloudsql/' not in db_url
+    # TLS only when the URL explicitly asks for it or the host is a managed
+    # provider that requires it. Never force SSL on self-hosted/local
+    # Postgres (Hostinger VPS, localhost) — forced ssl=require breaks them.
+    _needs_ssl = (
+        'sslmode=' in db_url
+        or 'ssl=require' in db_url
+        or 'neon.tech' in db_url
+        or 'supabase.' in db_url
+        or 'render.com' in db_url
+        or 'amazonaws.com' in db_url
+        or 'azure.com' in db_url
+        or 'database.cloud' in db_url
+    )
     db_url = re.sub(r'\?sslmode=[^&\s]*', '', db_url)
     db_url = re.sub(r'&sslmode=[^&\s]*', '', db_url)
     db_url = re.sub(r'\?ssl=require', '', db_url)
@@ -41,6 +53,10 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s",
 }
 
+# asyncpg defaults to a 60s connect timeout — a dead Postgres would make
+# every request hang for a minute. Fail fast instead.
+_connect_args = {"timeout": 5} if "+asyncpg" in db_url else {}
+
 engine = create_async_engine(
     db_url,
     echo=False,
@@ -48,7 +64,8 @@ engine = create_async_engine(
     pool_size=10,
     max_overflow=20,
     pool_recycle=1800,
-    pool_timeout=30,
+    pool_timeout=10,
+    connect_args=_connect_args,
 )
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base(metadata=MetaData(naming_convention=NAMING_CONVENTION))

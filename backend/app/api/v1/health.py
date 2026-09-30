@@ -32,7 +32,9 @@ async def healthz():
         redis_error = str(e)[:200]
         logger.error("Redis health check failed: %s", e)
 
-    status_value = "ok" if db_status and redis_status else "degraded"
+    # Redis is an optimization (cache/rate-limit), not a hard dependency:
+    # only the database gates overall health.
+    status_value = "ok" if db_status else "degraded"
     return {
         "status": status_value,
         "dependencies": {

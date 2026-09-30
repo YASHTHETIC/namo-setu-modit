@@ -5,13 +5,23 @@ import hashlib
 import json
 from typing import Any, Callable, TypeVar
 
-from backend.app.core.redis import get_redis
+from backend.app.core.redis import (
+    get_redis,
+    note_redis_failure,
+    note_redis_success,
+    redis_circuit_open,
+)
 
 F = TypeVar("F", bound=Callable[..., Any])
 
 
 class CacheService:
-    """Redis-backed caching service with JSON serialization and pattern invalidation."""
+    """Redis-backed caching service with JSON serialization and pattern invalidation.
+
+    Every operation degrades gracefully: if Redis is down (circuit open) or a
+    call fails, reads return cache-misses and writes become no-ops — the
+    cached layer must never take down the request path.
+    """
 
     _DEFAULT_PREFIX = "cache"
 
@@ -27,8 +37,15 @@ class CacheService:
         return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
     async def get(self, key: str) -> Any | None:
-        redis = await get_redis()
-        raw = await redis.get(self._make_key(key))
+        if redis_circuit_open():
+            return None
+        try:
+            redis = await get_redis()
+            raw = await redis.get(self._make_key(key))
+            note_redis_success()
+        except Exception as e:
+            note_redis_failure(e)
+            return None
         if raw is None:
             return None
         try:
@@ -37,17 +54,41 @@ class CacheService:
             return raw
 
     async def set(self, key: str, value: Any, ttl_seconds: int = 300) -> bool:
-        redis = await get_redis()
-        serialized = json.dumps(value, default=str)
-        return await redis.setex(self._make_key(key), ttl_seconds, serialized)
+        if redis_circuit_open():
+            return False
+        try:
+            redis = await get_redis()
+            serialized = json.dumps(value, default=str)
+            result = await redis.setex(self._make_key(key), ttl_seconds, serialized)
+            note_redis_success()
+            return bool(result)
+        except Exception as e:
+            note_redis_failure(e)
+            return False
 
     async def delete(self, key: str) -> bool:
-        redis = await get_redis()
-        return bool(await redis.delete(self._make_key(key)))
+        if redis_circuit_open():
+            return False
+        try:
+            redis = await get_redis()
+            result = bool(await redis.delete(self._make_key(key)))
+            note_redis_success()
+            return result
+        except Exception as e:
+            note_redis_failure(e)
+            return False
 
     async def exists(self, key: str) -> bool:
-        redis = await get_redis()
-        return bool(await redis.exists(self._make_key(key)))
+        if redis_circuit_open():
+            return False
+        try:
+            redis = await get_redis()
+            result = bool(await redis.exists(self._make_key(key)))
+            note_redis_success()
+            return result
+        except Exception as e:
+            note_redis_failure(e)
+            return False
 
     async def get_or_set(self, key: str, factory_fn: Callable[..., Any], ttl_seconds: int = 300) -> Any:
         cached = await self.get(key)
@@ -63,22 +104,36 @@ class CacheService:
         return result
 
     async def invalidate_pattern(self, pattern: str) -> int:
-        redis = await get_redis()
-        full_pattern = self._make_key(pattern)
-        cursor = 0
-        deleted = 0
-        while True:
-            cursor, keys = await redis.scan(cursor=cursor, match=full_pattern, count=200)
-            if keys:
-                deleted += await redis.delete(*keys)
-            if cursor == 0:
-                break
-        return deleted
+        if redis_circuit_open():
+            return 0
+        try:
+            redis = await get_redis()
+            full_pattern = self._make_key(pattern)
+            cursor = 0
+            deleted = 0
+            while True:
+                cursor, keys = await redis.scan(cursor=cursor, match=full_pattern, count=200)
+                if keys:
+                    deleted += await redis.delete(*keys)
+                if cursor == 0:
+                    break
+            note_redis_success()
+            return deleted
+        except Exception as e:
+            note_redis_failure(e)
+            return 0
 
     async def get_many(self, keys: list[str]) -> dict[str, Any]:
-        redis = await get_redis()
-        full_keys = [self._make_key(k) for k in keys]
-        values = await redis.mget(full_keys)
+        if redis_circuit_open():
+            return {}
+        try:
+            redis = await get_redis()
+            full_keys = [self._make_key(k) for k in keys]
+            values = await redis.mget(full_keys)
+            note_redis_success()
+        except Exception as e:
+            note_redis_failure(e)
+            return {}
         result: dict[str, Any] = {}
         for key, raw in zip(keys, values):
             if raw is not None:
@@ -89,13 +144,20 @@ class CacheService:
         return result
 
     async def set_many(self, mapping: dict[str, Any], ttl_seconds: int = 300) -> bool:
-        redis = await get_redis()
-        pipe = redis.pipeline()
-        for key, value in mapping.items():
-            serialized = json.dumps(value, default=str)
-            pipe.setex(self._make_key(key), ttl_seconds, serialized)
-        results = await pipe.execute()
-        return all(results)
+        if redis_circuit_open():
+            return False
+        try:
+            redis = await get_redis()
+            pipe = redis.pipeline()
+            for key, value in mapping.items():
+                serialized = json.dumps(value, default=str)
+                pipe.setex(self._make_key(key), ttl_seconds, serialized)
+            results = await pipe.execute()
+            note_redis_success()
+            return all(results)
+        except Exception as e:
+            note_redis_failure(e)
+            return False
 
 
 cache = CacheService()

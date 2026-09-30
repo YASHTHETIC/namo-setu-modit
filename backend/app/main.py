@@ -4,16 +4,14 @@ import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
+from starlette.middleware.gzip import GZipMiddleware
 
 from backend.app.core.config import get_settings
 from backend.app.core.exceptions import register_exception_handlers
 from backend.app.core.logging import configure_logging
 from backend.app.core.middleware import (
-    ValidationMiddleware,
-    ContentTypeMiddleware,
-    SecurityHeadersMiddleware,
+    RequestTimingMiddleware,
     RateLimitMiddleware,
-    GZipMiddleware,
     RequestTimeoutMiddleware,
 )
 
@@ -29,6 +27,19 @@ async def lifespan(app: FastAPI):
     logger = __import__("logging").getLogger(__name__)
     logger.info("Starting MODIT backend...")
     logger.info(f"Environment: {settings.environment}")
+
+    # Fail fast + loud: probe Postgres once at boot so a bad DATABASE_URL is
+    # visible immediately instead of surfacing as 30s hangs per request.
+    try:
+        conn = await engine.connect()
+        await conn.execute(text("SELECT 1"))
+        await conn.close()
+        logger.info("Postgres: OK")
+    except Exception as e:
+        logger.error(
+            "Postgres UNREACHABLE (%s). DB-backed endpoints will fail fast. "
+            "Check DATABASE_URL.", e,
+        )
 
     try:
         yield
@@ -53,8 +64,10 @@ def create_app() -> FastAPI:
         redoc_url="/redoc" if settings.environment != "production" else None,
     )
 
-    # GZip compression (reduces bandwidth 60-80%)
-    app.add_middleware(GZipMiddleware)
+    # Middleware stack (first added = innermost).
+    # GZip: Starlette's streaming implementation (the old custom one buffered
+    # the whole response and compressed it synchronously, stalling the loop).
+    app.add_middleware(GZipMiddleware, minimum_size=1024)
 
     # CORS middleware
     app.add_middleware(
@@ -68,15 +81,11 @@ def create_app() -> FastAPI:
     # Request timeout (prevents resource exhaustion)
     app.add_middleware(RequestTimeoutMiddleware)
 
-    # Rate limiting (Redis-backed, 120 req/min per IP)
+    # Rate limiting (Redis-backed with in-process fallback circuit breaker)
     app.add_middleware(RateLimitMiddleware, requests_per_minute=120, burst=30)
 
-    # Security headers
-    app.add_middleware(SecurityHeadersMiddleware)
-
-    # Content type + request tracking
-    app.add_middleware(ContentTypeMiddleware)
-    app.add_middleware(ValidationMiddleware)
+    # Request ID + timing + security headers (single layer)
+    app.add_middleware(RequestTimingMiddleware)
 
     # Register exception handlers
     register_exception_handlers(app)
@@ -99,8 +108,10 @@ def create_app() -> FastAPI:
             await rc.ping()
         except Exception:
             redis_ok = False
+        # Redis is an optimization (rate limiting/caching), not a hard
+        # dependency: only the database gates overall health.
         return {
-            "status": "ok" if db_ok and redis_ok else "degraded",
+            "status": "ok" if db_ok else "degraded",
             "dependencies": {"database": db_ok, "redis": redis_ok},
         }
 
