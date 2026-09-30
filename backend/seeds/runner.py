@@ -51,7 +51,7 @@ def seed_modit(session: Session):
     print("[MODIT] Seeding organizations, suppliers, brands...")
 
     # Map MODIT city names to existing city IDs
-    namo_cities = {c["name"]: c["id"] for c in ns.CITIES}
+    namo_cities = {c["name"]: c["id"] for c in ms.CITIES}
     # Add Delhi if not present in seed data
     if "Delhi" not in namo_cities:
         from backend.app.models.shared import City as CityModel
@@ -59,24 +59,24 @@ def seed_modit(session: Session):
         if delhi:
             namo_cities["Delhi"] = delhi.id
         else:
-            namo_cities["Delhi"] = namo_cities.get("Mumbai", ns.CITIES[0]["id"])
+            namo_cities["Delhi"] = namo_cities.get("Mumbai", ms.CITIES[0]["id"])
     # Map warehouse city names to existing IDs
     wh_city_map = {
-        "Mumbai": namo_cities.get("Mumbai", ns.CITIES[0]["id"]),
-        "Pune": namo_cities.get("Pune", ns.CITIES[1]["id"]),
-        "Delhi": namo_cities.get("Delhi", ns.CITIES[0]["id"]),
-        "Bangalore": namo_cities.get("Bangalore", ns.CITIES[3]["id"]),
-        "Chennai": namo_cities.get("Chennai", ns.CITIES[4]["id"]),
-        "Hyderabad": namo_cities.get("Hyderabad", ns.CITIES[5]["id"]),
-        "Ahmedabad": namo_cities.get("Ahmedabad", ns.CITIES[6]["id"]),
-        "Kolkata": namo_cities.get("Kolkata", ns.CITIES[7]["id"]),
-        "Jaipur": namo_cities.get("Jaipur", ns.CITIES[8]["id"]),
-        "Lucknow": namo_cities.get("Lucknow", ns.CITIES[0]["id"]),
-        "Nagpur": namo_cities.get("Nagpur", ns.CITIES[2]["id"]),
-        "Indore": namo_cities.get("Indore", ns.CITIES[0]["id"]),
-        "Coimbatore": namo_cities.get("Chennai", ns.CITIES[4]["id"]),
-        "Surat": namo_cities.get("Ahmedabad", ns.CITIES[6]["id"]),
-        "Visakhapatnam": namo_cities.get("Hyderabad", ns.CITIES[5]["id"]),
+        "Mumbai": namo_cities.get("Mumbai", ms.CITIES[0]["id"]),
+        "Pune": namo_cities.get("Pune", ms.CITIES[1]["id"]),
+        "Delhi": namo_cities.get("Delhi", ms.CITIES[0]["id"]),
+        "Bangalore": namo_cities.get("Bangalore", ms.CITIES[3]["id"]),
+        "Chennai": namo_cities.get("Chennai", ms.CITIES[4]["id"]),
+        "Hyderabad": namo_cities.get("Hyderabad", ms.CITIES[5]["id"]),
+        "Ahmedabad": namo_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
+        "Kolkata": namo_cities.get("Kolkata", ms.CITIES[7]["id"]),
+        "Jaipur": namo_cities.get("Jaipur", ms.CITIES[8]["id"]),
+        "Lucknow": namo_cities.get("Lucknow", ms.CITIES[0]["id"]),
+        "Nagpur": namo_cities.get("Nagpur", ms.CITIES[2]["id"]),
+        "Indore": namo_cities.get("Indore", ms.CITIES[0]["id"]),
+        "Coimbatore": namo_cities.get("Chennai", ms.CITIES[4]["id"]),
+        "Surat": namo_cities.get("Ahmedabad", ms.CITIES[6]["id"]),
+        "Visakhapatnam": namo_cities.get("Hyderabad", ms.CITIES[5]["id"]),
     }
 
     # Users
@@ -198,7 +198,7 @@ def seed_modit(session: Session):
         existing = session.query(Warehouse).filter_by(id=w["id"]).first()
         if not existing:
             city_name = next((c["name"] for c in ms.CITIES if c["id"] == w["city_id"]), "Mumbai")
-            city_id = wh_city_map.get(city_name, ns.CITIES[0]["id"])
+            city_id = wh_city_map.get(city_name, ms.CITIES[0]["id"])
             session.add(Warehouse(
                 id=w["id"], organization_id=w["organization_id"],
                 supplier_id=w.get("supplier_id"), city_id=city_id,
