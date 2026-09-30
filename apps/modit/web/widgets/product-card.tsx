@@ -11,6 +11,7 @@ import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
+import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 
 interface ProductCardProps {
   product: Product;
@@ -35,7 +36,9 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const qty = existing?.quantity ?? 0;
   const [flashing, setFlashing] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const optLabel = optionsLabel(live);
 
   const selectedVariant = selectedVariantId
     ? live.variants?.find((v) => v.id === selectedVariantId) ?? null
@@ -276,6 +279,16 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           </p>
         )}
 
+        {/* Options (variants / shades) */}
+        {optLabel && !compact && (
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+            className="mt-1 w-full py-1.5 rounded-lg text-[10px] font-bold bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+          >
+            {optLabel} ▾
+          </button>
+        )}
+
         {/* Genuine + Free delivery + Cashback row */}
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
           {product.seller?.isVerified && (
@@ -307,6 +320,12 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
       </div>
+
+      <VariantOptionsModal
+        open={optionsOpen}
+        onClose={() => setOptionsOpen(false)}
+        product={live}
+      />
     </Link>
   );
 }

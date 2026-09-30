@@ -67,6 +67,7 @@ interface CartState {
   addItem: (product: Product, quantity?: number, variantId?: string, shade?: string) => void;
   removeItem: (productId: string, variantId?: string) => void;
   updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
+  stepDown: (productId: string, variantId?: string) => void;
   clearCart: () => void;
 
   saveForLater: (productId: string) => void;
@@ -146,6 +147,22 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => set({ items: [] }),
+
+      stepDown: (productId, variantId) => {
+        set((state) => {
+          const idx = state.items.findIndex(
+            (i) => i.product.id === productId && (i.variantId ?? null) === (variantId ?? null)
+          );
+          if (idx < 0) return state;
+          const line = state.items[idx];
+          if (line.quantity <= 1) {
+            return { items: state.items.filter((_, j) => j !== idx) };
+          }
+          const items = [...state.items];
+          items[idx] = { ...line, quantity: line.quantity - 1 };
+          return { items };
+        });
+      },
 
       saveForLater: (productId) => {
         set((state) => {

@@ -6,6 +6,7 @@ import { Zap, Clock, ArrowRight, Flame } from "lucide-react";
 import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
+import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 
 function Countdown({ target }: { target: number }) {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -34,6 +35,7 @@ export function FlashDeals() {
   const items = useCartStore((s) => s.items);
   const { data: allProducts = [] } = useProducts({});
   const allProductsList = useDisplayProducts(allProducts as Product[]);
+  const [optionsFor, setOptionsFor] = useState<(typeof allProductsList)[number] | null>(null);
 
   const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)
@@ -74,17 +76,20 @@ export function FlashDeals() {
         <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {flashProducts.map((product) => {
             const inCart = items.some((i) => i.product.id === product.id);
+            const optLabel = optionsLabel(product);
             return (
               <div key={product.id} className="bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#E91E63]/40 transition-all group">
-                <div className="relative aspect-square bg-white/5 p-2">
+                <Link href={`/products/${product.id}`} className="block relative aspect-square bg-white/5 p-2">
                   <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform" loading="lazy" />
                   <span className="absolute top-1.5 left-1.5 bg-[#E91E63] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
                     {product.discount}% OFF
                   </span>
-                </div>
+                </Link>
                 <div className="p-2.5">
                   <p className="text-[9px] font-bold text-[#7CB518] uppercase">{product.brand}</p>
-                  <p className="text-[11px] font-semibold text-white leading-tight line-clamp-2 min-h-[28px] mt-0.5">{product.name}</p>
+                  <Link href={`/products/${product.id}`}>
+                    <p className="text-[11px] font-semibold text-white leading-tight line-clamp-2 min-h-[28px] mt-0.5 hover:text-[#7CB518] transition-colors">{product.name}</p>
+                  </Link>
                   <div className="flex items-baseline gap-1.5 mt-1.5">
                     <span className="text-[14px] font-extrabold text-[#7CB518]">₹{product.price.toLocaleString()}</span>
                     <span className="text-[10px] text-white/30 line-through">₹{product.mrp.toLocaleString()}</span>
@@ -99,6 +104,14 @@ export function FlashDeals() {
                   >
                     {inCart ? "IN CART" : "ADD"}
                   </button>
+                  {optLabel && (
+                    <button
+                      onClick={() => setOptionsFor(product)}
+                      className="mt-1.5 w-full py-1.5 rounded-lg text-[10px] font-bold bg-white/10 text-white hover:bg-white/20 transition-all"
+                    >
+                      {optLabel} ▾
+                    </button>
+                  )}
                 </div>
               </div>
             );
@@ -112,6 +125,14 @@ export function FlashDeals() {
           </Link>
         </div>
       </div>
+
+      {optionsFor && (
+        <VariantOptionsModal
+          open={Boolean(optionsFor)}
+          onClose={() => setOptionsFor(null)}
+          product={optionsFor}
+        />
+      )}
     </div>
   );
 }

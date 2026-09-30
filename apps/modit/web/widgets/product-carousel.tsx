@@ -40,7 +40,9 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
       </div>
       <div className="p-2.5">
         <p className="text-[9px] font-bold text-[var(--green)] uppercase">{p.brand}</p>
-        <h3 className="text-[11px] font-semibold text-[var(--text)] mt-0.5 line-clamp-2 leading-tight">{p.name}</h3>
+        <Link href={`/products/${p.id}`}>
+          <h3 className="text-[11px] font-semibold text-[var(--text)] mt-0.5 line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors">{p.name}</h3>
+        </Link>
         <div className="flex items-center gap-1 mt-1">
           <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-[8px] font-bold px-1 py-0.5 rounded">{p.rating} <Star className="h-1.5 w-1.5 fill-white" /></span>
         </div>

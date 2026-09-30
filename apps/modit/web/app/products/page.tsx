@@ -604,18 +604,31 @@ function ProductsContent() {
                 Clear All Filters
               </button>
             </div>
-          ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={addItem} />
-              ))}
-            </div>
           ) : (
-            <div className="space-y-4">
-              {filteredProducts.map((product) => (
-                <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
-              ))}
-            </div>
+            <>
+              {/* Mobile: Blinkit-style compact 2-column grid */}
+              <div className="grid grid-cols-2 gap-2.5 sm:hidden">
+                {filteredProducts.map((product) => (
+                  <MobileProductCard key={product.id} product={product} />
+                ))}
+              </div>
+              {/* Desktop / tablet: respects grid/list view mode */}
+              <div className="hidden sm:block">
+                {viewMode === "grid" ? (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {filteredProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} onAddToCart={addItem} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredProducts.map((product) => (
+                      <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -740,14 +753,18 @@ function ProductsContent() {
 }
 
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
+import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
+import { MobileProductCard } from "@/components/mobile-product-card";
 
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = isWishlisted(product.id);
   const catColor = getCatColor(product.categorySlug);
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+  const optLabel = optionsLabel(product);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -967,13 +984,31 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             </>
           )}
         </button>
+
+        {/* Options (variants / shades) — HomeRun style */}
+        {optLabel && (
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+          >
+            {optLabel} <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
+
+      <VariantOptionsModal
+        open={optionsOpen}
+        onClose={() => setOptionsOpen(false)}
+        product={product as unknown as import("@/lib/pricing").DisplayProduct}
+      />
     </div>
   );
 }
 
 function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const optLabel = optionsLabel(product);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
   const wishlisted = isWishlisted(product.id);
@@ -1104,7 +1139,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
           <DeliveryBadge days={product.deliveryDays} freeDelivery={product.freeDelivery} />
 
-          <div className="ml-auto">
+          <div className="ml-auto flex flex-col items-stretch gap-2">
             <button
               onClick={handleAdd}
               className="flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300"
@@ -1137,8 +1172,22 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
                 </>
               )}
             </button>
+            {optLabel && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+                className="flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-[11px] font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+              >
+                {optLabel} <ChevronDown className="h-3 w-3" />
+              </button>
+            )}
           </div>
         </div>
+
+        <VariantOptionsModal
+          open={optionsOpen}
+          onClose={() => setOptionsOpen(false)}
+          product={product as unknown as import("@/lib/pricing").DisplayProduct}
+        />
       </div>
     </div>
   );
