@@ -53,7 +53,7 @@ if [ -n "$DOMAIN" ]; then
   [ -n "$CERTBOT_EMAIL" ] || warn "No email given — SSL will be skipped (plain HTTP for now)"
   FRONTEND_URL="https://$DOMAIN"
   API_BASE="https://$API_SUBDOMAIN.$DOMAIN/api/v1"
-  CORS_ORIGINS="https://$DOMAIN,https://$API_SUBDOMAIN.$DOMAIN,https://modit-web-prod.vercel.app"
+  CORS_ORIGINS="https://$DOMAIN,https://www.$DOMAIN,https://$API_SUBDOMAIN.$DOMAIN,https://modit-web-prod.vercel.app,http://$SERVER_IP"
 else
   DOMAIN=""
   FRONTEND_URL="http://$SERVER_IP"
@@ -160,6 +160,11 @@ EOF
   echo "  created $ENV_FILE"
 else
   echo "  kept existing $ENV_FILE"
+  if [ -n "$DOMAIN" ]; then
+    sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=${FRONTEND_URL}|" "$ENV_FILE"
+    sed -i "s|^BACKEND_CORS_ORIGINS=.*|BACKEND_CORS_ORIGINS=${CORS_ORIGINS}|" "$ENV_FILE"
+    echo "  updated URLs for domain mode"
+  fi
 fi
 
 # ---------------------------------------------------------------------------
@@ -208,7 +213,12 @@ if [ ! -f "$WEB_ENV" ]; then
   chmod 600 "$WEB_ENV"
   echo "  created $WEB_ENV (VAPID keys generated)"
 else
-  echo "  kept existing $WEB_ENV"
+  if [ -n "$DOMAIN" ]; then
+    sed -i "s|^NEXT_PUBLIC_API_BASE_URL=.*|NEXT_PUBLIC_API_BASE_URL=${API_BASE}|" "$WEB_ENV"
+    echo "  updated API base for domain mode"
+  else
+    echo "  kept existing $WEB_ENV"
+  fi
 fi
 
 stage "Frontend build (next build)"
