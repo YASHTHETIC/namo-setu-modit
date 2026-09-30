@@ -15,6 +15,7 @@ import {
   Zap,
   Heart,
   Share2,
+  Check,
   Package,
   CheckCircle2,
   Store,
@@ -66,6 +67,7 @@ export default function ProductDetailPage({
   const [pincode, setPincode] = useState("");
   const [pincodeChecked, setPincodeChecked] = useState(false);
   const [added, setAdded] = useState(false);
+  const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedShade, setSelectedShade] = useState<string | null>(null);
@@ -123,6 +125,26 @@ export default function ProductDetailPage({
       setContextPincode(pincode);
     }
   }, [pincode, setContextPincode]);
+
+  const handleShare = useCallback(async () => {
+    if (!product) return;
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, text: product.name, url });
+      } catch {
+        /* user dismissed the share sheet — do nothing */
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  }, [product]);
 
   const activeVariant = useMemo(() => {
     if (!product?.variants || !selectedVariant) return null;
@@ -183,6 +205,30 @@ export default function ProductDetailPage({
               {product.discount > 0 && (
                 <span className="absolute top-4 left-4 rounded-xl bg-[#E91E63] px-3 py-1 text-sm font-bold text-white shadow-lg shadow-pink-500/20">
                   {product.discount}% OFF
+                </span>
+              )}
+              {/* Wishlist + Share on image */}
+              <div className="absolute top-3 right-3 flex flex-col gap-2">
+                <button
+                  onClick={() => product && toggleWishlist(product)}
+                  title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
+                    wishlisted ? "bg-[#FCE8F0] text-[#E91E63]" : "bg-white/90 text-[#6B5B83] hover:text-[#E91E63]"
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#E91E63]" : ""}`} />
+                </button>
+                <button
+                  onClick={handleShare}
+                  title="Share this product"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#6B5B83] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
+                >
+                  {shared ? <Check className="h-5 w-5 text-[#7CB518]" /> : <Share2 className="h-5 w-5" />}
+                </button>
+              </div>
+              {shared && (
+                <span className="absolute top-3 right-[52px] rounded-full bg-[#150726]/85 backdrop-blur-sm px-3 py-1.5 text-[11px] font-bold text-white animate-[fadeIn_0.2s_ease-out]">
+                  Link copied
                 </span>
               )}
               {/* Image counter */}
@@ -510,21 +556,6 @@ export default function ProductDetailPage({
                 )}
               </div>
             )}
-
-            <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => product && toggleWishlist(product)}
-                className="flex-1"
-              >
-                <Heart className={`h-4 w-4 ${wishlisted ? "fill-red-500 text-red-500" : ""}`} />
-                {wishlisted ? "Wishlisted" : "Wishlist"}
-              </Button>
-              <Button variant="ghost" size="sm" className="flex-1">
-                <Share2 className="h-4 w-4" /> Share
-              </Button>
-            </div>
           </div>
 
           {/* Trust Badges */}
