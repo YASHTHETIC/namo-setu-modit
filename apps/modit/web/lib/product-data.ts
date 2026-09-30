@@ -47,14 +47,13 @@ export const COMMON_EMULSION_SHADES: PaintShade[] = [
   { name: "Beige", code: "#F5F5DC", family: "Earth" },
 ];
 
-const NON_TINTABLE = /putty|primer|white\s*cement|thinner|brush|roller|tape|blade|sandpaper|sand\s*paper|gypsum|tool|spray|sealer/i;
-const TINTABLE = /emulsion|apcolite|apex|royale|tractor|\bace\b|distemper|lustre|velvet|silk/i;
+const NON_TINTABLE = /putty|primer|white\s*cement|thinner|brush|roller|tape|blade|sandpaper|sand\s*paper|gypsum|tool|spray|sealer|roller|tray|stainer|masking/i;
 
-/** True for emulsion-type paints that a dealer would tint from a shade card. */
+/** True for paint-category products a dealer would tint from a shade card. */
 export function isTintableEmulsion(p: { name: string; categorySlug: string }): boolean {
   if (p.categorySlug !== "painting") return false;
   if (NON_TINTABLE.test(p.name)) return false;
-  return TINTABLE.test(p.name);
+  return true;
 }
 
 export interface Product {
