@@ -5,7 +5,7 @@ module.exports = {
       name: "modit-api",
       cwd: "/opt/modit",
       script: ".venv/bin/uvicorn",
-      args: "backend.app.main:app -w 2 --host 127.0.0.1 --port 8000",
+      args: "backend.app.main:app --workers 2 --host 127.0.0.1 --port 8000",
       interpreter: "none",
       autorestart: true,
       max_restarts: 10,
