@@ -23,6 +23,40 @@ export interface PaintShade {
   family: string;
 }
 
+/** Shared Asian-Paints-style shade card applied to every tintable emulsion. */
+export const COMMON_EMULSION_SHADES: PaintShade[] = [
+  { name: "White", code: "#FFFFFF", family: "White" },
+  { name: "Decimal White", code: "#F5F2EB", family: "White" },
+  { name: "Soft Cream", code: "#F5E6C8", family: "Cream" },
+  { name: "Lemon Chiffon", code: "#FFF44F", family: "Yellow" },
+  { name: "Sunbeam", code: "#F4C430", family: "Yellow" },
+  { name: "Sky Blue", code: "#87CEEB", family: "Blue" },
+  { name: "Ocean Blue", code: "#0077BE", family: "Blue" },
+  { name: "Navy Blue", code: "#000080", family: "Blue" },
+  { name: "Sea Green", code: "#2E8B57", family: "Green" },
+  { name: "Mint Green", code: "#98FF98", family: "Green" },
+  { name: "Bottle Green", code: "#006A4E", family: "Green" },
+  { name: "Rose Pink", code: "#FF007F", family: "Pink" },
+  { name: "Blush", code: "#DE5D83", family: "Pink" },
+  { name: "Peach", code: "#FFE5B4", family: "Pink" },
+  { name: "Light Grey", code: "#D3D3D3", family: "Grey" },
+  { name: "Ash Grey", code: "#B2BEB5", family: "Grey" },
+  { name: "Dark Grey", code: "#A9A9A9", family: "Grey" },
+  { name: "Terracotta", code: "#E2725B", family: "Earth" },
+  { name: "Walnut Brown", code: "#5C4033", family: "Earth" },
+  { name: "Beige", code: "#F5F5DC", family: "Earth" },
+];
+
+const NON_TINTABLE = /putty|primer|white\s*cement|thinner|brush|roller|tape|blade|sandpaper|sand\s*paper|gypsum|tool|spray|sealer/i;
+const TINTABLE = /emulsion|apcolite|apex|royale|tractor|\bace\b|distemper|lustre|velvet|silk/i;
+
+/** True for emulsion-type paints that a dealer would tint from a shade card. */
+export function isTintableEmulsion(p: { name: string; categorySlug: string }): boolean {
+  if (p.categorySlug !== "painting") return false;
+  if (NON_TINTABLE.test(p.name)) return false;
+  return TINTABLE.test(p.name);
+}
+
 export interface Product {
   id: string;
   name: string;

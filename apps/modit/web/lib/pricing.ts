@@ -1,7 +1,7 @@
 "use client";
 
 import type { Product } from "./product-data";
-import { getProductById } from "./product-data";
+import { getProductById, COMMON_EMULSION_SHADES, isTintableEmulsion } from "./product-data";
 import { useAdminStore, getActiveSaleAt, type Sale } from "./admin-store";
 import { useSupplierStore, isBrandPaused } from "./supplier-store";
 
@@ -31,6 +31,12 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
   const stockLevel = ov?.stockLevel ?? product.stockLevel;
   const inStock = ov?.inStock ?? product.inStock;
   const hidden = ov?.hidden === true || isBrandPaused(product.brand);
+
+  // Every tintable emulsion carries the full shade card (like a dealer fan-deck),
+  // so colour options appear on all emulsion paints, not just the few with
+  // hand-entered shades.
+  const needsShades =
+    !product.hasShades && (!product.shades || product.shades.length === 0) && isTintableEmulsion(product);
 
   let onSale = false;
   let saleName: string | null = null;
@@ -66,6 +72,8 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
     saleName,
     salePrice,
     hidden,
+    hasShades: product.hasShades || needsShades,
+    shades: needsShades ? COMMON_EMULSION_SHADES : product.shades,
   };
 }
 
