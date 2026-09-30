@@ -311,15 +311,6 @@ export default function ProductDetailPage({
                 </>
               )}
             </div>
-            {/* B2B bulk info */}
-            {(activeVariant?.bulkPrice ?? product.bulkPrice) && (
-              <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#FFF3E0] border border-[#FFE0B2] px-3 py-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF9800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <span className="text-[11px] font-semibold text-[#E65100]">
-                  Bulk pricing — {activeVariant ? `₹${activeVariant.bulkPrice?.toLocaleString()} at ${activeVariant.bulkMinQty}+ units` : product.bulkLabel || `Min ${product.bulkMinQty} units`}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* Size Selector */}
@@ -443,23 +434,23 @@ export default function ProductDetailPage({
               </span>
             </div>
 
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <Button
                 onClick={handleAddToCart}
-                className="flex-1 h-12 text-base font-semibold"
+                className="h-12 text-[15px] font-semibold"
                 disabled={!product.inStock}
               >
                 {added ? (
-                  <><CheckCircle2 className="h-5 w-5" /> Added to Cart</>
+                  <><CheckCircle2 className="h-5 w-5" /> Added</>
                 ) : (
                   <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
                 )}
               </Button>
-              <Button onClick={handleBuyNow} variant="secondary" className="flex-1 h-12 text-base font-semibold">
+              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-[15px] font-semibold">
                 <Zap className="h-5 w-5" /> Buy Now
               </Button>
-              <Button onClick={() => setRfqOpen(true)} variant="ghost" className="flex-1 h-12 text-base font-semibold" title="Request a competitive bulk quote from sellers">
-                <MessageSquareQuote className="h-5 w-5" /> Request Quote
+              <Button onClick={() => setRfqOpen(true)} variant="secondary" className="col-span-2 h-11 text-sm font-semibold" title="Request a competitive bulk quote from sellers">
+                <MessageSquareQuote className="h-4 w-4" /> Request Quote for bulk order
               </Button>
             </div>
 
