@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     from backend.app.core.redis import get_redis_client
 
     configure_logging(settings.log_level)
-    logger = __import__("logging").get.getLogger(__name__)
+    logger = __import__("logging").getLogger(__name__)
     logger.info("Starting MODIT backend...")
     logger.info(f"Environment: {settings.environment}")
 
