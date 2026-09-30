@@ -1,8 +1,8 @@
 from functools import lru_cache
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import Field, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -20,7 +20,10 @@ class Settings(BaseSettings):
     email_verification_token_expire_minutes: int = 1440
     max_sessions_per_user: int = 5
     storage_root: str = "storage"
-    backend_cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    # NoDecode: pydantic-settings JSON-decodes list fields at the source level,
+    # which rejects plain "a,b,c" env values before validators run. Skip the
+    # source decoding; parse_cors_origins below handles str -> list.
+    backend_cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:3000"])
     openai_api_key: str | None = None
     langchain_tracing_v2: bool = False
     langchain_api_key: str | None = None
@@ -70,7 +73,10 @@ class Settings(BaseSettings):
                 import json
                 raw = data["backend_cors_origins"].strip()
                 if raw.startswith("["):
-                    data["backend_cors_origins"] = json.loads(raw)
+                    try:
+                        data["backend_cors_origins"] = json.loads(raw)
+                    except ValueError:
+                        data["backend_cors_origins"] = [o.strip().strip("'\"") for o in raw.strip("[]").split(",") if o.strip()]
                 elif "," in raw:
                     data["backend_cors_origins"] = [o.strip() for o in raw.split(",") if o.strip()]
                 else:
