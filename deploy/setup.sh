@@ -81,7 +81,7 @@ echo "  API:     $API_BASE"
 # ---------------------------------------------------------------------------
 stage "System packages (apt)"
 apt-get update -y -qq
-apt-get install -y -qq curl git nginx postgresql redis-server ufw certbot \
+apt-get install -y -qq curl git nginx postgresql redis-server ufw certbot cron \
   python3-certbot-nginx build-essential ca-certificates gnupg openssl xz-utils >/dev/null
 
 # Node.js 22 — NodeSource first, official tarball as fallback (new Ubuntu codenames)
@@ -239,6 +239,10 @@ stage "PM2 processes"
 pm2 delete modit-api modit-web >/dev/null 2>&1 || true
 pm2 start "$ECOSYSTEM"
 pm2 save >/dev/null
+# keep disk safe: rotate pm2 logs (50MB x 7 files)
+pm2 install pm2-logrotate >/dev/null 2>&1 || true
+pm2 set pm2-logrotate:max_size 50M >/dev/null 2>&1 || true
+pm2 set pm2-logrotate:retain 7 >/dev/null 2>&1 || true
 pm2 startup systemd -u root --hp /root >/dev/null 2>&1 || true
 if [ ! -f /etc/systemd/system/pm2-root.service ]; then
   PM2_BIN="$(command -v pm2)"
@@ -274,13 +278,27 @@ if [ -n "$DOMAIN" ]; then
 server {
     listen 80;
     server_name ${DOMAIN} www.${DOMAIN};
+    server_tokens off;
     client_max_body_size 20m;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml;
     location /_next/static/ {
         alias ${APP_DIR}/apps/modit/web/.next/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
+    }
+    location /products/ {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        expires 7d;
     }
     location / {
         proxy_pass http://127.0.0.1:3001;
@@ -294,7 +312,9 @@ server {
 server {
     listen 80;
     server_name ${API_SUBDOMAIN}.${DOMAIN};
+    server_tokens off;
     client_max_body_size 50m;
+    add_header X-Content-Type-Options "nosniff" always;
     gzip on;
     gzip_types text/css application/javascript application/json;
     location / {
@@ -312,13 +332,26 @@ else
 server {
     listen 80 default_server;
     server_name _;
+    server_tokens off;
     client_max_body_size 50m;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml;
     location /_next/static/ {
         alias ${APP_DIR}/apps/modit/web/.next/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
+    }
+    location /products/ {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        expires 7d;
     }
     location /api/ {
         proxy_pass http://127.0.0.1:8000;
@@ -345,6 +378,38 @@ nginx -t >/dev/null 2>&1 || nginx -t
 systemctl enable nginx >/dev/null 2>&1
 systemctl restart nginx
 systemctl enable --now postgresql redis-server >/dev/null 2>&1 || true
+
+# ---------------------------------------------------------------------------
+# 8b. PostgreSQL tuning (shared 8GB box: conservative vs dedicated-DB rules)
+# ---------------------------------------------------------------------------
+stage "PostgreSQL tuning"
+sudo -u postgres psql -v ON_ERROR_STOP=1 >/dev/null <<SQL
+ALTER SYSTEM SET shared_buffers = '1GB';
+ALTER SYSTEM SET effective_cache_size = '4GB';
+ALTER SYSTEM SET work_mem = '8MB';
+ALTER SYSTEM SET maintenance_work_mem = '256MB';
+ALTER SYSTEM SET random_page_cost = '1.1';
+SQL
+systemctl restart postgresql
+echo "  shared_buffers=1GB effective_cache_size=4GB work_mem=8MB"
+
+# ---------------------------------------------------------------------------
+# 8c. Daily DB backups (2am, 7-day retention) + self-heal checks (5 min)
+# ---------------------------------------------------------------------------
+stage "Backups + self-heal"
+mkdir -p /var/backups/modit
+cat > /etc/cron.d/modit-backup <<'CRON'
+0 2 * * * root sudo -u postgres pg_dump modit | gzip > /var/backups/modit/modit-$(date +\%F).sql.gz && ls -t /var/backups/modit/modit-*.sql.gz | tail -n +8 | xargs -r rm -f
+CRON
+chmod 644 /etc/cron.d/modit-backup
+PM2_BIN="$(command -v pm2)"
+cat > /etc/cron.d/modit-selfheal <<CRON
+*/5 * * * * root curl -fsS --max-time 10 http://127.0.0.1:8000/api/v1/healthz >/dev/null 2>&1 || ${PM2_BIN} restart modit-api >/dev/null 2>&1
+*/5 * * * * root curl -fsS --max-time 10 -o /dev/null http://127.0.0.1:3001/ >/dev/null 2>&1 || ${PM2_BIN} restart modit-web >/dev/null 2>&1
+CRON
+chmod 644 /etc/cron.d/modit-selfheal
+systemctl enable --now cron >/dev/null 2>&1 || true
+echo "  backups: /var/backups/modit (daily 2am, keep 7) · self-heal: every 5 min"
 
 # ---------------------------------------------------------------------------
 # 9. SSL (domain mode only)
@@ -390,6 +455,10 @@ done
 
 code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://127.0.0.1/ || true)"
 echo "  nginx    :80    HTTP $code"
+
+# first backup right now (proves restores have something to work with)
+sudo -u postgres pg_dump modit 2>/dev/null | gzip > "/var/backups/modit/modit-$(date +%F)-first.sql.gz" \
+  && echo "  backup   : first snapshot saved" || warn "first backup failed (cron will retry nightly)"
 
 cat <<EOF
 

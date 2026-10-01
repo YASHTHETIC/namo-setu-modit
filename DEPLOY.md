@@ -69,6 +69,18 @@ pm2 restart modit-web modit-api
 | Database | `modit` (user `modit`) on local PostgreSQL |
 | Re-run setup | safe — keeps existing `.env` files, skips what exists |
 
+## Backups & restore
+
+- Nightly `pg_dump` at 2am to `/var/backups/modit/` (keeps 7 days) + one snapshot
+  right after every deploy. PM2 logs rotate at 50MB (keep 7).
+- List: `ls -lh /var/backups/modit/`
+- Restore to a scratch DB first (never straight over production):
+  ```bash
+  sudo -u postgres psql -c "CREATE DATABASE modit_restore OWNER modit;"
+  zcat /var/backups/modit/<file>.sql.gz | sudo -u postgres psql -d modit_restore
+  ```
+  Verify, then swap: `ALTER DATABASE modit RENAME TO modit_old; ALTER DATABASE modit_restore RENAME TO modit;` + `pm2 restart modit-api`.
+
 ## Troubleshooting
 
 | Symptom | Fix |
