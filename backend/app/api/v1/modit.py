@@ -143,7 +143,7 @@ from backend.app.services.support import (
     list_conversations,
     post_user_message,
 )
-from backend.app.services.tracking import get_delivery_track, record_delivery_ping
+from backend.app.services.tracking import get_delivery_track, get_order_delivery, record_delivery_ping
 from backend.app.services.modit import (
     ai_boq_reader,
     ai_material_recommendation,
@@ -556,6 +556,12 @@ async def get_order(order_id: str, db: AsyncSession = Depends(get_db)) -> OrderD
         **OrderRead.model_validate(order).model_dump(),
         items=[OrderItemRead.model_validate(item) for item in order.items],
     )
+
+
+@router.get("/orders/{order_id}/delivery", response_model=DeliveryRead)
+async def get_order_delivery_endpoint(order_id: str, db: AsyncSession = Depends(get_db)) -> DeliveryRead:
+    """Latest delivery for an order (powers Track buttons). Public by unguessable UUID."""
+    return DeliveryRead.model_validate(await get_order_delivery(db, order_id))
 
 
 @router.get("/purchase-orders", response_model=list[PurchaseOrderRead])

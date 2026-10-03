@@ -753,6 +753,10 @@ export function createModitApi(client: ApiClient) {
       return client.request<DeliveryTrackRead>(`${base}/deliveries/${deliveryId}/track`);
     },
 
+    getOrderDelivery(orderId: string) {
+      return client.request<DeliveryRead>(`${base}/orders/${orderId}/delivery`);
+    },
+
     getNearestWarehouse(lat: number, lng: number, organizationId?: string) {
       const qs = new URLSearchParams({ lat: String(lat), lng: String(lng) });
       if (organizationId) qs.set("organization_id", organizationId);

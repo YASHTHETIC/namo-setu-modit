@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.models.enums import DeliveryStatus
@@ -67,6 +68,28 @@ async def record_delivery_ping(
     await session.commit()
     await session.refresh(ping)
     return ping
+
+
+async def get_order_delivery(session: AsyncSession, order_id: str) -> Delivery:
+    """Latest delivery for an order (via its purchase order). 404 when none yet."""
+    from backend.app.models.modit import Order
+
+    order = await session.get(Order, order_id)
+    if order is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    po_id = getattr(order, "purchase_order_id", None)
+    if not po_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No delivery yet")
+    result = await session.execute(
+        select(Delivery)
+        .where(Delivery.purchase_order_id == po_id)
+        .order_by(Delivery.created_at.desc())
+        .limit(1)
+    )
+    delivery = result.scalars().first()
+    if delivery is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No delivery yet")
+    return delivery
 
 
 async def get_delivery_track(session: AsyncSession, delivery_id: str) -> dict:

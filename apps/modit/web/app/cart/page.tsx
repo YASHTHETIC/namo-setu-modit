@@ -19,6 +19,7 @@ import {
 import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
 import { useCouponStore } from "@/lib/coupon-store";
 import { resolveProduct } from "@/lib/pricing";
+import { formatINR } from "@/lib/utils";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -120,7 +121,7 @@ export default function CartPage() {
           <Link href="/products" className="inline-flex items-center gap-1.5 text-[12px] text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">
             <ArrowLeft className="h-3 w-3" /> Continue Shopping
           </Link>
-          <h1 className="text-[22px] font-bold text-[#150726] mt-1">
+          <h1 className="hidden sm:block text-[22px] font-bold text-[#150726] mt-1">
             Shopping Cart
             <span className="ml-2 text-[15px] font-normal text-[#9B8CB5]">
               ({items.length} item{items.length !== 1 ? "s" : ""})
@@ -146,8 +147,8 @@ export default function CartPage() {
               return (
                 <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
-                  <Link href={`/products/${item.product.id}`} className="h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
-                    <img src={item.product.images[0]} alt="" className="h-full w-full object-cover" />
+                  <Link href={`/products/${item.product.id}`} className="h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
+                    <img src={item.product.images[0]} alt={item.product.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                   </Link>
 
                   {/* Info */}
@@ -186,7 +187,7 @@ export default function CartPage() {
                           {discount}% OFF
                         </span>
                       )}
-                      {resolved.onSale && resolved.saleName && (
+                      {resolved.onSale && resolved.saleName && discount === 0 && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#7CB518] text-[10px] font-bold text-white">
                           {resolved.saleName}
                         </span>
@@ -207,16 +208,16 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1), item.variantId)}
                             disabled={item.quantity <= item.product.moq}
-                            className="h-8 w-8 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                             <Minus className="h-3.5 w-3.5" />
                           </button>
-                          <span className="h-8 w-10 flex items-center justify-center text-[13px] font-bold text-[#150726] border-x-2 border-[#DDD6EE] tabular-nums">
+                          <span className="h-10 w-10 flex items-center justify-center text-[13px] font-bold text-[#150726] border-x-2 border-[#DDD6EE] tabular-nums">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1), item.variantId)}
-                            className="h-8 w-8 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors"
+                            className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors"
                           >
                             <Plus className="h-3.5 w-3.5" />
                           </button>
@@ -235,13 +236,13 @@ export default function CartPage() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => saveForLater(item.product.id)}
-                          className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-[11px] font-medium text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
                         >
                           <Heart className="h-3.5 w-3.5" /> Save for later
                         </button>
                         <button
                           onClick={() => removeItem(item.product.id, item.variantId)}
-                          className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-[11px] font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Remove
                         </button>
@@ -259,7 +260,7 @@ export default function CartPage() {
                 <div className="space-y-2">
                   {savedItems.map((s) => (
                     <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <img src={s.product.images[0]} alt="" className="h-14 w-14 rounded-lg object-cover bg-[#F0ECF9]" />
+                      <img src={s.product.images[0]} alt={s.product.name} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
                         <p className="text-[12px] font-semibold text-[#150726] truncate">{s.product.name}</p>
                         <p className="text-[14px] font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
@@ -306,9 +307,17 @@ export default function CartPage() {
                 {!couponApplied && couponError && (
                   <p className="mt-2 text-[11px] text-red-500 font-semibold">{couponError}</p>
                 )}
-                {!couponApplied && !couponError && couponCode && (
-                  <p className="mt-2 text-[11px] text-[#9B8CB5]">Try FIRST100 or BULK10</p>
-                )}
+                {!couponApplied && !couponError && (() => {
+                  const best = useCouponStore.getState().getBestCoupon(getCartTotal());
+                  return best ? (
+                    <button
+                      onClick={() => setCouponCode(best.code)}
+                      className="mt-2 text-[11px] font-bold text-[#7CB518] hover:underline"
+                    >
+                      Best offer for you: {best.code} — tap to apply
+                    </button>
+                  ) : null;
+                })()}
               </div>
 
               {/* Price Details */}
@@ -386,6 +395,22 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Mobile sticky total — clears the support-chat gutter on the right */}
+        <div className="lg:hidden sticky bottom-[76px] z-40 ml-4 mr-20 mb-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[#150726] pl-4 pr-2 py-2 shadow-xl">
+            <div className="flex-1 min-w-0">
+              <p className="text-tiny text-white/50">Total</p>
+              <p className="text-body-lg font-extrabold text-white tabular-nums">{formatINR(grandTotal)}</p>
+            </div>
+            <Link
+              href="/checkout"
+              className="rounded-xl bg-[#7CB518] px-5 py-2.5 text-[13px] font-bold text-white flex-shrink-0"
+            >
+              Order →
+            </Link>
           </div>
         </div>
       </div>

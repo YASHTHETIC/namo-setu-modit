@@ -26,6 +26,7 @@ import {
 } from "@/lib/modit-ui";
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { formatINR } from "@/lib/utils";
 
 interface Payment {
   id: string;
@@ -83,7 +84,7 @@ export default function ModitPaymentHistoryPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
           Finance
         </p>
-        <h2 className="mt-1.5 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+        <h2 className="mt-1.5 text-[22px] font-bold tracking-tight text-[var(--text-primary)]">
           Payment History
         </h2>
         <p className="mt-2 max-w-lg text-base leading-relaxed text-[var(--text-muted)]">
@@ -97,7 +98,7 @@ export default function ModitPaymentHistoryPage() {
             Total Paid
           </p>
           <p className="mt-2 text-2xl font-bold text-[var(--text-primary)]">
-            ₹{totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            {formatINR(totalAmount)}
           </p>
         </Panel>
         <Panel className="p-5">
@@ -158,47 +159,69 @@ export default function ModitPaymentHistoryPage() {
             description="Your payment history will appear here."
           />
         ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Transaction</TableHeaderCell>
-                <TableHeaderCell>Description</TableHeaderCell>
-                <TableHeaderCell>Date</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell className="text-right">Amount</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+          <>
+            <Table className="hidden sm:table">
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>Transaction</TableHeaderCell>
+                  <TableHeaderCell>Description</TableHeaderCell>
+                  <TableHeaderCell>Date</TableHeaderCell>
+                  <TableHeaderCell>Status</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Amount</TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredPayments.map((payment) => (
+                  <TableRow key={payment.id}>
+                    <TableCell>
+                      <span className="font-mono text-xs text-[var(--text-muted)]">
+                        {payment.id.slice(0, 12)}...
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-medium">{payment.description}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {new Date(payment.created_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={statusVariant[payment.status] ?? "default"}>
+                        {payment.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {formatINR(payment.amount)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="sm:hidden divide-y divide-[var(--border-subtle)]">
               {filteredPayments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>
-                    <span className="font-mono text-xs text-[var(--text-muted)]">
-                      {payment.id.slice(0, 12)}...
-                    </span>
-                  </TableCell>
-                  <TableCell className="font-medium">{payment.description}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
-                      <Calendar className="h-3.5 w-3.5" />
-                      {new Date(payment.created_at).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </div>
-                  </TableCell>
-                  <TableCell>
+                <div key={payment.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-body-sm font-semibold text-[var(--text-primary)] truncate">{payment.description}</p>
+                    <p className="text-micro text-[var(--text-muted)] mt-0.5">
+                      {new Date(payment.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      {" · "}
+                      <span className="font-mono">{payment.id.slice(0, 8)}…</span>
+                    </p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-body-md font-bold text-[var(--text-primary)] tabular-nums">{formatINR(payment.amount)}</p>
                     <Badge variant={statusVariant[payment.status] ?? "default"}>
                       {payment.status}
                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right font-semibold">
-                    {payment.currency} {payment.amount.toFixed(2)}
-                  </TableCell>
-                </TableRow>
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
       </Panel>
     </main>

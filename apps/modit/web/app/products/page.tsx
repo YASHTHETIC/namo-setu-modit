@@ -83,6 +83,7 @@ function ProductsContent() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   const allBrands = useMemo(() => {
     const brandSet = new Set(products.map((p) => p.brand).filter(Boolean) as string[]);
@@ -520,21 +521,30 @@ function ProductsContent() {
                 </button>
               </div>
 
-              <div className="hidden items-center gap-1.5 sm:flex">
+              <div className="hidden items-center gap-1.5 sm:flex relative">
                 <button
-                  onClick={() => handleExport("html")}
-                  title="Download price list (HTML / printable)"
+                  onClick={() => setShowExportMenu((v) => !v)}
+                  title="Download price list"
                   className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-micro font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
                 >
-                  <Download className="h-3.5 w-3.5" /> Price List
+                  <Download className="h-3.5 w-3.5" /> Export <ChevronDown className="h-3 w-3" />
                 </button>
-                <button
-                  onClick={() => handleExport("csv")}
-                  title="Download price list as CSV"
-                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-micro font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
-                >
-                  <FileDown className="h-3.5 w-3.5" /> CSV
-                </button>
+                {showExportMenu && (
+                  <div className="absolute right-0 top-full z-30 mt-2 w-48 overflow-hidden rounded-xl border border-[#DDD6EE] bg-white shadow-xl">
+                    <button
+                      onClick={() => { handleExport("html"); setShowExportMenu(false); }}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-caption font-semibold text-[#150726] hover:bg-[#F0F9E8] transition-colors"
+                    >
+                      <Download className="h-3.5 w-3.5 text-[#7CB518]" /> Price List (HTML)
+                    </button>
+                    <button
+                      onClick={() => { handleExport("csv"); setShowExportMenu(false); }}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-caption font-semibold text-[#150726] hover:bg-[#F0F9E8] transition-colors"
+                    >
+                      <FileDown className="h-3.5 w-3.5 text-[#7CB518]" /> Price List (CSV)
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -606,6 +616,17 @@ function ProductsContent() {
               </div>
               <h3 className="text-lg font-black text-[var(--text-primary)]">No products found</h3>
               <p className="mt-2 text-sm text-[var(--text-muted)] max-w-xs">Try adjusting your filters or search terms to find what you&apos;re looking for</p>
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {["Cement", "Asian Paints", "Tiles", "Lighting"].map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => { setSearch(term); setSelectedCategory(""); }}
+                    className="rounded-full border border-[#DDD6EE] bg-white px-3.5 py-1.5 text-xs font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
               <button
                 onClick={clearFilters}
                 className="mt-5 rounded-xl px-6 py-3 text-xs font-black text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 bg-[#2D1B69] hover:bg-[#1E1245]"

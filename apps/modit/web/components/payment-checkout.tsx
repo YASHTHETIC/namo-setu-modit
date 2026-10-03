@@ -270,10 +270,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                   : "border-[#DDD6EE] hover:border-[#C9B8E8]"
               }`}
             >
-              <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+              <div className={`h-9 w-9 rounded-full flex items-center justify-center ${
                 paymentMethod === method.id ? "bg-[#2D1B69] text-white" : "bg-[#F0ECF9] text-[#2D1B69]"
               }`}>
-                <method.icon className="h-5 w-5" />
+                <method.icon className="h-4 w-4" />
               </div>
               <div className="text-left flex-1">
                 <p className="text-[13px] font-semibold text-[#150726]">{method.label}</p>
@@ -308,7 +308,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
             <p className="text-[11px] text-[#9B8CB5] mb-3">We send a 6-digit OTP to confirm your order and delivery updates.</p>
             {!phoneVerified ? (
               <div className="space-y-2.5">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     value={codPhone}
                     onChange={(e) => { setCodPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setPhoneVerified(false); setOtpSent(false); setDemoOtp(null); }}
@@ -326,7 +326,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                 </div>
                 {otpSent && (
                   <>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <input
                         value={otpCode}
                         onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
@@ -343,9 +343,17 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                       </button>
                     </div>
                     {demoOtp && (
-                      <p className="text-[11px] font-semibold text-[#FF9800] bg-[#FF9800]/10 rounded-lg px-3 py-2">
-                        Demo mode — your OTP is {demoOtp}. Connect an SMS gateway to send real OTPs.
-                      </p>
+                      <div className="flex items-center justify-between gap-2 rounded-lg border border-[#DDD6EE] bg-[#F8F6FC] px-3 py-2">
+                        <p className="text-[11px] font-semibold text-[#5C4A7A]">
+                          Demo mode — your OTP is <span className="font-bold text-[#150726] tabular-nums">{demoOtp}</span>
+                        </p>
+                        <button
+                          onClick={() => { try { navigator.clipboard.writeText(demoOtp); } catch {} }}
+                          className="rounded-lg bg-white border border-[#DDD6EE] px-2.5 py-1 text-[11px] font-bold text-[#2D1B69] hover:border-[#2D1B69] transition-all flex-shrink-0"
+                        >
+                          Copy
+                        </button>
+                      </div>
                     )}
                   </>
                 )}
@@ -361,10 +369,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
 {/* Credit terms note */}
         {paymentMethod === "credit" && (
           <div className="mt-3 rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3">
-            <p className="text-[12px] font-semibold text-[#5f8f12] flex items-center gap-1.5">
+            <p className="text-[12px] font-semibold text-[#5A8010] flex items-center gap-1.5">
               <Building2 className="h-4 w-4" /> Credit Terms — Net 30
             </p>
-            <p className="text-[11px] text-[#6B5B83] mt-1">
+            <p className="text-[11px] text-[#5C4A7A] mt-1">
               For verified business/organization accounts. Invoice due in 30 days from delivery. Our credit team verifies GSTIN before approval.
             </p>
           </div>
@@ -390,10 +398,12 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
             <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Processing...
           </span>
+        ) : paymentMethod === "upi" ? (
+          `Pay ₹${total.toLocaleString("en-IN")} securely`
         ) : paymentMethod === "razorpay" ? (
-          `Pay ₹${total.toLocaleString("en-IN")}`
+          `Pay ₹${total.toLocaleString("en-IN")} securely`
         ) : (
-          `Place Order — ₹${total.toLocaleString("en-IN")}`
+          `Place Order • ₹${total.toLocaleString("en-IN")}`
         )}
       </button>
 
@@ -402,10 +412,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
       )}
 
       {/* Trust Badges */}
-      <div className="flex items-center justify-center gap-4 text-[10px] text-[#9B8CB5]">
-        <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> 256-bit SSL</span>
-        <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Free ₹5000+</span>
-        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> 7-day returns</span>
+      <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[10px] text-[#9B8CB5]">
+        <span className="flex items-center gap-1 whitespace-nowrap"><Shield className="h-3 w-3" /> 256-bit SSL</span>
+        <span className="flex items-center gap-1 whitespace-nowrap"><Truck className="h-3 w-3" /> Free ₹5000+</span>
+        <span className="flex items-center gap-1 whitespace-nowrap"><Clock className="h-3 w-3" /> 7-day returns</span>
       </div>
     </div>
   );

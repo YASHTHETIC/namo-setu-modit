@@ -386,6 +386,16 @@ export function useDeliveryTrack(deliveryId: string | undefined) {
   });
 }
 
+export function useOrderDelivery(orderId: string | undefined, enabled = true) {
+  return useQuery({
+    queryKey: [...moditKeys.deliveries(), "order", orderId ?? ""],
+    queryFn: () => getModitApi().getOrderDelivery(orderId!),
+    enabled: Boolean(orderId) && enabled,
+    // 404 when no delivery yet — don't retry, the card hides itself.
+    ...fastQueryOpts,
+  });
+}
+
 export function useNearestWarehouse(lat?: number, lng?: number, organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.nearestWarehouse(lat, lng),

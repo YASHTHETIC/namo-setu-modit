@@ -163,3 +163,10 @@ def test_delivery_ping_requires_auth(client):
         "/api/v1/modit/deliveries/some-id/pings", json={"latitude": 28.6, "longitude": 77.2}
     )
     assert response.status_code == 401
+
+
+def test_order_delivery_absent_is_404(client):
+    # Fake DB order has no purchase order, so no delivery exists yet.
+    response = client.get("/api/v1/modit/orders/some-id/delivery")
+    assert response.status_code == 404
+    assert "detail" in response.json()

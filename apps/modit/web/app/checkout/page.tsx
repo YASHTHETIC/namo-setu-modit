@@ -394,16 +394,16 @@ export default function CheckoutPage() {
                       inputMode="text"
                       className="w-full px-3 py-2.5 pr-14 rounded-lg border border-[#DDD6EE] text-[12px] font-semibold tracking-wider focus:outline-none focus:border-[#2D1B69]"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#9B8CB5] tabular-nums">{gstin.length}/15</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-tiny font-bold text-[#9B8CB5] tabular-nums">{gstin.length}/15</span>
                   </div>
                   {gstin.length > 0 && gstin.length < 15 && (
                     <p className="text-[10px] text-red-500 mt-1.5">GSTIN must be 15 characters</p>
                   )}
                   {gstin.length === 15 && !/^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(gstin) && (
-                    <p className="text-[10px] text-red-500 mt-1.5">Invalid GSTIN format — check state code, PAN and checksum</p>
+                    <p className="text-tiny text-red-500 mt-1.5">Invalid GSTIN format — check state code, PAN and checksum</p>
                   )}
                   {gstin.length === 15 && /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(gstin) && (
-                    <p className="text-[11px] text-[#7CB518] font-semibold mt-1.5 flex items-center gap-1">
+                    <p className="text-micro text-[#7CB518] font-semibold mt-1.5 flex items-center gap-1">
                       <Check className="h-3 w-3" /> GST invoice will be issued for this order
                     </p>
                   )}

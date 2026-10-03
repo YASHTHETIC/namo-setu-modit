@@ -2,13 +2,13 @@
 
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
-import { useOrder } from "@/lib/modit-api";
+import { useOrder, useOrderDelivery } from "@/lib/modit-api";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
 import { useAdminStore } from "@/lib/admin-store";
 import {
-  ArrowLeft, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
+  ArrowLeft, ArrowRight, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
   Star, Navigation, MessageSquare, RefreshCcw, Check
 } from "lucide-react";
 
@@ -94,6 +94,8 @@ const timelineSteps = [
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { data: apiOrder, isLoading, refetch: refetchOrder, dataUpdatedAt } = useOrder(id, demoOrders[id] ?? null);
+  // Real delivery for the Track button (404s quietly when none exists yet).
+  const { data: liveDelivery } = useOrderDelivery(id);
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -259,8 +261,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     <Truck className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[14px] font-bold">Delivery Partner: Vikram S.</p>
-                    <p className="text-[11px] text-white/70 mt-0.5">Estimated arrival: 12 min</p>
+                    <p className="text-body-md font-bold">
+                      {liveDelivery ? `Delivery ${liveDelivery.delivery_number}` : "Delivery Partner: Vikram S."}
+                    </p>
+                    <p className="text-micro text-white/70 mt-0.5">
+                      {liveDelivery
+                        ? `Status: ${liveDelivery.status.replace(/_/g, " ")}`
+                        : "Estimated arrival: 12 min"}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <a href="tel:+919876543210" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
@@ -271,6 +279,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </button>
                   </div>
                 </div>
+                {liveDelivery && (
+                  <Link
+                    href={`/track/${liveDelivery.id}`}
+                    className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-white py-2.5 text-[13px] font-extrabold text-[#0097A7] transition-all hover:bg-white/90 active:scale-[0.99]"
+                  >
+                    Open live map <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
                 {/* Simulated map placeholder */}
                 <div className="mt-3 h-32 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 opacity-20" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 11px), repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 11px)" }} />
