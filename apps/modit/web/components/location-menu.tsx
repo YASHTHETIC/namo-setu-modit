@@ -57,11 +57,16 @@ export function LocationMenu() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 border-r border-[var(--border-subtle)] px-4 text-sm font-semibold text-[var(--text)]"
+        className="flex flex-col items-start leading-tight px-1 py-1 text-left"
+        aria-label="Delivery location"
       >
-        <MapPin className={`h-4 w-4 ${pincode ? (serviceable ? "text-[#7CB518]" : "text-[#E91E63]") : "text-[var(--brand)]"}`} />
-        <span className="hidden 2xl:inline tabular-nums">{pincode ?? "Delhi NCR"}</span>
-        <ChevronDown className={`h-4 w-4 text-[var(--text-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-[13px] font-extrabold text-[var(--text)]">Delivery in 60 min</span>
+        <span className="flex items-center gap-1 text-[12px] font-semibold text-[var(--text-secondary)]">
+          <span className={`h-1.5 w-1.5 rounded-full ${pincode ? (serviceable ? "bg-[#7CB518]" : "bg-[#E91E63]") : "bg-[var(--brand)]"}`} />
+          <MapPin className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+          <span className="max-w-[180px] truncate tabular-nums">{pincode ?? "Set location"}</span>
+          <ChevronDown className={`h-3.5 w-3.5 text-[var(--text-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
+        </span>
       </button>
 
       {open && (

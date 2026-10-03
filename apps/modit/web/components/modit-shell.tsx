@@ -5,21 +5,31 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  Bath,
   Bell,
   ChevronDown,
   ChevronRight,
+  Droplets,
   GitCompare,
+  Hammer,
   Heart,
+  Layers,
   LayoutDashboard,
-  MapPin,
+  LayoutGrid,
+  Lightbulb,
   Menu,
-  Mic,
   Package,
+  Paintbrush,
+  Plug,
   Search,
+  ShieldCheck,
   ShoppingCart,
   Truck,
   User,
+  Wrench,
   X,
+  Zap,
+  type LucideIcon,
 } from "lucide-react";
 
 import { useCartStore } from "@/lib/cart-store";
@@ -35,6 +45,26 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { LocationMenu } from "@/components/location-menu";
 import { SaleBanner } from "@/components/sale-banner";
 
+/** Trade icon per category slug (mega menu + mobile menu). Falls back to Package. */
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  cement: Layers,
+  painting: Paintbrush,
+  lighting: Lightbulb,
+  tiling: LayoutGrid,
+  conduits: Plug,
+  "hardware-tools": Hammer,
+  hinges: Wrench,
+  pipes: Droplets,
+  sanitary: Bath,
+  waterproofing: ShieldCheck,
+  electrical: Zap,
+};
+
+function CategoryTileIcon({ slug, className }: { slug: string; className?: string }) {
+  const Icon = CATEGORY_ICONS[slug] ?? Package;
+  return <Icon className={className} aria-hidden />;
+}
+
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -43,6 +73,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -92,6 +123,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     const query = searchQuery.trim();
     if (!query) return;
     setShowSearch(false);
+    setShowMobileSearch(false);
     router.push(`/products?search=${encodeURIComponent(query)}`);
   };
 
@@ -150,15 +182,11 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                             onClick={() => setShowMegaMenu(false)}
                             className="group flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-subtle)]/70 p-2.5 transition-all hover:-translate-y-0.5 hover:border-[var(--brand-200)] hover:bg-white"
                           >
-                            <div className="h-14 w-14 overflow-hidden rounded-xl bg-[var(--bg-alt)]">
-                              {category.image ? (
-                                <img src={category.image} alt={category.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                              ) : (
-                                <div className="flex h-full items-center justify-center text-xl">{category.icon}</div>
-                              )}
+                            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--bg-alt)]">
+                              <CategoryTileIcon slug={category.slug} className="h-6 w-6 text-[#2D1B69]" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm font-semibold text-[var(--text)]">{category.name}</div>
+                              <div className="truncate text-sm font-semibold text-[var(--text)]">{category.name}</div>
                               <div className="text-xs text-[var(--text-muted)]">{category.productCount.toLocaleString()} products</div>
                             </div>
                           </Link>
@@ -201,10 +229,13 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </AnimatePresence>
           </div>
 
+          <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
+            <LocationMenu />
+          </div>
+
           <div className="hidden flex-1 items-center xl:flex">
             <div ref={searchRef} className="relative w-full">
               <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-sm)] transition-shadow focus-within:shadow-[var(--shadow-md)]">
-                <LocationMenu />
                 <input
                   type="text"
                   value={searchQuery}
@@ -212,18 +243,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   onKeyDown={(event) => {
                     if (event.key === "Enter") submitSearch();
                   }}
-                  placeholder="Search cement, steel, tiles, paint, electrical, plumbing"
+                  placeholder="Search cement, steel, tiles, paint…"
                   aria-label="Search products"
-                  className="h-full flex-1 border-0 bg-transparent px-4 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                  className="h-full flex-1 border-0 bg-transparent px-5 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
                 />
-                <button
-                  type="button"
-                  onClick={submitSearch}
-                  className="flex w-12 items-center justify-center text-[var(--text-secondary)] transition-colors hover:text-[var(--brand)]"
-                  aria-label="Voice search"
-                >
-                  <Mic className="h-4.5 w-4.5" />
-                </button>
                 <button
                   type="button"
                   onClick={submitSearch}
@@ -296,7 +319,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <Link href="/cart" className="relative rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute right-1 top-1 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--cta)] px-1 text-[10px] font-bold text-white">
+                <span className="absolute right-1 top-1 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-[10px] font-bold text-white">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -351,7 +374,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-1 lg:hidden ml-auto">
             <button
               type="button"
-              onClick={() => setShowSearch(true)}
+              onClick={() => setShowMobileSearch(true)}
               className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
               aria-label="Search"
             >
@@ -436,7 +459,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       onClick={() => setShowMobileMenu(false)}
                       className="flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] px-3 py-3 text-sm font-medium text-[var(--text)]"
                     >
-                      <span className="text-lg">{category.icon}</span>
+                      <CategoryTileIcon slug={category.slug} className="h-5 w-5 flex-shrink-0 text-[#2D1B69]" />
                       <span className="flex-1">{category.name}</span>
                       <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
                     </Link>
@@ -457,7 +480,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showSearch && (
+        {(showSearch || showMobileSearch) && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex flex-col lg:hidden" style={{ background: "rgba(21,7,38,0.97)" }}>
             <div className="flex items-center gap-3 px-4 pt-4 pb-3">
               <div className="relative flex-1">
@@ -477,7 +500,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   </button>
                 )}
               </div>
-              <button onClick={() => { setShowSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-[14px] font-semibold">Cancel</button>
+              <button onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-[14px] font-semibold">Cancel</button>
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-6">
               {searchResults.length > 0 ? (
@@ -535,7 +558,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         <Link
                           key={cat.slug}
                           href={`/products?category=${cat.slug}`}
-                          onClick={() => { setShowSearch(false); setSearchQuery(""); }}
+                          onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }}
                           className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5 transition-colors"
                         >
                           <span className="text-lg">{cat.icon}</span>

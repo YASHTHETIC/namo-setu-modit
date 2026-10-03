@@ -213,7 +213,7 @@ export default function ModitHomePage() {
             <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#7CB518] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
+                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -546,7 +546,11 @@ export default function ModitHomePage() {
                 className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
                 maxLength={6}
               />
-              <RippleButton className="bg-[#7CB518] text-white text-[13px] font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+              <RippleButton
+                onClick={() => { if (pincode.length === 6) setShowPincodeModal(false); }}
+                disabled={pincode.length !== 6}
+                className="bg-[#7CB518] text-white text-[13px] font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 disabled:opacity-40 disabled:hover:scale-100"
+              >
                 Check
               </RippleButton>
             </div>
