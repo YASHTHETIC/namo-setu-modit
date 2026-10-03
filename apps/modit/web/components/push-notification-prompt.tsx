@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Bell, BellRing, X, Check } from "lucide-react";
 import { subscribeForServerPush } from "@/lib/pwa";
 
 export function PushNotificationPrompt() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [status, setStatus] = useState("");
@@ -16,7 +18,8 @@ export function PushNotificationPrompt() {
       if (Notification.permission === "default") {
         const dismissed = localStorage.getItem("modit_push_dismissed");
         if (!dismissed) {
-          const timer = setTimeout(() => setShow(true), 10000);
+          // After the PWA prompt so the two never overlap.
+          const timer = setTimeout(() => setShow(true), 75000);
           return () => clearTimeout(timer);
         }
       }
@@ -50,9 +53,11 @@ export function PushNotificationPrompt() {
   };
 
   if ((!show && !confirming) || (permission !== "default" && !confirming)) return null;
+  // Never interrupt checkout/payment.
+  if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-[90] max-w-[400px] mx-auto">
+    <div className="fixed bottom-20 left-4 right-4 z-[90] max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">
       <div className="bg-[#150726] rounded-2xl border border-white/10 p-4 shadow-2xl shadow-black/40">
         {confirming ? (
           <div className="flex items-start gap-3">

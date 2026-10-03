@@ -25,33 +25,33 @@ export function AppDownload() {
   return (
     <div className="market-container px-4 sm:px-6">
       <div
-        className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
+        className="rounded-2xl p-4 relative overflow-hidden"
         style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 60%, #1E0F4A 100%)" }}
       >
         <div className="absolute -top-6 -right-6 w-28 h-28 bg-[#7CB518]/15 rounded-full blur-2xl" />
         <div className="absolute -bottom-8 -left-4 w-24 h-24 bg-[#00BCD4]/10 rounded-full blur-2xl" />
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
 
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center flex-shrink-0">
-            <Smartphone className="h-7 w-7 text-[#7CB518]" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-white/10 border border-white/15 hidden sm:flex items-center justify-center flex-shrink-0">
+            <Smartphone className="h-5 w-5 text-[#7CB518]" />
           </div>
           <div className="flex-1">
-            <h3 className="text-[16px] font-extrabold text-white">Get the MODIT app</h3>
+            <h3 className="text-[15px] font-extrabold text-white">Get the MODIT app</h3>
             <p className="text-[12px] text-white/55 mt-0.5">
               Faster checkout, offline catalog and order alerts on your home screen
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex flex-row gap-2 w-full sm:w-auto">
             {installed || done ? (
-              <span className="flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl bg-[#7CB518]/15 border border-[#7CB518]/30 text-[13px] font-bold text-[#a4e635]">
+              <span className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#7CB518]/15 border border-[#7CB518]/30 text-[13px] font-bold text-[#a4e635]">
                 <Check className="h-4 w-4" /> Installed
               </span>
             ) : (
               <button
                 onClick={handleAndroid}
                 disabled={!canInstall || installing}
-                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all active:scale-[0.98] disabled:opacity-50"
+                className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all active:scale-[0.98] disabled:opacity-50"
                 title={canInstall ? "Install instantly" : "Coming soon on Google Play"}
               >
                 <Play className="h-4 w-4 fill-white" />
@@ -60,7 +60,7 @@ export function AppDownload() {
             )}
             <button
               onClick={() => setIosOpen(true)}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 border border-white/15 text-white text-[13px] font-bold hover:bg-white/15 transition-all active:scale-[0.98]"
+              className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-white/15 text-white text-[13px] font-bold hover:bg-white/15 transition-all active:scale-[0.98]"
             >
               <Apple className="h-4 w-4" /> iPhone
             </button>
