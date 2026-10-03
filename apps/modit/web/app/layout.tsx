@@ -5,6 +5,7 @@ import Script from "next/script";
 import { Providers } from "@/components/providers";
 import { ModitShell } from "@/components/modit-shell";
 import { SupportChat } from "@/components/support-chat";
+import { WebVitalsReporter } from "@/components/web-vitals-reporter";
 import { PincodeProvider } from "@/lib/pincode-context";
 
 import "./globals.css";
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <PincodeProvider>
             <ModitShell>{children}</ModitShell>
             <SupportChat />
+            <WebVitalsReporter />
           </PincodeProvider>
         </Providers>
         <script

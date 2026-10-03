@@ -106,9 +106,9 @@ export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: Retu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out]" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm animate-[fadeIn_0.4s_ease-out] sm:p-4" onClick={onClose}>
       <div
-        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-xl border border-[#DDD6EE] animate-[scaleIn_0.2s_ease-out]"
+        className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white p-6 shadow-xl border border-[#DDD6EE] animate-[scaleIn_0.2s_ease-out]"
         onClick={(e) => e.stopPropagation()}
       >
         {submitted ? (
@@ -151,9 +151,9 @@ export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: Retu
                       </div>
                       {active && (
                         <div className="flex items-center gap-1.5">
-                          <button onClick={() => setQty(item.sku, qty - 1)} className="h-6 w-6 rounded-md border border-[#DDD6EE] flex items-center justify-center"><Minus className="h-3 w-3" /></button>
-                          <span className="text-[12px] font-bold w-6 text-center">{qty}</span>
-                          <button onClick={() => setQty(item.sku, qty + 1)} className="h-6 w-6 rounded-md border border-[#DDD6EE] flex items-center justify-center"><Plus className="h-3 w-3" /></button>
+                          <button onClick={() => setQty(item.sku, qty - 1)} aria-label="Decrease quantity" className="h-8 w-8 rounded-md border border-[#DDD6EE] flex items-center justify-center hover:border-[#E91E63] transition-colors"><Minus className="h-3 w-3" /></button>
+                          <span className="text-[12px] font-bold w-8 text-center tabular-nums">{qty}</span>
+                          <button onClick={() => setQty(item.sku, qty + 1)} aria-label="Increase quantity" className="h-8 w-8 rounded-md border border-[#DDD6EE] flex items-center justify-center hover:border-[#E91E63] transition-colors"><Plus className="h-3 w-3" /></button>
                         </div>
                       )}
                     </div>
@@ -168,10 +168,10 @@ export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: Retu
             </select>
 
             <p className="text-[11px] font-bold text-[#150726] mb-2">Details <span className="font-medium text-[#9B8CB5]">(optional)</span></p>
-            <textarea rows={2} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Describe the issue, attach photos at pickup..." className="w-full px-3 py-2.5 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#E91E63] resize-none mb-3" />
+            <textarea rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Describe the issue — photos can be shared at pickup" className="w-full px-3 py-2.5 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#E91E63] resize-none mb-3" />
 
             <p className="text-[11px] font-bold text-[#150726] mb-2">Refund to</p>
-            <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-3 gap-2 mb-3">
               {([
                 { id: "source", label: "Original source" },
                 { id: "bank", label: "Bank account" },
@@ -206,19 +206,19 @@ export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: Retu
 
             {refundTotal > 0 && (
               <div className="rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3 mb-3 flex items-center justify-between">
-                <span className="text-[12px] font-semibold text-[#6B5B83]">Estimated refund</span>
-                <span className="text-[15px] font-extrabold text-[#5f8f12]">₹{refundTotal.toLocaleString("en-IN")}</span>
+                <span className="text-[12px] font-semibold text-[var(--text-secondary)]">Estimated refund</span>
+                <span className="text-[15px] font-extrabold text-[#5A8010]">₹{refundTotal.toLocaleString("en-IN")}</span>
               </div>
             )}
 
             {error && <p className="text-[11px] text-red-500 font-semibold mb-3">{error}</p>}
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-[12px] font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
               <button
                 onClick={handleSubmit}
                 disabled={!valid || createReturnApi.isPending}
-                className="px-4 py-2.5 rounded-lg bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B] disabled:opacity-50 flex items-center gap-2"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B] disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <RotateCcw className="h-3.5 w-3.5" /> {createReturnApi.isPending ? "Submitting..." : "Submit Return"}
               </button>

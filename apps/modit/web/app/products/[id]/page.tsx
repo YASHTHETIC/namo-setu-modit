@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState, useMemo, useCallback, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -195,7 +196,7 @@ export default function ProductDetailPage({
         <ChevronRight className="h-3 w-3 flex-shrink-0" />
         <Link href={`/products?category=${product.categorySlug}`} className="hover:text-[var(--brand)] whitespace-nowrap">{product.category}</Link>
         <ChevronRight className="h-3 w-3 flex-shrink-0" />
-        <span className="text-[var(--text-primary)] font-medium truncate max-w-[200px]">{product.name}</span>
+        <span className="text-[var(--text-primary)] font-medium truncate max-w-[40vw] sm:max-w-[320px]" title={product.name}>{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -205,10 +206,14 @@ export default function ProductDetailPage({
             {/* Main Image */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9]">
               {product.images[selectedImage] ? (
-                <img
+                <Image
                   src={product.images[selectedImage]}
                   alt={product.name}
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 560px"
+                  priority
+                  draggable={false}
+                  className="object-contain animate-fade-in"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -226,7 +231,7 @@ export default function ProductDetailPage({
                   onClick={() => product && toggleWishlist(product)}
                   title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                   className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
-                    wishlisted ? "bg-[#FCE8F0] text-[#E91E63]" : "bg-white/90 text-[#6B5B83] hover:text-[#E91E63]"
+                    wishlisted ? "bg-[#FCE8F0] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#E91E63]" : ""}`} />
@@ -234,7 +239,7 @@ export default function ProductDetailPage({
                 <button
                   onClick={handleShare}
                   title="Share this product"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#6B5B83] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[var(--text-secondary)] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
                 >
                   {shared ? <Check className="h-5 w-5 text-[#7CB518]" /> : <Share2 className="h-5 w-5" />}
                 </button>
@@ -254,18 +259,20 @@ export default function ProductDetailPage({
 
             {/* Thumbnails — horizontal scroll on mobile */}
             {product.images.length > 1 && (
-              <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x">
                 {product.images.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
+                    aria-pressed={i === selectedImage}
+                    aria-label={`View image ${i + 1}`}
+                    className={`h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 snap-start overflow-hidden rounded-lg border-2 transition-all ${
                       i === selectedImage
                         ? "border-[var(--green)] shadow-md shadow-green-500/20"
                         : "border-[var(--border)] hover:border-[var(--green)]/50"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <Image src={img} alt="" width={64} height={64} loading="lazy" className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -630,7 +637,7 @@ export default function ProductDetailPage({
 
       {/* Tabs: Details, Specifications, Delivery */}
       <div className="mt-10">
-        <div className="flex gap-0 border-b border-[var(--border)]">
+        <div className="flex gap-0 border-b border-[var(--border)] overflow-x-auto scrollbar-hide snap-x">
           {([
             { key: "details", label: "Product Details" },
             { key: "specs", label: "Specifications" },
@@ -639,13 +646,13 @@ export default function ProductDetailPage({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`relative px-6 py-3 text-sm font-semibold transition-colors ${
+              className={`relative px-4 sm:px-6 py-3 text-sm font-semibold whitespace-nowrap snap-start transition-colors ${
                 activeTab === tab.key ? "text-[var(--brand)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
             >
               {tab.label}
               {activeTab === tab.key && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--cyan)]" />
+                <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--cyan)]" />
               )}
             </button>
           ))}

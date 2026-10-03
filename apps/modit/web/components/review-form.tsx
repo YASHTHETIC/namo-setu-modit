@@ -129,17 +129,24 @@ export function ReviewForm({ targetType, targetId, onSubmitted }: ReviewFormProp
         </div>
       </CardContent>
       <CardFooter>
-        <Button
-          onClick={handleSubmit}
-          disabled={rating === 0 || !title.trim() || submitReview.isPending}
-        >
-          {submitReview.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
+        <div className="w-full">
+          <Button
+            onClick={handleSubmit}
+            disabled={rating === 0 || !title.trim() || submitReview.isPending}
+          >
+            {submitReview.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+            Submit Review
+          </Button>
+          {(rating === 0 || !title.trim()) && !submitReview.isPending && (
+            <p className="mt-2 text-[11px] text-[var(--text-muted)]">
+              Select a star rating and add a title to submit your review.
+            </p>
           )}
-          Submit Review
-        </Button>
+        </div>
       </CardFooter>
     </Card>
   );

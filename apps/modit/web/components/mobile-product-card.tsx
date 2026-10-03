@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Star, Clock, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -59,15 +60,16 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
     <div className="bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col">
       {/* Image */}
       <div className="relative bg-[#F7F4FC]">
-        <Link href={`/products/${product.id}`} className="block aspect-square">
+        <Link href={`/products/${product.id}`} className="relative block aspect-square">
           {product.images[0] ? (
-            <img
+            <Image
               src={product.images[0]}
               alt={product.name}
+              fill
+              sizes="50vw"
               loading="lazy"
-              decoding="async"
               draggable={false}
-              className="h-full w-full object-contain animate-fade-in"
+              className="object-contain animate-fade-in"
             />
           ) : null}
         </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Heart, GitCompareArrows } from "lucide-react";
 import type { Product } from "@/lib/product-data";
@@ -113,13 +114,14 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       {/* Image zone — uniform square, full product visible (Blinkit-style) */}
       <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
         {product.images?.[0] && (
-          <img
+          <Image
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
             loading="lazy"
-            decoding="async"
             draggable={false}
+            className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
           />
         )}
 

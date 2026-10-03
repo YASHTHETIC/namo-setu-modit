@@ -217,26 +217,16 @@ function ProductsContent() {
         {showFilters && (
           <aside className="hidden w-64 shrink-0 lg:block">
             <div
-              className="sticky top-24 space-y-0 overflow-hidden rounded-2xl border shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
-              style={{
-                borderColor: catColor?.border || '#FED7AA',
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #FFFCF8 100%)',
-              }}
+              className="sticky top-24 space-y-0 overflow-hidden rounded-2xl border border-[#DDD6EE] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
             >
               {/* Sidebar Header */}
-              <div
-                className="px-5 py-4 border-b"
-                style={{
-                  background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)',
-                  borderColor: catColor?.border || '#FED7AA',
-                }}
-              >
+              <div className="px-5 py-4 border-b border-[#DDD6EE] bg-[#F8F6FC]">
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="h-4 w-4" style={{ color: catColor?.accent || '#2D1B69' }} />
-                  <h3 className="text-sm font-black" style={{ color: catColor?.text || '#9A3412' }}>Filters</h3>
+                  <SlidersHorizontal className="h-4 w-4 text-[#2D1B69]" />
+                  <h3 className="text-sm font-black text-[#150726]">Filters</h3>
                   {hasActiveFilters && (
                     <span
-                      className="ml-auto rounded-full px-2 py-0.5 text-tiny font-bold text-white"
+                      className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
                       style={{ background: catColor?.accent || '#2D1B69' }}
                     >
                       Active
