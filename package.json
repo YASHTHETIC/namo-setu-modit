@@ -12,7 +12,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "pytest",
-    "check-images": "node scripts/check-images.js"
+    "check-images": "node scripts/check-images.js",
+    "check:ui": "node scripts/check-ui.js"
   },
   "dependencies": {
     "react": "19.0.0",

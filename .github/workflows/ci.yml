@@ -26,4 +26,5 @@ jobs:
           cache: npm
       - run: npm install --legacy-peer-deps
       - run: npm run check-images
+      - run: npm run check:ui
       - run: npm run build --workspace=@modit/web
