@@ -235,7 +235,7 @@ function ProductsContent() {
                   <h3 className="text-sm font-black" style={{ color: catColor?.text || '#9A3412' }}>Filters</h3>
                   {hasActiveFilters && (
                     <span
-                      className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
+                      className="ml-auto rounded-full px-2 py-0.5 text-tiny font-bold text-white"
                       style={{ background: catColor?.accent || '#2D1B69' }}
                     >
                       Active
@@ -247,7 +247,7 @@ function ProductsContent() {
               <div className="p-5 space-y-5">
                 {/* Search in results */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
+                  <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9B8CB5]" />
                     <input
@@ -262,7 +262,7 @@ function ProductsContent() {
 
                 {/* Category */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
+                  <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
                   <div className="space-y-1 max-h-[320px] overflow-y-auto pr-1 thin-scroll">
                     <button
                       onClick={() => setSelectedCategory("")}
@@ -297,7 +297,7 @@ function ProductsContent() {
                           />
                           <span className="flex-1">{cat.name}</span>
                           <span
-                            className="rounded-full px-1.5 py-0.5 text-[10px] font-bold"
+                            className="rounded-full px-1.5 py-0.5 text-tiny font-bold"
                             style={{
                               background: isActive ? `${cc.accent}18` : 'rgba(0,0,0,0.04)',
                               color: isActive ? cc.accent : 'var(--text-muted)',
@@ -313,7 +313,7 @@ function ProductsContent() {
 
                 {/* Price Range */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
+                  <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
@@ -322,7 +322,7 @@ function ProductsContent() {
                       className="h-9 w-full rounded-lg border border-[#DDD6EE] bg-white px-2.5 text-xs font-medium focus:outline-none focus:ring-2 transition-all focus:border-[#2D1B69] focus:ring-[#2D1B69]/10"
                       placeholder="Min"
                     />
-                    <span className="text-[10px] font-bold text-[var(--text-muted)]">TO</span>
+                    <span className="text-tiny font-bold text-[var(--text-muted)]">TO</span>
                     <input
                       type="number"
                       value={priceRange[1]}
@@ -344,7 +344,7 @@ function ProductsContent() {
                         <button
                           key={preset.label}
                           onClick={() => setPriceRange(preset.range)}
-                          className="rounded-full px-2.5 py-1 text-[10px] font-bold transition-all border"
+                          className="rounded-full px-2.5 py-1 text-tiny font-bold transition-all border"
                           style={
                             isActive
                               ? { background: catColor?.bg || '#FED7AA', color: catColor?.accent || '#2D1B69', borderColor: catColor?.border || '#FED7AA', boxShadow: `0 1px 4px ${catColor?.accent || '#2D1B69'}12` }
@@ -360,7 +360,7 @@ function ProductsContent() {
 
                 {/* Brands */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
+                  <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
                   <div className="max-h-48 space-y-1 overflow-y-auto pr-1">
                     {allBrands.map((brand) => {
                       const isSelected = selectedBrands.includes(brand);
@@ -390,7 +390,7 @@ function ProductsContent() {
 
                 {/* Rating */}
                 <div>
-                  <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
+                  <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
                   <div className="space-y-1">
                     {[4, 3, 2, 1].map((r) => {
                       const isActive = minRating === r;
@@ -524,14 +524,14 @@ function ProductsContent() {
                 <button
                   onClick={() => handleExport("html")}
                   title="Download price list (HTML / printable)"
-                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-[11px] font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
+                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-micro font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
                 >
                   <Download className="h-3.5 w-3.5" /> Price List
                 </button>
                 <button
                   onClick={() => handleExport("csv")}
                   title="Download price list as CSV"
-                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-[11px] font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
+                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-micro font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
                 >
                   <FileDown className="h-3.5 w-3.5" /> CSV
                 </button>
@@ -650,7 +650,7 @@ function ProductsContent() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="h-4 w-4 text-[#2D1B69]" />
-                <span className="text-[14px] font-bold text-[#150726]">Filters</span>
+                <span className="text-body-md font-bold text-[#150726]">Filters</span>
                 {hasActiveFilters && <span className="rounded-full px-2 py-0.5 bg-[#2D1B69] text-[9px] font-bold text-white">Active</span>}
               </div>
               <button onClick={() => setShowMobileFilter(false)} className="p-2 rounded-full hover:bg-[#F0ECF9] transition-colors">
@@ -661,7 +661,7 @@ function ProductsContent() {
             <div className="flex-1 overflow-y-auto p-5 space-y-5">
               {/* Search */}
               <div>
-                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
+                <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9B8CB5]" />
                   <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search in results..." className="h-10 w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 text-xs font-medium focus:outline-none focus:ring-2 transition-all text-[#150726] focus:border-[#2D1B69] focus:ring-[#2D1B69]/10" />
@@ -670,13 +670,13 @@ function ProductsContent() {
 
               {/* Category */}
               <div>
-                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
+                <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Category</h3>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={() => setSelectedCategory("")} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${!selectedCategory ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                  <button onClick={() => setSelectedCategory("")} className={`rounded-full px-3 py-1.5 text-micro font-bold transition-all border ${!selectedCategory ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
                     All
                   </button>
                   {categories.map((cat) => (
-                    <button key={cat.slug} onClick={() => setSelectedCategory(cat.slug)} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${selectedCategory === cat.slug ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                    <button key={cat.slug} onClick={() => setSelectedCategory(cat.slug)} className={`rounded-full px-3 py-1.5 text-micro font-bold transition-all border ${selectedCategory === cat.slug ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
                       {cat.name.split("\n")[0]}
                     </button>
                   ))}
@@ -685,7 +685,7 @@ function ProductsContent() {
 
               {/* Price */}
               <div>
-                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
+                <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { label: "Under ₹100", range: [0, 100] as [number, number] },
@@ -696,7 +696,7 @@ function ProductsContent() {
                   ].map((preset) => {
                     const isActive = priceRange[0] === preset.range[0] && priceRange[1] === preset.range[1];
                     return (
-                      <button key={preset.label} onClick={() => setPriceRange(preset.range)} className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${isActive ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                      <button key={preset.label} onClick={() => setPriceRange(preset.range)} className={`rounded-full px-3 py-1.5 text-micro font-bold transition-all border ${isActive ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
                         {preset.label}
                       </button>
                     );
@@ -706,7 +706,7 @@ function ProductsContent() {
 
               {/* Brands */}
               <div>
-                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
+                <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Brand</h3>
                 <div className="max-h-40 overflow-y-auto space-y-1">
                   {allBrands.map((brand) => {
                     const isSelected = selectedBrands.includes(brand);
@@ -724,10 +724,10 @@ function ProductsContent() {
 
               {/* Rating */}
               <div>
-                <h3 className="mb-2 text-[11px] font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
+                <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Minimum Rating</h3>
                 <div className="flex flex-wrap gap-2">
                   {[4, 3, 2, 1].map((r) => (
-                    <button key={r} onClick={() => setMinRating(minRating === r ? 0 : r)} className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border ${minRating === r ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
+                    <button key={r} onClick={() => setMinRating(minRating === r ? 0 : r)} className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-micro font-bold transition-all border ${minRating === r ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
                       <Star className="h-3 w-3" style={minRating === r ? { fill: "white", color: "white" } : { fill: "#FACC15", color: "#FACC15" }} /> {r}+
                     </button>
                   ))}
@@ -746,11 +746,11 @@ function ProductsContent() {
             {/* Footer */}
             <div className="border-t border-[#E8E0F7] px-5 py-3 flex gap-3">
               {hasActiveFilters && (
-                <button onClick={clearFilters} className="flex-1 h-11 rounded-xl border-2 border-[#E8E0F7] text-[12px] font-bold text-[#E91E63] bg-white hover:bg-[#FCE4EC] transition-all">
+                <button onClick={clearFilters} className="flex-1 h-11 rounded-xl border-2 border-[#E8E0F7] text-caption font-bold text-[#E91E63] bg-white hover:bg-[#FCE4EC] transition-all">
                   Clear All
                 </button>
               )}
-              <button onClick={() => setShowMobileFilter(false)} className="flex-1 h-11 rounded-xl bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E0F4A] transition-all shadow-lg shadow-purple-500/20">
+              <button onClick={() => setShowMobileFilter(false)} className="flex-1 h-11 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E0F4A] transition-all shadow-lg shadow-purple-500/20">
                 Show {filteredProducts.length} Results
               </button>
             </div>
@@ -847,7 +847,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Discount badge */}
         {product.discount > 0 && (
           <span
-            className="absolute top-3 right-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10px] font-black text-white shadow-lg"
+            className="absolute top-3 right-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg"
             style={{
               background: 'linear-gradient(135deg, #DC2626, #EF4444)',
               boxShadow: '0 3px 12px rgba(220,38,38,0.35)',
@@ -860,7 +860,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
         {/* Sale badge */}
         {"onSale" in product && (product as unknown as { onSale: boolean; saleName: string | null }).onSale && (
-          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-[2] rounded-lg px-2.5 py-1 text-[10px] font-black text-white shadow-lg bg-[#7CB518]">
+          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-[2] rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg bg-[#7CB518]">
             {(product as unknown as { saleName: string | null }).saleName ?? "SALE"}
           </span>
         )}
@@ -868,7 +868,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Verified badge */}
         {product.seller.isVerified && (
           <span
-            className="absolute bottom-3 left-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10px] font-bold shadow-sm"
+            className="absolute bottom-3 left-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-bold shadow-sm"
             style={{
               background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)',
               color: '#065F46',
@@ -886,7 +886,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         <div className="flex items-center gap-2 mb-1.5">
           {product.brand && (
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+              className="rounded-md px-2 py-0.5 text-tiny font-black uppercase tracking-wider"
               style={{
                 background: catColor.bg,
                 color: catColor.text,
@@ -920,7 +920,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             <span className="text-xs font-black text-[#7CB518]">{product.rating}</span>
             <Star className="h-3 w-3" style={{ fill: '#7CB518', color: '#7CB518' }} />
           </div>
-          <span className="text-[10px] font-medium text-[var(--text-muted)]">({product.reviewCount.toLocaleString()} reviews)</span>
+          <span className="text-tiny font-medium text-[var(--text-muted)]">({product.reviewCount.toLocaleString()} reviews)</span>
         </div>
 
         {/* Price */}
@@ -938,7 +938,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           {product.bulkLabel && (
             <div className="mt-1.5 flex items-center gap-1.5">
               <Tag className="h-3 w-3 text-emerald-600" />
-              <p className="text-[10px] font-bold text-emerald-600">
+              <p className="text-tiny font-bold text-emerald-600">
                 {product.bulkLabel}
               </p>
             </div>
@@ -1087,7 +1087,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         </button>
         {product.discount > 0 && (
           <span
-            className="absolute top-2 right-2 z-[2] flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-black text-white"
+            className="absolute top-2 right-2 z-[2] flex items-center gap-1 rounded-lg px-2 py-1 text-tiny font-black text-white"
             style={{
               background: 'linear-gradient(135deg, #DC2626, #EF4444)',
               boxShadow: '0 2px 8px rgba(220,38,38,0.3)',
@@ -1106,7 +1106,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             <div className="flex items-center gap-2 mb-1">
               {product.brand && (
                 <span
-                  className="rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                  className="rounded-md px-2 py-0.5 text-tiny font-black uppercase tracking-wider"
                   style={{ background: catColor.bg, color: catColor.text }}
                 >
                   {product.brand}
@@ -1146,7 +1146,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             {product.bulkLabel && (
               <div className="flex items-center gap-1 mt-0.5">
                 <Tag className="h-3 w-3 text-emerald-600" />
-                <p className="text-[10px] font-bold text-emerald-600">{product.bulkLabel}</p>
+                <p className="text-tiny font-bold text-emerald-600">{product.bulkLabel}</p>
               </div>
             )}
           </div>
@@ -1189,7 +1189,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             {optLabel && (
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-                className="flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-[11px] font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+                className="flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-micro font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
               >
                 {optLabel} <ChevronDown className="h-3 w-3" />
               </button>
