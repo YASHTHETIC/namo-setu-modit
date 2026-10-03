@@ -64,6 +64,28 @@ class SearchService:
             stmt = stmt.where(Product.list_price <= filters["max_price"])
 
         total = int((await session.execute(select(func.count()).select_from(stmt.subquery()))).scalar_one())
+
+        if total == 0 and query and not filters.get("_corrected"):
+            # Typo tolerance: retry once with the closest matching product name.
+            from backend.app.services.fuzzy import correct_query
+
+            name_stmt = select(Product.name).where(
+                Product.is_active.is_(True), Product.deleted_at.is_(None)
+            )
+            if filters.get("category_id"):
+                name_stmt = name_stmt.where(Product.category_id == filters["category_id"])
+            if filters.get("brand_id"):
+                name_stmt = name_stmt.where(Product.brand_id == filters["brand_id"])
+            name_rows = (await session.execute(name_stmt.limit(200))).all()
+            names = [r if isinstance(r, str) else r[0] for r in name_rows if (r if isinstance(r, str) else r[0])]
+            corrected = correct_query(query, names)
+            if corrected:
+                result = await self.search_products(
+                    session, corrected, {**filters, "_corrected": True}, page, page_size
+                )
+                result["did_you_mean"] = corrected
+                return result
+
         result = await session.execute(
             stmt.order_by(Product.name.asc()).offset((page - 1) * page_size).limit(page_size)
         )
@@ -93,6 +115,7 @@ class SearchService:
             "total": total,
             "pages": (total + page_size - 1) // page_size if total else 0,
             "suggestions": [i["name"] for i in items[:5]],
+            "did_you_mean": None,
         }
 
         await cache.set(cache_key, response, ttl_seconds=120)

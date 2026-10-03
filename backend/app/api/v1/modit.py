@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -64,7 +64,10 @@ from backend.app.schemas.modit import (
     ConstructionSiteCreate,
     ConstructionSiteRead,
     DeliveryCreate,
+    DeliveryPingCreate,
+    DeliveryPingRead,
     DeliveryRead,
+    DeliveryTrackRead,
     DriverCreate,
     DriverRead,
     InventoryAlert,
@@ -81,6 +84,7 @@ from backend.app.schemas.modit import (
     ModitAnalyticsSummary,
     ModitListResponse,
     ModitNotificationRead,
+    NearestWarehouseRead,
     OrderCreate,
     OrderDetailRead,
     OrderItemCreate,
@@ -114,6 +118,11 @@ from backend.app.schemas.modit import (
     SmartReorderRequest,
     SubCategoryCreate,
     SubCategoryRead,
+    SupportConversationCreate,
+    SupportConversationDetailRead,
+    SupportConversationRead,
+    SupportMessageCreate,
+    SupportMessageRead,
     SupplierCreate,
     SupplierRead,
     UnitRead,
@@ -127,6 +136,14 @@ from backend.app.schemas.modit import (
     WarehouseRead,
 )
 from backend.app.schemas.platform import StandardResponse
+from backend.app.services.geo import find_nearest_warehouse
+from backend.app.services.support import (
+    create_conversation,
+    get_conversation_detail,
+    list_conversations,
+    post_user_message,
+)
+from backend.app.services.tracking import get_delivery_track, record_delivery_ping
 from backend.app.services.modit import (
     ai_boq_reader,
     ai_material_recommendation,
@@ -146,6 +163,7 @@ from backend.app.services.modit import (
     rfq_to_detail,
     search_products,
     smart_reorder_suggestions,
+    suggest_correction,
     track_analytics_event,
     voice_order_processing,
 )
@@ -179,6 +197,15 @@ async def list_products(
     items, total, suggestions = await search_products(
         db, query=search, category_id=category_id, brand_id=brand_id, page=page, page_size=page_size
     )
+    did_you_mean: str | None = None
+    if total == 0 and search:
+        # Typo tolerance: retry once with the closest matching product name.
+        corrected = await suggest_correction(db, search, category_id=category_id, brand_id=brand_id)
+        if corrected:
+            did_you_mean = corrected
+            items, total, suggestions = await search_products(
+                db, query=corrected, category_id=category_id, brand_id=brand_id, page=page, page_size=page_size
+            )
     return ProductSearchResponse(
         items=items,
         page=page,
@@ -186,6 +213,7 @@ async def list_products(
         total=total,
         pages=_pages(total, page_size),
         filters={"category": [], "brand": []},
+        did_you_mean=did_you_mean,
     )
 
 
@@ -370,6 +398,21 @@ async def create_warehouse(payload: WarehouseCreate, db: AsyncSession = Depends(
     await db.commit()
     await db.refresh(warehouse)
     return WarehouseRead.model_validate(warehouse)
+
+
+@router.get("/warehouses/nearest", response_model=NearestWarehouseRead)
+async def nearest_warehouse(
+    lat: float = Query(ge=-90, le=90),
+    lng: float = Query(ge=-180, le=180),
+    organization_id: str | None = None,
+    db: AsyncSession = Depends(get_db),
+) -> NearestWarehouseRead:
+    """Closest geo-tagged warehouse to a point (hyperlocal fulfillment)."""
+    warehouse, distance_km = await find_nearest_warehouse(db, lat, lng, organization_id)
+    if warehouse is None or distance_km is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No geo-tagged warehouse found")
+    data = WarehouseRead.model_validate(warehouse).model_dump()
+    return NearestWarehouseRead(**data, distance_km=round(distance_km, 2))
 
 
 # =====================================================
@@ -670,11 +713,33 @@ async def create_delivery(payload: DeliveryCreate, db: AsyncSession = Depends(ge
         status="pending",
         driver_id=payload.driver_id,
         vehicle_id=payload.vehicle_id,
+        dest_lat=payload.dest_lat,
+        dest_lng=payload.dest_lng,
     )
     db.add(delivery)
     await db.commit()
     await db.refresh(delivery)
     return DeliveryRead.model_validate(delivery)
+
+
+@router.post(
+    "/deliveries/{delivery_id}/pings", response_model=DeliveryPingRead, status_code=status.HTTP_201_CREATED
+)
+async def create_delivery_ping(
+    delivery_id: str,
+    payload: DeliveryPingCreate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DeliveryPingRead:
+    """Rider location heartbeat (driver app). First ping auto-dispatches."""
+    ping = await record_delivery_ping(db, delivery_id, payload.latitude, payload.longitude)
+    return DeliveryPingRead.model_validate(ping)
+
+
+@router.get("/deliveries/{delivery_id}/track", response_model=DeliveryTrackRead)
+async def track_delivery(delivery_id: str, db: AsyncSession = Depends(get_db)) -> DeliveryTrackRead:
+    """Public live-tracking payload (unguessable UUID deep links from SMS/push)."""
+    return DeliveryTrackRead.model_validate(await get_delivery_track(db, delivery_id))
 
 
 @router.get("/drivers", response_model=list[DriverRead])
@@ -928,3 +993,55 @@ async def create_modit_notification_endpoint(
     await db.commit()
     await db.refresh(notification)
     return notification
+
+
+# =====================================================
+# 11. Support Chat
+# =====================================================
+
+@router.post("/support/conversations", response_model=SupportConversationRead, status_code=status.HTTP_201_CREATED)
+async def create_support_conversation(
+    payload: SupportConversationCreate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> SupportConversationRead:
+    """Open a support thread, optionally linked to an order for live context."""
+    conversation = await create_conversation(db, user.id, payload.subject, payload.order_id)
+    return SupportConversationRead.model_validate(conversation)
+
+
+@router.get("/support/conversations", response_model=list[SupportConversationRead])
+async def list_support_conversations(
+    db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> list[SupportConversationRead]:
+    """List my support threads."""
+    conversations = await list_conversations(db, user.id)
+    return [SupportConversationRead.model_validate(c) for c in conversations]
+
+
+@router.get("/support/conversations/{conversation_id}", response_model=SupportConversationDetailRead)
+async def get_support_conversation(
+    conversation_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> SupportConversationDetailRead:
+    """Thread with messages."""
+    conversation, messages = await get_conversation_detail(db, user.id, conversation_id)
+    return SupportConversationDetailRead(
+        **SupportConversationRead.model_validate(conversation).model_dump(),
+        messages=[SupportMessageRead.model_validate(m) for m in messages],
+    )
+
+
+@router.post(
+    "/support/conversations/{conversation_id}/messages",
+    response_model=SupportMessageRead,
+    status_code=status.HTTP_201_CREATED,
+)
+async def post_support_message(
+    conversation_id: str,
+    payload: SupportMessageCreate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> SupportMessageRead:
+    """Send a message; returns the instant bot reply (user msg stored too)."""
+    _user_message, bot_message = await post_user_message(db, user.id, conversation_id, payload.body)
+    return SupportMessageRead.model_validate(bot_message)

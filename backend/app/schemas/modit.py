@@ -240,6 +240,7 @@ class ProductImageRead(ORMModel):
 class ProductSearchResponse(ModitListResponse):
     items: list[ProductRead]
     filters: dict[str, list[str]]
+    did_you_mean: str | None = None
 
 
 # Supplier
@@ -292,6 +293,8 @@ class WarehouseBase(BaseModel):
     address_line1: str
     address_line2: str | None = None
     pincode: str
+    latitude: float | None = None
+    longitude: float | None = None
 
 
 class WarehouseCreate(WarehouseBase):
@@ -308,8 +311,20 @@ class WarehouseRead(ORMModel):
     address_line1: str
     address_line2: str | None
     pincode: str
+    latitude: float | None = None
+    longitude: float | None = None
     is_active: bool
     created_at: datetime
+
+
+class NearestWarehouseRead(ORMModel):
+    id: str
+    name: str
+    warehouse_code: str
+    pincode: str
+    latitude: float | None = None
+    longitude: float | None = None
+    distance_km: float
 
 
 # Inventory
@@ -747,6 +762,8 @@ class DeliveryBase(BaseModel):
     purchase_order_id: str
     driver_id: str | None = None
     vehicle_id: str | None = None
+    dest_lat: float | None = None
+    dest_lng: float | None = None
 
 
 class DeliveryCreate(DeliveryBase):
@@ -762,7 +779,78 @@ class DeliveryRead(ORMModel):
     vehicle_id: str | None
     dispatched_at: datetime | None
     delivered_at: datetime | None
+    last_lat: float | None = None
+    last_lng: float | None = None
+    last_ping_at: datetime | None = None
+    dest_lat: float | None = None
+    dest_lng: float | None = None
     created_at: datetime
+
+
+class DeliveryPingCreate(BaseModel):
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+
+
+class DeliveryPingRead(ORMModel):
+    id: str
+    delivery_id: str
+    latitude: float
+    longitude: float
+    recorded_at: datetime
+    created_at: datetime
+
+
+class DeliveryTrackStep(BaseModel):
+    key: str
+    label: str
+    done: bool
+    at: datetime | None = None
+
+
+class DeliveryTrackRead(BaseModel):
+    delivery_id: str
+    delivery_number: str
+    status: str
+    last_lat: float | None = None
+    last_lng: float | None = None
+    last_ping_at: datetime | None = None
+    dest_lat: float | None = None
+    dest_lng: float | None = None
+    distance_km: float | None = None
+    eta_minutes: int | None = None
+    timeline: list[DeliveryTrackStep]
+
+
+# Support Chat
+class SupportConversationCreate(BaseModel):
+    subject: str = Field(min_length=3, max_length=255)
+    order_id: str | None = None
+
+
+class SupportConversationRead(ORMModel):
+    id: str
+    user_id: str
+    order_id: str | None
+    subject: str
+    status: str
+    created_at: datetime
+
+
+class SupportMessageCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=4000)
+
+
+class SupportMessageRead(ORMModel):
+    id: str
+    conversation_id: str
+    sender: str
+    body: str
+    created_at: datetime
+
+
+class SupportConversationDetailRead(SupportConversationRead):
+    messages: list[SupportMessageRead] = []
 
 
 class DriverBase(BaseModel):

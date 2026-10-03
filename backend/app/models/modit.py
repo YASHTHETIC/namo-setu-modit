@@ -7,6 +7,7 @@ from sqlalchemy import (
     CheckConstraint,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Integer,
@@ -227,6 +228,8 @@ class Warehouse(BaseModel):
     address_line1: Mapped[str] = mapped_column(String(255), nullable=False)
     address_line2: Mapped[str | None] = mapped_column(String(255), nullable=True)
     pincode: Mapped[str] = mapped_column(String(20), nullable=False)
+    latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     organization = relationship("Organization", back_populates="warehouses")
@@ -659,10 +662,31 @@ class Delivery(BaseModel):
     vehicle_id: Mapped[str | None] = mapped_column(ForeignKey("vehicles.id", ondelete="SET NULL"), nullable=True)
     dispatched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Live tracking: last rider ping + drop-off point (both optional).
+    last_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    last_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
+    last_ping_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    dest_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dest_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     purchase_order = relationship("PurchaseOrder", back_populates="deliveries")
     driver = relationship("Driver", back_populates="deliveries")
     vehicle = relationship("Vehicle", back_populates="deliveries")
+    pings = relationship("DeliveryPing", back_populates="delivery", cascade="all, delete-orphan")
+
+
+class DeliveryPing(BaseModel):
+    """Rider location heartbeat for one delivery (append-only history)."""
+
+    __tablename__ = "delivery_pings"
+    __table_args__ = (Index("ix_delivery_pings_delivery_time", "delivery_id", "recorded_at"),)
+
+    delivery_id: Mapped[str] = mapped_column(ForeignKey("delivery.id", ondelete="CASCADE"), nullable=False)
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    delivery = relationship("Delivery", back_populates="pings")
 
 
 class Driver(BaseModel):
@@ -689,6 +713,33 @@ class Vehicle(BaseModel):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     deliveries = relationship("Delivery", back_populates="vehicle")
+
+
+class SupportConversation(BaseModel):
+    """Order-context support thread (in-app chat). Bot replies are stored as messages."""
+
+    __tablename__ = "support_conversations"
+    __table_args__ = (Index("ix_support_conversations_user_status", "user_id", "status"),)
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    order_id: Mapped[str | None] = mapped_column(ForeignKey("orders.id", ondelete="SET NULL"), nullable=True)
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="open", nullable=False)
+
+    messages = relationship("SupportMessage", back_populates="conversation", cascade="all, delete-orphan")
+
+
+class SupportMessage(BaseModel):
+    __tablename__ = "support_messages"
+    __table_args__ = (Index("ix_support_messages_conversation_time", "conversation_id", "created_at"),)
+
+    conversation_id: Mapped[str] = mapped_column(
+        ForeignKey("support_conversations.id", ondelete="CASCADE"), nullable=False
+    )
+    sender: Mapped[str] = mapped_column(String(10), nullable=False)  # user | bot | agent
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+
+    conversation = relationship("SupportConversation", back_populates="messages")
 
 
 class Return(BaseModel):

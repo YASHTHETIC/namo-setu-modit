@@ -161,8 +161,33 @@ async def search_products(
         ).limit(5)
         suggestion_result = await session.execute(suggestion_stmt)
         suggestions = [row[0] for row in suggestion_result.all()]
-    
+
     return items, total, suggestions
+
+
+async def suggest_correction(
+    session: AsyncSession,
+    query: str | None,
+    category_id: str | None = None,
+    brand_id: str | None = None,
+    limit: int = 200,
+) -> str | None:
+    """Return a corrected query when `query` looks mistyped, else None.
+
+    Used as a fallback: only called when the exact search returned nothing.
+    """
+    from backend.app.services.fuzzy import correct_query
+
+    if not query or len(query.strip()) < 3:
+        return None
+    stmt = select(Product.name).where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+    if category_id:
+        stmt = stmt.where(Product.category_id == category_id)
+    if brand_id:
+        stmt = stmt.where(Product.brand_id == brand_id)
+    rows = (await session.execute(stmt.limit(limit))).all()
+    names = [r if isinstance(r, str) else r[0] for r in rows if (r if isinstance(r, str) else r[0])]
+    return correct_query(query, names)
 
 
 async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
