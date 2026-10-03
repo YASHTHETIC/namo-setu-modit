@@ -26,7 +26,7 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
       navigator.share({
         title: "Join MODIT",
         text: `Use my referral code ${referralCode} on MODIT and get ₹200 off your first order!`,
-        url: `https://modit-web-prod.vercel.app/auth/register?ref=${referralCode}`,
+        url: `https://modit.in/auth/register?ref=${referralCode}`,
       });
     }
   };

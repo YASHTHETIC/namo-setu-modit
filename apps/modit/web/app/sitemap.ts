@@ -3,7 +3,7 @@ import { products } from "@/lib/product-data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://modit-web-prod.vercel.app";
+  "https://modit.in";
 
 const staticRoutes: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
   { path: "", changeFrequency: "daily", priority: 1 },
