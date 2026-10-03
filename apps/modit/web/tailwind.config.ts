@@ -70,6 +70,16 @@ const config: Config = {
         button: ["14px", { lineHeight: "20px", fontWeight: "600" }],
         overline: ["10px", { lineHeight: "12px", fontWeight: "600", letterSpacing: "0.06em" }],
       },
+      zIndex: {
+        sticky: "40",
+        header: "50",
+        bottomnav: "60",
+        float: "70",
+        scrim: "80",
+        sheet: "90",
+        modal: "100",
+        toast: "110",
+      },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",
         "fade-up": "fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards",

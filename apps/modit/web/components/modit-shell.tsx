@@ -43,6 +43,7 @@ import { ReferralModal } from "@/components/referral-modal";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { LocationMenu } from "@/components/location-menu";
+import { HighlightedText } from "@/components/highlighted-text";
 import { SaleBanner } from "@/components/sale-banner";
 
 /** Trade icon per category slug (mega menu + mobile menu). Falls back to Package. */
@@ -74,6 +75,18 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [highlightIdx, setHighlightIdx] = useState(-1);
+  const [recentTerms, setRecentTerms] = useState<string[]>(() => {
+    try {
+      if (typeof window === "undefined") return [];
+      const raw = localStorage.getItem("modit-recent-searches");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((t) => typeof t === "string").slice(0, 6) : [];
+    } catch {
+      return [];
+    }
+  });
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -101,11 +114,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    if (searchQuery.length >= 2) {
+    if (searchQuery.length >= 1) {
       setShowSearch(true);
     } else {
       setShowSearch(false);
     }
+    setHighlightIdx(-1);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -119,11 +133,21 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const submitSearch = () => {
-    const query = searchQuery.trim();
+  const submitSearch = (term?: string) => {
+    const query = (term ?? searchQuery).trim();
     if (!query) return;
+    try {
+      if (typeof window !== "undefined") {
+        const updated = [query, ...recentTerms.filter((t) => t !== query)].slice(0, 6);
+        setRecentTerms(updated);
+        localStorage.setItem("modit-recent-searches", JSON.stringify(updated));
+      }
+    } catch {
+      /* storage unavailable */
+    }
     setShowSearch(false);
     setShowMobileSearch(false);
+    setSearchFocused(false);
     router.push(`/products?search=${encodeURIComponent(query)}`);
   };
 
@@ -240,16 +264,40 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   type="text"
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter") submitSearch();
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      setHighlightIdx((i) => Math.min(i + 1, searchResults.length - 1));
+                    } else if (event.key === "ArrowUp") {
+                      event.preventDefault();
+                      setHighlightIdx((i) => Math.max(i - 1, -1));
+                    } else if (event.key === "Enter") {
+                      event.preventDefault();
+                      if (highlightIdx >= 0 && searchResults[highlightIdx]) {
+                        const p = searchResults[highlightIdx] as unknown as { id: string };
+                        setShowSearch(false);
+                        setSearchFocused(false);
+                        router.push(`/products/${p.id}`);
+                      } else {
+                        submitSearch();
+                      }
+                    } else if (event.key === "Escape") {
+                      setSearchQuery("");
+                      setSearchFocused(false);
+                    }
                   }}
                   placeholder="Search cement, steel, tiles, paint…"
                   aria-label="Search products"
-                  className="h-full flex-1 border-0 bg-transparent px-5 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                  aria-expanded={showSearch}
+                  role="combobox"
+                  aria-autocomplete="list"
+                  className="h-full flex-1 border-0 bg-transparent px-5 text-body-lg text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
                 />
                 <button
                   type="button"
-                  onClick={submitSearch}
+                  onClick={() => submitSearch()}
                   className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cta)] to-[var(--cta-hover)] text-white transition-all hover:shadow-[0_4px_12px_rgba(45,27,105,0.3)]"
                   aria-label="Search"
                 >
@@ -258,45 +306,97 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               </div>
 
               <AnimatePresence>
-                {showSearch && searchResults.length > 0 && (
+                {(showSearch || (searchFocused && searchResults.length === 0)) && (
                   <motion.div
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
+                    onMouseDown={(e) => e.preventDefault()}
                     className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)]"
                   >
-                    {searchResults.map((product) => (
-                      <Link
-                        key={product.id}
-                        href={`/products/${product.id}`}
-                        onClick={() => {
-                          setShowSearch(false);
-                          setSearchQuery("");
-                        }}
-                        className="flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-3 transition-colors last:border-0 hover:bg-[var(--bg-subtle)]"
+                    {searchQuery.trim() === "" ? (
+                      <div className="p-4">
+                        {recentTerms.length > 0 && (
+                          <div className="mb-3">
+                            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Recent</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {recentTerms.map((term) => (
+                                <button
+                                  key={term}
+                                  type="button"
+                                  onClick={() => submitSearch(term)}
+                                  className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
+                                >
+                                  {term}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Popular</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {["Cement", "Paint", "Tiles", "Plywood", "LED Lights", "TMT Bars"].map((term) => (
+                            <button
+                              key={term}
+                              type="button"
+                              onClick={() => submitSearch(term)}
+                              className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
+                            >
+                              {term}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      <>
+                        {searchResults.map((product, idx) => (
+                          <Link
+                            key={product.id}
+                            href={`/products/${product.id}`}
+                            onClick={() => {
+                              setShowSearch(false);
+                              setSearchFocused(false);
+                              setSearchQuery("");
+                            }}
+                            className={`flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-3 transition-colors last:border-0 ${highlightIdx === idx ? "bg-[var(--brand-50)]" : "hover:bg-[var(--bg-subtle)]"}`}
+                          >
+                            <div className="h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)] flex-shrink-0">
+                              <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-semibold text-[var(--text)]">
+                                <HighlightedText text={product.name} query={searchQuery} markClassName="text-[#5A8010]" />
+                              </p>
+                              <p className="text-xs text-[var(--text-muted)]">{product.category} · Verified listing</p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString()}</p>
+                              {product.onSale
+                                ? <p className="text-[10px] font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
+                                : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
+                            </div>
+                          </Link>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => submitSearch()}
+                          className="flex w-full items-center justify-center gap-2 bg-[var(--brand-50)] px-4 py-3 text-sm font-semibold text-[var(--brand)]"
+                        >
+                          View all results <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => submitSearch()}
+                        className="flex w-full items-center gap-3 px-4 py-4 text-left transition-colors hover:bg-[var(--bg-subtle)]"
                       >
-                        <div className="h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)]">
-                          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold text-[var(--text)]">{product.name}</p>
-                          <p className="text-xs text-[var(--text-muted)]">{product.category} · Verified listing</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString()}</p>
-                          {product.onSale
-                            ? <p className="text-[10px] font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
-                            : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
-                        </div>
-                      </Link>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={submitSearch}
-                      className="flex w-full items-center justify-center gap-2 bg-[var(--brand-50)] px-4 py-3 text-sm font-semibold text-[var(--brand)]"
-                    >
-                      View all results <ChevronRight className="h-4 w-4" />
-                    </button>
+                        <Search className="h-4 w-4 text-[var(--text-muted)] flex-shrink-0" />
+                        <span className="text-sm text-[var(--text-secondary)]">
+                          No matches for &ldquo;{searchQuery.trim()}&rdquo; — <span className="font-semibold text-[var(--brand)]">search anyway</span>
+                        </span>
+                      </button>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -489,10 +589,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); }}
+                  onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); else if (e.key === "Escape") { setShowMobileSearch(false); setSearchQuery(""); } }}
                   placeholder="Search cement, paint, lighting..."
                   autoFocus
-                  className="w-full h-12 rounded-xl bg-white/10 border border-white/10 pl-10 pr-10 text-[14px] text-white placeholder:text-white/40 focus:outline-none focus:border-[#7CB518] transition-colors"
+                  className="w-full h-12 rounded-xl bg-white/10 border border-white/10 pl-10 pr-10 text-body-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#7CB518] transition-colors"
                 />
                 {searchQuery && (
                   <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
@@ -513,17 +613,19 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white/5"
                     >
                       <div className="h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
-                        <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
+                        <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-[13px] font-semibold text-white">{product.name}</p>
+                        <p className="truncate text-[13px] font-semibold text-white">
+                          <HighlightedText text={product.name} query={searchQuery} />
+                        </p>
                         <p className="text-[11px] text-white/40">{product.category}</p>
                       </div>
                       <p className="text-[13px] font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString()}</p>
                     </Link>
                   ))}
                   <button
-                    onClick={submitSearch}
+                    onClick={() => submitSearch()}
                     className="w-full mt-2 py-3 rounded-xl bg-[#7CB518]/10 text-[#7CB518] text-[13px] font-bold hover:bg-[#7CB518]/20 transition-colors"
                   >
                     View all results →
@@ -561,7 +663,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                           onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }}
                           className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5 transition-colors"
                         >
-                          <span className="text-lg">{cat.icon}</span>
+                          <CategoryTileIcon slug={cat.slug} className="h-5 w-5 flex-shrink-0 text-[#7CB518]" />
                           <span className="text-[13px] text-white/60">{cat.name}</span>
                         </Link>
                       ))}

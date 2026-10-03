@@ -140,6 +140,12 @@ function ProductsContent() {
     return result;
   }, [search, selectedCategory, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
+  // Pagination: render 24 at a time so thousand-product categories stay fast.
+  const PAGE_SIZE = 24;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, selectedCategory, selectedBrands, priceRange, minRating, inStockOnly, sort]);
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+
   const toggleBrand = useCallback((brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
@@ -188,7 +194,7 @@ function ProductsContent() {
         background: selectedCategory
           ? `linear-gradient(180deg, ${catColor!.light} 0%, ${catColor!.bg.match(/#[A-Fa-f0-9]+/)?.[0] || '#FFFBF5'}33 200px, #FFF8F0 500px)`
           : 'linear-gradient(180deg, #FFFBF5 0%, #FFF8F0 200px, #FFF5E8 500px)',
-        minHeight: '100vh',
+        minHeight: '100dvh',
       }}
     >
       {/* Breadcrumb */}
@@ -628,7 +634,7 @@ function ProductsContent() {
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
               <div className="product-grid grid grid-cols-2 gap-2.5 sm:hidden">
-                {filteredProducts.map((product) => (
+                {visibleProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -636,18 +642,31 @@ function ProductsContent() {
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
                   <div className="product-grid grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                    {filteredProducts.map((product) => (
+                    {visibleProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredProducts.map((product) => (
+                    {visibleProducts.map((product) => (
                       <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 )}
               </div>
+              {visibleCount < filteredProducts.length && (
+                <div className="mt-6 text-center">
+                  <p className="mb-3 text-caption text-[var(--text-muted)]">
+                    Showing {visibleProducts.length} of {filteredProducts.length} products
+                  </p>
+                  <button
+                    onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                    className="rounded-full border-2 border-[#2D1B69] bg-white px-8 py-2.5 text-button font-bold text-[#2D1B69] transition-all hover:bg-[#2D1B69] hover:text-white active:scale-95"
+                  >
+                    Show more
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -657,7 +676,7 @@ function ProductsContent() {
       {showMobileFilter && (
         <div className="fixed inset-0 z-[90] lg:hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileFilter(false)} />
-          <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
+          <div className="absolute bottom-0 left-0 right-0 max-h-[85dvh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="h-4 w-4 text-[#2D1B69]" />

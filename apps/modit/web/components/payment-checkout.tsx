@@ -294,7 +294,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
               value={upiId}
               onChange={(e) => setUpiId(e.target.value)}
               placeholder="yourname@upi"
-              className="w-full border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[13px] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10 transition-all"
+              className="w-full border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-body-lg focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10 transition-all"
             />
           </div>
         )}
@@ -314,7 +314,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                     onChange={(e) => { setCodPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setPhoneVerified(false); setOtpSent(false); setDemoOtp(null); }}
                     inputMode="numeric"
                     placeholder="10-digit mobile number"
-                    className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-2.5 text-[13px] focus:outline-none focus:border-[#2D1B69] transition-all"
+                    className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-2.5 text-body-lg focus:outline-none focus:border-[#2D1B69] transition-all"
                   />
                   <button
                     onClick={handleSendOtp}
@@ -332,7 +332,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                         onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                         inputMode="numeric"
                         placeholder="Enter 6-digit OTP"
-                        className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-2.5 text-[13px] tracking-[0.3em] font-bold text-center focus:outline-none focus:border-[#7CB518] transition-all"
+                        className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-2.5 text-body-lg tracking-[0.3em] font-bold text-center focus:outline-none focus:border-[#7CB518] transition-all"
                       />
                       <button
                         onClick={handleVerifyOtp}

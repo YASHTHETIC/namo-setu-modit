@@ -288,7 +288,7 @@ export default function CartPage() {
                     placeholder="Enter code"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    className="h-10 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-[13px] text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
+                    className="h-10 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-body-lg text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
                   />
                   <button
                     onClick={handleApplyCoupon}

@@ -389,10 +389,10 @@ export default function CheckoutPage() {
                     <input
                       value={gstin}
                       onChange={(e) => setGstin(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
-                      placeholder="15-digit GSTIN e.g. 27AABCU9603R1ZM"
-                      maxLength={15}
-                      inputMode="text"
-                      className="w-full px-3 py-2.5 pr-14 rounded-lg border border-[#DDD6EE] text-[12px] font-semibold tracking-wider focus:outline-none focus:border-[#2D1B69]"
+                    placeholder="15-digit GSTIN e.g. 27AABCU9603R1ZM"
+                    maxLength={15}
+                    inputMode="text"
+                    className="w-full px-3 py-2.5 pr-14 rounded-lg border border-[#DDD6EE] text-body-lg font-semibold tracking-wider focus:outline-none focus:border-[#2D1B69]"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-tiny font-bold text-[#9B8CB5] tabular-nums">{gstin.length}/15</span>
                   </div>

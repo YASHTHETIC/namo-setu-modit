@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -17,6 +18,8 @@ import { FlashDeals } from "@/components/flash-deals";
 import { AppDownload } from "@/components/app-download";
 import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
+import { HighlightedText } from "@/components/highlighted-text";
+import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
@@ -93,20 +96,6 @@ function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAt
   );
 }
 
-/* ── Search match highlighter ─────────────────────────────────── */
-function Highlighted({ text, query }: { text: string; query: string }) {
-  const q = query.trim().toLowerCase();
-  const i = q ? text.toLowerCase().indexOf(q) : -1;
-  if (i < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <mark className="bg-transparent text-[#7CB518]">{text.slice(i, i + q.length)}</mark>
-      {text.slice(i + q.length)}
-    </>
-  );
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
@@ -117,6 +106,8 @@ export default function ModitHomePage() {
   const router = useRouter();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  useModalBehavior(showPincodeModal, () => setShowPincodeModal(false));
+  useModalBehavior(showSearch, () => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); });
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setPincode: setContextPincode } = usePincode();
@@ -187,6 +178,10 @@ export default function ModitHomePage() {
   const tilingProducts = useMemo(() => products.filter((p) => p.categorySlug === "tiling"), []);
   const discountedProducts = useMemo(
     () => products.filter((p) => p.mrp > p.price).sort((a, b) => b.discount - a.discount).slice(0, 10),
+    []
+  );
+  const popularProducts = useMemo(
+    () => products.filter((p) => p.inStock).sort((a, b) => (b.rating * b.reviewCount) - (a.rating * a.reviewCount)).slice(0, 10),
     []
   );
 
@@ -303,7 +298,7 @@ export default function ModitHomePage() {
           }} />
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#7CB518]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#E91E63]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-          <div className="relative z-10 p-5 flex items-center justify-between">
+          <div className="relative z-10 p-4 flex items-center justify-between gap-3">
             <div>
               <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-[10px] font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
                 <Truck className="h-3 w-3" />
@@ -322,8 +317,8 @@ export default function ModitHomePage() {
                 </div>
               </div>
             </div>
-            <Link href="/products" className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-5 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+            <Link href="/products" className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -373,7 +368,7 @@ export default function ModitHomePage() {
         </div>
       </RevealSection>
 
-      {/* ═══ CATEGORY GRID — Staggered reveal + tilt ═══ */}
+      {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <RevealSection delay={150}>
         <div className="mt-5">
           <div className="section-header">
@@ -382,27 +377,35 @@ export default function ModitHomePage() {
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             {categories.map((cat, i) => (
               <Link
                 key={cat.slug}
                 href={`/products?category=${cat.slug}`}
-                className="flex flex-col items-center gap-2 group"
+                prefetch
+                className="flex flex-col items-center gap-1.5 group"
               >
                 <div
-                  className={`w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-xl group-hover:shadow-green-500/10 group-hover:scale-105 group-hover:-rotate-1 ${
+                  className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
                     mounted ? "animate-fade-up" : "opacity-0"
                   }`}
                   style={{
-                    animationDelay: `${i * 60}ms`,
-                    borderColor: undefined,
+                    animationDelay: `${i * 50}ms`,
                   }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = cat.color; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
                 >
-                  <img src={cat.img} alt={cat.name} loading="lazy" decoding="async" draggable={false} className="w-[75%] h-[75%] object-contain animate-fade-in group-hover:scale-110 group-hover:rotate-3 transition-all duration-500" />
+                  <Image
+                    src={cat.img}
+                    alt={cat.name}
+                    fill
+                    sizes="72px"
+                    loading="lazy"
+                    draggable={false}
+                    className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                  />
                 </div>
-                <p className="text-[10px] font-semibold text-[#150726] text-center leading-tight whitespace-pre-line group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
               </Link>
             ))}
           </div>
@@ -420,6 +423,13 @@ export default function ModitHomePage() {
             products={discountedProducts}
             seeAllHref="/products?sort=discount"
             accentColor="pink"
+          />
+        </RevealSection>
+        <RevealSection delay={150}>
+          <ProductRail
+            title="Popular Right Now"
+            products={popularProducts}
+            seeAllHref="/products?sort=rating"
           />
         </RevealSection>
         <RevealSection delay={150}>
@@ -531,14 +541,32 @@ export default function ModitHomePage() {
         </div>
       </RevealSection>
 
+      {/* ═══ BULK / BUSINESS CTA ═══ */}
+      <RevealSection>
+        <div className="market-container px-4 pb-6 sm:px-6">
+          <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1">
+              <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
+              <p className="text-caption text-white/55 mt-0.5">Get negotiated quotes from verified suppliers with GST invoicing</p>
+            </div>
+            <Link
+              href="/rfq"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
+            >
+              Start RFQ <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </RevealSection>
+
       {/* ═══ STICKY CART BAR ═══ */}
       <StickyCartBar itemCount={cartCount} total={cartTotal} />
 
       {/* ═══ BACK TO TOP ═══ */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed z-50 right-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
-          showBackToTop ? "bottom-20 opacity-100 translate-y-0" : "bottom-10 opacity-0 translate-y-4 pointer-events-none"
+        className={`fixed z-40 right-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
+          showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
         <ChevronUp className="h-5 w-5" />
@@ -571,7 +599,7 @@ export default function ModitHomePage() {
                 onKeyDown={(e) => { if (e.key === "Escape") setShowPincodeModal(false); }}
                 onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="Enter 6-digit pincode"
-                className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
+                className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-body-lg font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
                 maxLength={6}
               />
               <RippleButton
@@ -693,7 +721,7 @@ export default function ModitHomePage() {
                       }
                     }}
                     placeholder="Search cement, paint, lighting..."
-                    className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-10 py-3.5 text-[14px] text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-10 py-3.5 text-body-lg text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
                   />
                   {searchQuery && (
                     <button
@@ -725,7 +753,7 @@ export default function ModitHomePage() {
                       >
                         <Search className="h-3.5 w-3.5 text-white/30" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-white truncate"><Highlighted text={p.name} query={searchQuery} /></p>
+                          <p className="text-[12px] font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
                           <p className="text-[10px] text-white/40">{p.brand}</p>
                         </div>
                       </button>
@@ -747,7 +775,7 @@ export default function ModitHomePage() {
                     >
                       <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold text-white truncate"><Highlighted text={p.name} query={searchQuery} /></p>
+                        <p className="text-[13px] font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
                         <p className="text-[11px] text-white/50">{p.brand} · {p.unit}</p>
                       </div>
                       <div className="flex flex-col items-end gap-0.5">

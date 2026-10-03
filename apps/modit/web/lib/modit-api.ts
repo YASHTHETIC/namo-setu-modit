@@ -60,7 +60,8 @@ export const moditKeys = {
 export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number }) {
   return useQuery({
     queryKey: moditKeys.products(params),
-    queryFn: () => getModitApi().listProducts(params),
+    // react-query aborts the in-flight request on key change/unmount via signal.
+    queryFn: ({ signal }) => getModitApi().listProducts(params, { signal }),
     ...fastQueryOpts,
   });
 }

@@ -1130,7 +1130,7 @@ input:focus:not(:focus-visible) {
    ═══════════════════════════════════════════════ */
 
 .app-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
 }
 
@@ -1464,7 +1464,7 @@ input:focus:not(:focus-visible) {
   background: white;
   border-radius: 24px 24px 0 0;
   z-index: 101;
-  max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
   animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding-bottom: env(safe-area-inset-bottom, 16px);

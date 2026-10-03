@@ -76,6 +76,14 @@ export class ApiClient {
   private async fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+    // Link an outer signal (e.g. react-query cancellation) to the timeout one.
+    const outer = init.signal as AbortSignal | null | undefined;
+    const onOuterAbort = () => controller.abort();
+    try {
+      outer?.addEventListener("abort", onOuterAbort, { once: true });
+    } catch {
+      /* signal already settled or unsupported — timeout still applies */
+    }
 
     try {
       const response = await fetch(url, {
@@ -87,9 +95,17 @@ export class ApiClient {
     } catch (error) {
       clearTimeout(timeoutId);
       if (error instanceof Error && error.name === "AbortError") {
+        // Distinguish caller-cancelled (quiet) from our own timeout.
+        if (outer?.aborted) throw error;
         throw new ApiClientError("Request timeout", 0, null, "TIMEOUT");
       }
       throw error;
+    } finally {
+      try {
+        outer?.removeEventListener("abort", onOuterAbort);
+      } catch {
+        /* ignore */
+      }
     }
   }
 

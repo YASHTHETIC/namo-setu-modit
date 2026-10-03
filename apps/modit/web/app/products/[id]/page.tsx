@@ -1,10 +1,11 @@
 "use client";
 
-import { use, useState, useMemo, useCallback, useEffect } from "react";
+import { use, useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronRight,
+  ChevronLeft,
   Star,
   Truck,
   Shield,
@@ -27,6 +28,7 @@ import {
   ArrowLeft,
   Palette,
   Ruler,
+  X,
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
@@ -65,6 +67,8 @@ export default function ProductDetailPage({
   const addRecentlyViewed = useRecentlyViewed((s) => s.addProduct);
 
   const [selectedImage, setSelectedImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const touchStartX = useRef<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [shared, setShared] = useState(false);
@@ -188,6 +192,37 @@ export default function ProductDetailPage({
 
   return (
     <div className="mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            image: (product.images || []).map((src: string) =>
+              src.startsWith("http") ? src : `https://modit.in${src.startsWith("/") ? "" : "/"}${src}`
+            ),
+            description: product.shortDescription || product.description,
+            sku: product.sku,
+            brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "INR",
+              price: displayPrice,
+              availability: displayStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            },
+            ...(product.reviewCount > 0
+              ? {
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: product.rating,
+                    reviewCount: product.reviewCount,
+                  },
+                }
+              : {}),
+          }),
+        }}
+      />
       {/* Breadcrumb */}
       <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)] overflow-x-auto scrollbar-hide pb-1">
         <Link href="/" className="hover:text-[var(--brand)] whitespace-nowrap">Home</Link>
@@ -203,9 +238,19 @@ export default function ProductDetailPage({
         {/* Left: Image Gallery */}
         <div className="lg:col-span-5">
           <div className="sticky top-24">
-            {/* Main Image */}
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9]">
-              {product.images[selectedImage] ? (
+            {/* Main Image — swipe on touch, tap for fullscreen */}
+            <div
+              className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9]"
+              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+              onTouchEnd={(e) => {
+                if (touchStartX.current === null) return;
+                const dx = e.changedTouches[0].clientX - touchStartX.current;
+                touchStartX.current = null;
+                if (Math.abs(dx) < 40 || product.images.length < 2) return;
+                setSelectedImage((i) => (i + (dx < 0 ? 1 : product.images.length - 1)) % product.images.length);
+              }}
+              onClick={() => setLightboxOpen(true)}
+            >  {product.images[selectedImage] ? (
                 <Image
                   src={product.images[selectedImage]}
                   alt={product.name}
@@ -228,7 +273,7 @@ export default function ProductDetailPage({
               {/* Wishlist + Share on image */}
               <div className="absolute top-3 right-3 flex flex-col gap-2">
                 <button
-                  onClick={() => product && toggleWishlist(product)}
+                  onClick={(e) => { e.stopPropagation(); if (product) toggleWishlist(product); }}
                   title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                   className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
                     wishlisted ? "bg-[#FCE8F0] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
@@ -237,7 +282,7 @@ export default function ProductDetailPage({
                   <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#E91E63]" : ""}`} />
                 </button>
                 <button
-                  onClick={handleShare}
+                  onClick={(e) => { e.stopPropagation(); handleShare(); }}
                   title="Share this product"
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[var(--text-secondary)] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
                 >
@@ -277,6 +322,65 @@ export default function ProductDetailPage({
                 ))}
               </div>
             )}
+
+      {/* Fullscreen image viewer */}
+      {lightboxOpen && product.images.length > 0 && (
+        <div
+          className="fixed inset-0 z-modal flex flex-col bg-black/95 animate-[fadeIn_0.2s_ease-out]"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <div className="flex items-center justify-between px-4 py-3">
+            <span className="text-[13px] font-semibold text-white/70 tabular-nums">
+              {selectedImage + 1} / {product.images.length}
+            </span>
+            <button
+              onClick={() => setLightboxOpen(false)}
+              aria-label="Close fullscreen view"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div
+            className="relative flex-1 min-h-0"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (touchStartX.current === null) return;
+              const dx = e.changedTouches[0].clientX - touchStartX.current;
+              touchStartX.current = null;
+              if (Math.abs(dx) < 40) return;
+              setSelectedImage((i) => (i + (dx < 0 ? 1 : product.images.length - 1)) % product.images.length);
+            }}
+          >
+            <Image
+              src={product.images[selectedImage]}
+              alt={product.name}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+            {product.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setSelectedImage((i) => (i + product.images.length - 1) % product.images.length); }}
+                  aria-label="Previous image"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setSelectedImage((i) => (i + 1) % product.images.length); }}
+                  aria-label="Next image"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
             {/* Trust badges — below gallery on mobile */}
             <div className="mt-4 grid grid-cols-3 gap-2 lg:hidden">
@@ -404,7 +508,7 @@ export default function ProductDetailPage({
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariant(variant.id)}
-                      className={`relative flex flex-col items-center rounded-xl border-2 px-4 py-3 transition-all ${
+                      className={`relative flex min-h-[78px] flex-col items-center justify-center rounded-xl border-2 px-4 py-3 transition-all ${
                         isSelected
                           ? "border-[var(--brand)] bg-[var(--brand-50)] shadow-md"
                           : "border-[var(--border)] bg-white hover:border-[var(--brand-200)]"
@@ -415,12 +519,12 @@ export default function ProductDetailPage({
                       </span>
                       <span className="text-[11px] text-[var(--text-muted)] mt-0.5">
                         ₹{variant.price.toLocaleString()}
+                        {variantDiscount > 0 && (
+                          <span className="ml-1 rounded-full bg-[#E91E63] px-1.5 py-px text-tiny font-bold text-white">
+                            -{variantDiscount}%
+                          </span>
+                        )}
                       </span>
-                      {variantDiscount > 0 && (
-                        <span className="absolute -top-2 -right-2 rounded-full bg-[#E91E63] px-1.5 py-0.5 text-[8px] font-bold text-white">
-                          {variantDiscount}% off
-                        </span>
-                      )}
                     </button>
                   );
                 })}
@@ -458,7 +562,7 @@ export default function ProductDetailPage({
                   <span className="text-[12px] text-[var(--text-muted)]">Login to set your delivery location automatically</span>
                 )}
               </div>
-              <div className="mt-2.5 grid grid-cols-2 gap-2">
+              <div className="mt-2.5 grid grid-cols-1 min-[380px]:grid-cols-2 gap-2">
                 <div className="flex items-center gap-2 rounded-lg bg-[#F7F4FC] p-2">
                   <Truck className="h-4 w-4 text-[#7CB518]" />
                   <div>

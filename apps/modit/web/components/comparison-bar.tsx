@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X, GitCompareArrows } from "lucide-react";
 import { useComparisonStore } from "@/lib/comparison-store";
 
+const HIDDEN_ROUTES = ["/checkout", "/payment", "/orders", "/cart"];
+
 export function ComparisonBar() {
+  const pathname = usePathname();
   const { items, removeFromCompare, clearCompare } = useComparisonStore();
 
   if (items.length === 0) return null;
+  if (HIDDEN_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) return null;
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-2">
+    <div className="fixed bottom-[84px] left-0 right-0 z-40 px-4 pb-2">
       <div className="max-w-[600px] mx-auto bg-[#150726] rounded-2xl border border-white/10 p-3 shadow-2xl shadow-black/30">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">

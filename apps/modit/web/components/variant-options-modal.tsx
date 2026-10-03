@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { X, Check, ShoppingCart, Palette } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { useModalBehavior } from "@/lib/use-modal-behavior";
 import type { DisplayProduct } from "@/lib/pricing";
 
 interface VariantOptionsModalProps {
@@ -20,6 +21,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   const addItem = useCartStore((s) => s.addItem);
   const [addedKey, setAddedKey] = useState<string | null>(null);
   const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  useModalBehavior(open, onClose);
 
   const variants = useMemo(() => product.variants ?? [], [product]);
   const shades = useMemo(() => product.shades ?? [], [product]);
@@ -45,11 +47,11 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
 
   return (
     <div
-      className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-[2px] animate-[fadeIn_0.3s_ease-out]"
+      className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-3xl shadow-2xl max-h-[85vh] overflow-y-auto animate-slide-in-up"
+        className="w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-3xl shadow-2xl max-h-[85dvh] overflow-y-auto animate-slide-in-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -571,7 +571,7 @@ export function createModitApi(client: ApiClient) {
 
   return {
     // Product Catalog
-    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string }) {
+    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string }, init?: RequestInit) {
       const query = new URLSearchParams();
       if (params?.page) query.set("page", String(params.page));
       if (params?.page_size) query.set("page_size", String(params.page_size));
@@ -579,7 +579,7 @@ export function createModitApi(client: ApiClient) {
       if (params?.category_id) query.set("category_id", params.category_id);
       if (params?.brand_id) query.set("brand_id", params.brand_id);
       const qs = query.toString();
-      return client.request<ProductSearchResponse>(`${base}/products${qs ? `?${qs}` : ""}`);
+      return client.request<ProductSearchResponse>(`${base}/products${qs ? `?${qs}` : ""}`, init);
     },
 
     createProduct(payload: Record<string, unknown>) {
