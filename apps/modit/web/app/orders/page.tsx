@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { getProductById } from "@/lib/product-data";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { useAdminStore } from "@/lib/admin-store";
+import { formatINR } from "@/lib/utils";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
@@ -138,7 +139,7 @@ export default function OrdersPage() {
                 </div>
                 <span className="text-[11px] text-white/50">Spent</span>
               </div>
-              <p className="text-[18px] font-extrabold text-white">₹{(totalSpent / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+              <p className="text-[18px] font-extrabold text-white">{formatINR(totalSpent)}</p>
             </div>
           </div>
         </div>
@@ -185,8 +186,14 @@ export default function OrdersPage() {
               const total = (order as any).total || 0;
 
               return (
-                <Link key={order.id} href={`/orders/${order.id}`}>
-                  <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#2D1B69]/20 cursor-pointer group">
+                <div
+                  key={order.id}
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => router.push(`/orders/${order.id}`)}
+                  onKeyDown={(e) => { if (e.key === "Enter") router.push(`/orders/${order.id}`); }}
+                  className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#2D1B69]/20 cursor-pointer group"
+                >
                     {/* Color accent bar */}
                     <div className={`h-[3px] ${st.dot}`} />
 
@@ -208,7 +215,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0 ml-4">
-                          <p className="text-[16px] font-extrabold text-[#2D1B69]">₹{total.toLocaleString("en-IN")}</p>
+                          <p className="text-[16px] font-extrabold text-[#2D1B69]">{formatINR(total)}</p>
                           <ChevronRight className="h-4 w-4 text-[#9B8CB5] ml-auto mt-1 group-hover:text-[#7CB518] group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
@@ -269,7 +276,6 @@ export default function OrdersPage() {
                       )}
                     </div>
                   </div>
-                </Link>
               );
             })}
           </div>

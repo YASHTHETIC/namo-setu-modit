@@ -176,9 +176,14 @@ export default function CheckoutPage() {
             { step: 3, label: "Payment" },
           ].map((s, i) => (
             <div key={s.step} className="flex items-center flex-shrink-0">
-              <button onClick={() => setActiveStep(s.step)} className={`flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold transition-all ${
-                s.step === activeStep ? "bg-[#7CB518] text-white" : s.step < activeStep ? "bg-[#7CB518]/20 text-[#7CB518]" : "bg-white text-[#9B8CB5] border border-[#E8E0F7]"
-              }`}>
+              <button
+                key={s.step}
+                onClick={() => { if (s.step <= activeStep) setActiveStep(s.step); }}
+                disabled={s.step > activeStep}
+                aria-current={s.step === activeStep ? "step" : undefined}
+                className={`flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold transition-all ${
+                  s.step === activeStep ? "bg-[#7CB518] text-white" : s.step < activeStep ? "bg-[#7CB518]/20 text-[#7CB518]" : "bg-white text-[#9B8CB5] border border-[#E8E0F7]"
+                } ${s.step > activeStep ? "cursor-not-allowed opacity-80" : ""}`}>
                 <span className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold ${s.step < activeStep ? "bg-[#7CB518] text-white" : s.step === activeStep ? "bg-white/20" : "bg-[#F0ECF9]"}`}>
                   {s.step < activeStep ? "✓" : s.step}
                 </span>

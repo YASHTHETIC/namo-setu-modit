@@ -153,6 +153,23 @@ export default function ProductDetailPage({
   const displayDiscount = activeVariant?.discount ?? product?.discount ?? 0;
   const displayStock = activeVariant?.stockLevel ?? product?.stockLevel ?? 0;
 
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
+        <div className="mb-4 h-4 w-48 rounded skeleton-card" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="aspect-square rounded-2xl skeleton-card" />
+          <div className="space-y-3">
+            <div className="h-6 w-3/4 rounded skeleton-card" />
+            <div className="h-10 w-1/2 rounded skeleton-card" />
+            <div className="h-24 rounded-2xl skeleton-card" />
+            <div className="h-12 rounded-xl skeleton-card" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="mx-auto max-w-[1400px] py-20 text-center">
@@ -300,16 +317,13 @@ export default function ProductDetailPage({
                   </div>
                   <div>
                     <p className="text-[12px] font-bold text-[#150726]">Delivery in 60 minutes</p>
-                    <p className="text-[10px] text-[#9B8CB5]">Order within <span className="text-[#E91E63] font-bold">47:23</span> for fastest delivery</p>
+                    <p className="text-[10px] text-[#9B8CB5]">Order now for fastest dispatch</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] text-[#9B8CB5]">Tomorrow by</p>
                   <p className="text-[12px] font-bold text-[#7CB518]">10:00 AM</p>
                 </div>
-              </div>
-              <div className="mt-2 h-1.5 bg-[#E8E0F7] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#7CB518] to-[#00BCD4] rounded-full" style={{ width: "65%" }} />
               </div>
             </div>
 
@@ -587,7 +601,7 @@ export default function ProductDetailPage({
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--border)] px-4 py-3 flex items-center gap-3 lg:hidden" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
         <div className="flex-1">
           <p className="text-[11px] text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
-          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(product.price * quantity).toLocaleString()}</p>
+          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString()}</p>
         </div>
         <button
           onClick={handleAddToCart}
