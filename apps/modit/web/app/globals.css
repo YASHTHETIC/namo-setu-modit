@@ -363,6 +363,17 @@ img { display: block; max-width: 100%; }
   .product-grid > * { opacity: 1; animation: none; }
 }
 
+/* Visible keyboard focus everywhere (mouse users unaffected) */
+:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Section header with "See all" */
 .section-header {
   display: flex;

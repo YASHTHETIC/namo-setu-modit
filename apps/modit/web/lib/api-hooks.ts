@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useProducts as useApiProducts, useProduct as useApiProduct, useCategories as useApiCategories } from "./modit-api";
 import { products as staticProducts, categories as staticCategories, getProductById, searchProducts, type Product, type Category } from "./product-data";
@@ -93,7 +94,14 @@ export function useCategories() {
 }
 
 export function useSearchProducts(query: string) {
-  const apiQuery = useApiProducts({ search: query });
+  // Debounce network search: instant local results while typing,
+  // one API request 150ms after the user pauses.
+  const [debounced, setDebounced] = useState(query);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query), 150);
+    return () => clearTimeout(t);
+  }, [query]);
+  const apiQuery = useApiProducts(debounced ? { search: debounced } : undefined);
   const apiResults = isArray(apiQuery.data) ? apiQuery.data as Product[] : [];
 
   const fallbackResults = query.length >= 2 ? searchProducts(query) : [];

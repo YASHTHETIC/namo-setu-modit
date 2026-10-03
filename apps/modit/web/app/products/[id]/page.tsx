@@ -360,6 +360,17 @@ export default function ProductDetailPage({
               unit={displayUnit}
               size="lg"
             />
+            {product.reviewCount > 0 && (
+              <Link
+                href={`/products/${product.id}/reviews`}
+                className="mt-2 inline-flex items-center gap-1.5 text-caption text-[var(--text-secondary)] hover:text-[var(--brand)] transition-colors"
+              >
+                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                <span className="font-bold text-[var(--text-primary)]">{product.rating.toFixed(1)}</span>
+                <span>· {product.reviewCount.toLocaleString()} reviews</span>
+                <ChevronRight className="h-3 w-3" />
+              </Link>
+            )}
             <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-muted)] flex-wrap">
               <span className="flex items-center gap-1">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>

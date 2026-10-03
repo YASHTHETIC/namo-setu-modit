@@ -93,6 +93,20 @@ function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAt
   );
 }
 
+/* ── Search match highlighter ─────────────────────────────────── */
+function Highlighted({ text, query }: { text: string; query: string }) {
+  const q = query.trim().toLowerCase();
+  const i = q ? text.toLowerCase().indexOf(q) : -1;
+  if (i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <mark className="bg-transparent text-[#7CB518]">{text.slice(i, i + q.length)}</mark>
+      {text.slice(i + q.length)}
+    </>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════════════ */
@@ -220,6 +234,17 @@ export default function ModitHomePage() {
               )}
             </Link>
           </div>
+        </div>
+        {/* Search row — full width, opens the search sheet */}
+        <div className="px-4 pb-3">
+          <button
+            onClick={() => setShowSearch(true)}
+            className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
+            aria-label="Search products"
+          >
+            <Search className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate">Search cement, paint, lighting…</span>
+          </button>
         </div>
       </header>
 
@@ -542,6 +567,8 @@ export default function ModitHomePage() {
               <input
                 type="text"
                 value={pincode}
+                autoFocus
+                onKeyDown={(e) => { if (e.key === "Escape") setShowPincodeModal(false); }}
                 onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="Enter 6-digit pincode"
                 className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
@@ -698,7 +725,7 @@ export default function ModitHomePage() {
                       >
                         <Search className="h-3.5 w-3.5 text-white/30" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-white truncate">{p.name}</p>
+                          <p className="text-[12px] font-semibold text-white truncate"><Highlighted text={p.name} query={searchQuery} /></p>
                           <p className="text-[10px] text-white/40">{p.brand}</p>
                         </div>
                       </button>
@@ -720,7 +747,7 @@ export default function ModitHomePage() {
                     >
                       <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold text-white truncate">{p.name}</p>
+                        <p className="text-[13px] font-semibold text-white truncate"><Highlighted text={p.name} query={searchQuery} /></p>
                         <p className="text-[11px] text-white/50">{p.brand} · {p.unit}</p>
                       </div>
                       <div className="flex flex-col items-end gap-0.5">
