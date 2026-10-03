@@ -52,10 +52,13 @@ function ProductsContent() {
   const [search, setSearch] = useState(searchParams.get("search") || searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
 
-  const { data: apiProducts = [] } = useProducts({
+  const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
     category_id: selectedCategory || undefined,
   });
+  // Typo tolerance: the API may have corrected the query ("brwn" -> "brown bread").
+  // Match client-side filters against the corrected terms so those items survive.
+  const effectiveSearch = didYouMean ?? search;
   const { data: apiCategories = [] } = useCategories();
   const rawProducts = apiProducts as Product[];
   // Admin overrides + active sale applied; hidden products dropped
@@ -90,7 +93,7 @@ function ProductsContent() {
     let result = [...products];
 
     if (search) {
-      const q = search.toLowerCase();
+      const q = effectiveSearch.toLowerCase();
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
@@ -582,6 +585,12 @@ function ProductsContent() {
           )}
 
           {/* Product Grid/List */}
+          {didYouMean && search && (
+            <p className="mb-3 text-sm text-[var(--text-muted)]">
+              No exact matches for &ldquo;{search}&rdquo; — showing results for{" "}
+              <span className="font-bold text-[#2D1B69]">&ldquo;{didYouMean}&rdquo;</span>
+            </p>
+          )}
           {filteredProducts.length === 0 ? (
             <div
               className="flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-[#DDD6EE]"
@@ -607,7 +616,7 @@ function ProductsContent() {
           ) : (
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
-              <div className="grid grid-cols-2 gap-2.5 sm:hidden">
+              <div className="product-grid grid grid-cols-2 gap-2.5 sm:hidden">
                 {filteredProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
@@ -615,7 +624,7 @@ function ProductsContent() {
               {/* Desktop / tablet: respects grid/list view mode */}
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  <div className="product-grid grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     {filteredProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}

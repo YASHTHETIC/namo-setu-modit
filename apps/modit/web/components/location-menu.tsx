@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, ChevronDown, LocateFixed, Check } from "lucide-react";
+import { MapPin, ChevronDown, LocateFixed, Check, Store } from "lucide-react";
 import { usePincode } from "@/lib/pincode-context";
+import { useNearestWarehouse } from "@/lib/modit-api";
 
 /** Header delivery-location picker: live GPS fix + manual pincode. */
 export function LocationMenu() {
-  const { pincode, serviceable, setPincode, locating, useLiveLocation: fetchLocation } = usePincode();
+  const { pincode, serviceable, setPincode, locating, coords, useLiveLocation: fetchLocation } = usePincode();
+  const { data: nearest } = useNearestWarehouse(coords?.lat, coords?.lng);
   const [open, setOpen] = useState(false);
   const [manual, setManual] = useState("");
   const [error, setError] = useState("");
@@ -106,6 +108,12 @@ export function LocationMenu() {
               <span className={`font-bold ${serviceable ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
                 {serviceable ? "· Serviceable" : "· Not serviceable"}
               </span>
+            </p>
+          )}
+          {nearest && (
+            <p className="mt-2 flex items-center gap-1 text-[11px] font-bold text-[#2D1B69]">
+              <Store className="h-3.5 w-3.5" />
+              Ships from {nearest.name} · {nearest.distance_km} km away
             </p>
           )}
         </div>

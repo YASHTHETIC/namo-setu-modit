@@ -60,6 +60,7 @@ export interface ProductSearchResponse {
   total: number;
   pages: number;
   filters: Record<string, string[]>;
+  did_you_mean?: string | null;
 }
 
 export interface CategoryRead {
@@ -130,8 +131,20 @@ export interface WarehouseRead {
   address_line1: string;
   address_line2: string | null;
   pincode: string;
+  latitude: number | null;
+  longitude: number | null;
   is_active: boolean;
   created_at: string;
+}
+
+export interface NearestWarehouseRead {
+  id: string;
+  name: string;
+  warehouse_code: string;
+  pincode: string;
+  latitude: number | null;
+  longitude: number | null;
+  distance_km: number;
 }
 
 // RFQ
@@ -317,7 +330,55 @@ export interface DeliveryRead {
   vehicle_id: string | null;
   dispatched_at: string | null;
   delivered_at: string | null;
+  last_lat: number | null;
+  last_lng: number | null;
+  last_ping_at: string | null;
+  dest_lat: number | null;
+  dest_lng: number | null;
   created_at: string;
+}
+
+export interface DeliveryTrackStep {
+  key: string;
+  label: string;
+  done: boolean;
+  at: string | null;
+}
+
+export interface DeliveryTrackRead {
+  delivery_id: string;
+  delivery_number: string;
+  status: string;
+  last_lat: number | null;
+  last_lng: number | null;
+  last_ping_at: string | null;
+  dest_lat: number | null;
+  dest_lng: number | null;
+  distance_km: number | null;
+  eta_minutes: number | null;
+  timeline: DeliveryTrackStep[];
+}
+
+// Support Chat
+export interface SupportConversationRead {
+  id: string;
+  user_id: string;
+  order_id: string | null;
+  subject: string;
+  status: string;
+  created_at: string;
+}
+
+export interface SupportMessageRead {
+  id: string;
+  conversation_id: string;
+  sender: string;
+  body: string;
+  created_at: string;
+}
+
+export interface SupportConversationDetailRead extends SupportConversationRead {
+  messages: SupportMessageRead[];
 }
 
 export interface DriverRead {
@@ -686,6 +747,32 @@ export function createModitApi(client: ApiClient) {
 
     createDelivery(payload: Record<string, unknown>) {
       return client.request<DeliveryRead>(`${base}/deliveries`, { method: "POST", body: JSON.stringify(payload) });
+    },
+
+    getDeliveryTrack(deliveryId: string) {
+      return client.request<DeliveryTrackRead>(`${base}/deliveries/${deliveryId}/track`);
+    },
+
+    getNearestWarehouse(lat: number, lng: number, organizationId?: string) {
+      const qs = new URLSearchParams({ lat: String(lat), lng: String(lng) });
+      if (organizationId) qs.set("organization_id", organizationId);
+      return client.request<NearestWarehouseRead>(`${base}/warehouses/nearest?${qs.toString()}`);
+    },
+
+    listSupportConversations() {
+      return client.request<SupportConversationRead[]>(`${base}/support/conversations`);
+    },
+
+    createSupportConversation(payload: { subject: string; order_id?: string }) {
+      return client.request<SupportConversationRead>(`${base}/support/conversations`, { method: "POST", body: JSON.stringify(payload) });
+    },
+
+    getSupportConversation(conversationId: string) {
+      return client.request<SupportConversationDetailRead>(`${base}/support/conversations/${conversationId}`);
+    },
+
+    postSupportMessage(conversationId: string, body: string) {
+      return client.request<SupportMessageRead>(`${base}/support/conversations/${conversationId}/messages`, { method: "POST", body: JSON.stringify({ body }) });
     },
 
     listDrivers(organizationId?: string) {

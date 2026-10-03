@@ -42,6 +42,10 @@ export const moditKeys = {
   inventoryAlerts: (orgId?: string) => ["modit", "inventory-alerts", orgId] as const,
   inventoryAnalytics: (orgId?: string) => ["modit", "inventory-analytics", orgId] as const,
   deliveries: (poId?: string) => ["modit", "deliveries", poId] as const,
+  deliveryTrack: (id: string) => ["modit", "delivery-track", id] as const,
+  nearestWarehouse: (lat?: number, lng?: number) => ["modit", "nearest-warehouse", lat, lng] as const,
+  supportConversations: () => ["modit", "support-conversations"] as const,
+  supportConversation: (id: string) => ["modit", "support-conversation", id] as const,
   drivers: (orgId?: string) => ["modit", "drivers", orgId] as const,
   vehicles: (orgId?: string) => ["modit", "vehicles", orgId] as const,
   projects: (orgId?: string) => ["modit", "projects", orgId] as const,
@@ -368,6 +372,67 @@ export function useCreateDelivery() {
   return useMutation({
     mutationFn: getModitApi().createDelivery,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.all }),
+  });
+}
+
+export function useDeliveryTrack(deliveryId: string | undefined) {
+  return useQuery({
+    queryKey: moditKeys.deliveryTrack(deliveryId ?? ""),
+    queryFn: () => getModitApi().getDeliveryTrack(deliveryId!),
+    enabled: Boolean(deliveryId),
+    // Live tracking: poll every 15s while the page is open (public link, no login needed).
+    refetchInterval: 15_000,
+    ...fastQueryOpts,
+  });
+}
+
+export function useNearestWarehouse(lat?: number, lng?: number, organizationId?: string) {
+  return useQuery({
+    queryKey: moditKeys.nearestWarehouse(lat, lng),
+    queryFn: () => getModitApi().getNearestWarehouse(lat!, lng!, organizationId),
+    enabled: typeof lat === "number" && typeof lng === "number",
+    ...fastQueryOpts,
+  });
+}
+
+export function useSupportConversations(enabled = true) {
+  return useQuery({
+    queryKey: moditKeys.supportConversations(),
+    queryFn: () => getModitApi().listSupportConversations(),
+    enabled,
+    ...fastQueryOpts,
+  });
+}
+
+export function useCreateSupportConversation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { subject: string; order_id?: string }) =>
+      getModitApi().createSupportConversation(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.supportConversations() }),
+  });
+}
+
+export function useSupportConversation(conversationId: string | undefined) {
+  return useQuery({
+    queryKey: moditKeys.supportConversation(conversationId ?? ""),
+    queryFn: () => getModitApi().getSupportConversation(conversationId!),
+    enabled: Boolean(conversationId),
+    // Pick up agent replies while the chat is open.
+    refetchInterval: 15_000,
+    ...fastQueryOpts,
+  });
+}
+
+export function usePostSupportMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ conversationId, body }: { conversationId: string; body: string }) =>
+      getModitApi().postSupportMessage(conversationId, body),
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: moditKeys.supportConversation(vars.conversationId) });
+      queryClient.invalidateQueries({ queryKey: moditKeys.supportConversations() });
+    },
   });
 }
 

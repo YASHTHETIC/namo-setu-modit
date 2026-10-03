@@ -8,6 +8,7 @@ const STORAGE_KEY = "modit_pincode";
 interface PincodeContextType {
   pincode: string | null;
   serviceable: boolean;
+  coords: { lat: number; lng: number } | null;
   setPincode: (p: string | null) => void;
   getStock: (pincodeStock?: Record<string, number>) => number;
   locating: boolean;
@@ -17,6 +18,7 @@ interface PincodeContextType {
 const PincodeContext = createContext<PincodeContextType>({
   pincode: null,
   serviceable: false,
+  coords: null,
   setPincode: () => {},
   getStock: () => -1,
   locating: false,
@@ -37,13 +39,27 @@ function readStored(): string | null {
  * No API key needed. Returns the 6-digit pincode or null.
  */
 export function fetchLivePincode(timeoutMs = 10000): Promise<string | null> {
+  return fetchLiveFix(timeoutMs).then((fix) => fix?.pin ?? null);
+}
+
+export interface LiveFix {
+  pin: string | null;
+  lat: number;
+  lng: number;
+}
+
+/**
+ * Same as fetchLivePincode but also returns the raw GPS fix so callers can
+ * do hyperlocal lookups (e.g. nearest warehouse) without a second prompt.
+ */
+export function fetchLiveFix(timeoutMs = 10000): Promise<LiveFix | null> {
   return new Promise((resolve) => {
     if (typeof window === "undefined" || !("geolocation" in navigator)) {
       resolve(null);
       return;
     }
     let done = false;
-    const finish = (v: string | null) => {
+    const finish = (v: LiveFix | null) => {
       if (!done) {
         done = true;
         resolve(v);
@@ -59,12 +75,12 @@ export function fetchLivePincode(timeoutMs = 10000): Promise<string | null> {
             { headers: { Accept: "application/json" } }
           );
           if (!res.ok) {
-            finish(null);
+            finish({ pin: null, lat: latitude, lng: longitude });
             return;
           }
           const data = await res.json();
           const pin = String(data?.address?.postcode ?? "").replace(/\D/g, "").slice(0, 6);
-          finish(pin.length === 6 ? pin : null);
+          finish({ pin: pin.length === 6 ? pin : null, lat: latitude, lng: longitude });
         } catch {
           finish(null);
         } finally {
@@ -82,6 +98,7 @@ export function fetchLivePincode(timeoutMs = 10000): Promise<string | null> {
 
 export function PincodeProvider({ children }: { children: ReactNode }) {
   const [pincode, setPincodeState] = useState<string | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
 
   useEffect(() => {
@@ -102,7 +119,11 @@ export function PincodeProvider({ children }: { children: ReactNode }) {
   const useLiveLocation = useCallback(async () => {
     setLocating(true);
     try {
-      const pin = await fetchLivePincode();
+      const fix = await fetchLiveFix();
+      if (fix) {
+        setCoords({ lat: fix.lat, lng: fix.lng });
+      }
+      const pin = fix?.pin ?? null;
       if (pin) {
         setPincodeState(pin);
         try {
@@ -128,7 +149,7 @@ export function PincodeProvider({ children }: { children: ReactNode }) {
 
   return (
     <PincodeContext.Provider
-      value={{ pincode, serviceable: isServiceablePin(pincode), setPincode, getStock, locating, useLiveLocation }}
+      value={{ pincode, serviceable: isServiceablePin(pincode), coords, setPincode, getStock, locating, useLiveLocation }}
     >
       {children}
     </PincodeContext.Provider>

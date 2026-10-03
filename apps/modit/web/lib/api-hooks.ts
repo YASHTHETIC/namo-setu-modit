@@ -12,7 +12,9 @@ function isArray(a: unknown): a is unknown[] {
 
 export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number }) {
   const apiQuery = useApiProducts(params);
-  const apiProducts = isArray(apiQuery.data) ? apiQuery.data as Product[] : [];
+  const raw = apiQuery.data as Product[] | { items?: Product[]; did_you_mean?: string | null } | undefined;
+  const apiProducts = isArray(raw) ? (raw as Product[]) : (raw?.items ?? []);
+  const didYouMean = isArray(raw) ? null : (raw?.did_you_mean ?? null);
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "products", params],
@@ -42,12 +44,12 @@ export function useProducts(params?: { search?: string; category_id?: string; br
   });
 
   if (apiQuery.isSuccess && apiProducts.length > 0) {
-    return { ...apiQuery, data: apiProducts, isFromApi: true };
+    return { ...apiQuery, data: apiProducts, didYouMean, isFromApi: true };
   }
   if (fallbackQuery.isSuccess) {
-    return { ...apiQuery, data: fallbackQuery.data, isFromApi: false, isSuccess: true, isPending: false };
+    return { ...apiQuery, data: fallbackQuery.data, didYouMean: null, isFromApi: false, isSuccess: true, isPending: false };
   }
-  return { ...apiQuery, data: staticProducts, isFromApi: false };
+  return { ...apiQuery, data: staticProducts, didYouMean: null, isFromApi: false };
 }
 
 export function useProduct(productId: string | undefined) {
