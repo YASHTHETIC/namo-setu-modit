@@ -651,7 +651,7 @@ function ProductsContent() {
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="h-4 w-4 text-[#2D1B69]" />
                 <span className="text-body-md font-bold text-[#150726]">Filters</span>
-                {hasActiveFilters && <span className="rounded-full px-2 py-0.5 bg-[#2D1B69] text-[9px] font-bold text-white">Active</span>}
+                {hasActiveFilters && <span className="rounded-full px-2 py-0.5 bg-[#2D1B69] text-tiny font-bold text-white">Active</span>}
               </div>
               <button onClick={() => setShowMobileFilter(false)} className="p-2 rounded-full hover:bg-[#F0ECF9] transition-colors">
                 <X className="h-5 w-5 text-[#9B8CB5]" />
@@ -896,7 +896,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             </span>
           )}
           <span
-            className="rounded-md px-2 py-0.5 text-[9px] font-bold"
+            className="rounded-md px-2 py-0.5 text-tiny font-bold"
             style={{
               background: `${catColor.accent}0A`,
               color: catColor.accent,
@@ -1113,7 +1113,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
                 </span>
               )}
               <span
-                className="rounded-md px-2 py-0.5 text-[9px] font-bold"
+                className="rounded-md px-2 py-0.5 text-tiny font-bold"
                 style={{ background: `${catColor.accent}0A`, color: catColor.accent }}
               >
                 {product.category}

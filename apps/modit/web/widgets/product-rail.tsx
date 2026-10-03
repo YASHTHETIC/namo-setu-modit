@@ -59,7 +59,7 @@ export function ProductRail({
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const amount = 160;
+    const amount = Math.round(el.clientWidth * 0.8);
     el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   };
 
@@ -79,7 +79,7 @@ export function ProductRail({
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
-          className="absolute left-1 top-[50%] -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-white/95 border border-[#DDD6EE] shadow-lg flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all opacity-0 group-hover/rail:opacity-100 hover:scale-110 active:scale-95 backdrop-blur-sm"
+          className="absolute left-1 top-[50%] -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-white/95 border border-[#DDD6EE] shadow-lg hidden lg:flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all opacity-0 group-hover/rail:opacity-100 hover:scale-110 active:scale-95 backdrop-blur-sm"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -87,7 +87,7 @@ export function ProductRail({
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
-          className="absolute right-1 top-[50%] -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-white/95 border border-[#DDD6EE] shadow-lg flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all opacity-0 group-hover/rail:opacity-100 hover:scale-110 active:scale-95 backdrop-blur-sm"
+          className="absolute right-1 top-[50%] -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-white/95 border border-[#DDD6EE] shadow-lg hidden lg:flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all opacity-0 group-hover/rail:opacity-100 hover:scale-110 active:scale-95 backdrop-blur-sm"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

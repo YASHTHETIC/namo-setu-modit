@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Shield, Truck, Clock, TrendingUp, Lock,
-  ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart
+  ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
+  BadgeCheck, Undo2, Receipt
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
@@ -225,7 +226,7 @@ export default function ModitHomePage() {
       {/* ═══ DELIVERY BAR — Pulsing bolt ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
-          <div className={`flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/30 rounded-xl px-3 py-1.5 transition-all duration-500 ${deliveryPulse ? "shadow-md shadow-green-500/20 border-[#7CB518]/50" : ""}`}>
+          <div className="flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/40 rounded-xl px-3 py-1.5 shadow-md shadow-green-500/20">
             <div className="relative">
               <Zap className="h-4 w-4 text-[#7CB518] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
               {deliveryPulse && (
@@ -254,14 +255,14 @@ export default function ModitHomePage() {
       {/* ═══ TRUST STRIP ═══ */}
       <div className="trust-strip mt-3">
         {[
-          { icon: "✓", text: "100% Genuine Products", color: "#7CB518" },
-          { icon: "🔒", text: "Secure Payments", color: "#2D1B69" },
-          { icon: "🚚", text: "Free Delivery 5000+", color: "#00BCD4" },
-          { icon: "↩", text: "7-Day Returns", color: "#E91E63" },
-          { icon: "📄", text: "GST Invoice", color: "#FF9800" },
+          { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
+          { icon: Lock, text: "Secure Payments", color: "#2D1B69" },
+          { icon: Truck, text: "Free Delivery 5000+", color: "#00BCD4" },
+          { icon: Undo2, text: "7-Day Returns", color: "#E91E63" },
+          { icon: Receipt, text: "GST Invoice", color: "#FF9800" },
         ].map((item) => (
           <div key={item.text} className="trust-item">
-            <span className="text-[12px]">{item.icon}</span>
+            <item.icon className="h-3.5 w-3.5 shrink-0" style={{ color: item.color }} />
             <span style={{ color: item.color }}>{item.text}</span>
           </div>
         ))}
@@ -339,7 +340,7 @@ export default function ModitHomePage() {
                     style={{ background: `${f.color}15`, border: `2px solid ${f.color}40` }}>
                     <f.icon className="h-5 w-5" style={{ color: f.color }} />
                   </div>
-                  <p className="text-[10px] font-bold text-white leading-tight whitespace-pre-line">{f.title}</p>
+                  <p className="text-micro font-bold text-white leading-tight line-clamp-2 min-h-[28px]">{f.title}</p>
                 </div>
               ))}
             </div>
@@ -450,7 +451,7 @@ export default function ModitHomePage() {
                 {f.value}{f.suffix}
               </p>
               <p className="text-[9px] font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
-              <p className="text-[7px] text-white/40 mt-0.5 leading-tight">{f.sub}</p>
+              <p className="text-tiny text-white/40 mt-0.5 leading-tight">{f.sub}</p>
             </div>
           ))}
         </div>

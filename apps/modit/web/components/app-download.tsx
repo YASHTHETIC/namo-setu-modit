@@ -74,7 +74,7 @@ export function AppDownload() {
       </div>
 
       {iosOpen && (
-        <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setIosOpen(false)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setIosOpen(false)}>
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[15px] font-bold text-[#150726] flex items-center gap-2">
