@@ -61,7 +61,14 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
       <div className="relative bg-[#F7F4FC]">
         <Link href={`/products/${product.id}`} className="block aspect-square">
           {product.images[0] ? (
-            <img src={product.images[0]} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="h-full w-full object-contain animate-fade-in"
+            />
           ) : null}
         </Link>
         {discountPct > 0 && (

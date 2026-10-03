@@ -110,14 +110,16 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       href={`/products/${product.id}`}
       className={`product-card-mobile flex flex-col ${compact ? "w-[140px]" : "w-full"} group/card`}
     >
-      {/* Image zone */}
+      {/* Image zone — uniform square, full product visible (Blinkit-style) */}
       <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
         {product.images?.[0] && (
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+            className="w-full h-full object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
             loading="lazy"
+            decoding="async"
+            draggable={false}
           />
         )}
 

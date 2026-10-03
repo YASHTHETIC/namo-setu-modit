@@ -307,6 +307,13 @@ export default function ModitHomePage() {
         </div>
       </RevealSection>
 
+      {/* ═══ GET THE APP — top of homepage ═══ */}
+      <RevealSection>
+        <div id="get-app" className="mt-4 scroll-mt-24">
+          <AppDownload />
+        </div>
+      </RevealSection>
+
       {/* ═══ ASSURED STRIP ═══ */}
       <RevealSection delay={100}>
         <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E0A3C] to-[#150726] border border-white/10 relative group">
@@ -367,7 +374,7 @@ export default function ModitHomePage() {
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = cat.color; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
                 >
-                  <img src={cat.img} alt={cat.name} loading="lazy" className="w-[75%] h-[75%] object-contain group-hover:scale-110 group-hover:rotate-3 transition-all duration-500" />
+                  <img src={cat.img} alt={cat.name} loading="lazy" decoding="async" draggable={false} className="w-[75%] h-[75%] object-contain animate-fade-in group-hover:scale-110 group-hover:rotate-3 transition-all duration-500" />
                 </div>
                 <p className="text-[10px] font-semibold text-[#150726] text-center leading-tight whitespace-pre-line group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
               </Link>
@@ -380,7 +387,7 @@ export default function ModitHomePage() {
       <FlashDeals />
 
       {/* ═══ PRODUCT RAILS ═══ */}
-      <div className="max-w-[1440px] mx-auto pb-28">
+      <div className="max-w-[1440px] mx-auto pb-8">
         <RevealSection delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -451,7 +458,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BRAND STRIP ═══ */}
       <RevealSection>
-        <div className="mb-6 pb-20">
+        <div className="market-container mb-6 px-4 pb-2 sm:px-6">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
           </div>
@@ -474,7 +481,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <RevealSection>
-        <div className="market-container px-4 pt-6 pb-28 sm:px-6">
+        <div className="market-container px-4 pt-2 pb-6 sm:px-6">
           <div className="rounded-2xl border-2 border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-6 flex flex-col sm:flex-row items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -495,13 +502,6 @@ export default function ModitHomePage() {
               Calculate <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
-        </div>
-      </RevealSection>
-
-      {/* ═══ GET THE APP ═══ */}
-      <RevealSection>
-        <div id="get-app" className="pb-6 scroll-mt-24">
-          <AppDownload />
         </div>
       </RevealSection>
 
