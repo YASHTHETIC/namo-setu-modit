@@ -1,0 +1,136 @@
+name: strix-penetration-test
+
+# Authorized security scan of our own codebase only (never prod URLs).
+# CLI is Apache-2.0 (free) but needs your own LLM key (paid inference).
+# Setup: GitHub repo Settings -> Secrets and variables -> Actions ->
+#   STRIX_LLM (e.g. openrouter/z-ai/glm-5.3) and LLM_API_KEY.
+# Docs: https://docs.strix.ai/integrations/github-actions
+#
+# Strategy for solo VPS team (low ops, cost-capped):
+# - PRs: quick scan (minutes), diff-scoped, non-blocking while tuning.
+# - Weekly + manual: deep scan (1-4h) on main.
+# - Strix exit 2 = vulns found. We keep quick non-blocking
+#   (continue-on-error); remove it to block merges.
+
+"on":
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      scan_mode:
+        description: "Scan depth"
+        type: choice
+        options: [quick, standard, deep]
+        default: quick
+      max_budget:
+        description: "Max LLM spend in USD"
+        type: string
+        default: "15"
+  schedule:
+    # Weekly deep scan Monday 02:00 UTC (low traffic). Cost-capped.
+    - cron: "0 2 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quick-scan:
+    # PRs + manual quick runs.
+    if: >-
+      ${{ secrets.LLM_API_KEY != '' &&
+        (github.event_name == 'pull_request' ||
+         (github.event_name == 'workflow_dispatch' && inputs.scan_mode == 'quick')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so Strix can diff-scope changed files on PRs.
+          fetch-depth: 0
+
+      - name: Install Strix
+        run: curl -sSL https://strix.ai/install | bash
+
+      - name: Sanity check install
+        run: strix --help | head -30
+
+      - name: Run Strix quick scan
+        env:
+          STRIX_LLM: ${{ secrets.STRIX_LLM }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          MAX_BUDGET: ${{ inputs.max_budget || '15' }}
+        run: |
+          : "${STRIX_LLM:=openrouter/z-ai/glm-5.3}"
+          export STRIX_LLM LLM_API_KEY
+          echo "Scan mode: quick, budget: $MAX_BUDGET USD, target: ./ (own code only)"
+          strix -n --target ./ --scan-mode quick --max-budget "$MAX_BUDGET"
+        continue-on-error: true
+
+      - name: Upload Strix runs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strix-runs-quick-${{ github.run_id }}
+          path: strix_runs/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Strix quick scan (PR)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Mode: quick, diff-scoped, budget-capped. Artifact: strix-runs-quick-${{ github.run_id }}." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exit 2 = vulnerabilities found (non-blocking while tuning)." >> "$GITHUB_STEP_SUMMARY"
+
+  deep-scan:
+    # Weekly schedule + manual standard/deep runs on main.
+    if: >-
+      ${{ secrets.LLM_API_KEY != '' &&
+        (github.event_name == 'schedule' ||
+         (github.event_name == 'workflow_dispatch' && inputs.scan_mode != 'quick')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Strix
+        run: curl -sSL https://strix.ai/install | bash
+
+      - name: Sanity check install
+        run: strix --help | head -30
+
+      - name: Run Strix deep scan
+        env:
+          STRIX_LLM: ${{ secrets.STRIX_LLM }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          SCAN_MODE: ${{ inputs.scan_mode || 'deep' }}
+          MAX_BUDGET: ${{ inputs.max_budget || '40' }}
+        run: |
+          : "${STRIX_LLM:=openrouter/z-ai/glm-5.3}"
+          : "${SCAN_MODE:=deep}"
+          export STRIX_LLM LLM_API_KEY
+          echo "Scan mode: $SCAN_MODE, budget: $MAX_BUDGET USD, target: ./ (own code only)"
+          strix -n --target ./ --scan-mode "$SCAN_MODE" --max-budget "$MAX_BUDGET"
+        continue-on-error: true
+
+      - name: Upload Strix runs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strix-runs-deep-${{ github.run_id }}
+          path: strix_runs/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Strix scheduled scan" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Mode: ${{ inputs.scan_mode || 'deep' }}, full scope, budget-capped. Artifact: strix-runs-deep-${{ github.run_id }}." >> "$GITHUB_STEP_SUMMARY"
+          echo "- Review findings in Actions artifacts before release." >> "$GITHUB_STEP_SUMMARY"
