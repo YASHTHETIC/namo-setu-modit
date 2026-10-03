@@ -66,6 +66,22 @@ def _verify_webhook_signature(payload: bytes, sig_header: str, secret: str) -> d
     timestamp = elements.get("t", "")
     expected_sig = elements.get("v1", "")
 
+    # Replay protection: Stripe signs the timestamp; reject stale/future
+    # signatures so a captured webhook can't be re-fired later.
+    try:
+        ts = int(timestamp)
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid webhook signature",
+        )
+    now = int(datetime.now(timezone.utc).timestamp())
+    if abs(now - ts) > 300:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Stale webhook signature",
+        )
+
     signed_payload = f"{timestamp}.{payload.decode('utf-8')}"
     computed = hmac.new(secret.encode("utf-8"), signed_payload.encode("utf-8"), hashlib.sha256).hexdigest()
 
