@@ -24,6 +24,7 @@ import {
   Search,
   ShieldCheck,
   ShoppingCart,
+  Smartphone,
   Truck,
   User,
   Wrench,
@@ -44,6 +45,7 @@ import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { LocationMenu } from "@/components/location-menu";
 import { HighlightedText } from "@/components/highlighted-text";
+import { openAppSheet } from "@/components/app-install-sheet";
 import { SaleBanner } from "@/components/sale-banner";
 
 /** Trade icon per category slug (mega menu + mobile menu). Falls back to Package. */
@@ -404,6 +406,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="ml-auto hidden items-center gap-1 lg:flex">
+            <button
+              type="button"
+              onClick={openAppSheet}
+              className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]"
+              aria-label="Get the MODIT app"
+              title="Get the MODIT app"
+            >
+              <Smartphone className="h-5 w-5" />
+            </button>
             <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]">
               Supplier Login
             </Link>
@@ -472,6 +483,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Mobile: search + cart + menu */}
           <div className="flex items-center gap-1 lg:hidden ml-auto">
+            <button
+              type="button"
+              onClick={openAppSheet}
+              className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
+              aria-label="Get the MODIT app"
+            >
+              <Smartphone className="h-5 w-5" />
+            </button>
             <button
               type="button"
               onClick={() => setShowMobileSearch(true)}

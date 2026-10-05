@@ -8,7 +8,7 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Shield, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt
+  BadgeCheck, Undo2, Receipt, Smartphone
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
@@ -20,6 +20,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
+import { openAppSheet } from "@/components/app-install-sheet";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
@@ -217,6 +218,9 @@ export default function ModitHomePage() {
             </Link>
           </div>
           <div className="flex items-center gap-1">
+            <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={openAppSheet} aria-label="Get the MODIT app">
+              <Smartphone className="h-5 w-5" />
+            </RippleButton>
             <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowSearch(true)}>
               <Search className="h-5 w-5" />
             </RippleButton>
