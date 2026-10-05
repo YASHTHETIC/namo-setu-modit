@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { ModitShell } from "@/components/modit-shell";
 import { SupportChat } from "@/components/support-chat";
 import { AppInstallSheetHost } from "@/components/app-install-sheet";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { WebVitalsReporter } from "@/components/web-vitals-reporter";
 import { PincodeProvider } from "@/lib/pincode-context";
 
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <ModitShell>{children}</ModitShell>
             <SupportChat />
             <AppInstallSheetHost />
+            <PwaInstallPrompt />
             <WebVitalsReporter />
           </PincodeProvider>
         </Providers>

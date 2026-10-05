@@ -41,7 +41,6 @@ import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { LocationMenu } from "@/components/location-menu";
 import { HighlightedText } from "@/components/highlighted-text";
 import { SiteFooter } from "@/components/site-footer";
@@ -681,7 +680,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       <SiteFooter />
 
       <PushNotificationPrompt />
-      <PwaInstallPrompt />
       <ComparisonBar />
       <BottomNav />
     </div>
