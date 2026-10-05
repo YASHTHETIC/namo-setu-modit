@@ -162,12 +162,12 @@ export default function CartPage() {
                           {item.product.name}
                         </Link>
                         {variant && (
-                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                          <span className="inline-flex items-center gap-1 mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
                             Size: {variant.label} · {variant.unit}
                           </span>
                         )}
                         {item.shade && (
-                          <span className="inline-flex items-center gap-1 mt-1 ml-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
                             Shade: {item.shade}
                           </span>
                         )}

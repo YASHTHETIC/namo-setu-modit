@@ -22,12 +22,12 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
   };
 
   const handleShare = () => {
+    const text = `Use my referral code ${referralCode} on MODIT and get ₹200 off your first order!`;
+    const url = `https://modit.in/auth/register?ref=${referralCode}`;
     if (navigator.share) {
-      navigator.share({
-        title: "Join MODIT",
-        text: `Use my referral code ${referralCode} on MODIT and get ₹200 off your first order!`,
-        url: `https://modit.in/auth/register?ref=${referralCode}`,
-      });
+      navigator.share({ title: "Join MODIT", text, url }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`, "_blank");
     }
   };
 
@@ -50,7 +50,7 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
         <div className="p-6">
           <p className="text-[11px] font-bold text-[#9B8CB5] uppercase text-center mb-2">Your Referral Code</p>
           <div className="bg-[#F8F6FC] border-2 border-dashed border-[#2D1B69] rounded-xl p-4 text-center">
-            <p className="text-[24px] font-extrabold text-[#2D1B69] tracking-widest">{referralCode}</p>
+            <p className="text-[20px] font-extrabold text-[#2D1B69] tracking-widest break-all">{referralCode}</p>
           </div>
 
           {/* Stats */}
@@ -65,6 +65,7 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
               <p className="text-[10px] text-[#9B8CB5] font-semibold">Earned</p>
             </div>
           </div>
+          <p className="mt-2 text-center text-[11px] text-[#9B8CB5]">No invites yet — share your code to earn ₹200 per friend</p>
 
           {/* Actions */}
           <div className="flex gap-3 mt-5">
@@ -86,10 +87,10 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
                 { step: "3", text: "Both get ₹200 off on first order" },
               ].map((item) => (
                 <div key={item.step} className="flex items-center gap-2">
-                  <div className="h-5 w-5 rounded-full bg-[#2D1B69] flex items-center justify-center">
+                  <div className="h-5 w-5 rounded-full bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
                     <span className="text-[9px] font-bold text-white">{item.step}</span>
                   </div>
-                  <p className="text-[11px] text-[#6B5B8A]">{item.text}</p>
+                  <p className="text-[11px] text-[#5C4A7A]">{item.text}</p>
                 </div>
               ))}
             </div>

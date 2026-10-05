@@ -330,7 +330,7 @@ export default function ProductDetailPage({
           onClick={() => setLightboxOpen(false)}
         >
           <div className="flex items-center justify-between px-4 py-3">
-            <span className="text-[13px] font-semibold text-white/70 tabular-nums">
+            <span className="text-body-sm font-semibold text-white/70 tabular-nums">
               {selectedImage + 1} / {product.images.length}
             </span>
             <button
@@ -836,11 +836,11 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="h-28 overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
-                  <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
+                <div className="aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
+                  <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                 </div>
-                <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-1">{p.name}</p>
-                <p className="mt-1 text-sm font-bold text-[var(--brand)]">₹{p.price.toLocaleString()}</p>
+                <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
+                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>
               </Link>
             ))}
           </div>
@@ -859,11 +859,11 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
-                  <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
+                <div className="aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
+                  <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                 </div>
-                <p className="mt-2 text-[10px] font-semibold text-[var(--brand)]">{p.brand}</p>
-                <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2">{p.name}</p>
+                <p className="mt-2 text-[10px] font-semibold text-[var(--brand)] truncate">{p.brand}</p>
+                <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
                 <div className="mt-1 flex items-center gap-1">
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
                   <span className="text-[10px] font-bold text-[var(--text-primary)]">{p.rating}</span>

@@ -95,11 +95,11 @@ export function ProductRail({
 
       {/* Left fade gradient */}
       {canScrollLeft && (
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#F8F6FC] to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[#F8F6FC] to-transparent z-10 pointer-events-none" />
       )}
       {/* Right fade gradient */}
       {canScrollRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#F8F6FC] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#F8F6FC] to-transparent z-10 pointer-events-none" />
       )}
 
       {/* Horizontal scroll rail */}

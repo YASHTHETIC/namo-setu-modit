@@ -71,7 +71,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
             return (
               <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors">
                 {product.images[0] && (
-                  <img src={product.images[0]} alt="" className="h-11 w-11 rounded-lg object-cover bg-[#F0ECF9] flex-shrink-0" />
+                  <img src={product.images[0]} alt={v.label} loading="lazy" decoding="async" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-[#150726]">
@@ -94,13 +94,13 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                 <button
                   onClick={() => handleAddVariant(v.id)}
                   disabled={v.stockLevel <= 0}
-                  className={`px-6 py-2.5 rounded-xl text-[12px] font-bold transition-all flex-shrink-0 flex items-center gap-1.5 ${
+                  className={`px-5 h-9 rounded-lg text-[12px] font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
                     added
-                      ? "bg-[#7CB518]/15 text-[#7CB518]"
-                      : "bg-[#7CB518] text-white hover:bg-[#6A9C14] active:scale-95 shadow-md shadow-green-500/25"
+                      ? "bg-[#7CB518] border-[#7CB518] text-white"
+                      : "bg-white border-[#7CB518] text-[#5A8010] hover:bg-[#F0F9E8] active:scale-95"
                   } disabled:opacity-40`}
                 >
-                  {added ? <><Check className="h-3.5 w-3.5" /> Added</> : "Add"}
+                  {added ? <><Check className="h-3.5 w-3.5" /> Added</> : "ADD"}
                 </button>
               </div>
             );

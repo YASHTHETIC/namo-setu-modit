@@ -13,6 +13,10 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { SiteFooter } from "@/components/site-footer";
+import { ComparisonBar } from "@/components/comparison-bar";
+import { PushNotificationPrompt } from "@/components/push-notification-prompt";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { AppDownload } from "@/components/app-download";
@@ -273,7 +277,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
-      <div className="trust-strip mt-3">
+      <div className="trust-strip scrollbar-hide mt-3">
         {[
           { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
           { icon: Lock, text: "Secure Payments", color: "#2D1B69" },
@@ -291,8 +295,8 @@ export default function ModitHomePage() {
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <RevealSection>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          {/* Animated mesh gradient overlay */}
-          <div className="absolute inset-0 opacity-30" style={{
+          {/* Animated mesh gradient overlay (desktop only — saves mobile GPU) */}
+          <div className="absolute inset-0 opacity-30 hidden sm:block" style={{
             background: "radial-gradient(circle at 20% 50%, rgba(124,181,24,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.2), transparent 50%)",
             animation: "meshMove 8s ease-in-out infinite alternate",
           }} />
@@ -348,7 +352,7 @@ export default function ModitHomePage() {
                 <Shield className="h-3 w-3 text-[#7CB518]" />
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {[
                 { title: "7 Day\nReplacement", icon: Shield, color: "#E91E63" },
                 { title: "4 Hour\nResolution", icon: Clock, color: "#7CB518" },
@@ -377,7 +381,7 @@ export default function ModitHomePage() {
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 lg:grid-cols-8">
             {categories.map((cat, i) => (
               <Link
                 key={cat.slug}
@@ -518,8 +522,8 @@ export default function ModitHomePage() {
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <RevealSection>
         <div className="market-container px-4 pt-2 pb-6 sm:px-6">
-          <div className="rounded-2xl border-2 border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-6 flex flex-col sm:flex-row items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
+          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
+            <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="4" y="2" width="16" height="20" rx="2"/>
                 <line x1="8" y1="6" x2="16" y2="6"/>
@@ -573,13 +577,17 @@ export default function ModitHomePage() {
       </button>
 
       {/* ═══ BOTTOM NAV ═══ */}
+      <SiteFooter className="pb-24" />
+      <PushNotificationPrompt />
+      <PwaInstallPrompt />
+      <ComparisonBar />
       <BottomNav />
 
-      {/* ═══ PINCODE MODAL ═══ */}
+          {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-end justify-center" onClick={() => setShowPincodeModal(false)}>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4" onClick={() => setShowPincodeModal(false)}>
           <div
-            className="w-full max-w-lg bg-white rounded-t-3xl p-6 animate-slide-in-up"
+            className="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-6 animate-slide-in-up max-h-[85dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -659,7 +667,7 @@ export default function ModitHomePage() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setShowMenu(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
                 >
                   <item.icon className="h-5 w-5 group-hover:text-[#7CB518] transition-colors" />
                   <span className="text-[14px] font-semibold">{item.label}</span>
@@ -676,7 +684,7 @@ export default function ModitHomePage() {
                   className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"
                 >
                   <div className="h-6 w-6 rounded-md bg-white/5 flex items-center justify-center overflow-hidden">
-                    <img src={cat.img} alt="" className="h-full w-full object-contain" />
+                    <img src={cat.img} alt={cat.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                   </div>
                   <span className="text-[13px] font-medium">{cat.name.split("\n")[0]}</span>
                 </Link>
@@ -689,7 +697,7 @@ export default function ModitHomePage() {
       {/* ═══ SEARCH MODAL ═══ */}
       {showSearch && (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md" onClick={() => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); }}>
-          <div className="w-full bg-[#150726] p-4 animate-slide-in-up" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full bg-[#150726] p-4 animate-slide-in-up max-h-[85dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="max-w-[1440px] mx-auto">
               <div className="flex items-center gap-3">
                 <div className="flex-1 relative">
