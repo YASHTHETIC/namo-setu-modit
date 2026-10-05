@@ -26,7 +26,7 @@ export function AppDownload() {
           <div className="flex-1 min-w-0">
             <h3 className="text-body-md font-extrabold text-white">Get the MODIT app</h3>
             <p className="text-caption text-white/55 truncate">
-              Faster checkout and order alerts on your home screen
+              Faster checkout and order alerts
             </p>
           </div>
           {installed ? (

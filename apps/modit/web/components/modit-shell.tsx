@@ -406,15 +406,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="ml-auto hidden items-center gap-1 lg:flex">
-            <button
-              type="button"
-              onClick={openAppSheet}
-              className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]"
-              aria-label="Get the MODIT app"
-              title="Get the MODIT app"
-            >
-              <Smartphone className="h-5 w-5" />
-            </button>
             <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]">
               Supplier Login
             </Link>
@@ -483,14 +474,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Mobile: search + cart + menu */}
           <div className="flex items-center gap-1 lg:hidden ml-auto">
-            <button
-              type="button"
-              onClick={openAppSheet}
-              className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
-              aria-label="Get the MODIT app"
-            >
-              <Smartphone className="h-5 w-5" />
-            </button>
             <button
               type="button"
               onClick={() => setShowMobileSearch(true)}
@@ -713,6 +696,13 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Verified suppliers</span>
                 <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Project workflows</span>
               </div>
+              <button
+                onClick={openAppSheet}
+                className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-colors hover:!text-white"
+                style={{ border: "1px solid rgba(124,181,24,0.4)", background: "rgba(124,181,24,0.12)", color: "#7CB518" }}
+              >
+                <Smartphone className="h-4 w-4" /> Get the app
+              </button>
             </div>
             <div>
               <h4 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Marketplace</h4>
@@ -739,7 +729,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <li><Link href="/auth/register" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Create account</Link></li>
                 <li><Link href="/dashboard/profile" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Profile settings</Link></li>
                 <li><Link href="/payment/history" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Payment history</Link></li>
-                <li><Link href="/#get-app" style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Get the app</Link></li>
+                <li><button onClick={openAppSheet} style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Get the app</button></li>
                 <li><button onClick={() => setShowReferral(true)} style={{ color: "rgba(255,255,255,0.5)" }} className="hover:!text-white transition-colors">Refer & Earn ₹200</button></li>
               </ul>
             </div>
