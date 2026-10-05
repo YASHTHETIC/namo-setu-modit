@@ -20,11 +20,12 @@ import {
   Menu,
   Package,
   Paintbrush,
+  Play,
+  Apple,
   Plug,
   Search,
   ShieldCheck,
   ShoppingCart,
-  Smartphone,
   Truck,
   User,
   Wrench,
@@ -696,13 +697,30 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Verified suppliers</span>
                 <span className="rounded-full px-3 py-1.5" style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }}>Project workflows</span>
               </div>
-              <button
-                onClick={openAppSheet}
-                className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-colors hover:!text-white"
-                style={{ border: "1px solid rgba(124,181,24,0.4)", background: "rgba(124,181,24,0.12)", color: "#7CB518" }}
-              >
-                <Smartphone className="h-4 w-4" /> Get the app
-              </button>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  onClick={openAppSheet}
+                  className="flex items-center gap-2.5 rounded-xl px-3.5 py-2 transition-colors hover:!text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.06)" }}
+                >
+                  <Play className="h-5 w-5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                  <span className="text-left leading-tight">
+                    <span className="block text-tiny font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.55)" }}>Install on</span>
+                    <span className="block text-body-sm font-bold" style={{ color: "#FFFFFF" }}>Android</span>
+                  </span>
+                </button>
+                <button
+                  onClick={openAppSheet}
+                  className="flex items-center gap-2.5 rounded-xl px-3.5 py-2 transition-colors hover:!text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.06)" }}
+                >
+                  <Apple className="h-5 w-5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                  <span className="text-left leading-tight">
+                    <span className="block text-tiny font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.55)" }}>Install on</span>
+                    <span className="block text-body-sm font-bold" style={{ color: "#FFFFFF" }}>iPhone</span>
+                  </span>
+                </button>
+              </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>Marketplace</h4>
