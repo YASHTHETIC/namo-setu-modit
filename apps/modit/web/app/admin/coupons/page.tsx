@@ -58,16 +58,16 @@ export default function AdminCouponsPage() {
     setShowForm(false);
   };
 
-  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-[13px] font-semibold focus:outline-none focus:border-[#E91E63]";
+  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#E91E63]";
 
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-[20px] font-extrabold text-[#150726]">Coupons</h1>
-          <p className="text-[12px] text-[#9B8CB5] mt-0.5">{coupons.filter((c) => c.active).length} active · buyers apply these at cart & checkout</p>
+          <h1 className="text-title-lg font-extrabold text-[#150726]">Coupons</h1>
+          <p className="text-caption text-[#9B8CB5] mt-0.5">{coupons.filter((c) => c.active).length} active · buyers apply these at cart & checkout</p>
         </div>
-        <button onClick={() => { setForm(emptyForm); setError(""); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B]">
+        <button onClick={() => { setForm(emptyForm); setError(""); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
           <Plus className="h-4 w-4" /> New coupon
         </button>
       </div>
@@ -81,8 +81,8 @@ export default function AdminCouponsPage() {
                   <Ticket className={`h-5 w-5 ${c.active ? "text-[#E91E63]" : "text-[#9B8CB5]"}`} />
                 </div>
                 <div>
-                  <p className="text-[15px] font-black tracking-wider text-[#150726]">{c.code}</p>
-                  <p className="text-[11px] text-[#9B8CB5]">{c.description}</p>
+                  <p className="text-body-lg font-black tracking-wider text-[#150726]">{c.code}</p>
+                  <p className="text-micro text-[#9B8CB5]">{c.description}</p>
                 </div>
               </div>
               <div className="flex gap-1.5">
@@ -102,15 +102,15 @@ export default function AdminCouponsPage() {
                 { l: "Valid till", v: c.validTill },
               ].map((s) => (
                 <div key={s.l} className="rounded-lg bg-[#F7F4FC] px-1 py-1.5">
-                  <p className="text-[9px] font-bold text-[#9B8CB5] uppercase">{s.l}</p>
-                  <p className="text-[11px] font-extrabold text-[#150726]">{s.v}</p>
+                  <p className="text-tiny font-bold text-[#9B8CB5] uppercase">{s.l}</p>
+                  <p className="text-micro font-extrabold text-[#150726]">{s.v}</p>
                 </div>
               ))}
             </div>
             <div className="mt-2.5 flex items-center gap-2">
               {editingLimit === c.code ? (
                 <>
-                  <input value={limitValue} onChange={(e) => setLimitValue(e.target.value)} inputMode="numeric" placeholder="New usage limit" className="flex-1 px-2.5 py-1.5 rounded-lg border border-[#DDD6EE] text-[12px] font-semibold focus:outline-none focus:border-[#2D1B69]" />
+                  <input value={limitValue} onChange={(e) => setLimitValue(e.target.value)} inputMode="numeric" placeholder="New usage limit" className="flex-1 px-2.5 py-1.5 rounded-lg border border-[#DDD6EE] text-caption font-semibold focus:outline-none focus:border-[#2D1B69]" />
                   <button
                     onClick={() => {
                       const n = Number(limitValue);
@@ -124,7 +124,7 @@ export default function AdminCouponsPage() {
                   <button onClick={() => setEditingLimit(null)} className="p-1.5 rounded-lg border border-[#DDD6EE] text-[#9B8CB5]"><X className="h-3.5 w-3.5" /></button>
                 </>
               ) : (
-                <button onClick={() => { setEditingLimit(c.code); setLimitValue(String(c.usageLimit)); }} className="text-[11px] font-bold text-[#2D1B69] hover:underline">
+                <button onClick={() => { setEditingLimit(c.code); setLimitValue(String(c.usageLimit)); }} className="text-micro font-bold text-[#2D1B69] hover:underline">
                   Edit usage limit
                 </button>
               )}
@@ -137,20 +137,20 @@ export default function AdminCouponsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={() => setShowForm(false)}>
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[15px] font-bold text-[#150726]">New coupon</h2>
+              <h2 className="text-body-lg font-bold text-[#150726]">New coupon</h2>
               <button onClick={() => setShowForm(false)} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Code</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Code</label>
                 <input value={form.code} onChange={(e) => set("code", e.target.value.toUpperCase())} placeholder="e.g. DIWALI25" className={`${field} uppercase tracking-wider`} />
               </div>
               <div className="col-span-2">
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Description</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Description</label>
                 <input value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="e.g. 25% off on orders above ₹2000" className={field} />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Type</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Type</label>
                 <select value={form.discountType} onChange={(e) => set("discountType", e.target.value)} className={`${field} bg-white`}>
                   <option value="percentage">% Percentage</option>
                   <option value="flat">₹ Flat off</option>
@@ -158,30 +158,30 @@ export default function AdminCouponsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Value</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Value</label>
                 <input value={form.discountValue} onChange={(e) => set("discountValue", e.target.value)} inputMode="numeric" className={field} />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Max discount ₹ (optional)</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Max discount ₹ (optional)</label>
                 <input value={form.maxDiscount} onChange={(e) => set("maxDiscount", e.target.value)} inputMode="numeric" placeholder="No cap" className={field} />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Min order ₹</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Min order ₹</label>
                 <input value={form.minOrder} onChange={(e) => set("minOrder", e.target.value)} inputMode="numeric" className={field} />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Valid till</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Valid till</label>
                 <input type="date" value={form.validTill} onChange={(e) => set("validTill", e.target.value)} className={field} />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Usage limit</label>
+                <label className="block text-micro font-bold text-[#150726] mb-1.5">Usage limit</label>
                 <input value={form.usageLimit} onChange={(e) => set("usageLimit", e.target.value)} inputMode="numeric" className={field} />
               </div>
             </div>
-            {error && <p className="text-[11px] text-red-500 font-semibold mt-3">{error}</p>}
+            {error && <p className="text-micro text-red-500 font-semibold mt-3">{error}</p>}
             <div className="mt-4 flex justify-end gap-2">
-              <button onClick={() => setShowForm(false)} className="px-4 py-2.5 rounded-lg text-[12px] font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
-              <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B]">Create coupon</button>
+              <button onClick={() => setShowForm(false)} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
+              <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">Create coupon</button>
             </div>
           </div>
         </div>

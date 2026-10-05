@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -44,11 +45,11 @@ export default function WishlistPage() {
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
           <Heart className="h-10 w-10 text-[#E91E63]" />
         </div>
-        <h2 className="text-[18px] font-bold text-[#150726]">Your wishlist is empty</h2>
-        <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">Save products you love for later. Tap the heart icon on any product to add it here.</p>
+        <h2 className="text-title-md font-bold text-[#150726]">Your wishlist is empty</h2>
+        <p className="mt-2 text-body-sm text-[#9B8CB5] max-w-xs mx-auto">Save products you love for later. Tap the heart icon on any product to add it here.</p>
         <Link
           href="/products"
-          className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-[13px] font-bold hover:bg-[#1E0F4A] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20"
+          className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-body-sm font-bold hover:bg-[#150726] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20"
         >
           <ArrowLeft className="h-4 w-4" /> Browse Products
         </Link>
@@ -88,12 +89,16 @@ export default function WishlistPage() {
           >
             {/* Image */}
             <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#F0ECF9] via-[#E8E0F7] to-[#F0ECF9]">
-              <Link href={`/products/${product.id}`} className="absolute inset-0 z-[1]">
+              <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
                 {product.images[0] ? (
-                  <img
+                  <Image
                     src={product.images[0]}
                     alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 400px"
+                    loading="lazy"
+                    draggable={false}
+                    className="object-contain"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
@@ -103,18 +108,18 @@ export default function WishlistPage() {
               </Link>
               <button
                 onClick={() => removeWishlist(product.id)}
-                className="absolute top-2 left-2 z-[2] flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-all hover:bg-white hover:scale-110"
+                className="absolute top-2 left-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-all hover:bg-white hover:scale-110"
                 title="Remove from Wishlist"
               >
                 <Heart className="h-4 w-4 fill-red-500 text-red-500" />
               </button>
               {product.discount > 0 && (
-                <span className="absolute top-2 right-2 z-[2] rounded-lg bg-[#E91E63] px-2 py-0.5 text-[10px] font-bold text-white">
+                <span className="absolute top-2 right-2 z-20 rounded-lg bg-[#E91E63] px-2 py-0.5 text-tiny font-bold text-white">
                   {product.discount}% OFF
                 </span>
               )}
               {product.seller.isVerified && (
-                <span className="absolute bottom-2 left-2 z-[2] rounded-lg bg-[#7CB518]/10 px-2 py-0.5 text-[10px] font-bold text-[#7CB518]">
+                <span className="absolute bottom-2 left-2 z-20 rounded-lg bg-[#7CB518]/10 px-2 py-0.5 text-tiny font-bold text-[#7CB518]">
                   <CheckCircle className="mr-0.5 inline h-2.5 w-2.5" /> Verified
                 </span>
               )}
@@ -123,7 +128,7 @@ export default function WishlistPage() {
             {/* Info */}
             <div className="p-4">
               {product.brand && (
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#2D1B69]">{product.brand}</p>
+                <p className="text-tiny font-semibold uppercase tracking-wider text-[#2D1B69]">{product.brand}</p>
               )}
               <Link href={`/products/${product.id}`}>
                 <h3 className="mt-1 text-sm font-bold text-[#150726] line-clamp-2 leading-tight hover:text-[#2D1B69] transition-colors">
@@ -136,7 +141,7 @@ export default function WishlistPage() {
                   <span className="text-xs font-bold text-[#2D1B69]">{product.rating}</span>
                   <Star className="h-2.5 w-2.5 fill-[#2D1B69] text-[#2D1B69]" />
                 </div>
-                <span className="text-[10px] text-[#9B8CB5]">({product.reviewCount.toLocaleString()})</span>
+                <span className="text-tiny text-[#9B8CB5]">({product.reviewCount.toLocaleString()})</span>
               </div>
 
               <div className="mt-3">
@@ -151,17 +156,17 @@ export default function WishlistPage() {
                   )}
                 </div>
                 {product.bulkLabel && (
-                  <p className="mt-1 text-[10px] font-medium text-emerald-600">{product.bulkLabel}</p>
+                  <p className="mt-1 text-tiny font-medium text-emerald-600">{product.bulkLabel}</p>
                 )}
               </div>
 
-              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#9B8CB5]">
+              <div className="mt-2 flex items-center gap-1.5 text-micro text-[#9B8CB5]">
                 <Truck className="h-3 w-3" />
                 <span className="font-medium text-[#7CB518]">Free delivery</span>
                 <span>· {product.deliveryDays} day{product.deliveryDays > 1 ? "s" : ""}</span>
               </div>
 
-              <p className="mt-1.5 text-[10px] text-[#9B8CB5] flex items-center gap-1">
+              <p className="mt-1.5 text-tiny text-[#9B8CB5] flex items-center gap-1">
                 <Building2 className="h-3 w-3" /> {product.seller.name}
                 {product.seller.isVerified && (
                   <span className="ml-1 inline-flex items-center gap-0.5 text-[#7CB518] font-semibold">
@@ -173,7 +178,7 @@ export default function WishlistPage() {
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-[11px] font-semibold transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-micro font-semibold transition-all ${
                     addedId === product.id
                       ? "bg-[#7CB518] text-white"
                       : "bg-[#2D1B69] text-white hover:bg-[#1E1245]"
@@ -189,7 +194,7 @@ export default function WishlistPage() {
                 </button>
                 <button
                   onClick={() => handleBuyNow(product)}
-                  className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-[11px] font-semibold border border-[#DDD6EE] text-[#150726] hover:bg-gray-50 transition-all"
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-micro font-semibold border border-[#DDD6EE] text-[#150726] hover:bg-gray-50 transition-all"
                 >
                   Buy Now
                 </button>

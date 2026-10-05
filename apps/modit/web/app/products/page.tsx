@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
@@ -35,8 +36,8 @@ type ViewMode = "grid" | "list";
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; accent: string; border: string; light: string; icon: string }> = {
   cement:   { bg: "linear-gradient(135deg, #F0ECF9, #E8E0F7)", text: "#2D1B69", accent: "#7CB518", border: "#C9B8E8", light: "#F5F2FC", icon: "bg-purple-100 text-purple-700" },
-  painting: { bg: "linear-gradient(135deg, #F0F9E8, #E8F5D8)", text: "#3D6B0E", accent: "#7CB518", border: "#C5E1A5", light: "#F5FCF0", icon: "bg-green-100 text-green-700" },
-  lighting: { bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)", text: "#00838F", accent: "#00BCD4", border: "#B2EBF2", light: "#F0FFFE", icon: "bg-cyan-100 text-cyan-700" },
+  painting: { bg: "linear-gradient(135deg, #F0F9E8, #F0F9E8)", text: "#5a8010", accent: "#7CB518", border: "#C5E1A5", light: "#F0F9E8", icon: "bg-green-100 text-green-700" },
+  lighting: { bg: "linear-gradient(135deg, #E0F7FA, #F0FCFD)", text: "#00838F", accent: "#00BCD4", border: "#B2EBF2", light: "#F0F9E8", icon: "bg-cyan-100 text-cyan-700" },
   tiling:   { bg: "linear-gradient(135deg, #FCE4EC, #F8BBD0)", text: "#AD1457", accent: "#E91E63", border: "#F48FB1", light: "#FFF0F3", icon: "bg-pink-100 text-pink-700" },
 };
 
@@ -192,8 +193,8 @@ function ProductsContent() {
       className="mx-auto max-w-[1400px] py-4 sm:px-6"
       style={{
         background: selectedCategory
-          ? `linear-gradient(180deg, ${catColor!.light} 0%, ${catColor!.bg.match(/#[A-Fa-f0-9]+/)?.[0] || '#FFFBF5'}33 200px, #FFF8F0 500px)`
-          : 'linear-gradient(180deg, #FFFBF5 0%, #FFF8F0 200px, #FFF5E8 500px)',
+          ? `linear-gradient(180deg, ${catColor!.light} 0%, ${catColor!.bg.match(/#[A-Fa-f0-9]+/)?.[0] || '#FFFBF5'}33 200px, #FFFBF5 500px)`
+          : 'linear-gradient(180deg, #FFFBF5 0%, #FFFBF5 200px, #FFFBF5 500px)',
         minHeight: '100dvh',
       }}
     >
@@ -232,7 +233,7 @@ function ProductsContent() {
                   <h3 className="text-sm font-black text-[#150726]">Filters</h3>
                   {hasActiveFilters && (
                     <span
-                      className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
+                      className="ml-auto rounded-full px-2 py-0.5 text-tiny font-bold text-white"
                       style={{ background: catColor?.accent || '#2D1B69' }}
                     >
                       Active
@@ -266,7 +267,7 @@ function ProductsContent() {
                       className="flex items-center w-full rounded-xl px-3 py-2.5 text-left text-xs font-bold transition-all"
                       style={
                         !selectedCategory
-                          ? { background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FEF3E2)', color: catColor?.accent || '#2D1B69', border: `1px solid ${catColor?.border || '#FED7AA'}`, boxShadow: `0 2px 8px ${catColor?.accent || '#2D1B69'}15` }
+                          ? { background: catColor?.bg || 'linear-gradient(135deg, #FED7AA, #FFFBF5)', color: catColor?.accent || '#2D1B69', border: `1px solid ${catColor?.border || '#FED7AA'}`, boxShadow: `0 2px 8px ${catColor?.accent || '#2D1B69'}15` }
                           : { color: 'var(--text-secondary)' }
                       }
                     >
@@ -426,8 +427,8 @@ function ProductsContent() {
                   <div
                     className="h-4 w-4 rounded border-2 flex items-center justify-center transition-all flex-shrink-0"
                     style={{
-                      borderColor: inStockOnly ? '#10B981' : '#D1D5DB',
-                      background: inStockOnly ? '#10B981' : 'white',
+                      borderColor: inStockOnly ? '#059669' : '#D1D5DB',
+                      background: inStockOnly ? '#059669' : 'white',
                     }}
                   >
                     {inStockOnly && (
@@ -674,7 +675,7 @@ function ProductsContent() {
 
       {/* Mobile Filter Bottom Sheet */}
       {showMobileFilter && (
-        <div className="fixed inset-0 z-[90] lg:hidden">
+        <div className="fixed inset-0 z-sheet lg:hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileFilter(false)} />
           <div className="absolute bottom-0 left-0 right-0 max-h-[85dvh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
@@ -758,7 +759,7 @@ function ProductsContent() {
                 <div className="flex flex-wrap gap-2">
                   {[4, 3, 2, 1].map((r) => (
                     <button key={r} onClick={() => setMinRating(minRating === r ? 0 : r)} className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-micro font-bold transition-all border ${minRating === r ? "bg-[#2D1B69] text-white border-[#2D1B69]" : "bg-white text-[#9B8CB5] border-[#E8E0F7]"}`}>
-                      <Star className="h-3 w-3" style={minRating === r ? { fill: "white", color: "white" } : { fill: "#FACC15", color: "#FACC15" }} /> {r}+
+                      <Star className="h-3 w-3" style={minRating === r ? { fill: "white", color: "white" } : { fill: "#E8A800", color: "#E8A800" }} /> {r}+
                     </button>
                   ))}
                 </div>
@@ -780,7 +781,7 @@ function ProductsContent() {
                   Clear All
                 </button>
               )}
-              <button onClick={() => setShowMobileFilter(false)} className="flex-1 h-11 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E0F4A] transition-all shadow-lg shadow-purple-500/20">
+              <button onClick={() => setShowMobileFilter(false)} className="flex-1 h-11 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#150726] transition-all shadow-lg shadow-purple-500/20">
                 Show {filteredProducts.length} Results
               </button>
             </div>
@@ -845,14 +846,18 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
       {/* Image */}
       <div className="relative h-52 overflow-hidden" style={{ background: catColor.bg }}>
-        <Link href={`/products/${product.id}`} className="absolute inset-0 z-[1]">
-          {product.images[0] ? (
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-          ) : (
+          <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
+            {product.images[0] ? (
+              <Image
+                src={product.images[0]}
+                alt={product.name}
+                fill
+                sizes="176px"
+                loading="lazy"
+                draggable={false}
+                className="object-contain"
+              />
+            ) : (
             <div className="flex h-full items-center justify-center">
               <Package className="h-16 w-16" style={{ color: catColor.accent, opacity: 0.15 }} />
             </div>
@@ -864,9 +869,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 left-3 z-[2] flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200"
+          className="absolute top-3 left-3 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200"
           style={{
-            background: wishlisted ? '#FEE2E2' : 'rgba(255,255,255,0.92)',
+            background: wishlisted ? '#FCE4EC' : 'rgba(255,255,255,0.92)',
             boxShadow: wishlisted ? '0 2px 8px rgba(239,68,68,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
           }}
           title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
@@ -877,9 +882,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Discount badge */}
         {product.discount > 0 && (
           <span
-            className="absolute top-3 right-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg"
+            className="absolute top-3 right-3 z-20 flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg"
             style={{
-              background: 'linear-gradient(135deg, #DC2626, #EF4444)',
+              background: 'linear-gradient(135deg, #E91E63, #E91E63)',
               boxShadow: '0 3px 12px rgba(220,38,38,0.35)',
             }}
           >
@@ -890,7 +895,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
         {/* Sale badge */}
         {"onSale" in product && (product as unknown as { onSale: boolean; saleName: string | null }).onSale && (
-          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-[2] rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg bg-[#7CB518]">
+          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg bg-[#7CB518]">
             {(product as unknown as { saleName: string | null }).saleName ?? "SALE"}
           </span>
         )}
@@ -898,10 +903,10 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Verified badge */}
         {product.seller.isVerified && (
           <span
-            className="absolute bottom-3 left-3 z-[2] flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-bold shadow-sm"
+            className="absolute bottom-3 left-3 z-20 flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-bold shadow-sm"
             style={{
               background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)',
-              color: '#065F46',
+              color: '#059669',
               border: '1px solid #A7F3D0',
             }}
           >
@@ -994,7 +999,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           style={
             added
               ? {
-                  background: 'linear-gradient(135deg, #10B981, #059669)',
+                  background: 'linear-gradient(135deg, #059669, #059669)',
                   color: 'white',
                   boxShadow: '0 4px 16px rgba(16,185,129,0.35)',
                 }
@@ -1031,7 +1036,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {optLabel && (
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7] transition-all"
           >
             {optLabel} <ChevronDown className="h-3.5 w-3.5" />
           </button>
@@ -1095,9 +1100,17 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
       {/* Image */}
       <div className="relative h-44 w-44 flex-shrink-0 overflow-hidden" style={{ background: catColor.bg }}>
-        <Link href={`/products/${product.id}`} className="absolute inset-0 z-[1]">
+        <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
           {product.images[0] ? (
-            <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              sizes="176px"
+              loading="lazy"
+              draggable={false}
+              className="object-contain transition-transform duration-500 group-hover:scale-105"
+            />
           ) : (
             <div className="flex h-full items-center justify-center">
               <Package className="h-12 w-12" style={{ color: catColor.accent, opacity: 0.15 }} />
@@ -1106,9 +1119,9 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         </Link>
         <button
           onClick={handleWishlist}
-          className="absolute top-2 left-2 z-[2] flex h-8 w-8 items-center justify-center rounded-full transition-all"
+          className="absolute top-2 left-2 z-20 flex h-8 w-8 items-center justify-center rounded-full transition-all"
           style={{
-            background: wishlisted ? '#FEE2E2' : 'rgba(255,255,255,0.92)',
+            background: wishlisted ? '#FCE4EC' : 'rgba(255,255,255,0.92)',
             boxShadow: wishlisted ? '0 2px 8px rgba(239,68,68,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
           }}
           title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
@@ -1117,9 +1130,9 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         </button>
         {product.discount > 0 && (
           <span
-            className="absolute top-2 right-2 z-[2] flex items-center gap-1 rounded-lg px-2 py-1 text-tiny font-black text-white"
+            className="absolute top-2 right-2 z-20 flex items-center gap-1 rounded-lg px-2 py-1 text-tiny font-black text-white"
             style={{
-              background: 'linear-gradient(135deg, #DC2626, #EF4444)',
+              background: 'linear-gradient(135deg, #E91E63, #E91E63)',
               boxShadow: '0 2px 8px rgba(220,38,38,0.3)',
             }}
           >
@@ -1189,7 +1202,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
               className="flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300"
               style={
                 added
-                  ? { background: 'linear-gradient(135deg, #10B981, #059669)', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }
+                  ? { background: 'linear-gradient(135deg, #059669, #059669)', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }
                   : {
                       background: 'linear-gradient(135deg, #7CB518, #6A9C14)',
                       color: 'white',
@@ -1219,7 +1232,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             {optLabel && (
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-                className="flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-micro font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+                className="flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-micro font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7] transition-all"
               >
                 {optLabel} <ChevronDown className="h-3 w-3" />
               </button>

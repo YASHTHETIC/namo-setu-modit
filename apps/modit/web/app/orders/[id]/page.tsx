@@ -145,7 +145,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
           <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
             <div className="flex items-center gap-3 animate-pulse">
               <div className="h-5 w-5 bg-white/20 rounded" />
@@ -167,7 +167,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (!order) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
           <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
             <Link href="/orders" className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2">
               <ArrowLeft className="h-5 w-5" /> Back to orders
@@ -178,10 +178,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
             <Package className="h-10 w-10 text-[#2D1B69]" />
           </div>
-          <h2 className="text-[18px] font-bold text-[#150726]">Order Not Found</h2>
-          <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">This order does not exist or you do not have access.</p>
+          <h2 className="text-title-md font-bold text-[#150726]">Order Not Found</h2>
+          <p className="mt-2 text-body-sm text-[#9B8CB5] max-w-xs mx-auto">This order does not exist or you do not have access.</p>
           <Link href="/orders"
-            className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
+            className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
             View All Orders
           </Link>
         </div>
@@ -195,7 +195,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       {/* Gradient header */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
@@ -203,9 +203,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="flex-1">
-              <h1 className="text-[16px] font-extrabold text-white">{order.id}</h1>
+              <h1 className="text-body-lg font-extrabold text-white">{order.id}</h1>
             </div>
-            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold border ${st.bg} ${st.color} ${st.border}`}>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-micro font-bold border ${st.bg} ${st.color} ${st.border}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${st.dot}`} />
               {st.label}
             </span>
@@ -225,7 +225,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       } ${isCurrent ? "ring-4 ring-[#7CB518]/30 scale-110" : ""}`}>
                         <step.icon className="h-3.5 w-3.5" />
                       </div>
-                      <span className={`mt-1 text-[8px] font-bold text-center ${isActive ? "text-white" : "text-white/30"}`}>
+                      <span className={`mt-1 text-tiny font-bold text-center ${isActive ? "text-white" : "text-white/30"}`}>
                         {step.label}
                       </span>
                     </div>
@@ -248,8 +248,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Navigation className="h-4 w-4 animate-pulse" />
-                  <span className="text-[13px] font-bold">Live Tracking</span>
-                  <span className="text-[10px] text-white/60">· auto-updates every 30s</span>
+                  <span className="text-body-sm font-bold">Live Tracking</span>
+                  <span className="text-tiny text-white/60">· auto-updates every 30s</span>
                 </div>
                 <button onClick={() => { setRefreshing(true); refetchOrder().finally(() => setRefreshing(false)); }} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all" title="Refresh status">
                   <RefreshCcw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
@@ -282,7 +282,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 {liveDelivery && (
                   <Link
                     href={`/track/${liveDelivery.id}`}
-                    className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-white py-2.5 text-[13px] font-extrabold text-[#0097A7] transition-all hover:bg-white/90 active:scale-[0.99]"
+                    className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-white py-2.5 text-body-sm font-extrabold text-[#0097A7] transition-all hover:bg-white/90 active:scale-[0.99]"
                   >
                     Open live map <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -308,7 +308,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         {/* Delivery Rating — for delivered orders */}
         {order.status === "delivered" && !rated && (
           <div className="rounded-2xl border border-[#7CB518]/20 bg-[#F0F9E8] p-5">
-            <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+            <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
               <Star className="h-4 w-4 text-[#FF9800]" /> Rate your delivery experience
             </h3>
             <div className="flex items-center gap-1 mb-3">
@@ -319,7 +319,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               ))}
             </div>
             {rating > 0 && (
-              <button onClick={() => setRated(true)} className="px-5 py-2 rounded-lg bg-[#7CB518] text-white text-[12px] font-bold hover:bg-[#6A9C14] transition-all">
+              <button onClick={() => setRated(true)} className="px-5 py-2 rounded-lg bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] transition-all">
                 Submit Rating
               </button>
             )}
@@ -330,32 +330,32 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <div className="h-8 w-8 rounded-full bg-[#7CB518] flex items-center justify-center">
               <Check className="h-4 w-4 text-white" />
             </div>
-            <span className="text-[13px] font-semibold text-[#7CB518]">Thanks for rating!</span>
+            <span className="text-body-sm font-semibold text-[#7CB518]">Thanks for rating!</span>
           </div>
         )}
 
         {/* Items */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
-          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
-            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#F7F4FC]">
+            <h3 className="text-body-sm font-bold text-[#150726] flex items-center gap-2">
               <Package className="h-4 w-4 text-[#2D1B69]" />
               Items ({order.items.length})
             </h3>
           </div>
           <div className="divide-y divide-[#F0ECF9]">
             {order.items.map((item, i) => (
-              <div key={i} className="flex gap-3 p-4 hover:bg-[#FAFAFE] transition-colors">
+              <div key={i} className="flex gap-3 p-4 hover:bg-[#F7F4FC] transition-colors">
                 <div className="h-12 w-12 rounded-xl bg-[#F0ECF9] flex items-center justify-center flex-shrink-0">
                   <Package className="h-5 w-5 text-[#2D1B69]/30" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  {item.brand && <p className="text-[10px] font-bold text-[#7CB518] uppercase tracking-wide">{item.brand}</p>}
-                  <p className="text-[13px] font-semibold text-[#150726] truncate">{item.name}</p>
-                  <p className="text-[11px] text-[#9B8CB5] mt-0.5">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
+                  {item.brand && <p className="text-tiny font-bold text-[#7CB518] uppercase tracking-wide">{item.brand}</p>}
+                  <p className="text-body-sm font-semibold text-[#150726] truncate">{item.name}</p>
+                  <p className="text-micro text-[#9B8CB5] mt-0.5">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-[14px] font-extrabold text-[#150726]">₹{item.total.toLocaleString("en-IN")}</p>
-                  <p className="text-[10px] text-[#9B8CB5] mt-0.5">incl. GST {item.gstRate}%</p>
+                  <p className="text-body-md font-extrabold text-[#150726]">₹{item.total.toLocaleString("en-IN")}</p>
+                  <p className="text-tiny text-[#9B8CB5] mt-0.5">incl. GST {item.gstRate}%</p>
                 </div>
               </div>
             ))}
@@ -364,33 +364,33 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Payment Summary */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
-          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
-            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#F7F4FC]">
+            <h3 className="text-body-sm font-bold text-[#150726] flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-[#2D1B69]" />
               Payment Summary
             </h3>
           </div>
           <div className="p-5 space-y-2.5">
-            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726] font-medium">₹{order.subtotal.toLocaleString()}</span></div>
-            <div className="flex justify-between text-[12px]"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726] font-medium">₹{order.gst.toLocaleString()}</span></div>
-            <div className="flex justify-between text-[12px]">
+            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726] font-medium">₹{order.subtotal.toLocaleString()}</span></div>
+            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726] font-medium">₹{order.gst.toLocaleString()}</span></div>
+            <div className="flex justify-between text-caption">
               <span className="text-[#9B8CB5]">Delivery</span>
               <span className={order.shipping === 0 ? "text-[#7CB518] font-bold" : "text-[#150726] font-medium"}>
                 {order.shipping === 0 ? "FREE" : `₹${order.shipping.toLocaleString()}`}
               </span>
             </div>
             <div className="border-t border-[#DDD6EE] pt-2.5 flex justify-between">
-              <span className="text-[14px] font-bold text-[#150726]">Total</span>
-              <span className="text-[18px] font-extrabold text-[#2D1B69]">₹{order.total.toLocaleString("en-IN")}</span>
+              <span className="text-body-md font-bold text-[#150726]">Total</span>
+              <span className="text-title-md font-extrabold text-[#2D1B69]">₹{order.total.toLocaleString("en-IN")}</span>
             </div>
           </div>
 
           {/* Payment method */}
           <div className="mx-5 mb-5 p-3.5 rounded-xl bg-[#F8F6FC] border border-[#F0ECF9]">
-            <div className="flex items-center gap-2 text-[12px] text-[#6B5B83]">
+            <div className="flex items-center gap-2 text-caption text-[#6B5B83]">
               <CreditCard className="h-3.5 w-3.5 text-[#2D1B69]" /> {order.payment.method}
             </div>
-            <div className="flex items-center gap-2 text-[11px] mt-1.5">
+            <div className="flex items-center gap-2 text-micro mt-1.5">
               <span className={`inline-flex items-center gap-1 font-bold ${order.payment.status === "paid" ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${order.payment.status === "paid" ? "bg-[#7CB518]" : "bg-[#E91E63]"}`} />
                 {order.payment.status === "paid" ? "Paid" : "Pending"}
@@ -402,8 +402,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Delivery Address */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
-          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#FAFAFE]">
-            <h3 className="text-[13px] font-bold text-[#150726] flex items-center gap-2">
+          <div className="px-5 py-3 border-b border-[#F0ECF9] bg-[#F7F4FC]">
+            <h3 className="text-body-sm font-bold text-[#150726] flex items-center gap-2">
               <MapPin className="h-4 w-4 text-[#2D1B69]" />
               Delivery Address
             </h3>
@@ -413,7 +413,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="h-10 w-10 rounded-xl bg-[#F0ECF9] flex items-center justify-center flex-shrink-0">
                 <MapPin className="h-4 w-4 text-[#2D1B69]" />
               </div>
-              <div className="text-[12px]">
+              <div className="text-caption">
                 <p className="font-bold text-[#150726]">{order.address.name}</p>
                 <p className="text-[#6B5B83]">{order.address.phone}</p>
                 <p className="text-[#9B8CB5] mt-0.5">{order.address.line1}</p>
@@ -430,8 +430,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <Calendar className="h-4 w-4 text-[#7CB518]" />
             </div>
             <div>
-              <p className="text-[11px] text-[#9B8CB5]">{order.deliveredAt ? "Delivered on" : "Expected by"}</p>
-              <p className="text-[14px] font-bold text-[#150726]">{order.deliveredAt ? formatDateTime(order.deliveredAt) : formatDate(order.expectedDelivery)}</p>
+              <p className="text-micro text-[#9B8CB5]">{order.deliveredAt ? "Delivered on" : "Expected by"}</p>
+              <p className="text-body-md font-bold text-[#150726]">{order.deliveredAt ? formatDateTime(order.deliveredAt) : formatDate(order.expectedDelivery)}</p>
             </div>
           </div>
         </div>
@@ -442,8 +442,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <div className="p-5 flex items-start gap-3">
               <MessageCircle className="h-4 w-4 text-[#E91E63] mt-0.5" />
               <div>
-                <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wide">Special Instructions</p>
-                <p className="text-[12px] text-[#6B5B83] mt-1">{order.specialInstructions}</p>
+                <p className="text-micro font-bold text-[#E91E63] uppercase tracking-wide">Special Instructions</p>
+                <p className="text-caption text-[#6B5B83] mt-1">{order.specialInstructions}</p>
               </div>
             </div>
           </div>
@@ -454,17 +454,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE8F0] overflow-hidden">
             <div className="p-5">
               <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold text-[#E91E63] uppercase tracking-wide flex items-center gap-1.5">
+                <p className="text-micro font-bold text-[#E91E63] uppercase tracking-wide flex items-center gap-1.5">
                   <RotateCcw className="h-3.5 w-3.5" /> Return {existingReturn.id}
                 </p>
-                <span className="text-[11px] font-bold text-[#C2185B] bg-white rounded-full px-2.5 py-1">{RETURN_STATUS_LABEL[existingReturn.status]}</span>
+                <span className="text-micro font-bold text-[#C2185B] bg-white rounded-full px-2.5 py-1">{RETURN_STATUS_LABEL[existingReturn.status]}</span>
               </div>
-              <p className="text-[12px] text-[#6B5B83] mt-2">
+              <p className="text-caption text-[#6B5B83] mt-2">
                 {existingReturn.items.length} item{existingReturn.items.length !== 1 ? "s" : ""} · {existingReturn.reason} · Est. refund ₹{refundAmount(existingReturn).toLocaleString("en-IN")}
               </p>
               <div className="mt-3 space-y-1.5">
                 {existingReturn.statusHistory.map((h, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-[11px]">
+                  <div key={idx} className="flex items-start gap-2 text-micro">
                     <CheckCircle2 className="h-3.5 w-3.5 text-[#E91E63] mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-[#150726]">{RETURN_STATUS_LABEL[h.status]}</span>
@@ -480,15 +480,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Actions */}
         <div className="flex gap-3 pb-4">
-          <button onClick={handleDownloadInvoice} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
+          <button onClick={handleDownloadInvoice} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
             <Download className="h-4 w-4 text-[#2D1B69]" /> GST Invoice
           </button>
           {order.status === "delivered" && !existingReturn && (
-            <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
+            <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
               <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Return
             </button>
           )}
-          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-[13px] font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
+          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
             <Phone className="h-4 w-4 text-[#00BCD4]" /> Support
           </button>
         </div>

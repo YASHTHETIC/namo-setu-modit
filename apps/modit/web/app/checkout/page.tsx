@@ -88,16 +88,16 @@ export default function CheckoutPage() {
         <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
-            <h1 className="text-[16px] font-bold text-white">Checkout</h1>
+            <h1 className="text-body-lg font-bold text-white">Checkout</h1>
           </div>
         </header>
         <div className="mx-auto max-w-[600px] py-20 text-center px-4">
           <div className="h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center mx-auto mb-4">
             <MapPin className="h-10 w-10 text-[#2D1B69]" />
           </div>
-          <h2 className="text-[18px] font-bold text-[#150726]">Login to checkout</h2>
-          <p className="text-[13px] text-[#9B8CB5] mt-2 max-w-xs mx-auto">Orders, delivery tracking and invoices need your account. Your cart is saved.</p>
-          <Link href="/auth?next=%2Fcheckout" className="mt-6 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[14px] font-bold px-8 py-3 rounded-xl hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
+          <h2 className="text-title-md font-bold text-[#150726]">Login to checkout</h2>
+          <p className="text-body-sm text-[#9B8CB5] mt-2 max-w-xs mx-auto">Orders, delivery tracking and invoices need your account. Your cart is saved.</p>
+          <Link href="/auth?next=%2Fcheckout" className="mt-6 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-md font-bold px-8 py-3 rounded-xl hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25">
             Login / Sign up
           </Link>
         </div>
@@ -111,13 +111,13 @@ export default function CheckoutPage() {
         <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
-            <h1 className="text-[16px] font-bold text-white">Checkout</h1>
+            <h1 className="text-body-lg font-bold text-white">Checkout</h1>
           </div>
         </header>
         <div className="mx-auto max-w-[600px] py-20 text-center">
           <ShoppingCart className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
-          <h2 className="text-[18px] font-bold text-[#150726]">Your cart is empty</h2>
-          <Link href="/products" className="mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all">
+          <h2 className="text-title-md font-bold text-[#150726]">Your cart is empty</h2>
+          <Link href="/products" className="mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all">
             <ArrowLeft className="h-4 w-4" /> Browse Products
           </Link>
         </div>
@@ -130,26 +130,26 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-[#F8F6FC]">
         <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-            <h1 className="text-[16px] font-bold text-white">Order Confirmed</h1>
+            <h1 className="text-body-lg font-bold text-white">Order Confirmed</h1>
           </div>
         </header>
         <div className="mx-auto max-w-[600px] py-20 text-center px-4">
           <div className="h-20 w-20 rounded-full bg-[#7CB518]/10 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="h-10 w-10 text-[#7CB518]" />
           </div>
-          <h2 className="text-[22px] font-bold text-[#150726]">Order Placed!</h2>
-          <p className="text-[13px] text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
-          <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#7CB518] font-semibold">
+          <h2 className="text-title-lg font-bold text-[#150726]">Order Placed!</h2>
+          <p className="text-body-sm text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
+          <div className="mt-6 flex items-center justify-center gap-2 text-caption text-[#7CB518] font-semibold">
             <Truck className="h-4 w-4" /> Estimated delivery: {slot?.time ?? "60 minutes"}
           </div>
-          <div className="mt-3 flex items-center justify-center gap-2 text-[12px] text-[#2D1B69]">
+          <div className="mt-3 flex items-center justify-center gap-2 text-caption text-[#2D1B69]">
             <Wallet className="h-4 w-4" /> +{Math.floor(total / 10)} points earned
           </div>
           <div className="mt-8 flex gap-3 justify-center">
-            <Link href={`/orders/${orderId}`} className="bg-[#2D1B69] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
+            <Link href={`/orders/${orderId}`} className="bg-[#2D1B69] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
               Track Order
             </Link>
-            <Link href="/products" className="bg-white text-[#150726] text-[13px] font-bold px-6 py-2.5 rounded-full border border-[#DDD6EE] hover:border-[#2D1B69] transition-all">
+            <Link href="/products" className="bg-white text-[#150726] text-body-sm font-bold px-6 py-2.5 rounded-full border border-[#DDD6EE] hover:border-[#2D1B69] transition-all">
               Continue Shopping
             </Link>
           </div>
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
       <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
-          <h1 className="text-[16px] font-bold text-white">Checkout</h1>
+          <h1 className="text-body-lg font-bold text-white">Checkout</h1>
         </div>
       </header>
 
@@ -181,10 +181,10 @@ export default function CheckoutPage() {
                 onClick={() => { if (s.step <= activeStep) setActiveStep(s.step); }}
                 disabled={s.step > activeStep}
                 aria-current={s.step === activeStep ? "step" : undefined}
-                className={`flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-full text-caption font-semibold transition-all ${
                   s.step === activeStep ? "bg-[#7CB518] text-white" : s.step < activeStep ? "bg-[#7CB518]/20 text-[#7CB518]" : "bg-white text-[#9B8CB5] border border-[#E8E0F7]"
                 } ${s.step > activeStep ? "cursor-not-allowed opacity-80" : ""}`}>
-                <span className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold ${s.step < activeStep ? "bg-[#7CB518] text-white" : s.step === activeStep ? "bg-white/20" : "bg-[#F0ECF9]"}`}>
+                <span className={`h-5 w-5 rounded-full flex items-center justify-center text-tiny font-bold ${s.step < activeStep ? "bg-[#7CB518] text-white" : s.step === activeStep ? "bg-white/20" : "bg-[#F0ECF9]"}`}>
                   {s.step < activeStep ? "✓" : s.step}
                 </span>
                 <span className="hidden sm:inline">{s.label}</span>
@@ -199,7 +199,7 @@ export default function CheckoutPage() {
             {/* Address Section */}
             {activeStep === 1 && (
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                   <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
                 </h3>
                 <div className="space-y-2">
@@ -215,12 +215,12 @@ export default function CheckoutPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-[12px] font-bold text-[#150726]">{addr.label}</span>
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#F0ECF9] text-[#2D1B69] uppercase">{addr.type}</span>
-                            {addr.isDefault && <span className="px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-[9px] font-bold text-[#7CB518]">DEFAULT</span>}
+                            <span className="text-caption font-bold text-[#150726]">{addr.label}</span>
+                            <span className="px-1.5 py-0.5 rounded text-tiny font-bold bg-[#F0ECF9] text-[#2D1B69] uppercase">{addr.type}</span>
+                            {addr.isDefault && <span className="px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-tiny font-bold text-[#7CB518]">DEFAULT</span>}
                           </div>
-                          <p className="text-[12px] text-[#150726] mt-0.5">{addr.name} · {addr.phone}</p>
-                          <p className="text-[11px] text-[#9B8CB5]">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}, {addr.city}, {addr.state} - {addr.pincode}</p>
+                          <p className="text-caption text-[#150726] mt-0.5">{addr.name} · {addr.phone}</p>
+                          <p className="text-micro text-[#9B8CB5]">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}, {addr.city}, {addr.state} - {addr.pincode}</p>
                         </div>
                       </button>
                       <div className="flex items-center gap-1 flex-shrink-0">
@@ -239,25 +239,49 @@ export default function CheckoutPage() {
                   {showAddAddress ? (
                     <div className="p-4 rounded-xl border-2 border-[#2D1B69] bg-[#F8F6FC] space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[13px] font-bold text-[#150726]">New Address</span>
+                        <span className="text-body-sm font-bold text-[#150726]">New Address</span>
                         <button onClick={() => setShowAddAddress(false)} className="text-[#9B8CB5] hover:text-[#150726]"><X className="h-4 w-4" /></button>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <select value={newAddr.type} onChange={(e) => setNewAddr({ ...newAddr, type: e.target.value as Address["type"] })} className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]">
-                          <option value="site">Construction Site</option>
-                          <option value="home">Home</option>
-                          <option value="warehouse">Warehouse</option>
-                          <option value="office">Office</option>
-                        </select>
-                        <input placeholder="Label (e.g. Site A)" value={newAddr.label} onChange={(e) => setNewAddr({ ...newAddr, label: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="Full Name" value={newAddr.name} onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="Phone" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="6-digit Pincode" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="Address Line 1" value={newAddr.line1} onChange={(e) => setNewAddr({ ...newAddr, line1: e.target.value })} className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="City" value={newAddr.city} onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
-                        <input placeholder="State" value={newAddr.state} onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })} className="px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] focus:outline-none focus:border-[#2D1B69]" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Address type</span>
+                          <select value={newAddr.type} onChange={(e) => setNewAddr({ ...newAddr, type: e.target.value as Address["type"] })} className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]">
+                            <option value="site">Construction Site</option>
+                            <option value="home">Home</option>
+                            <option value="warehouse">Warehouse</option>
+                            <option value="office">Office</option>
+                          </select>
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Label</span>
+                          <input placeholder="e.g. Site A" value={newAddr.label} onChange={(e) => setNewAddr({ ...newAddr, label: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Full name</span>
+                          <input placeholder="Full Name" value={newAddr.name} onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Phone</span>
+                          <input placeholder="10-digit mobile" inputMode="numeric" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Pincode</span>
+                          <input placeholder="6-digit pincode" inputMode="numeric" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block sm:col-span-2">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">Address line 1</span>
+                          <input placeholder="House / plot / street" value={newAddr.line1} onChange={(e) => setNewAddr({ ...newAddr, line1: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">City</span>
+                          <input placeholder="City" value={newAddr.city} onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
+                        <label className="block">
+                          <span className="mb-1 block text-micro font-bold text-[#150726]">State</span>
+                          <input placeholder="State" value={newAddr.state} onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                        </label>
                       </div>
-                      {addressError && <p className="text-[11px] text-red-500">{addressError}</p>}
+                      {addressError && <p className="text-micro text-red-500">{addressError}</p>}
                       <button onClick={() => {
                         if (!newAddr.label || !newAddr.name || !newAddr.line1 || !newAddr.city || !newAddr.state || !newAddr.pincode) {
                           setAddressError("Please fill in all required fields");
@@ -276,12 +300,12 @@ export default function CheckoutPage() {
                         toast.success("Address saved!", `${newAddr.label} added successfully`);
                         setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
                         setShowAddAddress(false);
-                      }} className="w-full py-2 rounded-lg bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] transition-all">
+                      }} className="w-full py-2 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all">
                         Save Address
                       </button>
                     </div>
                   ) : (
-                    <button onClick={() => setShowAddAddress(true)} className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#DDD6EE] text-[12px] font-semibold text-[#9B8CB5] hover:border-[#2D1B69] hover:text-[#2D1B69] transition-all">
+                    <button onClick={() => setShowAddAddress(true)} className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#DDD6EE] text-caption font-semibold text-[#9B8CB5] hover:border-[#2D1B69] hover:text-[#2D1B69] transition-all">
                       <Plus className="h-4 w-4" /> Add New Address
                     </button>
                   )}
@@ -293,22 +317,22 @@ export default function CheckoutPage() {
                   }
                   setAddressError("");
                   setActiveStep(2);
-                }} className="mt-4 w-full py-2.5 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all">
+                }} className="mt-4 w-full py-2.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all">
                   Continue to Delivery
                 </button>
-                {addressError && !showAddAddress && <p className="text-[11px] text-red-500 mt-2">{addressError}</p>}
+                {addressError && !showAddAddress && <p className="text-micro text-red-500 mt-2">{addressError}</p>}
               </div>
             )}
 
             {/* Delivery Slot Section */}
             {activeStep === 2 && (
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                   <Clock className="h-4 w-4 text-[#2D1B69]" /> Delivery Time
                 </h3>
 
                 <div className="mb-4">
-                  <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Express</p>
+                  <p className="text-micro font-bold text-[#9B8CB5] uppercase mb-2">Express</p>
                   <div className="grid grid-cols-2 gap-2">
                     {slots.filter((s) => s.type === "express").map((s) => {
                       const now = new Date();
@@ -321,12 +345,12 @@ export default function CheckoutPage() {
                         }`}>
                           <div className="flex items-center gap-2">
                             <Zap className={`h-3.5 w-3.5 ${selectedSlotId === s.id ? "text-[#7CB518]" : "text-[#9B8CB5]"}`} />
-                            <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
+                            <span className="text-caption font-bold text-[#150726]">{s.label}</span>
                           </div>
-                          <p className="text-[11px] text-[#9B8CB5] mt-1">{s.time}</p>
-                          {s.fee > 0 && <p className="text-[10px] font-bold text-[#E91E63] mt-0.5">+₹{s.fee}</p>}
-                          {s.fee === 0 && <p className="text-[10px] font-bold text-[#7CB518] mt-0.5">FREE</p>}
-                          {!isAvailable && <p className="text-[10px] font-bold text-[#9B8CB5] mt-0.5">Unavailable now</p>}
+                          <p className="text-micro text-[#9B8CB5] mt-1">{s.time}</p>
+                          {s.fee > 0 && <p className="text-tiny font-bold text-[#E91E63] mt-0.5">+₹{s.fee}</p>}
+                          {s.fee === 0 && <p className="text-tiny font-bold text-[#7CB518] mt-0.5">FREE</p>}
+                          {!isAvailable && <p className="text-tiny font-bold text-[#9B8CB5] mt-0.5">Unavailable now</p>}
                         </button>
                       );
                     })}
@@ -334,7 +358,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <p className="text-[11px] font-bold text-[#9B8CB5] uppercase mb-2">Standard & Scheduled</p>
+                  <p className="text-micro font-bold text-[#9B8CB5] uppercase mb-2">Standard & Scheduled</p>
                   <div className="grid grid-cols-1 gap-2">
                     {slots.filter((s) => s.type === "scheduled" || s.type === "standard").map((s) => {
                       const now = new Date();
@@ -351,13 +375,13 @@ export default function CheckoutPage() {
                         }`}>
                           <Calendar className={`h-4 w-4 ${selectedSlotId === s.id ? "text-[#2D1B69]" : "text-[#9B8CB5]"}`} />
                           <div className="flex-1">
-                            <span className="text-[12px] font-bold text-[#150726]">{s.label}</span>
-                            <p className="text-[11px] text-[#9B8CB5]">{s.time}</p>
+                            <span className="text-caption font-bold text-[#150726]">{s.label}</span>
+                            <p className="text-micro text-[#9B8CB5]">{s.time}</p>
                           </div>
                           {isAvailable ? (
-                            <span className="text-[10px] text-[#9B8CB5]">{s.cutoff}</span>
+                            <span className="text-tiny text-[#9B8CB5]">{s.cutoff}</span>
                           ) : (
-                            <span className="text-[10px] font-bold text-[#E91E63]">Past cutoff</span>
+                            <span className="text-tiny font-bold text-[#E91E63]">Past cutoff</span>
                           )}
                         </button>
                       );
@@ -366,10 +390,10 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <button onClick={() => setActiveStep(1)} className="flex-1 py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
+                  <button onClick={() => setActiveStep(1)} className="flex-1 py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
                     Back
                   </button>
-                  <button onClick={() => setActiveStep(3)} className="flex-1 py-2.5 rounded-xl bg-[#7CB518] text-white text-[13px] font-bold hover:bg-[#6A9C14] transition-all">
+                  <button onClick={() => setActiveStep(3)} className="flex-1 py-2.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all">
                     Continue to Payment
                   </button>
                 </div>
@@ -381,10 +405,10 @@ export default function CheckoutPage() {
               <>
                 {/* Business GSTIN */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                  <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                  <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                     <FileText className="h-4 w-4 text-[#2D1B69]" /> Business Details (optional)
                   </h3>
-                  <p className="text-[11px] text-[#9B8CB5] -mt-1 mb-3">Provide your GSTIN to receive a proper GST invoice for input tax credit.</p>
+                  <p className="text-micro text-[#9B8CB5] -mt-1 mb-3">Provide your GSTIN to receive a proper GST invoice for input tax credit.</p>
                   <div className="relative">
                     <input
                       value={gstin}
@@ -397,7 +421,7 @@ export default function CheckoutPage() {
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-tiny font-bold text-[#9B8CB5] tabular-nums">{gstin.length}/15</span>
                   </div>
                   {gstin.length > 0 && gstin.length < 15 && (
-                    <p className="text-[10px] text-red-500 mt-1.5">GSTIN must be 15 characters</p>
+                    <p className="text-tiny text-red-500 mt-1.5">GSTIN must be 15 characters</p>
                   )}
                   {gstin.length === 15 && !/^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(gstin) && (
                     <p className="text-tiny text-red-500 mt-1.5">Invalid GSTIN format — check state code, PAN and checksum</p>
@@ -411,30 +435,30 @@ export default function CheckoutPage() {
 
                 {/* Coupon */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                  <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                  <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                     <Tag className="h-4 w-4 text-[#E91E63]" /> Apply Coupon
                   </h3>
                   {appliedCoupon ? (
                     <div className="flex items-center justify-between p-3 rounded-xl bg-[#7CB518]/5 border border-[#7CB518]/20">
                       <div>
-                        <span className="text-[13px] font-bold text-[#7CB518]">{appliedCoupon.code}</span>
-                        <p className="text-[11px] text-[#9B8CB5]">{appliedCoupon.description}</p>
+                        <span className="text-body-sm font-bold text-[#7CB518]">{appliedCoupon.code}</span>
+                        <p className="text-micro text-[#9B8CB5]">{appliedCoupon.description}</p>
                       </div>
                       <button onClick={removeCoupon} className="p-1 text-[#9B8CB5] hover:text-red-500"><X className="h-4 w-4" /></button>
                     </div>
                   ) : (
                     <>
                       <div className="flex gap-2">
-                        <input value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" className="flex-1 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[12px] font-semibold uppercase tracking-wider focus:outline-none focus:border-[#2D1B69]" />
-                        <button onClick={handleApplyCoupon} className="px-4 py-2 rounded-lg bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] transition-all">Apply</button>
+                        <input value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" className="flex-1 px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg font-semibold uppercase tracking-wider focus:outline-none focus:border-[#2D1B69]" />
+                        <button onClick={handleApplyCoupon} className="px-4 py-2 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all">Apply</button>
                       </div>
-                      {couponError && <p className="text-[11px] text-red-500 mt-2">{couponError}</p>}
+                      {couponError && <p className="text-micro text-red-500 mt-2">{couponError}</p>}
                       {bestCoupon && (
                         <button onClick={() => { applyCoupon(bestCoupon.code, subtotal); toast.success("Coupon applied!", `Best offer ${bestCoupon.code} applied`); }} className="mt-2 w-full flex items-center gap-2 p-2 rounded-lg bg-[#E91E63]/5 border border-[#E91E63]/20 text-left hover:bg-[#E91E63]/10 transition-all">
                           <Gift className="h-4 w-4 text-[#E91E63]" />
                           <div>
-                            <span className="text-[11px] font-bold text-[#E91E63]">Best offer: {bestCoupon.code}</span>
-                            <p className="text-[10px] text-[#9B8CB5]">{bestCoupon.description}</p>
+                            <span className="text-micro font-bold text-[#E91E63]">Best offer: {bestCoupon.code}</span>
+                            <p className="text-tiny text-[#9B8CB5]">{bestCoupon.description}</p>
                           </div>
                         </button>
                       )}
@@ -449,16 +473,16 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-2">
                         <Wallet className="h-4 w-4 text-[#FF9800]" />
                         <div>
-                          <span className="text-[13px] font-bold text-[#150726]">Wallet Balance: ₹{balance.toLocaleString()}</span>
-                          <p className="text-[10px] text-[#9B8CB5]">{points} loyalty points</p>
+                          <span className="text-body-sm font-bold text-[#150726]">Wallet Balance: ₹{balance.toLocaleString()}</span>
+                          <p className="text-tiny text-[#9B8CB5]">{points} loyalty points</p>
                         </div>
                       </div>
-                      <button onClick={() => setUseWallet(!useWallet)} className={`relative w-10 h-5 rounded-full transition-all ${useWallet ? "bg-[#7CB518]" : "bg-[#DDD6EE]"}`}>
-                        <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${useWallet ? "left-5" : "left-0.5"}`} />
+                      <button onClick={() => setUseWallet(!useWallet)} aria-label="Use wallet balance" className={`relative w-11 h-6 rounded-full transition-all flex-shrink-0 ${useWallet ? "bg-[#7CB518]" : "bg-[#DDD6EE]"}`}>
+                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${useWallet ? "left-[22px]" : "left-0.5"}`} />
                       </button>
                     </div>
                     {useWallet && walletDeduct > 0 && (
-                      <p className="text-[11px] text-[#7CB518] font-semibold mt-2">Using ₹{walletDeduct.toLocaleString()} from wallet</p>
+                      <p className="text-micro text-[#7CB518] font-semibold mt-2">Using ₹{walletDeduct.toLocaleString()} from wallet</p>
                     )}
                   </div>
                 )}
@@ -469,18 +493,18 @@ export default function CheckoutPage() {
                     <div className="flex items-center gap-2">
                       <Repeat className="h-4 w-4 text-[#00BCD4]" />
                       <div>
-                        <span className="text-[13px] font-bold text-[#150726]">Subscribe & Save</span>
-                        <p className="text-[10px] text-[#9B8CB5]">Auto-reorder these items</p>
+                        <span className="text-body-sm font-bold text-[#150726]">Subscribe & Save</span>
+                        <p className="text-tiny text-[#9B8CB5]">Auto-reorder these items</p>
                       </div>
                     </div>
-                    <button onClick={() => setSubscribe(!subscribe)} className={`relative w-10 h-5 rounded-full transition-all ${subscribe ? "bg-[#00BCD4]" : "bg-[#DDD6EE]"}`}>
-                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${subscribe ? "left-5" : "left-0.5"}`} />
-                    </button>
+                      <button onClick={() => setSubscribe(!subscribe)} aria-label="Subscribe and save" className={`relative w-11 h-6 rounded-full transition-all flex-shrink-0 ${subscribe ? "bg-[#00BCD4]" : "bg-[#DDD6EE]"}`}>
+                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${subscribe ? "left-[22px]" : "left-0.5"}`} />
+                      </button>
                   </div>
                   {subscribe && (
                     <div className="flex gap-2 mt-3">
                       {(["weekly", "biweekly", "monthly"] as const).map((f) => (
-                        <button key={f} onClick={() => setSubscribeFreq(f)} className={`flex-1 py-2 rounded-lg text-[11px] font-bold transition-all ${
+                        <button key={f} onClick={() => setSubscribeFreq(f)} className={`flex-1 py-2 rounded-lg text-micro font-bold transition-all ${
                           subscribeFreq === f ? "bg-[#00BCD4] text-white" : "bg-[#F0ECF9] text-[#9B8CB5] hover:bg-[#E8F9FC]"
                         }`}>
                           {f === "weekly" ? "Weekly" : f === "biweekly" ? "Every 2 Weeks" : "Monthly"}
@@ -492,7 +516,7 @@ export default function CheckoutPage() {
 
                 {/* Order Items */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                  <h3 className="text-[14px] font-bold text-[#150726] flex items-center gap-2 mb-3">
+                  <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                     <Package className="h-4 w-4 text-[#2D1B69]" /> Order Items ({items.length})
                   </h3>
                   <div className="space-y-3">
@@ -504,26 +528,26 @@ export default function CheckoutPage() {
                         : 0;
                       return (
                         <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
-                          <img src={item.product.images[0]} alt="" className="h-14 w-14 rounded-lg object-cover bg-[#F0ECF9]" />
+                          <img src={item.product.images[0]} alt={item.product.name} width={56} height={56} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-[11px] font-semibold text-[#2D1B69]">{item.product.brand}</p>
-                            <p className="text-[12px] font-semibold text-[#150726] truncate">{item.product.name}</p>
-                            {variant && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-[9px] font-bold text-[#2D1B69]">{variant.label}</span>}
-                            {item.shade && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-[9px] font-bold text-[#2D1B69] ml-1">{item.shade}</span>}
+                            <p className="text-micro font-semibold text-[#2D1B69]">{item.product.brand}</p>
+                            <p className="text-caption font-semibold text-[#150726] truncate">{item.product.name}</p>
+                            {variant && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69]">{variant.label}</span>}
+                            {item.shade && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69] ml-1">{item.shade}</span>}
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[12px] font-bold text-[#150726]">₹{itemPrice.toLocaleString()}</span>
-                              {discount > 0 && <span className="text-[10px] font-bold text-[#E91E63]">{discount}% OFF</span>}
-                              <span className="text-[10px] text-[#9B8CB5]">× {item.quantity}</span>
+                              <span className="text-caption font-bold text-[#150726]">₹{itemPrice.toLocaleString()}</span>
+                              {discount > 0 && <span className="text-tiny font-bold text-[#E91E63]">{discount}% OFF</span>}
+                              <span className="text-tiny text-[#9B8CB5]">× {item.quantity}</span>
                             </div>
                           </div>
-                          <p className="text-[13px] font-bold text-[#150726] whitespace-nowrap">₹{(itemPrice * item.quantity).toLocaleString()}</p>
+                          <p className="text-body-sm font-bold text-[#150726] whitespace-nowrap">₹{(itemPrice * item.quantity).toLocaleString()}</p>
                         </div>
                       );
                     })}
                   </div>
                 </div>
 
-                <button onClick={() => setActiveStep(2)} className="w-full py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
+                <button onClick={() => setActiveStep(2)} className="w-full py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
                   Back to Delivery
                 </button>
               </>
@@ -535,12 +559,12 @@ export default function CheckoutPage() {
             <div className="sticky top-20 space-y-4">
               {/* Delivery Info */}
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <div className="flex items-center gap-2 text-[12px] text-[#150726]">
+                <div className="flex items-center gap-2 text-caption text-[#150726]">
                   <Clock className="h-4 w-4 text-[#7CB518]" />
                   <span>Delivery: <span className="font-bold text-[#7CB518]">{slot?.label ?? "60 min"}</span></span>
                 </div>
                 {selectedAddr && (
-                  <div className="flex items-start gap-2 mt-2 text-[11px] text-[#9B8CB5]">
+                  <div className="flex items-start gap-2 mt-2 text-micro text-[#9B8CB5]">
                     <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
                     <span>{selectedAddr.line1}, {selectedAddr.city} - {selectedAddr.pincode}</span>
                   </div>
@@ -549,43 +573,43 @@ export default function CheckoutPage() {
 
               {/* Price Summary */}
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h4 className="text-[14px] font-bold text-[#150726] mb-3">Price Summary</h4>
+                <h4 className="text-body-md font-bold text-[#150726] mb-3">Price Summary</h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Subtotal</span>
                     <span className="text-[#150726]">₹{subtotal.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST</span>
                     <span className="text-[#150726]">₹{gst.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Shipping</span>
                     <span className={effectiveShipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
                       {effectiveShipping === 0 ? "FREE" : `₹${effectiveShipping}`}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Delivery</span>
                     <span className={deliveryFee === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
                       {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
                     </span>
                   </div>
                   {couponDiscount > 0 && (
-                    <div className="flex justify-between text-[13px]">
+                    <div className="flex justify-between text-body-sm">
                       <span className="text-[#7CB518]">Coupon ({appliedCoupon?.code})</span>
                       <span className="text-[#7CB518] font-semibold">-₹{couponDiscount.toLocaleString()}</span>
                     </div>
                   )}
                   {useWallet && walletDeduct > 0 && (
-                    <div className="flex justify-between text-[13px]">
+                    <div className="flex justify-between text-body-sm">
                       <span className="text-[#FF9800]">Wallet</span>
                       <span className="text-[#FF9800] font-semibold">-₹{walletDeduct.toLocaleString()}</span>
                     </div>
                   )}
                   <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
-                    <span className="text-[15px] font-bold text-[#150726]">Total</span>
-                    <span className="text-[18px] font-extrabold text-[#2D1B69]">₹{total.toLocaleString()}</span>
+                    <span className="text-body-lg font-bold text-[#150726]">Total</span>
+                    <span className="text-title-md font-extrabold text-[#2D1B69]">₹{total.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -600,7 +624,7 @@ export default function CheckoutPage() {
                 <button onClick={() => {
                   if (activeStep === 1 && !selectedAddr) return;
                   setActiveStep(Math.min(activeStep + 1, 3));
-                }} className={`w-full py-3 rounded-xl text-white text-[14px] font-bold transition-all shadow-lg ${
+                }} className={`w-full py-3 rounded-xl text-white text-body-md font-bold transition-all shadow-lg ${
                   activeStep === 1 && !selectedAddr
                     ? "bg-[#9B8CB5] cursor-not-allowed shadow-none"
                     : "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25"

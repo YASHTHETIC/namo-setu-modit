@@ -139,7 +139,7 @@ export default function AdminDashboard() {
   const stats = [
     { label: "Revenue (GMV)", value: `₹${(gmv / 100000).toFixed(2)}L`, sub: `${orders.length} orders · AOV ₹${aov.toLocaleString("en-IN")}`, icon: IndianRupee, color: "#2D1B69", bg: "#F0ECF9" },
     { label: "Products on sale", value: onSaleCount, sub: activeSale ? `${activeSale.name} LIVE` : "No sale live", icon: Zap, color: "#7CB518", bg: "#F0F9E8", href: "/admin/sales" },
-    { label: "Low stock", value: products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFF4E5", href: "/admin/products" },
+    { label: "Low stock", value: products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products" },
     { label: "Active coupons", value: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE8F0", href: "/admin/coupons" },
     { label: "Open returns", value: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE8F0", href: "/admin/returns" },
     { label: "Staff actions", value: activity.length, sub: "logged in audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
@@ -147,21 +147,21 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="text-[20px] font-extrabold text-[#150726]">Dashboard</h1>
-      <p className="text-[12px] text-[#9B8CB5] mt-0.5">Live business overview — all numbers come from real orders, catalog and admin activity.</p>
+      <h1 className="text-title-lg font-extrabold text-[#150726]">Dashboard</h1>
+      <p className="text-caption text-[#9B8CB5] mt-0.5">Live business overview — all numbers come from real orders, catalog and admin activity.</p>
 
       <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-3">
         {stats.map((c) => {
           const inner = (
             <div className="rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow h-full">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#9B8CB5] uppercase tracking-wide">{c.label}</span>
+                <span className="text-micro font-bold text-[#9B8CB5] uppercase tracking-wide">{c.label}</span>
                 <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: c.bg }}>
                   <c.icon className="h-4 w-4" style={{ color: c.color }} />
                 </div>
               </div>
-              <p className="text-[24px] font-extrabold text-[#150726] mt-1">{c.value}</p>
-              <p className="text-[11px] text-[#9B8CB5]">{c.sub}</p>
+              <p className="text-display font-extrabold text-[#150726] mt-1">{c.value}</p>
+              <p className="text-micro text-[#9B8CB5]">{c.sub}</p>
             </div>
           );
           return c.href ? <Link key={c.label} href={c.href}>{inner}</Link> : <div key={c.label}>{inner}</div>;
@@ -171,18 +171,18 @@ export default function AdminDashboard() {
       {/* Ops pipeline */}
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <ShoppingCart className="h-4 w-4 text-[#2D1B69]" /> Order pipeline
           </h2>
-          <Link href="/admin/orders" className="flex items-center gap-1 text-[12px] font-bold text-[#2D1B69] hover:underline">
+          <Link href="/admin/orders" className="flex items-center gap-1 text-caption font-bold text-[#2D1B69] hover:underline">
             Manage <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
         <div className="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
           {ORDER_STATUSES.filter((s) => s !== "cancelled").map((st) => (
             <Link key={st} href="/admin/orders" className="rounded-xl bg-[#F7F4FC] border border-[#F0ECF9] px-2 py-2.5 text-center hover:border-[#2D1B69]/30 transition-all">
-              <p className="text-[20px] font-extrabold text-[#2D1B69]">{pipeline[st] ?? 0}</p>
-              <p className="text-[10px] font-bold text-[#9B8CB5] uppercase">{STAGE_LABEL[st]}</p>
+              <p className="text-title-lg font-extrabold text-[#2D1B69]">{pipeline[st] ?? 0}</p>
+              <p className="text-tiny font-bold text-[#9B8CB5] uppercase">{STAGE_LABEL[st]}</p>
             </Link>
           ))}
         </div>
@@ -191,19 +191,19 @@ export default function AdminDashboard() {
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         {/* Revenue chart */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h2 className="text-[14px] font-bold text-[#150726]">Revenue — last 7 days</h2>
+          <h2 className="text-body-md font-bold text-[#150726]">Revenue — last 7 days</h2>
           <div className="mt-4 flex items-end gap-2 h-36">
             {revenue7d.map((d) => (
               <div key={d.label} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span className="text-[9px] font-bold text-[#6B5B83]">{d.total > 0 ? `₹${(d.total / 1000).toFixed(0)}k` : ""}</span>
+                <span className="text-tiny font-bold text-[#6B5B83]">{d.total > 0 ? `₹${(d.total / 1000).toFixed(0)}k` : ""}</span>
                 <div
                   className="w-full rounded-t-lg"
                   style={{
                     height: `${Math.max(4, (d.total / maxDay) * 100)}%`,
-                    background: d.total > 0 ? "linear-gradient(180deg, #7CB518, #5f8f12)" : "#F0ECF9",
+                    background: d.total > 0 ? "linear-gradient(180deg, #7CB518, #5a8010)" : "#F0ECF9",
                   }}
                 />
-                <span className="text-[9px] font-bold text-[#9B8CB5]">{d.label}</span>
+                <span className="text-tiny font-bold text-[#9B8CB5]">{d.label}</span>
               </div>
             ))}
           </div>
@@ -211,25 +211,25 @@ export default function AdminDashboard() {
 
         {/* Needs attention */}
         <div className="rounded-2xl border border-[#E91E63]/20 bg-white p-5">
-          <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-[#E91E63]" /> Needs attention
           </h2>
           <div className="mt-3 space-y-2.5 max-h-56 overflow-y-auto">
             {openReturns.slice(0, 3).map((r) => (
               <Link key={r.id} href="/admin/returns" className="flex items-center justify-between rounded-xl bg-[#FCE8F0] px-3 py-2.5 hover:bg-[#F8BBD0]/40">
-                <span className="text-[12px] font-bold text-[#150726]">Return {r.id} · {r.reason}</span>
+                <span className="text-caption font-bold text-[#150726]">Return {r.id} · {r.reason}</span>
                 <ArrowRight className="h-3.5 w-3.5 text-[#E91E63]" />
               </Link>
             ))}
             {lowStock.map(({ p, stock }) => (
-              <div key={p.id} className="flex items-center justify-between rounded-xl bg-[#FFF4E5] px-3 py-2.5">
+              <div key={p.id} className="flex items-center justify-between rounded-xl bg-[#FFFBF5] px-3 py-2.5">
                 <div className="min-w-0">
-                  <p className="text-[12px] font-bold text-[#150726] truncate max-w-[220px]">{p.name}</p>
-                  <p className="text-[10px] text-[#9B8CB5]">{stock} units left</p>
+                  <p className="text-caption font-bold text-[#150726] truncate max-w-[220px]">{p.name}</p>
+                  <p className="text-tiny text-[#9B8CB5]">{stock} units left</p>
                 </div>
                 <div className="flex gap-1.5">
                   {[50, 100].map((q) => (
-                    <button key={q} onClick={() => quickRestock(p.id, p.name, stock, q)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-white border border-[#FF9800]/30 text-[10px] font-bold text-[#FF9800] hover:bg-[#FF9800] hover:text-white">
+                    <button key={q} onClick={() => quickRestock(p.id, p.name, stock, q)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-white border border-[#FF9800]/30 text-tiny font-bold text-[#FF9800] hover:bg-[#FF9800] hover:text-white">
                       <Plus className="h-3 w-3" />{q}
                     </button>
                   ))}
@@ -238,12 +238,12 @@ export default function AdminDashboard() {
             ))}
             {upcoming && (
               <Link href="/admin/sales" className="flex items-center justify-between rounded-xl bg-[#F0ECF9] px-3 py-2.5">
-                <span className="text-[12px] font-bold text-[#150726]">Sale “{upcoming.name}” starts {new Date(upcoming.startAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                <span className="text-caption font-bold text-[#150726]">Sale “{upcoming.name}” starts {new Date(upcoming.startAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
                 <ArrowRight className="h-3.5 w-3.5 text-[#2D1B69]" />
               </Link>
             )}
             {openReturns.length === 0 && lowStock.length === 0 && !upcoming && (
-              <p className="text-[12px] text-[#7CB518] font-bold text-center py-4">All clear — nothing needs action 🎉</p>
+              <p className="text-caption text-[#7CB518] font-bold text-center py-4">All clear — nothing needs action 🎉</p>
             )}
           </div>
         </div>
@@ -252,10 +252,10 @@ export default function AdminDashboard() {
       {/* Sale engine status */}
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <Zap className="h-4 w-4 text-[#FF9800]" /> Sale engine
           </h2>
-          <Link href="/admin/sales" className="flex items-center gap-1 text-[12px] font-bold text-[#2D1B69] hover:underline">
+          <Link href="/admin/sales" className="flex items-center gap-1 text-caption font-bold text-[#2D1B69] hover:underline">
             Manage sales <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -263,19 +263,19 @@ export default function AdminDashboard() {
           <div className="mt-3 rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3 flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-60" /><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#7CB518]" /></span>
             <div>
-              <p className="text-[13px] font-extrabold text-[#150726]">{activeSale.name} is LIVE — {onSaleCount} products discounted</p>
-              <p className="text-[11px] text-[#6B5B83]">Ends {new Date(activeSale.endAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · prices revert automatically</p>
+              <p className="text-body-sm font-extrabold text-[#150726]">{activeSale.name} is LIVE — {onSaleCount} products discounted</p>
+              <p className="text-micro text-[#6B5B83]">Ends {new Date(activeSale.endAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · prices revert automatically</p>
             </div>
           </div>
         ) : upcoming ? (
-          <div className="mt-3 rounded-xl bg-[#FFF4E5] border border-[#FF9800]/30 px-4 py-3">
-            <p className="text-[13px] font-bold text-[#150726]">{upcoming.name} scheduled</p>
-            <p className="text-[11px] text-[#6B5B83]">Starts {new Date(upcoming.startAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
+          <div className="mt-3 rounded-xl bg-[#FFFBF5] border border-[#FF9800]/30 px-4 py-3">
+            <p className="text-body-sm font-bold text-[#150726]">{upcoming.name} scheduled</p>
+            <p className="text-micro text-[#6B5B83]">Starts {new Date(upcoming.startAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
           </div>
         ) : (
           <div className="mt-3 rounded-xl bg-[#F7F4FC] border border-[#DDD6EE] px-4 py-3 flex items-center justify-between">
-            <p className="text-[12px] text-[#6B5B83]">No sale live. Create one to announce discounts store-wide like Blinkit/Zepto.</p>
-            <Link href="/admin/sales" className="px-3 py-1.5 rounded-lg bg-[#E91E63] text-white text-[11px] font-bold hover:bg-[#C2185B]">Create sale</Link>
+            <p className="text-caption text-[#6B5B83]">No sale live. Create one to announce discounts store-wide like Blinkit/Zepto.</p>
+            <Link href="/admin/sales" className="px-3 py-1.5 rounded-lg bg-[#E91E63] text-white text-micro font-bold hover:bg-[#C2185B]">Create sale</Link>
           </div>
         )}
       </div>
@@ -283,56 +283,56 @@ export default function AdminDashboard() {
 {/* Push announcements */}
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <BellRing className="h-4 w-4 text-[#E91E63]" /> Push announcement
           </h2>
-          <span className="text-[11px] font-bold text-[#9B8CB5]">
+          <span className="text-micro font-bold text-[#9B8CB5]">
             {subCount === null ? "checking devices..." : `${subCount} device(s) subscribed`}
           </span>
         </div>
-        <p className="text-[11px] text-[#9B8CB5] mt-1">Reaches buyers even with the app closed — like Zepto sale alerts.</p>
+        <p className="text-micro text-[#9B8CB5] mt-1">Reaches buyers even with the app closed — like Zepto sale alerts.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
           <input
             value={pushTitle}
             onChange={(e) => setPushTitle(e.target.value)}
             placeholder="Title e.g. Diwali Sale is LIVE"
             maxLength={80}
-            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] font-semibold focus:outline-none focus:border-[#E91E63]"
+            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#E91E63]"
           />
           <input
             value={pushBody}
             onChange={(e) => setPushBody(e.target.value)}
             placeholder="Message e.g. Up to 20% off cement till Sunday"
             maxLength={200}
-            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-[13px] focus:outline-none focus:border-[#E91E63]"
+            className="px-3 py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm focus:outline-none focus:border-[#E91E63]"
           />
           <button
             onClick={sendAnnouncement}
             disabled={pushSending}
-            className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B] disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B] disabled:opacity-50"
           >
             <Send className="h-3.5 w-3.5" /> {pushSending ? "Sending..." : "Send"}
           </button>
         </div>
-        {pushStatus && <p className="mt-2 text-[11px] font-bold text-[#2D1B69]">{pushStatus}</p>}
+        {pushStatus && <p className="mt-2 text-micro font-bold text-[#2D1B69]">{pushStatus}</p>}
       </div>
 
       {/* Recent activity */}
       {activity.length > 0 && (
         <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-[14px] font-bold text-[#150726] flex items-center gap-2">
+            <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
               <Package className="h-4 w-4 text-[#00BCD4]" /> Recent staff activity
             </h2>
-            <Link href="/admin/audit" className="flex items-center gap-1 text-[12px] font-bold text-[#2D1B69] hover:underline">
+            <Link href="/admin/audit" className="flex items-center gap-1 text-caption font-bold text-[#2D1B69] hover:underline">
               Full log <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
           <div className="mt-2 divide-y divide-[#F0ECF9]">
             {activity.slice(0, 5).map((a) => (
               <div key={a.id} className="py-2 flex items-center justify-between gap-3">
-                <p className="text-[12px] font-semibold text-[#150726] truncate">{a.summary}</p>
-                <span className="text-[10px] text-[#9B8CB5] whitespace-nowrap tabular-nums">
+                <p className="text-caption font-semibold text-[#150726] truncate">{a.summary}</p>
+                <span className="text-tiny text-[#9B8CB5] whitespace-nowrap tabular-nums">
                   {new Date(a.at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </span>
               </div>

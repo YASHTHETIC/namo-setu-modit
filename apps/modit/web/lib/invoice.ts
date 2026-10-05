@@ -84,9 +84,9 @@ export function renderInvoiceHtml(data: InvoiceData): string {
 
 <table style="border-collapse:collapse;width:100%;margin-top:16px;">
 <thead><tr style="background:#7CB518;color:white;">
-<th style="padding:8px;border:1px solid #5f8f12;font-size:11px;">GST Rate</th>
-<th style="padding:8px;border:1px solid #5f8f12;font-size:11px;">Taxable Value</th>
-<th style="padding:8px;border:1px solid #5f8f12;font-size:11px;">GST Amount</th>
+<th style="padding:8px;border:1px solid #5a8010;font-size:11px;">GST Rate</th>
+<th style="padding:8px;border:1px solid #5a8010;font-size:11px;">Taxable Value</th>
+<th style="padding:8px;border:1px solid #5a8010;font-size:11px;">GST Amount</th>
 </tr></thead>
 <tbody>${gstRows}</tbody>
 </table>

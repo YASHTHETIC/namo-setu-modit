@@ -33,12 +33,12 @@ export function SaleBanner() {
       <Link href="/products" className="block">
         <div className="relative overflow-hidden" style={{ background: "linear-gradient(90deg, #2D1B69 0%, #E91E63 55%, #FF9800 100%)" }}>
           <div className="mx-auto max-w-[1400px] px-4 py-2.5 flex items-center justify-center gap-3 flex-wrap">
-            <span className="flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">
+            <span className="flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-tiny font-black text-white uppercase tracking-wider">
               <Zap className="h-3 w-3" /> Sale live
             </span>
-            <p className="text-[13px] font-extrabold text-white">{sale.bannerTitle}</p>
-            <p className="hidden sm:block text-[11px] text-white/80">{sale.bannerSubtitle}</p>
-            <span className="flex items-center gap-1.5 rounded-lg bg-black/30 px-2.5 py-1 text-[12px] font-black text-white tabular-nums">
+            <p className="text-body-sm font-extrabold text-white">{sale.bannerTitle}</p>
+            <p className="hidden sm:block text-micro text-white/80">{sale.bannerSubtitle}</p>
+            <span className="flex items-center gap-1.5 rounded-lg bg-black/30 px-2.5 py-1 text-caption font-black text-white tabular-nums">
               <Timer className="h-3.5 w-3.5" /> {pad(h)}:{pad(m)}:{pad(s)}
             </span>
           </div>
@@ -57,7 +57,7 @@ export function SaleBanner() {
       <div className="bg-[#150726]">
         <div className="mx-auto max-w-[1400px] px-4 py-2 flex items-center justify-center gap-2.5 flex-wrap">
           <Timer className="h-3.5 w-3.5 text-[#FF9800]" />
-          <p className="text-[12px] font-bold text-white">
+          <p className="text-caption font-bold text-white">
             {upcoming.name} starts in <span className="tabular-nums text-[#FF9800]">{pad(h)}:{pad(m)}:{pad(s)}</span>
           </p>
         </div>

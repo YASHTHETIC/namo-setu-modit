@@ -198,7 +198,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Delivery badge — bottom-left */}
         {!compact && (
           <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
-            <span className="text-[9px] font-bold text-[#00BCD4] flex items-center gap-0.5">
+            <span className="text-tiny font-bold text-[#00BCD4] flex items-center gap-0.5">
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
               </svg>
@@ -212,13 +212,13 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       <div className="flex flex-col gap-1 p-3">
         {/* Brand */}
         {product.brand && (
-          <p className="text-[10px] font-semibold text-[#7CB518] uppercase tracking-wide truncate">
+          <p className="text-tiny font-semibold text-[#7CB518] uppercase tracking-wide truncate">
             {product.brand}
           </p>
         )}
 
         {/* Product name — 2-line clamp */}
-        <h3 className="text-[13px] font-semibold text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px] group-hover/card:text-[#2D1B69] transition-colors">
+        <h3 className="text-body-sm font-semibold text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px] group-hover/card:text-[#2D1B69] transition-colors">
           {product.name}
         </h3>
 
@@ -233,7 +233,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                   e.stopPropagation();
                   setSelectedVariantId(v.id);
                 }}
-                className={`px-2 py-0.5 rounded-full text-[9px] font-bold border-2 transition-all ${
+                className={`px-2 py-0.5 rounded-full text-tiny font-bold border-2 transition-all ${
                   selectedVariantId === v.id
                     ? "border-[#2D1B69] bg-[#2D1B69] text-white"
                     : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
@@ -246,7 +246,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         )}
 
         {/* Pack size / Variants count */}
-        <p className="text-[11px] text-[#9B8CB5]">
+        <p className="text-micro text-[#9B8CB5]">
           {hasVariants
             ? `${product.variants!.length} options · ${product.unit}`
             : product.unit}
@@ -264,7 +264,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
               />
             ))}
             {product.shades.length > 7 && (
-              <span className="text-[9px] font-bold text-[#9B8CB5]">+{product.shades.length - 7}</span>
+              <span className="text-tiny font-bold text-[#9B8CB5]">+{product.shades.length - 7}</span>
             )}
           </div>
         )}
@@ -282,7 +282,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
         {/* Bulk pricing indicator */}
         {isBulk && !compact && live.bulkPrice && (
-          <p className="text-[10px] font-semibold text-[#FF9800]">
+          <p className="text-tiny font-semibold text-[#FF9800]">
             Bulk: ₹{live.bulkPrice.toLocaleString()}/unit (min {live.bulkMinQty})
           </p>
         )}
@@ -291,7 +291,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {optLabel && !compact && (
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="mt-1 w-full py-1.5 rounded-lg text-[10px] font-bold bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E4D8F7] transition-all"
+            className="mt-1 w-full py-1.5 rounded-lg text-tiny font-bold bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7] transition-all"
           >
             {optLabel} ▾
           </button>
@@ -300,7 +300,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Genuine + Free delivery + Cashback row */}
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
           {product.seller?.isVerified && (
-            <span className="inline-flex items-center gap-0.5 text-[10px] text-[#00BCD4] font-medium">
+            <span className="inline-flex items-center gap-0.5 text-tiny text-[#00BCD4] font-medium">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
@@ -309,7 +309,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             </span>
           )}
           {product.freeDelivery && (
-            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#7CB518] bg-[#7CB518]/8 px-1.5 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-0.5 text-tiny font-bold text-[#7CB518] bg-[#7CB518]/8 px-1.5 py-0.5 rounded-full">
               <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
               </svg>
@@ -317,12 +317,12 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             </span>
           )}
           {hasFreeDeliveryThreshold && !compact && (
-            <span className="text-[8px] text-[#9B8CB5]">
+            <span className="text-tiny text-[#9B8CB5]">
               Free above ₹{product.freeDeliveryThreshold!.toLocaleString()}
             </span>
           )}
           {product.cashbackPercent && product.cashbackPercent > 0 && !compact && (
-            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#E91E63] bg-[#E91E63]/8 px-1.5 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-0.5 text-tiny font-bold text-[#E91E63] bg-[#E91E63]/8 px-1.5 py-0.5 rounded-full">
               {product.cashbackPercent}% Cashback
             </span>
           )}

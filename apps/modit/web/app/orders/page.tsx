@@ -102,14 +102,14 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       {/* Gradient header */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
             <Link href="/products" className="text-white/60 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <h1 className="text-[18px] font-extrabold text-white">My Orders</h1>
+            <h1 className="text-title-md font-extrabold text-white">My Orders</h1>
           </div>
 
           {/* Stats */}
@@ -119,27 +119,27 @@ export default function OrdersPage() {
                 <div className="h-7 w-7 rounded-lg bg-[#7CB518]/20 flex items-center justify-center">
                   <Package className="h-3.5 w-3.5 text-[#7CB518]" />
                 </div>
-                <span className="text-[11px] text-white/50">Total</span>
+                <span className="text-micro text-white/50">Total</span>
               </div>
-              <p className="text-[20px] font-extrabold text-white">{orderList.length}</p>
+              <p className="text-title-lg font-extrabold text-white">{orderList.length}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
               <div className="flex items-center gap-2 mb-1">
                 <div className="h-7 w-7 rounded-lg bg-[#00BCD4]/20 flex items-center justify-center">
                   <Truck className="h-3.5 w-3.5 text-[#00BCD4]" />
                 </div>
-                <span className="text-[11px] text-white/50">Active</span>
+                <span className="text-micro text-white/50">Active</span>
               </div>
-              <p className="text-[20px] font-extrabold text-white">{activeCount}</p>
+              <p className="text-title-lg font-extrabold text-white">{activeCount}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
               <div className="flex items-center gap-2 mb-1">
                 <div className="h-7 w-7 rounded-lg bg-[#E91E63]/20 flex items-center justify-center">
                   <IndianRupee className="h-3.5 w-3.5 text-[#E91E63]" />
                 </div>
-                <span className="text-[11px] text-white/50">Spent</span>
+                <span className="text-micro text-white/50">Spent</span>
               </div>
-              <p className="text-[18px] font-extrabold text-white">{formatINR(totalSpent)}</p>
+              <p className="text-title-md font-extrabold text-white">{formatINR(totalSpent)}</p>
             </div>
           </div>
         </div>
@@ -162,10 +162,10 @@ export default function OrdersPage() {
             <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
               <Package className="h-10 w-10 text-[#2D1B69]" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#150726]">No orders yet</h2>
-            <p className="mt-2 text-[13px] text-[#9B8CB5] max-w-xs mx-auto">When you place an order, it will appear here with tracking details and delivery updates.</p>
+            <h2 className="text-title-md font-bold text-[#150726]">No orders yet</h2>
+            <p className="mt-2 text-body-sm text-[#9B8CB5] max-w-xs mx-auto">When you place an order, it will appear here with tracking details and delivery updates.</p>
             <Link href="/products"
-              className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
+              className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
               <ShoppingCart className="h-4 w-4" />
               Start Shopping
             </Link>
@@ -202,20 +202,20 @@ export default function OrdersPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2.5 flex-wrap">
-                            <span className="text-[14px] font-extrabold text-[#150726] tracking-tight">{order.order_number || order.id.slice(0, 12)}</span>
-                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold border ${st.bg} ${st.color} ${st.border}`}>
+                            <span className="text-body-md font-extrabold text-[#150726] tracking-tight">{order.order_number || order.id.slice(0, 12)}</span>
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-micro font-bold border ${st.bg} ${st.color} ${st.border}`}>
                               <span className={`h-1.5 w-1.5 rounded-full ${st.dot}`} />
                               {st.label}
                             </span>
                           </div>
-                          <div className="mt-1.5 flex items-center gap-3 text-[12px] text-[#9B8CB5]">
+                          <div className="mt-1.5 flex items-center gap-3 text-caption text-[#9B8CB5]">
                             <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{date}</span>
                             <span>·</span>
                             <span>{itemCount} item{itemCount !== 1 ? "s" : ""}</span>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0 ml-4">
-                          <p className="text-[16px] font-extrabold text-[#2D1B69]">{formatINR(total)}</p>
+                          <p className="text-body-lg font-extrabold text-[#2D1B69]">{formatINR(total)}</p>
                           <ChevronRight className="h-4 w-4 text-[#9B8CB5] ml-auto mt-1 group-hover:text-[#7CB518] group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
@@ -226,8 +226,8 @@ export default function OrdersPage() {
                           <div className="flex items-center gap-3">
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-1.5">
-                                <span className="text-[10px] font-semibold text-[#9B8CB5] uppercase tracking-wide">Progress</span>
-                                <span className="text-[10px] font-bold text-[#2D1B69]">
+                                <span className="text-tiny font-semibold text-[#9B8CB5] uppercase tracking-wide">Progress</span>
+                                <span className="text-tiny font-bold text-[#2D1B69]">
                                   {liveStatus === "confirmed" ? "30%" : liveStatus === "processing" ? "50%" : liveStatus === "dispatched" ? "70%" : "85%"}
                                 </span>
                               </div>
@@ -237,12 +237,12 @@ export default function OrdersPage() {
                                 />
                               </div>
                             </div>
-                            <span className="text-[11px] font-semibold text-[#6B5B83] whitespace-nowrap">
+                            <span className="text-micro font-semibold text-[#6B5B83] whitespace-nowrap">
                               {liveStatus === "in_transit" ? "Arriving soon" : liveStatus === "dispatched" ? "On the way" : liveStatus === "processing" ? "Being prepared" : "Order confirmed"}
                             </span>
                           </div>
                           {(order as any).expected_delivery && (
-                            <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#00BCD4]">
+                            <div className="mt-2.5 flex items-center gap-1.5 text-micro font-semibold text-[#00BCD4]">
                               <CalendarClock className="h-3.5 w-3.5" />
                               Estimated delivery by {new Date((order as any).expected_delivery).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                             </div>
@@ -257,14 +257,14 @@ export default function OrdersPage() {
                             <div className="h-5 w-5 rounded-full bg-[#F0F9E8] flex items-center justify-center">
                               <CheckCircle2 className="h-3 w-3 text-[#7CB518]" />
                             </div>
-                            <span className="text-[12px] font-semibold text-[#7CB518]">Delivered successfully</span>
+                            <span className="text-caption font-semibold text-[#7CB518]">Delivered successfully</span>
                           </div>
                           <button
                             onClick={(e) => {
                               e.preventDefault();
                               handleReorder(order);
                             }}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-micro font-bold transition-all ${
                               reorderedId === order.id
                                 ? "bg-[#7CB518] text-white"
                                 : "bg-[#7CB518]/10 text-[#7CB518] hover:bg-[#7CB518] hover:text-white"

@@ -14,7 +14,7 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
 
   if (!serviceable) {
     return (
-      <div className="flex items-center gap-1 text-[9px] font-bold text-[#E91E63] bg-[#E91E63]/10 px-1.5 py-0.5 rounded-full border border-[#E91E63]/20">
+      <div className="flex items-center gap-1 text-tiny font-bold text-[#E91E63] bg-[#E91E63]/10 px-1.5 py-0.5 rounded-full border border-[#E91E63]/20">
         <MapPin className="h-2.5 w-2.5" />
         <span>Not serving {pincode} yet</span>
       </div>
@@ -25,7 +25,7 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
 
   if (stock === -1) {
     return (
-      <div className="flex items-center gap-1 text-[9px] font-bold text-[#9B8CB5] bg-white/90 px-1.5 py-0.5 rounded-full border border-[#DDD6EE]">
+      <div className="flex items-center gap-1 text-tiny font-bold text-[#9B8CB5] bg-white/90 px-1.5 py-0.5 rounded-full border border-[#DDD6EE]">
         <HelpCircle className="h-2.5 w-2.5" />
         <span>Check availability</span>
       </div>
@@ -34,7 +34,7 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
 
   if (stock === 0) {
     return (
-      <div className="flex items-center gap-1 text-[9px] font-bold text-[#E91E63] bg-[#E91E63]/10 px-1.5 py-0.5 rounded-full">
+      <div className="flex items-center gap-1 text-tiny font-bold text-[#E91E63] bg-[#E91E63]/10 px-1.5 py-0.5 rounded-full">
         <AlertTriangle className="h-2.5 w-2.5" />
         <span>Out of stock in {pincode}</span>
       </div>
@@ -43,7 +43,7 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
 
   if (stock <= 10) {
     return (
-      <div className="flex items-center gap-1 text-[9px] font-bold text-[#FF9800] bg-[#FF9800]/10 px-1.5 py-0.5 rounded-full">
+      <div className="flex items-center gap-1 text-tiny font-bold text-[#FF9800] bg-[#FF9800]/10 px-1.5 py-0.5 rounded-full">
         <MapPin className="h-2.5 w-2.5" />
         <span>Only {stock} left in {pincode}</span>
       </div>
@@ -51,7 +51,7 @@ export function PincodeStockIndicator({ pincodeStock }: PincodeStockIndicatorPro
   }
 
   return (
-    <div className="flex items-center gap-1 text-[9px] font-bold text-[#7CB518] bg-[#7CB518]/10 px-1.5 py-0.5 rounded-full">
+    <div className="flex items-center gap-1 text-tiny font-bold text-[#7CB518] bg-[#7CB518]/10 px-1.5 py-0.5 rounded-full">
       <MapPin className="h-2.5 w-2.5" />
       <span>In stock at {pincode}</span>
     </div>

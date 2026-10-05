@@ -173,6 +173,22 @@ img { display: block; max-width: 100%; }
   --motion-slow: 300ms;
   --motion-spring: cubic-bezier(0.22, 1, 0.36, 1);
 
+  /* Extended tints — the light surfaces/borders the app already used
+     everywhere (single source; was scattered hex). Grouped by family. */
+  --surface-tint-1: #F7F4FC;   /* lavender white */
+  --surface-tint-2: #E8E0F0;   /* lavender gray */
+  --surface-cyan: #E8F9FC;
+  --surface-cream: #FFFBF5;    /* warm page wash */
+  --surface-warm: #FED7AA;     /* warm line tint */
+  --line-soft: #B8A9CC;
+  --line-neutral: #D1D5DB;
+  --text-soft: #6B5B83;        /* secondary text on light surfaces */
+  --green-ink: #2D7B2D;        /* readable green text on white (a11y) */
+  --success-deep: #059669;
+  --success-tint: #ECFDF5;
+  --success-mist: #D1FAE5;
+  --star: #E8A800;             /* rating stars (was amber shades) */
+
   /* Bolt flash animation */
   --bolt-flash: boltFlash 0.4s ease-out;
 }

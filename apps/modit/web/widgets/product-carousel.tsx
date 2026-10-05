@@ -32,28 +32,28 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
           <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover" />
         </Link>
         {p.badge && (
-          <span className="absolute top-1.5 left-1.5 bg-[var(--green)] text-white text-[8px] font-bold px-1.5 py-0.5 rounded">{p.badge}</span>
+          <span className="absolute top-1.5 left-1.5 bg-[var(--green)] text-white text-tiny font-bold px-1.5 py-0.5 rounded">{p.badge}</span>
         )}
         {live.onSale && (
-          <span className="absolute bottom-1.5 left-1.5 bg-[#7CB518] text-white text-[8px] font-bold px-1.5 py-0.5 rounded">{live.saleName ?? "SALE"}</span>
+          <span className="absolute bottom-1.5 left-1.5 bg-[#7CB518] text-white text-tiny font-bold px-1.5 py-0.5 rounded">{live.saleName ?? "SALE"}</span>
         )}
       </div>
       <div className="p-2.5">
-        <p className="text-[9px] font-bold text-[var(--green)] uppercase">{p.brand}</p>
+        <p className="text-tiny font-bold text-[var(--green)] uppercase">{p.brand}</p>
         <Link href={`/products/${p.id}`}>
-          <h3 className="text-[11px] font-semibold text-[var(--text)] mt-0.5 line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors">{p.name}</h3>
+          <h3 className="text-micro font-semibold text-[var(--text)] mt-0.5 line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors">{p.name}</h3>
         </Link>
         <div className="flex items-center gap-1 mt-1">
-          <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-[8px] font-bold px-1 py-0.5 rounded">{p.rating} <Star className="h-1.5 w-1.5 fill-white" /></span>
+          <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-tiny font-bold px-1 py-0.5 rounded">{p.rating} <Star className="h-1.5 w-1.5 fill-white" /></span>
         </div>
         <div className="flex items-baseline gap-1 mt-1">
-          <span className="text-[14px] font-extrabold text-[var(--text)]">₹{live.price.toLocaleString()}</span>
-          {live.mrp > live.price && <span className="text-[10px] text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString()}</span>}
+          <span className="text-body-md font-extrabold text-[var(--text)]">₹{live.price.toLocaleString()}</span>
+          {live.mrp > live.price && <span className="text-tiny text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString()}</span>}
         </div>
-        <p className="text-[9px] text-[var(--green)] font-semibold mt-0.5 flex items-center gap-0.5">
+        <p className="text-tiny text-[var(--green)] font-semibold mt-0.5 flex items-center gap-0.5">
           <Truck className="h-2.5 w-2.5" /> {p.delivery_text}
         </p>
-        <button onClick={handleAdd} className={`w-full mt-2 py-1.5 rounded-lg text-[10px] font-bold transition-all ${added ? 'bg-[var(--green)] text-white' : 'bg-gradient-to-r from-[var(--green)] to-[var(--green-hover)] text-white'}`}>
+        <button onClick={handleAdd} className={`w-full mt-2 py-1.5 rounded-lg text-tiny font-bold transition-all ${added ? 'bg-[var(--green)] text-white' : 'bg-gradient-to-r from-[var(--green)] to-[var(--green-hover)] text-white'}`}>
           {added ? '✓ Added' : 'Add to Cart'}
         </button>
       </div>
@@ -67,8 +67,8 @@ export function ProductCarouselWidget({ data }: { data: Record<string, unknown> 
   return (
     <section className="mt-5">
       <div className="flex items-center justify-between px-4 mb-3">
-        <h2 className="text-[16px] font-bold text-[var(--text)]">{d.title}</h2>
-        <Link href="/products" className="text-[12px] font-bold text-[var(--brand)] flex items-center gap-1">
+        <h2 className="text-body-lg font-bold text-[var(--text)]">{d.title}</h2>
+        <Link href="/products" className="text-caption font-bold text-[var(--brand)] flex items-center gap-1">
           View All <ChevronRight className="h-3.5 w-3.5" />
         </Link>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -294,7 +295,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
+        "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-body-lg text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
         "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -313,7 +314,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "flex min-h-[80px] w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
+        "flex min-h-[80px] w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-body-lg text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
         "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
         "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -502,11 +503,12 @@ export function Avatar({
     .join("")
     .slice(0, 2)
     .toUpperCase();
+  const px = size === "sm" ? 32 : size === "lg" ? 48 : 40;
 
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-[var(--brand)] font-semibold text-white",
+        "flex shrink-0 items-center justify-center rounded-full bg-[var(--brand)] font-semibold text-white relative overflow-hidden",
         {
           "h-8 w-8 text-xs": size === "sm",
           "h-10 w-10 text-sm": size === "md",
@@ -516,7 +518,7 @@ export function Avatar({
       )}
     >
       {src ? (
-        <img src={src} alt={name} className="h-full w-full rounded-full object-cover" />
+        <Image src={src} alt={name} width={px} height={px} loading="lazy" className="h-full w-full rounded-full object-cover" />
       ) : (
         initials
       )}
@@ -738,7 +740,7 @@ export function PriceDisplay({
           </span>
         )}
         {discount && discount > 0 && (
-          <Badge variant="success" className="text-[10px] font-bold">
+          <Badge variant="success" className="text-tiny font-bold">
             {discount}% OFF
           </Badge>
         )}
@@ -778,7 +780,7 @@ export function DeliveryBadge({
         </span>
       )}
       {freeDelivery && (
-        <span className="rounded bg-[var(--success-light)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--success)]">
+        <span className="rounded bg-[var(--success-light)] px-1.5 py-0.5 text-tiny font-bold text-[var(--success)]">
           FREE
         </span>
       )}

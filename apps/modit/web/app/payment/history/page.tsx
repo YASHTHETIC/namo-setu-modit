@@ -84,7 +84,7 @@ export default function ModitPaymentHistoryPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
           Finance
         </p>
-        <h2 className="mt-1.5 text-[22px] font-bold tracking-tight text-[var(--text-primary)]">
+        <h2 className="mt-1.5 text-title-lg font-bold tracking-tight text-[var(--text-primary)]">
           Payment History
         </h2>
         <p className="mt-2 max-w-lg text-base leading-relaxed text-[var(--text-muted)]">

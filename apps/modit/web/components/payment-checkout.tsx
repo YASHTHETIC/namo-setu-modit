@@ -253,7 +253,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
     <div className="space-y-4">
       {/* Payment Methods */}
       <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-        <h4 className="text-[14px] font-bold text-[#150726] mb-3">Payment Method</h4>
+        <h4 className="text-body-md font-bold text-[#150726] mb-3">Payment Method</h4>
         <div className="space-y-2">
           {[
             { id: "razorpay", label: "UPI / Card / Netbanking", icon: CreditCard, desc: "Powered by Razorpay" },
@@ -276,8 +276,8 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                 <method.icon className="h-4 w-4" />
               </div>
               <div className="text-left flex-1">
-                <p className="text-[13px] font-semibold text-[#150726]">{method.label}</p>
-                <p className="text-[11px] text-[#9B8CB5]">{method.desc}</p>
+                <p className="text-body-sm font-semibold text-[#150726]">{method.label}</p>
+                <p className="text-micro text-[#9B8CB5]">{method.desc}</p>
               </div>
               {paymentMethod === method.id && (
                 <Check className="h-5 w-5 text-[#2D1B69]" />
@@ -302,10 +302,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
         {/* COD phone verification (OTP) */}
         {paymentMethod === "cod" && (
           <div className="mt-3 rounded-xl border-2 border-[#DDD6EE] p-4">
-            <p className="text-[12px] font-bold text-[#150726] flex items-center gap-1.5 mb-1">
+            <p className="text-caption font-bold text-[#150726] flex items-center gap-1.5 mb-1">
               <Phone className="h-4 w-4 text-[#2D1B69]" /> Verify mobile for Cash on Delivery
             </p>
-            <p className="text-[11px] text-[#9B8CB5] mb-3">We send a 6-digit OTP to confirm your order and delivery updates.</p>
+            <p className="text-micro text-[#9B8CB5] mb-3">We send a 6-digit OTP to confirm your order and delivery updates.</p>
             {!phoneVerified ? (
               <div className="space-y-2.5">
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -319,7 +319,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                   <button
                     onClick={handleSendOtp}
                     disabled={codPhone.replace(/\D/g, "").length !== 10}
-                    className="px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] disabled:opacity-50 transition-all"
+                    className="px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] disabled:opacity-50 transition-all"
                   >
                     {otpSent ? "Resend OTP" : "Send OTP"}
                   </button>
@@ -337,19 +337,19 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                       <button
                         onClick={handleVerifyOtp}
                         disabled={otpCode.length !== 6}
-                        className="px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-[12px] font-bold hover:bg-[#6A9C14] disabled:opacity-50 transition-all flex items-center gap-1.5"
+                        className="px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50 transition-all flex items-center gap-1.5"
                       >
                         <KeyRound className="h-3.5 w-3.5" /> Verify
                       </button>
                     </div>
                     {demoOtp && (
                       <div className="flex items-center justify-between gap-2 rounded-lg border border-[#DDD6EE] bg-[#F8F6FC] px-3 py-2">
-                        <p className="text-[11px] font-semibold text-[#5C4A7A]">
+                        <p className="text-micro font-semibold text-[#5C4A7A]">
                           Demo mode — your OTP is <span className="font-bold text-[#150726] tabular-nums">{demoOtp}</span>
                         </p>
                         <button
                           onClick={() => { try { navigator.clipboard.writeText(demoOtp); } catch {} }}
-                          className="rounded-lg bg-white border border-[#DDD6EE] px-2.5 py-1 text-[11px] font-bold text-[#2D1B69] hover:border-[#2D1B69] transition-all flex-shrink-0"
+                          className="rounded-lg bg-white border border-[#DDD6EE] px-2.5 py-1 text-micro font-bold text-[#2D1B69] hover:border-[#2D1B69] transition-all flex-shrink-0"
                         >
                           Copy
                         </button>
@@ -359,7 +359,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
                 )}
               </div>
             ) : (
-              <p className="text-[12px] font-bold text-[#7CB518] flex items-center gap-1.5">
+              <p className="text-caption font-bold text-[#7CB518] flex items-center gap-1.5">
                 <Check className="h-4 w-4" /> {formatPhoneForDisplay(codPhone)} verified
               </p>
             )}
@@ -369,10 +369,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
 {/* Credit terms note */}
         {paymentMethod === "credit" && (
           <div className="mt-3 rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3">
-            <p className="text-[12px] font-semibold text-[#5A8010] flex items-center gap-1.5">
+            <p className="text-caption font-semibold text-[#5A8010] flex items-center gap-1.5">
               <Building2 className="h-4 w-4" /> Credit Terms — Net 30
             </p>
-            <p className="text-[11px] text-[#5C4A7A] mt-1">
+            <p className="text-micro text-[#5C4A7A] mt-1">
               For verified business/organization accounts. Invoice due in 30 days from delivery. Our credit team verifies GSTIN before approval.
             </p>
           </div>
@@ -381,7 +381,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
 
       {/* Error Message */}
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-[13px] text-red-700 flex items-center gap-2">
+        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-body-sm text-red-700 flex items-center gap-2">
           <span className="text-red-500 font-bold">!</span>
           {error}
         </div>
@@ -391,7 +391,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
       <button
         onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : paymentMethod === "upi" ? handleUPI : handleCredit}
         disabled={processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@"))) || (paymentMethod === "cod" && !phoneVerified)}
-        className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {processing ? (
           <span className="flex items-center justify-center gap-2">
@@ -408,11 +408,11 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
       </button>
 
 {paymentMethod === "cod" && !phoneVerified && items.length > 0 && (
-        <p className="text-center text-[11px] font-semibold text-[#FF9800]">Verify your mobile number above to place a COD order</p>
+        <p className="text-center text-micro font-semibold text-[#FF9800]">Verify your mobile number above to place a COD order</p>
       )}
 
       {/* Trust Badges */}
-      <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-[10px] text-[#9B8CB5]">
+      <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-tiny text-[#9B8CB5]">
         <span className="flex items-center gap-1 whitespace-nowrap"><Shield className="h-3 w-3" /> 256-bit SSL</span>
         <span className="flex items-center gap-1 whitespace-nowrap"><Truck className="h-3 w-3" /> Free ₹5000+</span>
         <span className="flex items-center gap-1 whitespace-nowrap"><Clock className="h-3 w-3" /> 7-day returns</span>

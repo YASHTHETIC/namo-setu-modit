@@ -43,7 +43,7 @@ export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
       </div>
 
       {track.distance_km !== null && track.distance_km !== undefined && track.status !== "delivered" && (
-        <p className="mt-2 flex items-center gap-1.5 text-sm text-[#5B4B8A]">
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-[#5c4a7a]">
           <MapPin className="h-4 w-4" />
           Rider {track.distance_km} km away
         </p>
@@ -58,7 +58,7 @@ export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
               {i < track.timeline.length - 1 && (
                 <span
                   className={`absolute left-[15px] top-8 h-[calc(100%-2rem)] w-0.5 ${
-                    step.done ? "bg-[#7CB518]" : "bg-[#EDE9F5]"
+                    step.done ? "bg-[#7CB518]" : "bg-[#F0ECF9]"
                   }`}
                 />
               )}
@@ -68,7 +68,7 @@ export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
                     ? "border-[#7CB518] bg-[#7CB518] text-white"
                     : isCurrent
                       ? "border-[#00BCD4] bg-white text-[#00BCD4]"
-                      : "border-[#EDE9F5] bg-white text-[#C9C2DE]"
+                      : "border-[#F0ECF9] bg-white text-[#DDD6EE]"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -98,7 +98,7 @@ export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
         })}
       </ol>
 
-      <p className="mt-4 text-center text-[11px] text-[#9B8CB5]">
+      <p className="mt-4 text-center text-micro text-[#9B8CB5]">
         Live tracking · auto-refreshes every 15 seconds
       </p>
     </div>

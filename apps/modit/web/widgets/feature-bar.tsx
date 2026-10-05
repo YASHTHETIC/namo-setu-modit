@@ -25,8 +25,8 @@ export function FeatureBarWidget({ data }: { data: Record<string, unknown> }) {
             <div className="h-11 w-11 rounded-xl flex items-center justify-center mb-2" style={{ background: `${f.color}20`, border: `1.5px solid ${f.color}40` }}>
               <Icon className="h-6 w-6" style={{ color: f.color }} />
             </div>
-            <p className="text-[10px] font-black text-white leading-tight whitespace-pre-line">{f.title}</p>
-            <p className="text-[8px] text-white/50 mt-0.5 leading-tight whitespace-pre-line">{f.description}</p>
+            <p className="text-tiny font-black text-white leading-tight whitespace-pre-line">{f.title}</p>
+            <p className="text-tiny text-white/50 mt-0.5 leading-tight whitespace-pre-line">{f.description}</p>
           </div>
         );
       })}

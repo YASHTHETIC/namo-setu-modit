@@ -16,7 +16,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
 
   return (
     <>
-      <footer className={`mt-6 border-t border-white/5 relative overflow-hidden ${className}`} style={{ background: "linear-gradient(to bottom, #0D0720, #060314)", color: "rgba(255,255,255,0.5)" }}>
+      <footer className={`mt-6 border-t border-white/5 relative overflow-hidden ${className}`} style={{ background: "linear-gradient(to bottom, #150726, #150726)", color: "rgba(255,255,255,0.5)" }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-[var(--brand)]/30 to-transparent" />
         <div className="market-container py-10">
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">

@@ -227,7 +227,7 @@ export default function ModitHomePage() {
             <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-[9px] font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
+                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-tiny font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -257,21 +257,21 @@ export default function ModitHomePage() {
                 <span className="absolute inset-0 rounded-full border border-[#7CB518]/40 animate-ping" />
               )}
             </div>
-            <span className="text-[15px] font-black text-[#7CB518]">60</span>
-            <span className="text-[9px] font-bold text-[#7CB518] uppercase leading-tight">Mins</span>
+            <span className="text-body-lg font-black text-[#7CB518]">60</span>
+            <span className="text-tiny font-bold text-[#7CB518] uppercase leading-tight">Mins</span>
           </div>
           <button
             onClick={() => setShowPincodeModal(true)}
             className="flex items-center gap-1.5 text-white hover:text-white/90 transition-colors group"
           >
             <MapPin className="h-3.5 w-3.5 text-white/50 group-hover:text-[#7CB518] transition-colors" />
-            <span className="text-[12px] font-semibold">Deliver To</span>
+            <span className="text-caption font-semibold">Deliver To</span>
             <ChevronDown className="h-3.5 w-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-300" />
           </button>
-          <span className="text-[13px] font-bold text-[#7CB518]">{pincode}</span>
+          <span className="text-body-sm font-bold text-[#7CB518]">{pincode}</span>
           <div className="ml-auto flex items-center gap-1.5 text-white/40">
             <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-            <span className="text-[10px] font-medium">Live</span>
+            <span className="text-tiny font-medium">Live</span>
           </div>
         </div>
       </div>
@@ -304,29 +304,29 @@ export default function ModitHomePage() {
           <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#E91E63]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <div className="relative z-10 p-4 flex items-center justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-[10px] font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
+              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-tiny font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h2 className="text-white text-[18px] font-bold leading-tight">Materials On Door</h2>
-              <p className="text-white/60 text-[12px] mt-1">Construction materials delivered to your site</p>
+              <h2 className="text-white text-title-md font-bold leading-tight">Materials On Door</h2>
+              <p className="text-white/60 text-caption mt-1">Construction materials delivered to your site</p>
               <div className="flex items-center gap-2 mt-2">
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-                  <span className="text-[9px] font-semibold text-white/70">Live tracking</span>
+                  <span className="text-tiny font-semibold text-white/70">Live tracking</span>
                 </div>
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
                   <Shield className="h-2.5 w-2.5 text-[#00BCD4]" />
-                  <span className="text-[9px] font-semibold text-white/70">Assured</span>
+                  <span className="text-tiny font-semibold text-white/70">Assured</span>
                 </div>
               </div>
             </div>
             <Link href="/products" className="flex flex-col items-center gap-1 flex-shrink-0">
-              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
-              <span className="text-[9px] text-white/40 font-medium">75+ products</span>
+              <span className="text-tiny text-white/40 font-medium">75+ products</span>
             </Link>
           </div>
         </div>
@@ -341,13 +341,13 @@ export default function ModitHomePage() {
 
       {/* ═══ ASSURED STRIP ═══ */}
       <RevealSection delay={100}>
-        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E0A3C] to-[#150726] border border-white/10 relative group">
+        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
           <div className="absolute -top-4 -right-2 w-20 h-32 bg-[#E91E63]/20 rotate-[25deg] rounded-full blur-xl group-hover:rotate-[35deg] transition-transform duration-500" />
           <div className="absolute -bottom-4 -left-2 w-20 h-32 bg-[#7CB518]/20 rotate-[-25deg] rounded-full blur-xl group-hover:rotate-[-35deg] transition-transform duration-500" />
           <div className="p-4 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <h3 className="text-[14px] font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
+              <h3 className="text-body-md font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
               <div className="h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
                 <Shield className="h-3 w-3 text-[#7CB518]" />
               </div>
@@ -377,7 +377,7 @@ export default function ModitHomePage() {
         <div className="mt-5">
           <div className="section-header">
             <h2>Shop by Category</h2>
-            <Link href="/products" className="text-[#7CB518] text-[13px] font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+            <Link href="/products" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -486,10 +486,10 @@ export default function ModitHomePage() {
                 style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40` }}>
                 <f.icon className="h-5 w-5" style={{ color: f.color }} />
               </div>
-              <p className="text-[18px] font-black text-white leading-none">
+              <p className="text-title-md font-black text-white leading-none">
                 {f.value}{f.suffix}
               </p>
-              <p className="text-[9px] font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
+              <p className="text-tiny font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
               <p className="text-tiny text-white/40 mt-0.5 leading-tight">{f.sub}</p>
             </div>
           ))}
@@ -506,7 +506,7 @@ export default function ModitHomePage() {
             {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
               <Link key={brand} href={`/products?search=${encodeURIComponent(brand)}`} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
                 <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-[11px] font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
+                  <span className="text-micro font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
                 </div>
               </Link>
             ))}
@@ -532,12 +532,12 @@ export default function ModitHomePage() {
               </svg>
             </div>
             <div className="flex-1 text-center sm:text-left">
-              <h3 className="text-[14px] font-extrabold text-[#150726]">Material Calculator</h3>
-              <p className="text-[12px] text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
+              <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
+              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
             </div>
             <Link
               href="/calculator"
-              className="flex items-center gap-2 bg-[#2D1B69] text-white text-[12px] font-bold px-5 py-2.5 rounded-full hover:bg-[#1E0F4A] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
+              className="flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
             >
               Calculate <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -585,15 +585,15 @@ export default function ModitHomePage() {
 
           {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4" onClick={() => setShowPincodeModal(false)}>
+        <div className="fixed inset-0 z-modal bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4" onClick={() => setShowPincodeModal(false)}>
           <div
             className="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-6 animate-slide-in-up max-h-[85dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-[16px] font-bold text-[#150726]">Enter Pincode</h3>
-                <p className="text-[11px] text-[#9B8CB5] mt-0.5">Check delivery availability</p>
+                <h3 className="text-body-lg font-bold text-[#150726]">Enter Pincode</h3>
+                <p className="text-micro text-[#9B8CB5] mt-0.5">Check delivery availability</p>
               </div>
               <button onClick={() => setShowPincodeModal(false)} className="p-1 text-[#9B8CB5] hover:text-[#150726] transition-colors hover:rotate-90 duration-300">
                 <X className="h-5 w-5" />
@@ -613,24 +613,24 @@ export default function ModitHomePage() {
               <RippleButton
                 onClick={() => { if (pincode.length === 6) setShowPincodeModal(false); }}
                 disabled={pincode.length !== 6}
-                className="bg-[#7CB518] text-white text-[13px] font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 disabled:opacity-40 disabled:hover:scale-100"
+                className="bg-[#7CB518] text-white text-body-sm font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 disabled:opacity-40 disabled:hover:scale-100"
               >
                 Check
               </RippleButton>
             </div>
             <div className="flex items-center gap-2 mt-4 p-3 bg-[#7CB518]/5 rounded-xl border border-[#7CB518]/20">
               <Zap className="h-4 w-4 text-[#7CB518]" />
-              <p className="text-[12px] text-[#150726]">Delivery available in <span className="font-bold text-[#7CB518]">60 minutes</span></p>
+              <p className="text-caption text-[#150726]">Delivery available in <span className="font-bold text-[#7CB518]">60 minutes</span></p>
             </div>
             {/* Popular pincodes */}
             <div className="mt-4">
-              <p className="text-[10px] font-bold text-[#9B8CB5] uppercase mb-2">Popular Areas</p>
+              <p className="text-tiny font-bold text-[#9B8CB5] uppercase mb-2">Popular Areas</p>
               <div className="flex flex-wrap gap-2">
                 {["201301", "110001", "400001", "560001", "600001"].map((pc) => (
                   <button
                     key={pc}
                     onClick={() => setPincode(pc)}
-                    className="px-3 py-1.5 bg-[#F0ECF9] border border-[#DDD6EE] rounded-full text-[11px] font-semibold text-[#2D1B69] hover:bg-[#E8E0F7] hover:border-[#C9B8E8] transition-all"
+                    className="px-3 py-1.5 bg-[#F0ECF9] border border-[#DDD6EE] rounded-full text-micro font-semibold text-[#2D1B69] hover:bg-[#E8E0F7] hover:border-[#C9B8E8] transition-all"
                   >
                     {pc}
                   </button>
@@ -643,7 +643,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MENU SIDEBAR ═══ */}
       {showMenu && (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" onClick={() => setShowMenu(false)}>
+        <div className="fixed inset-0 z-modal bg-black/50 backdrop-blur-sm" onClick={() => setShowMenu(false)}>
           <div className="w-72 h-full bg-[#150726] p-5 animate-slide-in-left overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <Link href="/" onClick={() => setShowMenu(false)}>
@@ -670,12 +670,12 @@ export default function ModitHomePage() {
                   className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
                 >
                   <item.icon className="h-5 w-5 group-hover:text-[#7CB518] transition-colors" />
-                  <span className="text-[14px] font-semibold">{item.label}</span>
+                  <span className="text-body-md font-semibold">{item.label}</span>
                 </Link>
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-white/10">
-              <p className="text-[10px] font-bold text-white/30 uppercase px-4 mb-3">Categories</p>
+              <p className="text-tiny font-bold text-white/30 uppercase px-4 mb-3">Categories</p>
               {categories.map((cat) => (
                 <Link
                   key={cat.slug}
@@ -684,9 +684,9 @@ export default function ModitHomePage() {
                   className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"
                 >
                   <div className="h-6 w-6 rounded-md bg-white/5 flex items-center justify-center overflow-hidden">
-                    <img src={cat.img} alt={cat.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                    <img src={cat.img} alt={cat.name} width={24} height={24} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                   </div>
-                  <span className="text-[13px] font-medium">{cat.name.split("\n")[0]}</span>
+                  <span className="text-body-sm font-medium">{cat.name.split("\n")[0]}</span>
                 </Link>
               ))}
             </div>
@@ -696,7 +696,7 @@ export default function ModitHomePage() {
 
       {/* ═══ SEARCH MODAL ═══ */}
       {showSearch && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md" onClick={() => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); }}>
+        <div className="fixed inset-0 z-modal bg-black/60 backdrop-blur-md" onClick={() => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); }}>
           <div className="w-full bg-[#150726] p-4 animate-slide-in-up max-h-[85dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="max-w-[1440px] mx-auto">
               <div className="flex items-center gap-3">
@@ -761,8 +761,8 @@ export default function ModitHomePage() {
                       >
                         <Search className="h-3.5 w-3.5 text-white/30" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
-                          <p className="text-[10px] text-white/40">{p.brand}</p>
+                          <p className="text-caption font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
+                          <p className="text-tiny text-white/40">{p.brand}</p>
                         </div>
                       </button>
                     ))}
@@ -781,15 +781,15 @@ export default function ModitHomePage() {
                         highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"
                       }`}
                     >
-                      <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
+                      <img src={p.images[0]} alt={p.name} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
-                        <p className="text-[11px] text-white/50">{p.brand} · {p.unit}</p>
+                        <p className="text-body-sm font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
+                        <p className="text-micro text-white/50">{p.brand} · {p.unit}</p>
                       </div>
                       <div className="flex flex-col items-end gap-0.5">
-                        <p className="text-[13px] font-bold text-[#7CB518]">₹{p.price.toLocaleString("en-IN")}</p>
+                        <p className="text-body-sm font-bold text-[#7CB518]">₹{p.price.toLocaleString("en-IN")}</p>
                         {p.mrp > p.price && (
-                          <p className="text-[10px] text-white/40 line-through">₹{p.mrp.toLocaleString("en-IN")}</p>
+                          <p className="text-tiny text-white/40 line-through">₹{p.mrp.toLocaleString("en-IN")}</p>
                         )}
                       </div>
                     </Link>
@@ -797,7 +797,7 @@ export default function ModitHomePage() {
                   <Link
                     href={`/products?search=${encodeURIComponent(searchQuery)}`}
                     onClick={() => { handleSearchSubmit(searchQuery); }}
-                    className="flex items-center justify-center gap-2 px-4 py-3 text-[13px] font-semibold text-[#7CB518] hover:bg-white/5 transition-colors"
+                    className="flex items-center justify-center gap-2 px-4 py-3 text-body-sm font-semibold text-[#7CB518] hover:bg-white/5 transition-colors"
                   >
                     View all results <ArrowRight className="h-3 w-3" />
                   </Link>
@@ -809,8 +809,8 @@ export default function ModitHomePage() {
                   <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
                     <Search className="h-5 w-5 text-white/30" />
                   </div>
-                  <p className="text-[13px] text-white/50">No products found for &quot;{searchQuery}&quot;</p>
-                  <p className="text-[11px] text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
+                  <p className="text-body-sm text-white/50">No products found for &quot;{searchQuery}&quot;</p>
+                  <p className="text-micro text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
                 </div>
               )}
 
@@ -821,10 +821,10 @@ export default function ModitHomePage() {
                   {recentSearches.length > 0 && (
                     <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-[11px] font-bold text-white/40 uppercase">Recent Searches</p>
+                        <p className="text-micro font-bold text-white/40 uppercase">Recent Searches</p>
                         <button
                           onClick={() => { setRecentSearches([]); localStorage.removeItem("modit-recent-searches"); }}
-                          className="text-[10px] text-white/30 hover:text-[#E91E63] transition-colors"
+                          className="text-tiny text-white/30 hover:text-[#E91E63] transition-colors"
                         >
                           Clear all
                         </button>
@@ -834,7 +834,7 @@ export default function ModitHomePage() {
                           <button
                             key={term}
                             onClick={() => handleSearchSubmit(term)}
-                            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-all flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-caption font-semibold text-white/70 hover:bg-[#7CB518]/20 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-all flex items-center gap-1.5"
                           >
                             <Clock className="h-3 w-3 opacity-50" />
                             {term}
@@ -846,7 +846,7 @@ export default function ModitHomePage() {
 
                   {/* Trending / Popular */}
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <p className="text-[11px] font-bold text-white/40 uppercase mb-2 flex items-center gap-1.5">
+                    <p className="text-micro font-bold text-white/40 uppercase mb-2 flex items-center gap-1.5">
                       <TrendingUp className="h-3 w-3" />
                       Trending Now
                     </p>
@@ -855,7 +855,7 @@ export default function ModitHomePage() {
                         <button
                           key={term}
                           onClick={() => handleSearchSubmit(term)}
-                          className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[12px] font-semibold text-white/70 hover:bg-[#E91E63]/20 hover:border-[#E91E63]/40 hover:text-[#E91E63] transition-all"
+                          className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-caption font-semibold text-white/70 hover:bg-[#E91E63]/20 hover:border-[#E91E63]/40 hover:text-[#E91E63] transition-all"
                         >
                           {term}
                         </button>
@@ -865,7 +865,7 @@ export default function ModitHomePage() {
 
                   {/* Quick categories */}
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <p className="text-[11px] font-bold text-white/40 uppercase mb-2">Browse Categories</p>
+                    <p className="text-micro font-bold text-white/40 uppercase mb-2">Browse Categories</p>
                     <div className="grid grid-cols-2 gap-2">
                       {[
                         { name: "Cement", slug: "cement", color: "#2D1B69" },
@@ -880,7 +880,7 @@ export default function ModitHomePage() {
                           className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-all text-white/70 hover:text-white"
                         >
                           <div className="h-2 w-2 rounded-full" style={{ background: cat.color }} />
-                          <span className="text-[12px] font-semibold">{cat.name}</span>
+                          <span className="text-caption font-semibold">{cat.name}</span>
                         </Link>
                       ))}
                     </div>
@@ -899,8 +899,8 @@ export default function ModitHomePage() {
             <ShoppingCart className="h-4 w-4 text-[#7CB518]" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[12px] font-semibold text-white truncate max-w-[180px]">{cartToast.name}</span>
-            <span className="text-[10px] text-white/50">Added to cart · ₹{cartToast.price.toLocaleString("en-IN")}</span>
+            <span className="text-caption font-semibold text-white truncate max-w-[180px]">{cartToast.name}</span>
+            <span className="text-tiny text-white/50">Added to cart · ₹{cartToast.price.toLocaleString("en-IN")}</span>
           </div>
           <div className="toast-progress" />
         </div>

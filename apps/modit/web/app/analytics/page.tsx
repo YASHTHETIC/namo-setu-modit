@@ -74,14 +74,14 @@ export default function AnalyticsPage() {
             <div className="flex h-64 items-end gap-2">
               {monthlyData.map((m, i) => (
                 <div key={m.month} className="group flex flex-1 flex-col items-center justify-end gap-2">
-                  <span className="text-[10px] font-semibold text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-tiny font-semibold text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity">
                     ₹{(m.value / 1000).toFixed(0)}k
                   </span>
                   <div
                     className="w-full rounded-t-lg bg-gradient-to-t from-[var(--brand)] to-[var(--brand-light)] transition-all duration-700 group-hover:from-[var(--brand-dark)] group-hover:to-[var(--brand)]"
                     style={{ height: `${(m.value / maxValue) * 100}%` }}
                   />
-                  <span className="text-[10px] text-[var(--text-muted)]">{m.month}</span>
+                  <span className="text-tiny text-[var(--text-muted)]">{m.month}</span>
                 </div>
               ))}
             </div>

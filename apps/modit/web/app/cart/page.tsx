@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -63,7 +64,7 @@ export default function CartPage() {
             <Link href="/" className="text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <h1 className="text-[16px] font-bold text-white">Shopping Cart</h1>
+            <h1 className="text-body-lg font-bold text-white">Shopping Cart</h1>
           </div>
         </header>
 
@@ -71,25 +72,25 @@ export default function CartPage() {
           <div className="h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center mx-auto mb-4">
             <ShoppingCart className="h-10 w-10 text-[#9B8CB5]" />
           </div>
-          <h2 className="text-[18px] font-bold text-[#150726]">Your cart is empty</h2>
-          <p className="mt-2 text-[13px] text-[#9B8CB5]">Add construction materials to your cart to proceed.</p>
-          <Link href="/products" className="mt-5 inline-flex items-center gap-2 bg-[#7CB518] text-white text-[13px] font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+          <h2 className="text-title-md font-bold text-[#150726]">Your cart is empty</h2>
+          <p className="mt-2 text-body-sm text-[#9B8CB5]">Add construction materials to your cart to proceed.</p>
+          <Link href="/products" className="mt-5 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
             <ArrowLeft className="h-4 w-4" />
             Browse Products
           </Link>
 
           {savedItems.length > 0 && (
             <div className="mt-12 text-left">
-              <h3 className="text-[15px] font-bold text-[#150726] mb-4">Saved for Later ({savedItems.length})</h3>
+              <h3 className="text-body-lg font-bold text-[#150726] mb-4">Saved for Later ({savedItems.length})</h3>
               <div className="space-y-3">
                 {savedItems.map((s) => (
                   <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                    <img src={s.product.images[0]} alt="" className="h-16 w-16 rounded-lg object-cover bg-[#F0ECF9]" />
+                      <img src={s.product.images[0]} alt={s.product.name} width={64} height={64} loading="lazy" className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9]" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-semibold text-[#150726] truncate">{s.product.name}</p>
-                      <p className="text-[14px] font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
+                      <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
+                      <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
                     </div>
-                    <button onClick={() => moveToCart(s.product.id)} className="text-[12px] font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
+                    <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
                   </div>
                 ))}
               </div>
@@ -108,8 +109,8 @@ export default function CartPage() {
           <Link href="/products" className="text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <h1 className="text-[16px] font-bold text-white flex-1">Shopping Cart</h1>
-          <button onClick={clearCart} className="text-[12px] font-semibold text-[#E91E63] hover:text-[#C2185B] transition-colors">
+          <h1 className="text-body-lg font-bold text-white flex-1">Shopping Cart</h1>
+          <button onClick={clearCart} className="text-caption font-semibold text-[#E91E63] hover:text-[#C2185B] transition-colors">
             Clear Cart
           </button>
         </div>
@@ -118,12 +119,12 @@ export default function CartPage() {
       <div className="mx-auto max-w-[1200px] py-4 sm:px-6">
         {/* Breadcrumb */}
         <div className="mb-4">
-          <Link href="/products" className="inline-flex items-center gap-1.5 text-[12px] text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">
+          <Link href="/products" className="inline-flex items-center gap-1.5 text-caption text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">
             <ArrowLeft className="h-3 w-3" /> Continue Shopping
           </Link>
-          <h1 className="hidden sm:block text-[22px] font-bold text-[#150726] mt-1">
+          <h1 className="hidden sm:block text-title-lg font-bold text-[#150726] mt-1">
             Shopping Cart
-            <span className="ml-2 text-[15px] font-normal text-[#9B8CB5]">
+            <span className="ml-2 text-body-lg font-normal text-[#9B8CB5]">
               ({items.length} item{items.length !== 1 ? "s" : ""})
             </span>
           </h1>
@@ -147,8 +148,8 @@ export default function CartPage() {
               return (
                 <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
-                  <Link href={`/products/${item.product.id}`} className="h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
-                    <img src={item.product.images[0]} alt={item.product.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                  <Link href={`/products/${item.product.id}`} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
+                    <Image src={item.product.images[0]} alt={item.product.name} fill sizes="112px" loading="lazy" draggable={false} className="object-contain" />
                   </Link>
 
                   {/* Info */}
@@ -156,49 +157,49 @@ export default function CartPage() {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         {item.product.brand && (
-                          <p className="text-[11px] font-semibold text-[#2D1B69]">{item.product.brand}</p>
+                          <p className="text-micro font-semibold text-[#2D1B69]">{item.product.brand}</p>
                         )}
-                        <Link href={`/products/${item.product.id}`} className="text-[14px] font-bold text-[#150726] hover:text-[#2D1B69] line-clamp-2 leading-tight">
+                        <Link href={`/products/${item.product.id}`} className="text-body-md font-bold text-[#150726] hover:text-[#2D1B69] line-clamp-2 leading-tight">
                           {item.product.name}
                         </Link>
                         {variant && (
-                          <span className="inline-flex items-center gap-1 mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                          <span className="inline-flex items-center gap-1 mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69]">
                             Size: {variant.label} · {variant.unit}
                           </span>
                         )}
                         {item.shade && (
-                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-[10px] font-bold text-[#2D1B69]">
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69]">
                             Shade: {item.shade}
                           </span>
                         )}
-                        <p className="text-[11px] text-[#9B8CB5] mt-0.5">Seller: {item.product.seller.name}</p>
+                        <p className="text-micro text-[#9B8CB5] mt-0.5">Seller: {item.product.seller.name}</p>
                       </div>
-                      <p className="text-[18px] font-extrabold text-[#150726] whitespace-nowrap">
+                      <p className="text-title-md font-extrabold text-[#150726] whitespace-nowrap">
                         ₹{(itemPrice * item.quantity).toLocaleString()}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 mt-1.5">
                       {unitMrp > itemPrice && (
-                        <span className="text-[12px] text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString()}</span>
+                        <span className="text-caption text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString()}</span>
                       )}
                       {discount > 0 && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-[10px] font-bold text-[#E91E63]">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-tiny font-bold text-[#E91E63]">
                           {discount}% OFF
                         </span>
                       )}
                       {resolved.onSale && resolved.saleName && discount === 0 && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#7CB518] text-[10px] font-bold text-white">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#7CB518] text-tiny font-bold text-white">
                           {resolved.saleName}
                         </span>
                       )}
                       {bulkApplied && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF9800]/10 text-[10px] font-bold text-[#FF9800]">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF9800]/10 text-tiny font-bold text-[#FF9800]">
                           <Tag className="h-2.5 w-2.5" />
                           Bulk rate ₹{itemPrice.toLocaleString()}
                         </span>
                       )}
-                      <span className="text-[11px] text-[#9B8CB5]">₹{itemPrice.toLocaleString()} each</span>
+                      <span className="text-micro text-[#9B8CB5]">₹{itemPrice.toLocaleString()} each</span>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between">
@@ -212,7 +213,7 @@ export default function CartPage() {
                           >
                             <Minus className="h-3.5 w-3.5" />
                           </button>
-                          <span className="h-10 w-10 flex items-center justify-center text-[13px] font-bold text-[#150726] border-x-2 border-[#DDD6EE] tabular-nums">
+                          <span className="h-10 w-10 flex items-center justify-center text-body-sm font-bold text-[#150726] border-x-2 border-[#DDD6EE] tabular-nums">
                             {item.quantity}
                           </span>
                           <button
@@ -224,11 +225,11 @@ export default function CartPage() {
                         </div>
 
                         {/* Delivery badge */}
-                        <div className="flex items-center gap-1 text-[11px]">
+                        <div className="flex items-center gap-1 text-micro">
                           <Clock className="h-3 w-3 text-[#7CB518]" />
                           <span className="font-semibold text-[#150726]">Tomorrow</span>
                           {item.product.freeDelivery && (
-                            <span className="ml-1 px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-[9px] font-bold text-[#7CB518]">FREE</span>
+                            <span className="ml-1 px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-tiny font-bold text-[#7CB518]">FREE</span>
                           )}
                         </div>
                       </div>
@@ -236,13 +237,13 @@ export default function CartPage() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => saveForLater(item.product.id)}
-                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-[11px] font-medium text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-micro font-medium text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
                         >
                           <Heart className="h-3.5 w-3.5" /> Save for later
                         </button>
                         <button
                           onClick={() => removeItem(item.product.id, item.variantId)}
-                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-[11px] font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-micro font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Remove
                         </button>
@@ -256,17 +257,17 @@ export default function CartPage() {
             {/* Saved for Later */}
             {savedItems.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-[14px] font-bold text-[#150726] mb-3">Saved for Later ({savedItems.length})</h3>
+                <h3 className="text-body-md font-bold text-[#150726] mb-3">Saved for Later ({savedItems.length})</h3>
                 <div className="space-y-2">
                   {savedItems.map((s) => (
                     <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <img src={s.product.images[0]} alt={s.product.name} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
+                      <img src={s.product.images[0]} alt={s.product.name} width={56} height={56} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold text-[#150726] truncate">{s.product.name}</p>
-                        <p className="text-[14px] font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
+                        <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
+                        <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
                       </div>
-                      <button onClick={() => moveToCart(s.product.id)} className="text-[12px] font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
-                      <button onClick={() => removeSaved(s.product.id)} className="text-[11px] font-medium text-[#E91E63] hover:underline">Remove</button>
+                      <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
+                      <button onClick={() => removeSaved(s.product.id)} className="text-micro font-medium text-[#E91E63] hover:underline">Remove</button>
                     </div>
                   ))}
                 </div>
@@ -279,7 +280,7 @@ export default function CartPage() {
             <div className="sticky top-20 space-y-4">
               {/* Coupon */}
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h4 className="flex items-center gap-2 text-[14px] font-bold text-[#150726]">
+                <h4 className="flex items-center gap-2 text-body-md font-bold text-[#150726]">
                   <Tag className="h-4 w-4 text-[#2D1B69]" /> Apply Coupon
                 </h4>
                 <div className="mt-3 flex gap-2">
@@ -293,26 +294,26 @@ export default function CartPage() {
                   <button
                     onClick={handleApplyCoupon}
                     disabled={!couponCode}
-                    className="h-10 px-5 rounded-xl bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-10 px-5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Apply
                   </button>
                 </div>
                 {couponApplied && appliedCoupon && (
-                  <div className="mt-2 flex items-center justify-between gap-1.5 text-[12px] text-[#7CB518] font-semibold">
+                  <div className="mt-2 flex items-center justify-between gap-1.5 text-caption text-[#7CB518] font-semibold">
                     <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! You save ₹{couponDiscount.toLocaleString()}</span>
-                    <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-[11px] text-[#9B8CB5] hover:text-red-500 font-bold">Remove</button>
+                    <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-micro text-[#9B8CB5] hover:text-red-500 font-bold">Remove</button>
                   </div>
                 )}
                 {!couponApplied && couponError && (
-                  <p className="mt-2 text-[11px] text-red-500 font-semibold">{couponError}</p>
+                  <p className="mt-2 text-micro text-red-500 font-semibold">{couponError}</p>
                 )}
                 {!couponApplied && !couponError && (() => {
                   const best = useCouponStore.getState().getBestCoupon(getCartTotal());
                   return best ? (
                     <button
                       onClick={() => setCouponCode(best.code)}
-                      className="mt-2 text-[11px] font-bold text-[#7CB518] hover:underline"
+                      className="mt-2 text-micro font-bold text-[#7CB518] hover:underline"
                     >
                       Best offer for you: {best.code} — tap to apply
                     </button>
@@ -322,44 +323,44 @@ export default function CartPage() {
 
               {/* Price Details */}
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h4 className="text-[14px] font-bold text-[#150726]">Price Details</h4>
+                <h4 className="text-body-md font-bold text-[#150726]">Price Details</h4>
                 <div className="mt-3 space-y-2.5">
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Price ({items.length} item{items.length !== 1 ? "s" : ""})</span>
                     <span className="text-[#150726] font-medium">₹{getCartMRP().toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#7CB518]">Discount</span>
                     <span className="text-[#7CB518] font-medium">-₹{getCartDiscount().toLocaleString()}</span>
                   </div>
                   {getBulkSavings() > 0 && (
-                    <div className="flex justify-between text-[13px]">
+                    <div className="flex justify-between text-body-sm">
                       <span className="text-[#FF9800]">Bulk quantity savings</span>
                       <span className="text-[#FF9800] font-medium">-₹{getBulkSavings().toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Delivery</span>
                     <span className={getCartShipping() === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726] font-medium"}>
                       {getCartShipping() === 0 ? "FREE" : `₹${getCartShipping()}`}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[13px]">
+                  <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST (estimated)</span>
                     <span className="text-[#150726] font-medium">₹{getCartGST().toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                   {couponApplied && (
-                    <div className="flex justify-between text-[13px]">
+                    <div className="flex justify-between text-body-sm">
                       <span className="text-[#7CB518]">Coupon Discount</span>
                       <span className="text-[#7CB518] font-medium">-₹{couponDiscount.toLocaleString()}</span>
                     </div>
                   )}
                   <div className="border-t border-[#DDD6EE] pt-3 flex justify-between items-center">
-                    <span className="text-[15px] font-bold text-[#150726]">Total</span>
+                    <span className="text-body-lg font-bold text-[#150726]">Total</span>
                     <div className="text-right">
-                      <span className="text-[20px] font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-title-lg font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                       {getCartDiscount() > 0 && (
-                        <p className="text-[11px] font-semibold text-[#7CB518] mt-0.5">
+                        <p className="text-micro font-semibold text-[#7CB518] mt-0.5">
                           You save ₹{getCartDiscount().toLocaleString(undefined, { maximumFractionDigits: 0 })} on this order
                         </p>
                       )}
@@ -371,25 +372,25 @@ export default function CartPage() {
                 <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] px-3 py-2.5">
                   <Truck className="h-4 w-4 text-[#7CB518]" />
                   <div>
-                    <p className="text-[12px] font-semibold text-[#5A8010]">Estimated delivery: Tomorrow</p>
-                    <p className="text-[10px] text-[#7CB518]">Order within 2h 15m for same-day dispatch</p>
+                    <p className="text-caption font-semibold text-[#5A8010]">Estimated delivery: Tomorrow</p>
+                    <p className="text-tiny text-[#7CB518]">Order within 2h 15m for same-day dispatch</p>
                   </div>
                 </div>
 
                 <Link href="/checkout">
-                  <button className="mt-4 w-full h-12 rounded-xl bg-[#7CB518] text-white text-[14px] font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
+                  <button className="mt-4 w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
                     Place Order
                   </button>
                 </Link>
 
                 <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-[11px] text-[#9B8CB5]">
+                  <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
                     <Shield className="h-3.5 w-3.5 text-[#2D1B69]" /> Secure payment — 256-bit SSL
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-[#9B8CB5]">
+                  <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
                     <Truck className="h-3.5 w-3.5 text-[#7CB518]" /> Free delivery on orders above ₹5,000
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-[#9B8CB5]">
+                  <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
                     <Package className="h-3.5 w-3.5 text-[#00BCD4]" /> 7-day easy returns
                   </div>
                 </div>
@@ -407,7 +408,7 @@ export default function CartPage() {
             </div>
             <Link
               href="/checkout"
-              className="rounded-xl bg-[#7CB518] px-5 py-2.5 text-[13px] font-bold text-white flex-shrink-0"
+              className="rounded-xl bg-[#7CB518] px-5 py-2.5 text-body-sm font-bold text-white flex-shrink-0"
             >
               Order →
             </Link>

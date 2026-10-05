@@ -52,7 +52,7 @@ export function FlashDeals() {
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pt-4 pb-3 sm:px-6">
-      <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #1a0a2e 0%, #2D1B69 50%, #1a0a2e 100%)" }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #150726 100%)" }}>
         {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
@@ -125,7 +125,7 @@ export function FlashDeals() {
 
         {/* Footer */}
         <div className="p-3 border-t border-white/10 text-center">
-          <Link href="/products?sort=discount" className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#E91E63] hover:text-white transition-colors">
+          <Link href="/products?sort=discount" className="inline-flex items-center gap-1.5 text-micro font-bold text-[#E91E63] hover:text-white transition-colors">
             View all deals <ArrowRight className="h-3 w-3" />
           </Link>
         </div>

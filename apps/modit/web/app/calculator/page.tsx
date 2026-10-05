@@ -67,7 +67,7 @@ export default function CalculatorPage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       {/* Header */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #1E0F4A 60%, #150726 100%)" }}>
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
@@ -75,10 +75,10 @@ export default function CalculatorPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
-              <h1 className="text-[18px] font-extrabold text-white flex items-center gap-2">
+              <h1 className="text-title-md font-extrabold text-white flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-[#7CB518]" /> Material Calculator
               </h1>
-              <p className="text-[12px] text-white/50">Estimate materials for your project</p>
+              <p className="text-caption text-white/50">Estimate materials for your project</p>
             </div>
           </div>
         </div>
@@ -87,13 +87,13 @@ export default function CalculatorPage() {
       <div className="mx-auto max-w-[800px] px-4 py-4 space-y-4 sm:px-6">
         {/* Room Type */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3">Room Type</h3>
+          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Room Type</h3>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(roomPresets) as RoomType[]).map((type) => (
               <button
                 key={type}
                 onClick={() => { setRoomType(type); setArea(roomPresets[type].defaultArea); setHeight(roomPresets[type].defaultHeight); }}
-                className={`rounded-xl px-4 py-2 text-[12px] font-semibold border-2 transition-all ${
+                className={`rounded-xl px-4 py-2 text-caption font-semibold border-2 transition-all ${
                   roomType === type
                     ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]"
                     : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
@@ -107,44 +107,44 @@ export default function CalculatorPage() {
 
         {/* Dimensions */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3">Dimensions</h3>
+          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Dimensions</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-[11px] font-semibold text-[#9B8CB5] uppercase">Floor Area (sq ft)</label>
+              <label className="text-micro font-semibold text-[#9B8CB5] uppercase">Floor Area (sq ft)</label>
               <input
                 type="number"
                 value={area}
                 onChange={(e) => setArea(Math.max(1, parseInt(e.target.value) || 1))}
-                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
+                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
               />
             </div>
             <div>
-              <label className="text-[11px] font-semibold text-[#9B8CB5] uppercase">Ceiling Height (ft)</label>
+              <label className="text-micro font-semibold text-[#9B8CB5] uppercase">Ceiling Height (ft)</label>
               <input
                 type="number"
                 value={height}
                 onChange={(e) => setHeight(Math.max(1, parseInt(e.target.value) || 1))}
-                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-[14px] font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
+                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
               />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={wallOnly} onChange={(e) => setWallOnly(e.target.checked)} className="h-4 w-4 rounded border-[#DDD6EE] text-[#2D1B69] focus:ring-[#2D1B69]" />
-              <span className="text-[12px] font-medium text-[#150726]">Wall only (skip ceiling)</span>
+              <span className="text-caption font-medium text-[#150726]">Wall only (skip ceiling)</span>
             </label>
           </div>
         </div>
 
         {/* Paint Coats */}
         <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3">Number of Coats</h3>
+          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Number of Coats</h3>
           <div className="flex gap-2">
             {[1, 2, 3].map((c) => (
               <button
                 key={c}
                 onClick={() => setCoats(c)}
-                className={`flex-1 h-10 rounded-xl text-[13px] font-bold border-2 transition-all ${
+                className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
                   coats === c
                     ? "border-[#2D1B69] bg-[#2D1B69] text-white"
                     : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
@@ -158,7 +158,7 @@ export default function CalculatorPage() {
 
         {/* Results */}
         <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-          <h3 className="text-[13px] font-bold text-[#150726] mb-3 flex items-center gap-2">
+          <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
           </h3>
           <div className="grid grid-cols-2 gap-3">
@@ -171,8 +171,8 @@ export default function CalculatorPage() {
               <div key={label} className="flex items-center gap-2 rounded-xl bg-white p-3 border border-[#7CB518]/10">
                 {icon}
                 <div>
-                  <p className="text-[10px] text-[#9B8CB5] font-semibold">{label}</p>
-                  <p className="text-[14px] font-extrabold text-[#150726]">{value}</p>
+                  <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
+                  <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
                 </div>
               </div>
             ))}
@@ -183,11 +183,11 @@ export default function CalculatorPage() {
         {recommendations.length > 0 && (
           <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[13px] font-bold text-[#150726]">Recommended Products</h3>
+              <h3 className="text-body-sm font-bold text-[#150726]">Recommended Products</h3>
               <button
                 onClick={handleAddAll}
                 disabled={addedItems.length > 0}
-                className="flex items-center gap-1.5 rounded-xl bg-[#7CB518] text-white text-[12px] font-bold px-4 py-2 hover:bg-[#6A9C14] transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold px-4 py-2 hover:bg-[#6A9C14] transition-all disabled:opacity-50"
               >
                 {addedItems.length > 0 ? (
                   <><CheckCircle2 className="h-3.5 w-3.5" /> Added!</>
@@ -205,19 +205,19 @@ export default function CalculatorPage() {
                 >
                   <span className="text-xl">{item.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-semibold text-[#150726] truncate">{item.product.name}</p>
-                    <p className="text-[10px] text-[#9B8CB5]">{item.product.brand} · {item.product.unit}</p>
+                    <p className="text-caption font-semibold text-[#150726] truncate">{item.product.name}</p>
+                    <p className="text-tiny text-[#9B8CB5]">{item.product.brand} · {item.product.unit}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[11px] font-bold text-[#150726]">Qty: {item.quantity}</p>
-                    <p className="text-[10px] text-[#9B8CB5]">₹{(item.product.price * item.quantity).toLocaleString()}</p>
+                    <p className="text-micro font-bold text-[#150726]">Qty: {item.quantity}</p>
+                    <p className="text-tiny text-[#9B8CB5]">₹{(item.product.price * item.quantity).toLocaleString()}</p>
                   </div>
                 </Link>
               ))}
             </div>
             <div className="mt-3 pt-3 border-t border-[#DDD6EE] flex justify-between">
-              <span className="text-[12px] font-semibold text-[#9B8CB5]">Estimated Total</span>
-              <span className="text-[16px] font-extrabold text-[#2D1B69]">
+              <span className="text-caption font-semibold text-[#9B8CB5]">Estimated Total</span>
+              <span className="text-body-lg font-extrabold text-[#2D1B69]">
                 ₹{recommendations.reduce((sum, r) => sum + r.product.price * r.quantity, 0).toLocaleString()}
               </span>
             </div>
@@ -228,8 +228,8 @@ export default function CalculatorPage() {
         <div className="rounded-2xl border border-[#00BCD4]/20 bg-[#E8F9FC] p-4 flex items-center gap-3">
           <Truck className="h-5 w-5 text-[#00BCD4] flex-shrink-0" />
           <div>
-            <p className="text-[12px] font-bold text-[#150726]">60-Minute Delivery</p>
-            <p className="text-[11px] text-[#9B8CB5]">All materials delivered to your site within 60 minutes</p>
+            <p className="text-caption font-bold text-[#150726]">60-Minute Delivery</p>
+            <p className="text-micro text-[#9B8CB5]">All materials delivered to your site within 60 minutes</p>
           </div>
         </div>
       </div>

@@ -62,10 +62,10 @@ export default function DashboardPage() {
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="h-4 w-4 text-[#7CB518]" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#7CB518]">Dashboard</span>
+            <span className="text-micro font-bold uppercase tracking-wider text-[#7CB518]">Dashboard</span>
           </div>
-          <h1 className="text-[22px] font-extrabold">Welcome back!</h1>
-          <p className="mt-1 text-[13px] text-white/60">Here&apos;s your procurement overview</p>
+          <h1 className="text-title-lg font-extrabold">Welcome back!</h1>
+          <p className="mt-1 text-body-sm text-white/60">Here&apos;s your procurement overview</p>
         </div>
       </div>
 
@@ -80,13 +80,13 @@ export default function DashboardPage() {
                   <div className="h-10 w-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: stat.bg }}>
                     <Icon className="h-5 w-5" style={{ color: stat.color }} />
                   </div>
-                  <div className={`flex items-center gap-0.5 text-[11px] font-bold ${stat.delta >= 0 ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
+                  <div className={`flex items-center gap-0.5 text-micro font-bold ${stat.delta >= 0 ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
                     {stat.delta >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                     {stat.delta >= 0 ? "+" : ""}{stat.delta}%
                   </div>
                 </div>
-                <p className="text-[22px] font-extrabold text-[#150726]">{stat.value}</p>
-                <p className="text-[11px] font-semibold text-[#9B8CB5] mt-0.5">{stat.label}</p>
+                <p className="text-title-lg font-extrabold text-[#150726]">{stat.value}</p>
+                <p className="text-micro font-semibold text-[#9B8CB5] mt-0.5">{stat.label}</p>
               </div>
             </Link>
           );
@@ -102,9 +102,9 @@ export default function DashboardPage() {
               <div className="h-8 w-8 rounded-lg bg-[#00BCD4]/10 flex items-center justify-center">
                 <Truck className="h-4 w-4 text-[#00BCD4]" />
               </div>
-              <h2 className="text-[14px] font-bold text-[#150726]">Recent Orders</h2>
+              <h2 className="text-body-md font-bold text-[#150726]">Recent Orders</h2>
             </div>
-            <Link href="/orders" className="flex items-center gap-1 text-[12px] font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
+            <Link href="/orders" className="flex items-center gap-1 text-caption font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
             {orders.length === 0 ? (
               <div className="py-8 text-center">
                 <ShoppingCart className="h-8 w-8 text-[#9B8CB5]/30 mx-auto mb-2" />
-                <p className="text-[13px] text-[#9B8CB5]">No orders yet</p>
+                <p className="text-body-sm text-[#9B8CB5]">No orders yet</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -121,12 +121,12 @@ export default function DashboardPage() {
                   return (
                     <div key={order.id} className="flex items-center justify-between rounded-xl py-2.5 px-3 hover:bg-[#F8F6FC] transition-colors">
                       <div className="min-w-0">
-                        <div className="text-[13px] font-bold text-[#150726] truncate">{order.order_number ?? `#${order.id.slice(0, 8)}`}</div>
-                        <div className="text-[11px] text-[#9B8CB5]">
+                        <div className="text-body-sm font-bold text-[#150726] truncate">{order.order_number ?? `#${order.id.slice(0, 8)}`}</div>
+                        <div className="text-micro text-[#9B8CB5]">
                           {order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
                         </div>
                       </div>
-                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold" style={{ color: st.color, background: st.bg }}>
+                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-tiny font-bold" style={{ color: st.color, background: st.bg }}>
                         {st.label}
                       </span>
                     </div>
@@ -144,9 +144,9 @@ export default function DashboardPage() {
               <div className="h-8 w-8 rounded-lg bg-[#E91E63]/10 flex items-center justify-center">
                 <FileText className="h-4 w-4 text-[#E91E63]" />
               </div>
-              <h2 className="text-[14px] font-bold text-[#150726]">Recent RFQs</h2>
+              <h2 className="text-body-md font-bold text-[#150726]">Recent RFQs</h2>
             </div>
-            <Link href="/rfq" className="flex items-center gap-1 text-[12px] font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
+            <Link href="/rfq" className="flex items-center gap-1 text-caption font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -154,7 +154,7 @@ export default function DashboardPage() {
             {rfqs.length === 0 ? (
               <div className="py-8 text-center">
                 <FileText className="h-8 w-8 text-[#9B8CB5]/30 mx-auto mb-2" />
-                <p className="text-[13px] text-[#9B8CB5]">No RFQs yet</p>
+                <p className="text-body-sm text-[#9B8CB5]">No RFQs yet</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -163,10 +163,10 @@ export default function DashboardPage() {
                   return (
                     <div key={rfq.id} className="flex items-center justify-between rounded-xl py-2.5 px-3 hover:bg-[#F8F6FC] transition-colors">
                       <div className="min-w-0">
-                        <div className="text-[13px] font-bold text-[#150726] truncate">{rfq.rfq_number ?? `#${rfq.id.slice(0, 8)}`}</div>
-                        <div className="text-[11px] text-[#9B8CB5]">Due: {rfq.due_date ?? "N/A"}</div>
+                        <div className="text-body-sm font-bold text-[#150726] truncate">{rfq.rfq_number ?? `#${rfq.id.slice(0, 8)}`}</div>
+                        <div className="text-micro text-[#9B8CB5]">Due: {rfq.due_date ?? "N/A"}</div>
                       </div>
-                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold" style={{ color: st.color, background: st.bg }}>
+                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-tiny font-bold" style={{ color: st.color, background: st.bg }}>
                         {st.label}
                       </span>
                     </div>
@@ -187,9 +187,9 @@ export default function DashboardPage() {
               <div className="h-8 w-8 rounded-lg bg-[#FF9800]/10 flex items-center justify-center">
                 <Building2 className="h-4 w-4 text-[#FF9800]" />
               </div>
-              <h2 className="text-[14px] font-bold text-[#150726]">Projects</h2>
+              <h2 className="text-body-md font-bold text-[#150726]">Projects</h2>
             </div>
-            <Link href="/projects" className="flex items-center gap-1 text-[12px] font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
+            <Link href="/projects" className="flex items-center gap-1 text-caption font-semibold text-[#2D1B69] hover:text-[#7CB518] transition-colors">
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -197,7 +197,7 @@ export default function DashboardPage() {
             {projects.length === 0 ? (
               <div className="py-8 text-center">
                 <FolderOpen className="h-8 w-8 text-[#9B8CB5]/30 mx-auto mb-2" />
-                <p className="text-[13px] text-[#9B8CB5]">No projects yet</p>
+                <p className="text-body-sm text-[#9B8CB5]">No projects yet</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -206,10 +206,10 @@ export default function DashboardPage() {
                   return (
                     <div key={project.id} className="flex items-center justify-between rounded-xl py-2.5 px-3 hover:bg-[#F8F6FC] transition-colors">
                       <div className="min-w-0">
-                        <div className="text-[13px] font-bold text-[#150726] truncate">{project.name ?? `#${project.id.slice(0, 8)}`}</div>
-                        <div className="text-[11px] text-[#9B8CB5]">{project.project_code}</div>
+                        <div className="text-body-sm font-bold text-[#150726] truncate">{project.name ?? `#${project.id.slice(0, 8)}`}</div>
+                        <div className="text-micro text-[#9B8CB5]">{project.project_code}</div>
                       </div>
-                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold" style={{ color: st.color, background: st.bg }}>
+                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-tiny font-bold" style={{ color: st.color, background: st.bg }}>
                         {st.label}
                       </span>
                     </div>
@@ -227,14 +227,14 @@ export default function DashboardPage() {
               <div className="h-8 w-8 rounded-lg bg-[#7CB518]/10 flex items-center justify-center">
                 <Users className="h-4 w-4 text-[#7CB518]" />
               </div>
-              <h2 className="text-[14px] font-bold text-[#150726]">Verified Suppliers</h2>
+              <h2 className="text-body-md font-bold text-[#150726]">Verified Suppliers</h2>
             </div>
           </div>
           <div className="p-4">
             {suppliers.length === 0 ? (
               <div className="py-8 text-center">
                 <Users className="h-8 w-8 text-[#9B8CB5]/30 mx-auto mb-2" />
-                <p className="text-[13px] text-[#9B8CB5]">No suppliers yet</p>
+                <p className="text-body-sm text-[#9B8CB5]">No suppliers yet</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -243,10 +243,10 @@ export default function DashboardPage() {
                   return (
                     <div key={supplier.id} className="flex items-center justify-between rounded-xl py-2.5 px-3 hover:bg-[#F8F6FC] transition-colors">
                       <div className="min-w-0">
-                        <div className="text-[13px] font-bold text-[#150726] truncate">{supplier.supplier_code ?? `#${supplier.id.slice(0, 8)}`}</div>
-                        <div className="text-[11px] text-[#9B8CB5]">{supplier.is_verified ? "Verified supplier" : "Pending verification"}</div>
+                        <div className="text-body-sm font-bold text-[#150726] truncate">{supplier.supplier_code ?? `#${supplier.id.slice(0, 8)}`}</div>
+                        <div className="text-micro text-[#9B8CB5]">{supplier.is_verified ? "Verified supplier" : "Pending verification"}</div>
                       </div>
-                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold" style={{ color: st.color, background: st.bg }}>
+                      <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-tiny font-bold" style={{ color: st.color, background: st.bg }}>
                         {st.label}
                       </span>
                     </div>

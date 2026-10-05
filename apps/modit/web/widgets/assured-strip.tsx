@@ -15,7 +15,7 @@ export function AssuredStripWidget({ data }: { data: Record<string, unknown> }) 
   const d = castSectionData<AssuredStripData>(data);
 
   return (
-    <div className="mt-3 mx-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E0A3C] to-[#150726] border border-white/10 relative">
+    <div className="mt-3 mx-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative">
       {/* Top rainbow gradient line */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--green)] via-[var(--pink)] to-[var(--cyan)]" />
       {/* Pink streak — top-right corner */}
@@ -27,7 +27,7 @@ export function AssuredStripWidget({ data }: { data: Record<string, unknown> }) 
 
       <div className="p-4 relative z-10">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <h3 className="text-[14px] font-bold text-white">{d.title.split(" ")[0]} <span className="text-[var(--green)]">{d.title.split(" ").slice(1).join(" ")}</span></h3>
+          <h3 className="text-body-md font-bold text-white">{d.title.split(" ")[0]} <span className="text-[var(--green)]">{d.title.split(" ").slice(1).join(" ")}</span></h3>
           <div className="h-5 w-5 rounded-full bg-[var(--green)]/20 flex items-center justify-center">
             <Shield className="h-3 w-3 text-[var(--green)]" />
           </div>
@@ -40,8 +40,8 @@ export function AssuredStripWidget({ data }: { data: Record<string, unknown> }) 
                 <div className="h-12 w-12 rounded-full mx-auto mb-1.5 flex items-center justify-center" style={{ background: `${f.color}18`, border: `2px solid ${f.color}50` }}>
                   <Icon className="h-6 w-6" style={{ color: f.color }} />
                 </div>
-                <p className="text-[11px] font-bold text-white leading-tight">{f.title}</p>
-                <p className="text-[9px] text-white/50 mt-0.5 leading-tight">{f.description}</p>
+                <p className="text-micro font-bold text-white leading-tight">{f.title}</p>
+                <p className="text-tiny text-white/50 mt-0.5 leading-tight">{f.description}</p>
               </div>
             );
           })}

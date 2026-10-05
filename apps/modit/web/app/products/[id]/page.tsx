@@ -290,13 +290,13 @@ export default function ProductDetailPage({
                 </button>
               </div>
               {shared && (
-                <span className="absolute top-3 right-[52px] rounded-full bg-[#150726]/85 backdrop-blur-sm px-3 py-1.5 text-[11px] font-bold text-white animate-[fadeIn_0.2s_ease-out]">
+                <span className="absolute top-3 right-[52px] rounded-full bg-[#150726]/85 backdrop-blur-sm px-3 py-1.5 text-micro font-bold text-white animate-[fadeIn_0.2s_ease-out]">
                   Link copied
                 </span>
               )}
               {/* Image counter */}
               {product.images.length > 1 && (
-                <span className="absolute bottom-3 right-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-white">
+                <span className="absolute bottom-3 right-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-micro font-semibold text-white">
                   {selectedImage + 1} / {product.images.length}
                 </span>
               )}
@@ -391,8 +391,8 @@ export default function ProductDetailPage({
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-[var(--border)] bg-white p-2.5 text-center">
                   <Icon className="h-4 w-4 text-[var(--green)]" />
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{label}</span>
-                  <span className="text-[9px] text-[var(--text-muted)]">{sub}</span>
+                  <span className="text-tiny font-bold text-[var(--text-primary)]">{label}</span>
+                  <span className="text-tiny text-[var(--text-muted)]">{sub}</span>
                 </div>
               ))}
             </div>
@@ -427,30 +427,30 @@ export default function ProductDetailPage({
                     <Truck className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <p className="text-[12px] font-bold text-[#150726]">Delivery in 60 minutes</p>
-                    <p className="text-[10px] text-[#9B8CB5]">Order now for fastest dispatch</p>
+                    <p className="text-caption font-bold text-[#150726]">Delivery in 60 minutes</p>
+                    <p className="text-tiny text-[#9B8CB5]">Order now for fastest dispatch</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-[#9B8CB5]">Tomorrow by</p>
-                  <p className="text-[12px] font-bold text-[#7CB518]">10:00 AM</p>
+                  <p className="text-tiny text-[#9B8CB5]">Tomorrow by</p>
+                  <p className="text-caption font-bold text-[#7CB518]">10:00 AM</p>
                 </div>
               </div>
             </div>
 
             {/* Delivery + Cashback badges */}
             <div className="flex items-center gap-2 mb-3 flex-wrap">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F9FC] border border-[#00BCD4]/20 px-2.5 py-1 text-[11px] font-bold text-[#00BCD4]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F9FC] border border-[#00BCD4]/20 px-2.5 py-1 text-micro font-bold text-[#00BCD4]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 60 Min Delivery
               </span>
               {product.cashbackPercent && product.cashbackPercent > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE8F0] border border-[#E91E63]/20 px-2.5 py-1 text-[11px] font-bold text-[#E91E63]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE8F0] border border-[#E91E63]/20 px-2.5 py-1 text-micro font-bold text-[#E91E63]">
                   Assured {product.cashbackPercent}% Cashback
                 </span>
               )}
               {product.freeDelivery && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#F0F9E8] border border-[#7CB518]/20 px-2.5 py-1 text-[11px] font-bold text-[#7CB518]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#F0F9E8] border border-[#7CB518]/20 px-2.5 py-1 text-micro font-bold text-[#7CB518]">
                   Free Delivery
                 </span>
               )}
@@ -517,7 +517,7 @@ export default function ProductDetailPage({
                       <span className={`text-sm font-bold ${isSelected ? "text-[var(--brand)]" : "text-[var(--text-primary)]"}`}>
                         {variant.label}
                       </span>
-                      <span className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                      <span className="text-micro text-[var(--text-muted)] mt-0.5">
                         ₹{variant.price.toLocaleString()}
                         {variantDiscount > 0 && (
                           <span className="ml-1 rounded-full bg-[#E91E63] px-1.5 py-px text-tiny font-bold text-white">
@@ -548,38 +548,38 @@ export default function ProductDetailPage({
             <div className="rounded-xl border border-[#FECACA] bg-red-50 p-4">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-red-500" />
-                <span className="text-[12px] font-bold text-red-600">Not deliverable to {deliveryPincode}</span>
+                <span className="text-caption font-bold text-red-600">Not deliverable to {deliveryPincode}</span>
               </div>
-              <p className="text-[11px] text-[#6B5B83] mt-1">We don&apos;t serve this area yet — this item is unavailable for your location. App users get notified when we launch nearby.</p>
+              <p className="text-micro text-[#6B5B83] mt-1">We don&apos;t serve this area yet — this item is unavailable for your location. App users get notified when we launch nearby.</p>
             </div>
           ) : (
             <div className="rounded-xl border border-[var(--border)] bg-white p-4">
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-[var(--brand)]" />
                 {deliveryPincode ? (
-                  <span className="text-[12px] font-bold text-[#150726]">Delivering to {deliveryPincode}</span>
+                  <span className="text-caption font-bold text-[#150726]">Delivering to {deliveryPincode}</span>
                 ) : (
-                  <span className="text-[12px] text-[var(--text-muted)]">Login to set your delivery location automatically</span>
+                  <span className="text-caption text-[var(--text-muted)]">Login to set your delivery location automatically</span>
                 )}
               </div>
               <div className="mt-2.5 grid grid-cols-1 min-[380px]:grid-cols-2 gap-2">
                 <div className="flex items-center gap-2 rounded-lg bg-[#F7F4FC] p-2">
                   <Truck className="h-4 w-4 text-[#7CB518]" />
                   <div>
-                    <p className="text-[10px] text-[#9B8CB5]">Express</p>
-                    <p className="text-[11px] font-bold text-[#150726]">60 min</p>
+                    <p className="text-tiny text-[#9B8CB5]">Express</p>
+                    <p className="text-micro font-bold text-[#150726]">60 min</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-[#F7F4FC] p-2">
                   <Clock className="h-4 w-4 text-[#00BCD4]" />
                   <div>
-                    <p className="text-[10px] text-[#9B8CB5]">Scheduled</p>
-                    <p className="text-[11px] font-bold text-[#150726]">Tomorrow</p>
+                    <p className="text-tiny text-[#9B8CB5]">Scheduled</p>
+                    <p className="text-micro font-bold text-[#150726]">Tomorrow</p>
                   </div>
                 </div>
               </div>
               {product.freeDelivery && (
-                <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#7CB518] font-semibold">
+                <div className="mt-2 flex items-center gap-1.5 text-micro text-[#7CB518] font-semibold">
                   <Truck className="h-3.5 w-3.5" /> Free delivery on this order
                 </div>
               )}
@@ -604,7 +604,7 @@ export default function ProductDetailPage({
             <div className="grid grid-cols-2 gap-2.5">
               <Button
                 onClick={handleAddToCart}
-                className="h-12 text-[15px] font-semibold"
+                className="h-12 text-body-lg font-semibold"
                 disabled={!product.inStock || areaBlocked}
                 title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}
               >
@@ -614,7 +614,7 @@ export default function ProductDetailPage({
                   <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
                 )}
               </Button>
-              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-[15px] font-semibold" disabled={areaBlocked} title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}>
+              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-body-lg font-semibold" disabled={areaBlocked} title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}>
                 <Zap className="h-5 w-5" /> Buy Now
               </Button>
               <Button onClick={() => { if (requireLogin()) setRfqOpen(true); }} variant="secondary" className="col-span-2 h-11 text-sm font-semibold" title="Request a competitive bulk quote from sellers">
@@ -626,17 +626,17 @@ export default function ProductDetailPage({
               <div className="rounded-xl border border-[#FECACA] bg-red-50 p-4">
                 <div className="flex items-center gap-2 mb-2.5">
                   <Bell className="h-4 w-4 text-red-500" />
-                  <span className="text-[12px] font-bold text-red-600">Currently out of stock</span>
+                  <span className="text-caption font-bold text-red-600">Currently out of stock</span>
                 </div>
                 {hasStockAlert ? (
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[12px] text-[#6B5B83]">You&apos;ll be notified when it&apos;s back.</span>
+                    <span className="text-caption text-[#6B5B83]">You&apos;ll be notified when it&apos;s back.</span>
                     <button
                       onClick={() => {
                         removeStockAlert(product.id);
                         setStockNotifyAsked(false);
                       }}
-                      className="text-[11px] font-bold text-red-500 hover:underline"
+                      className="text-micro font-bold text-red-500 hover:underline"
                     >
                       Cancel alert
                     </button>
@@ -648,7 +648,7 @@ export default function ProductDetailPage({
                       value={stockEmail}
                       onChange={(e) => setStockEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="flex-1 px-3 py-2 rounded-lg border border-[#FECACA] text-[12px] focus:outline-none focus:border-red-400"
+                      className="flex-1 px-3 py-2 rounded-lg border border-[#FECACA] text-caption focus:outline-none focus:border-red-400"
                     />
                     <button
                       onClick={() => {
@@ -663,7 +663,7 @@ export default function ProductDetailPage({
                         }
                       }}
                       disabled={!stockEmail?.includes("@")}
-                      className="px-3 py-2 rounded-lg bg-red-500 text-white text-[11px] font-bold hover:bg-red-600 disabled:opacity-50 transition-colors"
+                      className="px-3 py-2 rounded-lg bg-red-500 text-white text-micro font-bold hover:bg-red-600 disabled:opacity-50 transition-colors"
                     >
                       Notify Me
                     </button>
@@ -671,7 +671,7 @@ export default function ProductDetailPage({
                 ) : (
                   <button
                     onClick={() => setStockNotifyAsked(true)}
-                    className="flex items-center gap-1.5 text-[12px] font-bold text-red-600 hover:underline"
+                    className="flex items-center gap-1.5 text-caption font-bold text-red-600 hover:underline"
                   >
                     <Bell className="h-3.5 w-3.5" /> Notify me when back in stock
                   </button>
@@ -689,8 +689,8 @@ export default function ProductDetailPage({
             ].map(({ icon: Icon, label, sub }) => (
               <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-[var(--border)] bg-white p-3 text-center">
                 <Icon className="h-5 w-5 text-[var(--brand)]" />
-                <span className="text-[10px] font-bold text-[var(--text-primary)]">{label}</span>
-                <span className="text-[10px] text-[var(--text-muted)]">{sub}</span>
+                <span className="text-tiny font-bold text-[var(--text-primary)]">{label}</span>
+                <span className="text-tiny text-[var(--text-muted)]">{sub}</span>
               </div>
             ))}
           </div>
@@ -706,14 +706,14 @@ export default function ProductDetailPage({
                 <div className="flex items-center gap-2">
                   <StarRating rating={product.seller.rating} size="sm" showCount={false} />
                   <span className="text-xs text-[var(--text-muted)]">Seller rating: {product.seller.rating}/5</span>
-                  {product.seller.isVerified && <Badge variant="success" className="text-[10px]">Verified</Badge>}
+                  {product.seller.isVerified && <Badge variant="success" className="text-tiny">Verified</Badge>}
                 </div>
               </div>
             </div>
             {/* GST Invoice notice */}
             <div className="mt-3 flex items-center gap-2 rounded-lg bg-[var(--bg-subtle)] px-3 py-2">
               <CreditCard className="h-4 w-4 text-[var(--brand)]" />
-              <span className="text-[11px] font-medium text-[var(--text-secondary)]">GST invoice available for all orders</span>
+              <span className="text-micro font-medium text-[var(--text-secondary)]">GST invoice available for all orders</span>
             </div>
           </div>
         </div>
@@ -722,13 +722,13 @@ export default function ProductDetailPage({
       {/* Mobile sticky add-to-cart bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--border)] px-4 py-3 flex items-center gap-3 lg:hidden" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
         <div className="flex-1">
-          <p className="text-[11px] text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
+          <p className="text-micro text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
           <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString()}</p>
         </div>
         <button
           onClick={handleAddToCart}
           disabled={areaBlocked}
-          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-[14px] font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 disabled:opacity-40"
+          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-body-md font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           {added ? (
             <><CheckCircle2 className="h-5 w-5" /> Added</>
@@ -739,7 +739,7 @@ export default function ProductDetailPage({
         <button
           onClick={handleBuyNow}
           disabled={areaBlocked}
-          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-[14px] font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2 disabled:opacity-40"
+          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-body-md font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           <Zap className="h-5 w-5" /> Buy Now
         </button>
@@ -836,8 +836,8 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
+                  <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
                 </div>
                 <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
                 <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>
@@ -859,14 +859,14 @@ export default function ProductDetailPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <img src={p.images[0]} alt={p.name} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
+                  <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
                 </div>
-                <p className="mt-2 text-[10px] font-semibold text-[var(--brand)] truncate">{p.brand}</p>
+                <p className="mt-2 text-tiny font-semibold text-[var(--brand)] truncate">{p.brand}</p>
                 <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
                 <div className="mt-1 flex items-center gap-1">
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
-                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{p.rating}</span>
+                  <span className="text-tiny font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
                 <p className="text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>
               </Link>

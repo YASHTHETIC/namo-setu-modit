@@ -10,16 +10,16 @@ const TYPE_COLORS: Record<string, string> = {
   "product.bulk_update": "bg-[#E8F9FC] text-[#00BCD4]",
   "sale.create": "bg-[#FCE8F0] text-[#E91E63]",
   "sale.update": "bg-[#FCE8F0] text-[#E91E63]",
-  "sale.toggle": "bg-[#FFF4E5] text-[#FF9800]",
+  "sale.toggle": "bg-[#FFFBF5] text-[#FF9800]",
   "sale.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
   "order.status": "bg-[#F0F9E8] text-[#7CB518]",
   "coupon.create": "bg-[#F0ECF9] text-[#2D1B69]",
   "coupon.update": "bg-[#F0ECF9] text-[#2D1B69]",
-  "coupon.toggle": "bg-[#FFF4E5] text-[#FF9800]",
+  "coupon.toggle": "bg-[#FFFBF5] text-[#FF9800]",
   "coupon.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
   "return.advance": "bg-[#FCE8F0] text-[#C2185B]",
   "supplier.status": "bg-[#E8F9FC] text-[#00838F]",
-  "supplier.add": "bg-[#F0F9E8] text-[#5f8f12]",
+  "supplier.add": "bg-[#F0F9E8] text-[#5a8010]",
   "admin.unlock": "bg-[#F0ECF9] text-[#2D1B69]",
 };
 
@@ -49,11 +49,11 @@ export default function AdminAuditPage() {
     <div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-[20px] font-extrabold text-[#150726]">Activity Log</h1>
-          <p className="text-[12px] text-[#9B8CB5] mt-0.5">{entries.length} staff actions recorded · who changed what, when</p>
+          <h1 className="text-title-lg font-extrabold text-[#150726]">Activity Log</h1>
+          <p className="text-caption text-[#9B8CB5] mt-0.5">{entries.length} staff actions recorded · who changed what, when</p>
         </div>
         {entries.length > 0 && (
-          <button onClick={() => { if (confirm("Clear the activity log?")) clear(); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#DDD6EE] text-[11px] font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+          <button onClick={() => { if (confirm("Clear the activity log?")) clear(); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#DDD6EE] text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
             <Trash2 className="h-3.5 w-3.5" /> Clear log
           </button>
         )}
@@ -66,10 +66,10 @@ export default function AdminAuditPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search actions..."
-            className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:border-[#2D1B69]"
+            className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-body-sm focus:outline-none focus:border-[#2D1B69]"
           />
         </div>
-        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="rounded-xl border border-[#DDD6EE] bg-white px-3 py-2.5 text-[12px] font-bold text-[#6B5B83] focus:outline-none focus:border-[#2D1B69]">
+        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="rounded-xl border border-[#DDD6EE] bg-white px-3 py-2.5 text-caption font-bold text-[#6B5B83] focus:outline-none focus:border-[#2D1B69]">
           <option value="">All actions</option>
           {(Object.keys(ADMIN_ACTION_LABEL) as AdminActionType[]).map((t) => (
             <option key={t} value={t}>{ADMIN_ACTION_LABEL[t]}</option>
@@ -80,27 +80,27 @@ export default function AdminAuditPage() {
       {filtered.length === 0 ? (
         <div className="mt-4 rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
           <FileText className="h-8 w-8 text-[#9B8CB5] mx-auto mb-2" />
-          <p className="text-[14px] font-bold text-[#150726]">No activity yet</p>
-          <p className="text-[12px] text-[#9B8CB5] mt-1">Price edits, sales, order updates, coupons and returns will appear here automatically.</p>
+          <p className="text-body-md font-bold text-[#150726]">No activity yet</p>
+          <p className="text-caption text-[#9B8CB5] mt-1">Price edits, sales, order updates, coupons and returns will appear here automatically.</p>
         </div>
       ) : (
         <div className="mt-4 space-y-5">
           {Array.from(groups.entries()).map(([day, list]) => (
             <div key={day}>
-              <p className="text-[11px] font-black uppercase tracking-wider text-[#9B8CB5] mb-2">{day}</p>
+              <p className="text-micro font-black uppercase tracking-wider text-[#9B8CB5] mb-2">{day}</p>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
                 {list.map((e, idx) => (
                   <div key={e.id} className={`px-4 py-3 ${idx > 0 ? "border-t border-[#F0ECF9]" : ""}`}>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${TYPE_COLORS[e.type] ?? "bg-[#F0ECF9] text-[#9B8CB5]"}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-tiny font-bold ${TYPE_COLORS[e.type] ?? "bg-[#F0ECF9] text-[#9B8CB5]"}`}>
                         {ADMIN_ACTION_LABEL[e.type]}
                       </span>
-                      <span className="text-[11px] text-[#9B8CB5] tabular-nums">
+                      <span className="text-micro text-[#9B8CB5] tabular-nums">
                         {new Date(e.at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                       </span>
                     </div>
-                    <p className="text-[13px] font-bold text-[#150726] mt-1">{e.summary}</p>
-                    {e.detail && <p className="text-[11px] text-[#6B5B83] mt-0.5">{e.detail}</p>}
+                    <p className="text-body-sm font-bold text-[#150726] mt-1">{e.summary}</p>
+                    {e.detail && <p className="text-micro text-[#6B5B83] mt-0.5">{e.detail}</p>}
                   </div>
                 ))}
               </div>

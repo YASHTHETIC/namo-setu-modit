@@ -60,8 +60,8 @@ export function LocationMenu() {
         className="flex flex-col items-start leading-tight px-1 py-1 text-left"
         aria-label="Delivery location"
       >
-        <span className="text-[13px] font-extrabold text-[var(--text)]">Delivery in 60 min</span>
-        <span className="flex items-center gap-1 text-[12px] font-semibold text-[var(--text-secondary)]">
+        <span className="text-body-sm font-extrabold text-[var(--text)]">Delivery in 60 min</span>
+        <span className="flex items-center gap-1 text-caption font-semibold text-[var(--text-secondary)]">
           <span className={`h-1.5 w-1.5 rounded-full ${pincode ? (serviceable ? "bg-[#7CB518]" : "bg-[#E91E63]") : "bg-[var(--brand)]"}`} />
           <MapPin className="h-3.5 w-3.5 text-[var(--text-muted)]" />
           <span className="max-w-[180px] truncate tabular-nums">{pincode ?? "Set location"}</span>
@@ -71,20 +71,20 @@ export function LocationMenu() {
 
       {open && (
         <div className="absolute left-0 top-full z-50 mt-3 w-72 rounded-2xl border border-[var(--border)] bg-white p-4 shadow-[var(--shadow-xl)] animate-[fadeIn_0.2s_ease-out]">
-          <p className="text-[12px] font-bold text-[#150726]">Delivery location</p>
-          <p className="text-[11px] text-[#9B8CB5] mt-0.5">Set after login automatically, or pick here.</p>
+          <p className="text-caption font-bold text-[#150726]">Delivery location</p>
+          <p className="text-micro text-[#9B8CB5] mt-0.5">Set after login automatically, or pick here.</p>
 
           <button
             onClick={handleLive}
             disabled={locating}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2D1B69] py-2.5 text-[12px] font-bold text-white hover:bg-[#1E1245] disabled:opacity-50 transition-all"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2D1B69] py-2.5 text-caption font-bold text-white hover:bg-[#1E1245] disabled:opacity-50 transition-all"
           >
             <LocateFixed className="h-4 w-4" /> {locating ? "Detecting..." : "Use my current location"}
           </button>
 
           <div className="my-3 flex items-center gap-2">
             <div className="h-px flex-1 bg-[#F0ECF9]" />
-            <span className="text-[10px] font-bold text-[#9B8CB5]">OR</span>
+            <span className="text-tiny font-bold text-[#9B8CB5]">OR</span>
             <div className="h-px flex-1 bg-[#F0ECF9]" />
           </div>
 
@@ -94,21 +94,21 @@ export function LocationMenu() {
               onChange={(e) => { setManual(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
               inputMode="numeric"
               placeholder="Pincode"
-              className="flex-1 rounded-xl border border-[#DDD6EE] px-3 py-2 text-[13px] font-bold tabular-nums focus:outline-none focus:border-[#2D1B69]"
+              className="flex-1 rounded-xl border border-[#DDD6EE] px-3 py-2 text-body-sm font-bold tabular-nums focus:outline-none focus:border-[#2D1B69]"
             />
-            <button onClick={handleManual} className="rounded-xl bg-[#F0ECF9] px-4 py-2 text-[12px] font-bold text-[#2D1B69] hover:bg-[#E4D8F7]">
+            <button onClick={handleManual} className="rounded-xl bg-[#F0ECF9] px-4 py-2 text-caption font-bold text-[#2D1B69] hover:bg-[#E8E0F7]">
               Set
             </button>
           </div>
 
-          {error && <p className="mt-2 text-[11px] font-semibold text-red-500">{error}</p>}
+          {error && <p className="mt-2 text-micro font-semibold text-red-500">{error}</p>}
           {saved && (
-            <p className="mt-2 flex items-center gap-1 text-[11px] font-bold text-[#7CB518]">
+            <p className="mt-2 flex items-center gap-1 text-micro font-bold text-[#7CB518]">
               <Check className="h-3.5 w-3.5" /> Location saved{pincode && !serviceable ? " — not serving this area yet" : ""}
             </p>
           )}
           {pincode && (
-            <p className="mt-2 text-[11px] text-[#9B8CB5]">
+            <p className="mt-2 text-micro text-[#9B8CB5]">
               Current: <span className="font-bold text-[#150726] tabular-nums">{pincode}</span>{" "}
               <span className={`font-bold ${serviceable ? "text-[#7CB518]" : "text-[#E91E63]"}`}>
                 {serviceable ? "· Serviceable" : "· Not serviceable"}
@@ -116,7 +116,7 @@ export function LocationMenu() {
             </p>
           )}
           {nearest && (
-            <p className="mt-2 flex items-center gap-1 text-[11px] font-bold text-[#2D1B69]">
+            <p className="mt-2 flex items-center gap-1 text-micro font-bold text-[#2D1B69]">
               <Store className="h-3.5 w-3.5" />
               Ships from {nearest.name} · {nearest.distance_km} km away
             </p>

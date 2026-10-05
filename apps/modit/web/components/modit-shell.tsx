@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -317,7 +318,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       <div className="p-4">
                         {recentTerms.length > 0 && (
                           <div className="mb-3">
-                            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Recent</p>
+                            <p className="mb-2 text-micro font-bold uppercase tracking-wider text-[var(--text-muted)]">Recent</p>
                             <div className="flex flex-wrap gap-1.5">
                               {recentTerms.map((term) => (
                                 <button
@@ -332,7 +333,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                             </div>
                           </div>
                         )}
-                        <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Popular</p>
+                        <p className="mb-2 text-micro font-bold uppercase tracking-wider text-[var(--text-muted)]">Popular</p>
                         <div className="flex flex-wrap gap-1.5">
                           {["Cement", "Paint", "Tiles", "Plywood", "LED Lights", "TMT Bars"].map((term) => (
                             <button
@@ -359,9 +360,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                             }}
                             className={`flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-3 transition-colors last:border-0 ${highlightIdx === idx ? "bg-[var(--brand-50)]" : "hover:bg-[var(--bg-subtle)]"}`}
                           >
-                            <div className="h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)] flex-shrink-0">
-                              <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-                            </div>
+                          <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)] flex-shrink-0">
+                            <Image src={product.images[0]} alt={product.name} fill sizes="48px" loading="lazy" draggable={false} className="object-cover" />
+                          </div>
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-sm font-semibold text-[var(--text)]">
                                 <HighlightedText text={product.name} query={searchQuery} markClassName="text-[#5A8010]" />
@@ -371,7 +372,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                             <div className="text-right flex-shrink-0">
                               <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString()}</p>
                               {product.onSale
-                                ? <p className="text-[10px] font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
+                                ? <p className="text-tiny font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
                                 : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
                             </div>
                           </Link>
@@ -418,7 +419,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <Link href="/cart" className="relative rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute right-1 top-1 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-[10px] font-bold text-white">
+                <span className="absolute right-1 top-1 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -482,7 +483,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <Link href="/cart" className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-[9px] font-bold text-white shadow-lg shadow-pink-500/30">
+                <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white shadow-lg shadow-pink-500/30">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -511,7 +512,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`shrink-0 px-5 py-2.5 text-[12px] font-semibold transition-all ${
+                  className={`shrink-0 px-5 py-2.5 text-caption font-semibold transition-all ${
                     isActive
                       ? "text-[#7CB518] bg-[#7CB518]/10 border-b-2 border-[#7CB518]"
                       : "text-white/70 hover:text-white hover:bg-white/10"
@@ -529,7 +530,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <AnimatePresence>
         {showMobileMenu && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] lg:hidden">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-modal lg:hidden">
             <button type="button" className="absolute inset-0 bg-[rgba(20,23,31,0.42)]" onClick={() => setShowMobileMenu(false)} aria-label="Close navigation" />
             <motion.aside
               initial={{ x: -320 }}
@@ -580,7 +581,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <AnimatePresence>
         {(showSearch || showMobileSearch) && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex flex-col lg:hidden" style={{ background: "rgba(21,7,38,0.97)" }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-modal flex flex-col lg:hidden" style={{ background: "rgba(21,7,38,0.97)" }}>
             <div className="flex items-center gap-3 px-4 pt-4 pb-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -599,7 +600,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   </button>
                 )}
               </div>
-              <button onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-[14px] font-semibold">Cancel</button>
+              <button onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-body-md font-semibold">Cancel</button>
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-6">
               {searchResults.length > 0 ? (
@@ -611,21 +612,21 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       onClick={() => { setShowSearch(false); setSearchQuery(""); }}
                       className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white/5"
                     >
-                      <div className="h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
-                        <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                      <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
+                        <Image src={product.images[0]} alt={product.name} fill sizes="40px" loading="lazy" draggable={false} className="object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-[13px] font-semibold text-white">
+                        <p className="truncate text-body-sm font-semibold text-white">
                           <HighlightedText text={product.name} query={searchQuery} />
                         </p>
-                        <p className="text-[11px] text-white/40">{product.category}</p>
+                        <p className="text-micro text-white/40">{product.category}</p>
                       </div>
-                      <p className="text-[13px] font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString()}</p>
+                      <p className="text-body-sm font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString()}</p>
                     </Link>
                   ))}
                   <button
                     onClick={() => submitSearch()}
-                    className="w-full mt-2 py-3 rounded-xl bg-[#7CB518]/10 text-[#7CB518] text-[13px] font-bold hover:bg-[#7CB518]/20 transition-colors"
+                    className="w-full mt-2 py-3 rounded-xl bg-[#7CB518]/10 text-[#7CB518] text-body-sm font-bold hover:bg-[#7CB518]/20 transition-colors"
                   >
                     View all results →
                   </button>
@@ -633,19 +634,19 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               ) : searchQuery.length >= 2 ? (
                 <div className="py-16 text-center">
                   <Search className="h-8 w-8 text-white/20 mx-auto mb-3" />
-                  <p className="text-[13px] text-white/50">No products found for &quot;{searchQuery}&quot;</p>
-                  <p className="text-[11px] text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
+                  <p className="text-body-sm text-white/50">No products found for &quot;{searchQuery}&quot;</p>
+                  <p className="text-micro text-white/30 mt-1">Try searching for cement, paint, or lighting</p>
                 </div>
               ) : (
                 <div className="space-y-6 pt-2">
                   <div>
-                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-wider mb-3">Popular</p>
+                    <p className="text-micro font-bold text-white/30 uppercase tracking-wider mb-3">Popular</p>
                     <div className="flex flex-wrap gap-2">
                       {["Cement", "TMT Bars", "Paint", "Tiles", "Plywood", "LED Lights"].map((term) => (
                         <button
                           key={term}
                           onClick={() => { setSearchQuery(term); }}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[12px] text-white/60 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-colors"
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-caption text-white/60 hover:border-[#7CB518]/40 hover:text-[#7CB518] transition-colors"
                         >
                           {term}
                         </button>
@@ -653,7 +654,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-wider mb-3">Categories</p>
+                    <p className="text-micro font-bold text-white/30 uppercase tracking-wider mb-3">Categories</p>
                     <div className="space-y-1">
                       {categories.slice(0, 6).map((cat) => (
                         <Link
@@ -663,7 +664,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                           className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5 transition-colors"
                         >
                           <CategoryTileIcon slug={cat.slug} className="h-5 w-5 flex-shrink-0 text-[#7CB518]" />
-                          <span className="text-[13px] text-white/60">{cat.name}</span>
+                          <span className="text-body-sm text-white/60">{cat.name}</span>
                         </Link>
                       ))}
                     </div>

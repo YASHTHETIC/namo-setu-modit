@@ -65,7 +65,7 @@ export function SupportChat() {
             <Bot className="h-5 w-5" />
             <div>
               <p className="text-sm font-extrabold">MODIT Support</p>
-              <p className="text-[11px] opacity-80">Instant answers · agent handoff available</p>
+              <p className="text-micro opacity-80">Instant answers · agent handoff available</p>
             </div>
           </div>
 
@@ -105,10 +105,10 @@ export function SupportChat() {
                   <button
                     key={c.id}
                     onClick={() => setActiveId(c.id)}
-                    className="rounded-xl border border-[#EDE9F5] p-3 text-left hover:border-[#2D1B69]"
+                    className="rounded-xl border border-[#F0ECF9] p-3 text-left hover:border-[#2D1B69]"
                   >
                     <p className="text-sm font-bold text-[#2D1B69]">{c.subject}</p>
-                    <p className="text-[11px] capitalize text-[#9B8CB5]">
+                    <p className="text-micro capitalize text-[#9B8CB5]">
                       {c.status} · {new Date(c.created_at).toLocaleDateString("en-IN")}
                     </p>
                   </button>
@@ -129,19 +129,19 @@ export function SupportChat() {
                     className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
                       m.sender === "user"
                         ? "self-end bg-[#2D1B69] text-white"
-                        : "self-start bg-[#F4F1FA] text-[#2D1B69]"
+                        : "self-start bg-[#F7F4FC] text-[#2D1B69]"
                     }`}
                   >
                     {m.body}
                   </div>
                 ))}
                 {postMsg.isPending && (
-                  <div className="self-start rounded-2xl bg-[#F4F1FA] px-3 py-2 text-sm text-[#9B8CB5]">
+                  <div className="self-start rounded-2xl bg-[#F7F4FC] px-3 py-2 text-sm text-[#9B8CB5]">
                     Typing…
                   </div>
                 )}
               </div>
-              <div className="flex gap-2 border-t border-[#EDE9F5] p-3">
+              <div className="flex gap-2 border-t border-[#F0ECF9] p-3">
                 <input
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}

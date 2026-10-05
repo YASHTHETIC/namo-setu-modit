@@ -42,12 +42,12 @@ export function BottomNav() {
               <div className="relative">
                 <item.icon className="h-5 w-5" fill={isActive || (item.isCart && cartCount > 0) ? "currentColor" : "none"} strokeWidth={isActive || (item.isCart && cartCount > 0) ? 0 : 2} />
                 {item.isCart && cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 rounded-full bg-[#E91E63] text-white text-[9px] font-bold flex items-center justify-center px-1 shadow-lg shadow-pink-500/30">
+                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 rounded-full bg-[#E91E63] text-white text-tiny font-bold flex items-center justify-center px-1 shadow-lg shadow-pink-500/30">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </div>
-              <span className="text-[9px] font-semibold">{item.label}</span>
+              <span className="text-tiny font-semibold">{item.label}</span>
             </Link>
           );
         })}

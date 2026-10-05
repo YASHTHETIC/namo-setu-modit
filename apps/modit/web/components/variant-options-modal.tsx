@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { X, Check, ShoppingCart, Palette } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
@@ -47,7 +48,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
 
   return (
     <div
-      className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
+      className="fixed inset-0 z-sheet flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
       onClick={onClose}
     >
       <div
@@ -56,7 +57,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
       >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10">
-          <h3 className="text-[14px] font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
+          <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
             <X className="h-5 w-5 text-[#9B8CB5]" />
           </button>
@@ -71,30 +72,30 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
             return (
               <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors">
                 {product.images[0] && (
-                  <img src={product.images[0]} alt={v.label} loading="lazy" decoding="async" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                  <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-[#150726]">
+                  <p className="text-body-sm font-bold text-[#150726]">
                     {v.label}
-                    <span className="ml-1.5 text-[11px] font-medium text-[#9B8CB5]">{v.unit}</span>
+                    <span className="ml-1.5 text-micro font-medium text-[#9B8CB5]">{v.unit}</span>
                   </p>
-                  <p className="text-[12px] mt-0.5">
+                  <p className="text-caption mt-0.5">
                     {v.mrp > v.price && (
                       <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString()}</span>
                     )}
                     <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString()}</span>
                     {discount > 0 && (
-                      <span className="ml-1.5 text-[10px] font-bold text-[#E91E63]">{discount}% off</span>
+                      <span className="ml-1.5 text-tiny font-bold text-[#E91E63]">{discount}% off</span>
                     )}
                   </p>
                   {v.stockLevel <= 10 && (
-                    <p className="text-[10px] font-bold text-[#FF9800]">Only {v.stockLevel} left</p>
+                    <p className="text-tiny font-bold text-[#FF9800]">Only {v.stockLevel} left</p>
                   )}
                 </div>
                 <button
                   onClick={() => handleAddVariant(v.id)}
                   disabled={v.stockLevel <= 0}
-                  className={`px-5 h-9 rounded-lg text-[12px] font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
+                  className={`px-5 h-9 rounded-lg text-caption font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
                     added
                       ? "bg-[#7CB518] border-[#7CB518] text-white"
                       : "bg-white border-[#7CB518] text-[#5A8010] hover:bg-[#F0F9E8] active:scale-95"
@@ -109,7 +110,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
           {/* Shade / colour list */}
           {shades.length > 0 && (
             <div className="rounded-xl border border-[#F0ECF9] p-3">
-              <p className="text-[12px] font-bold text-[#150726] flex items-center gap-1.5 mb-2">
+              <p className="text-caption font-bold text-[#150726] flex items-center gap-1.5 mb-2">
                 <Palette className="h-3.5 w-3.5 text-[#2D1B69]" /> Select Colour
                 {selectedShade && <span className="font-medium text-[#9B8CB5]">— {selectedShade}</span>}
               </p>
@@ -126,7 +127,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                       className="h-5 w-5 rounded-full border border-black/10 flex-shrink-0"
                       style={{ backgroundColor: sh.code }}
                     />
-                    <span className="text-[12px] font-semibold text-[#150726]">{sh.name}</span>
+                    <span className="text-caption font-semibold text-[#150726]">{sh.name}</span>
                     {selectedShade === sh.name && <Check className="h-4 w-4 text-[#7CB518] ml-auto" />}
                   </button>
                 ))}
@@ -134,7 +135,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
               <button
                 onClick={handleAddShade}
                 disabled={!selectedShade}
-                className={`mt-3 w-full py-3 rounded-xl text-[13px] font-bold transition-all flex items-center justify-center gap-2 ${
+                className={`mt-3 w-full py-3 rounded-xl text-body-sm font-bold transition-all flex items-center justify-center gap-2 ${
                   addedKey === "shade"
                     ? "bg-[#7CB518]/15 text-[#7CB518]"
                     : "bg-[#2D1B69] text-white hover:bg-[#1E1245] active:scale-[0.98] disabled:opacity-40"
@@ -146,7 +147,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
           )}
 
           {variants.length === 0 && shades.length === 0 && (
-            <p className="text-center text-[12px] text-[#9B8CB5] py-4">No options for this product.</p>
+            <p className="text-center text-caption text-[#9B8CB5] py-4">No options for this product.</p>
           )}
         </div>
       </div>

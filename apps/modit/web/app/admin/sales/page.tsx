@@ -32,7 +32,7 @@ export default function AdminSalesPage() {
   const now = Date.now();
   const statusOf = (s: Sale) => {
     if (!s.active) return { label: "Paused", cls: "bg-[#F0ECF9] text-[#9B8CB5]" };
-    if (now < s.startAt) return { label: "Scheduled", cls: "bg-[#FFF4E5] text-[#FF9800]" };
+    if (now < s.startAt) return { label: "Scheduled", cls: "bg-[#FFFBF5] text-[#FF9800]" };
     if (now > s.endAt) return { label: "Ended", cls: "bg-[#F0ECF9] text-[#9B8CB5]" };
     return { label: "LIVE", cls: "bg-[#7CB518] text-white" };
   };
@@ -48,10 +48,10 @@ export default function AdminSalesPage() {
     <div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-[20px] font-extrabold text-[#150726]">Sales & Banners</h1>
-          <p className="text-[12px] text-[#9B8CB5] mt-0.5">Schedule discounts like Blinkit/Zepto — prices drop and revert automatically, banners announce it.</p>
+          <h1 className="text-title-lg font-extrabold text-[#150726]">Sales & Banners</h1>
+          <p className="text-caption text-[#9B8CB5] mt-0.5">Schedule discounts like Blinkit/Zepto — prices drop and revert automatically, banners announce it.</p>
         </div>
-        <button onClick={() => { setEditingId(null); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B]">
+        <button onClick={() => { setEditingId(null); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
           <Plus className="h-4 w-4" /> New sale
         </button>
       </div>
@@ -60,8 +60,8 @@ export default function AdminSalesPage() {
         {sales.length === 0 && (
           <div className="rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
             <Zap className="h-8 w-8 text-[#FF9800] mx-auto mb-2" />
-            <p className="text-[14px] font-bold text-[#150726]">No sales yet</p>
-            <p className="text-[12px] text-[#9B8CB5] mt-1">Create a Diwali sale, monsoon offer or weekend deal — the store announces it automatically.</p>
+            <p className="text-body-md font-bold text-[#150726]">No sales yet</p>
+            <p className="text-caption text-[#9B8CB5] mt-1">Create a Diwali sale, monsoon offer or weekend deal — the store announces it automatically.</p>
           </div>
         )}
         {sales.map((s) => {
@@ -72,16 +72,16 @@ export default function AdminSalesPage() {
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-[14px] font-extrabold text-[#150726]">{s.name}</p>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${st.cls}`}>{st.label}</span>
-                    <span className="rounded-full bg-[#F0ECF9] px-2 py-0.5 text-[10px] font-bold text-[#2D1B69]">
+                    <p className="text-body-md font-extrabold text-[#150726]">{s.name}</p>
+                    <span className={`rounded-full px-2 py-0.5 text-tiny font-black ${st.cls}`}>{st.label}</span>
+                    <span className="rounded-full bg-[#F0ECF9] px-2 py-0.5 text-tiny font-bold text-[#2D1B69]">
                       {s.type === "percent" ? `${s.value}% OFF` : `₹${s.value} OFF`} · {scopeText(s)}
                     </span>
-                    <span className="rounded-full bg-[#F0F9E8] px-2 py-0.5 text-[10px] font-bold text-[#5f8f12]">
+                    <span className="rounded-full bg-[#F0F9E8] px-2 py-0.5 text-tiny font-bold text-[#5a8010]">
                       {affected.toLocaleString()} products affected
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#9B8CB5] mt-1 flex items-center gap-1.5 flex-wrap">
+                  <p className="text-micro text-[#9B8CB5] mt-1 flex items-center gap-1.5 flex-wrap">
                     <CalendarClock className="h-3 w-3" />
                     {new Date(s.startAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     {" → "}
@@ -93,7 +93,7 @@ export default function AdminSalesPage() {
                   <button onClick={() => { toggleSale(s.id); logAdminActivity("sale.toggle", `Sale "${s.name}" ${s.active ? "paused" : "activated"}`); }} title={s.active ? "Pause" : "Activate"} className={`p-2 rounded-lg border transition-all ${s.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                     <Power className="h-3.5 w-3.5" />
                   </button>
-                  <button onClick={() => { setEditingId(s.id); setShowForm(true); }} className="px-3 py-2 rounded-lg bg-[#2D1B69] text-white text-[11px] font-bold hover:bg-[#1E1245]">Edit</button>
+                  <button onClick={() => { setEditingId(s.id); setShowForm(true); }} className="px-3 py-2 rounded-lg bg-[#2D1B69] text-white text-micro font-bold hover:bg-[#1E1245]">Edit</button>
                   <button onClick={() => { if (confirm(`Delete sale "${s.name}"?`)) { deleteSale(s.id); logAdminActivity("sale.delete", `Sale "${s.name}" deleted`); } }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -188,40 +188,40 @@ function SaleForm({ initial, categories, onClose, onSave }: {
     });
   };
 
-  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-[13px] font-semibold focus:outline-none focus:border-[#E91E63]";
+  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#E91E63]";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[15px] font-bold text-[#150726]">{initial ? "Edit sale" : "New sale"}</h2>
+          <h2 className="text-body-lg font-bold text-[#150726]">{initial ? "Edit sale" : "New sale"}</h2>
           <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
         </div>
 
-        <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Sale name</label>
+        <label className="block text-micro font-bold text-[#150726] mb-1.5">Sale name</label>
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Diwali Dhamaka Sale" className={`${field} mb-3`} />
 
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Discount type</label>
+            <label className="block text-micro font-bold text-[#150726] mb-1.5">Discount type</label>
             <div className="grid grid-cols-2 gap-2">
               {(["percent", "flat"] as const).map((t) => (
-                <button key={t} onClick={() => setType(t)} className={`py-2 rounded-lg text-[12px] font-bold border-2 ${type === t ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+                <button key={t} onClick={() => setType(t)} className={`py-2 rounded-lg text-caption font-bold border-2 ${type === t ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                   {t === "percent" ? "% Off" : "₹ Flat"}
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Value {type === "percent" ? "(%)" : "(₹)"}</label>
+            <label className="block text-micro font-bold text-[#150726] mb-1.5">Value {type === "percent" ? "(%)" : "(₹)"}</label>
             <input value={value} onChange={(e) => setValue(e.target.value)} inputMode="numeric" className={field} />
           </div>
         </div>
 
-        <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Applies to</label>
+        <label className="block text-micro font-bold text-[#150726] mb-1.5">Applies to</label>
         <div className="grid grid-cols-3 gap-2 mb-3">
           {((["all", "category", "products"] as const).map((sc) => (
-            <button key={sc} onClick={() => setScope(sc)} className={`py-2 rounded-lg text-[12px] font-bold border-2 capitalize ${scope === sc ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+            <button key={sc} onClick={() => setScope(sc)} className={`py-2 rounded-lg text-caption font-bold border-2 capitalize ${scope === sc ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
               {sc === "all" ? "Entire store" : sc}
             </button>
           )))}
@@ -230,7 +230,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
         {scope === "category" && (
           <div className="flex flex-wrap gap-2 mb-3">
             {categories.map((c) => (
-              <button key={c.slug} onClick={() => toggleCategory(c.slug)} className={`px-3 py-1.5 rounded-full text-[11px] font-bold border-2 ${categorySlugs.includes(c.slug) ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+              <button key={c.slug} onClick={() => toggleCategory(c.slug)} className={`px-3 py-1.5 rounded-full text-micro font-bold border-2 ${categorySlugs.includes(c.slug) ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                 {c.name}
               </button>
             ))}
@@ -241,14 +241,14 @@ function SaleForm({ initial, categories, onClose, onSave }: {
           <div className="mb-3">
             <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Search products to include..." className={`${field} mb-2`} />
             {matchedProducts.map((p) => (
-              <button key={p.id} onClick={() => { if (!productIds.includes(p.id)) setProductIds([...productIds, p.id]); setProductQuery(""); }} className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F7F4FC] text-[12px] font-semibold text-[#150726] border border-transparent hover:border-[#DDD6EE] mb-1">
+              <button key={p.id} onClick={() => { if (!productIds.includes(p.id)) setProductIds([...productIds, p.id]); setProductQuery(""); }} className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F7F4FC] text-caption font-semibold text-[#150726] border border-transparent hover:border-[#DDD6EE] mb-1">
                 + {p.name} <span className="text-[#9B8CB5] font-medium">· ₹{p.price.toLocaleString()}</span>
               </button>
             ))}
             {productIds.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {productIds.map((pid) => (
-                  <span key={pid} className="inline-flex items-center gap-1 rounded-full bg-[#F0ECF9] px-2.5 py-1 text-[10px] font-bold text-[#2D1B69]">
+                  <span key={pid} className="inline-flex items-center gap-1 rounded-full bg-[#F0ECF9] px-2.5 py-1 text-tiny font-bold text-[#2D1B69]">
                     {products.find((p) => p.id === pid)?.name.slice(0, 28) ?? pid}
                     <button onClick={() => setProductIds(productIds.filter((x) => x !== pid))} className="hover:text-[#E91E63]"><X className="h-3 w-3" /></button>
                   </span>
@@ -260,25 +260,25 @@ function SaleForm({ initial, categories, onClose, onSave }: {
 
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Starts at</label>
+            <label className="block text-micro font-bold text-[#150726] mb-1.5">Starts at</label>
             <input type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} className={field} />
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Ends at</label>
+            <label className="block text-micro font-bold text-[#150726] mb-1.5">Ends at</label>
             <input type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} className={field} />
           </div>
         </div>
 
-        <label className="text-[11px] font-bold text-[#150726] mb-1.5 flex items-center gap-1"><Tag className="h-3 w-3" /> Banner headline</label>
+        <label className="text-micro font-bold text-[#150726] mb-1.5 flex items-center gap-1"><Tag className="h-3 w-3" /> Banner headline</label>
         <input value={bannerTitle} onChange={(e) => setBannerTitle(e.target.value)} placeholder="Auto-filled from sale name if empty" className={`${field} mb-3`} />
-        <label className="block text-[11px] font-bold text-[#150726] mb-1.5">Banner subtext</label>
+        <label className="block text-micro font-bold text-[#150726] mb-1.5">Banner subtext</label>
         <input value={bannerSubtitle} onChange={(e) => setBannerSubtitle(e.target.value)} placeholder="Auto-filled if empty" className={`${field} mb-3`} />
 
-        {error && <p className="text-[11px] text-red-500 font-semibold mb-3">{error}</p>}
+        {error && <p className="text-micro text-red-500 font-semibold mb-3">{error}</p>}
 
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-[12px] font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
-          <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-[12px] font-bold hover:bg-[#C2185B]">{initial ? "Save changes" : "Launch sale"}</button>
+          <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
+          <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">{initial ? "Save changes" : "Launch sale"}</button>
         </div>
       </div>
     </div>

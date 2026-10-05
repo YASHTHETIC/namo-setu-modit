@@ -227,12 +227,12 @@ export default function RolesPage() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {role.permissions?.slice(0, 3).map((p) => (
-                          <Badge key={p} variant="info" className="text-[10px]">
+                          <Badge key={p} variant="info" className="text-tiny">
                             {p}
                           </Badge>
                         ))}
                         {(role.permissions?.length ?? 0) > 3 && (
-                          <Badge variant="default" className="text-[10px]">
+                          <Badge variant="default" className="text-tiny">
                             +{(role.permissions?.length ?? 0) - 3} more
                           </Badge>
                         )}

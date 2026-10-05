@@ -142,7 +142,7 @@ export function ReviewForm({ targetType, targetId, onSubmitted }: ReviewFormProp
             Submit Review
           </Button>
           {(rating === 0 || !title.trim()) && !submitReview.isPending && (
-            <p className="mt-2 text-[11px] text-[var(--text-muted)]">
+            <p className="mt-2 text-micro text-[var(--text-muted)]">
               Select a star rating and add a title to submit your review.
             </p>
           )}

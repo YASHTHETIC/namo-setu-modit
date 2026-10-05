@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, GitCompareArrows } from "lucide-react";
 import { useComparisonStore } from "@/lib/comparison-store";
@@ -21,7 +22,7 @@ export function ComparisonBar() {
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
             {items.map((product) => (
               <div key={product.id} className="relative flex-shrink-0">
-                <img src={product.images[0]} alt="" className="h-10 w-10 rounded-lg object-cover bg-white/10 border border-white/20" />
+                <Image src={product.images[0]} alt="" width={40} height={40} loading="lazy" className="h-10 w-10 rounded-lg object-cover bg-white/10 border border-white/20" />
                 <button
                   onClick={() => removeFromCompare(product.id)}
                   className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#E91E63] flex items-center justify-center"
@@ -32,17 +33,17 @@ export function ComparisonBar() {
             ))}
             {items.length < 4 && (
               <div className="h-10 w-10 rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-[10px] text-white/30">+</span>
+                <span className="text-tiny text-white/30">+</span>
               </div>
             )}
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={clearCompare} className="text-[10px] text-white/40 hover:text-[#E91E63] transition-colors">
+            <button onClick={clearCompare} className="text-tiny text-white/40 hover:text-[#E91E63] transition-colors">
               Clear
             </button>
             <Link
               href="/compare"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#7CB518] text-white text-[11px] font-bold hover:bg-[#6A9C14] transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#7CB518] text-white text-micro font-bold hover:bg-[#6A9C14] transition-all"
             >
               <GitCompareArrows className="h-3 w-3" />
               Compare ({items.length})

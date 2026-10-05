@@ -74,7 +74,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           ) : null}
         </Link>
         {discountPct > 0 && (
-          <span className="absolute top-1.5 left-1.5 rounded-md bg-[#E91E63] px-1.5 py-0.5 text-[9px] font-black text-white">
+          <span className="absolute top-1.5 left-1.5 rounded-md bg-[#E91E63] px-1.5 py-0.5 text-tiny font-black text-white">
             {discountPct}% OFF
           </span>
         )}
@@ -88,14 +88,14 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
 
         {/* Overlapping unit + ADD row */}
         <div className="absolute -bottom-4 left-2 right-2 flex items-end justify-between gap-1">
-          <span className="rounded-md bg-white px-1.5 py-1 text-[10px] font-bold text-[#150726] shadow-md border border-[#EDE7F6] whitespace-nowrap">
+          <span className="rounded-md bg-white px-1.5 py-1 text-tiny font-bold text-[#150726] shadow-md border border-[#EDE7F6] whitespace-nowrap">
             {product.unit}
           </span>
           {qty === 0 ? (
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
               disabled={blocked}
-              className="rounded-lg bg-white px-5 py-1.5 text-[12px] font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
+              className="rounded-lg bg-white px-5 py-1.5 text-caption font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
             >
               {blocked ? "N/A" : "ADD"}
             </button>
@@ -103,15 +103,15 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-md overflow-hidden">
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); stepDown(product.id, stepLine?.variantId); }}
-                className="px-2.5 py-1.5 text-[14px] font-black leading-none"
+                className="px-2.5 py-1.5 text-body-md font-black leading-none"
                 aria-label="Decrease"
               >
                 −
               </button>
-              <span className="px-1 text-[12px] font-black tabular-nums min-w-[18px] text-center">{qty}</span>
+              <span className="px-1 text-caption font-black tabular-nums min-w-[18px] text-center">{qty}</span>
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
-                className="px-2.5 py-1.5 text-[14px] font-black leading-none"
+                className="px-2.5 py-1.5 text-body-md font-black leading-none"
                 aria-label="Increase"
               >
                 +
@@ -126,49 +126,49 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         {optLabel ? (
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="self-end -mt-1 text-[10px] font-bold text-[#2D7B2D]"
+            className="self-end -mt-1 text-tiny font-bold text-[#2D7B2D]"
           >
             {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
           </button>
         ) : <span className="h-[14px]" />}
-        {unitRate && <p className="text-[10px] text-[#6B5B83]">{unitRate}</p>}
+        {unitRate && <p className="text-tiny text-[#6B5B83]">{unitRate}</p>}
         <div className="flex items-baseline gap-1 mt-0.5">
-          <span className="text-[15px] font-black text-[#150726]">₹{product.price.toLocaleString()}</span>
+          <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString()}</span>
           {product.mrp > product.price && (
-            <span className="text-[10px] text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>
+            <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>
           )}
         </div>
         {discountAmt > 0 && (
-          <p className="text-[10px] font-bold text-[#2D7B2D]">
+          <p className="text-tiny font-bold text-[#2D7B2D]">
             ₹{discountAmt} OFF{discountPct > 0 ? ` (${discountPct}% OFF on MRP)` : ""}
           </p>
         )}
         <Link href={`/products/${product.id}`}>
-          <p className="text-[11px] font-semibold text-[#150726] leading-tight line-clamp-2 mt-0.5 min-h-[28px]">{product.name}</p>
+          <p className="text-micro font-semibold text-[#150726] leading-tight line-clamp-2 mt-0.5 min-h-[28px]">{product.name}</p>
         </Link>
         <div className="flex items-center gap-0.5 mt-1">
           <span className="flex items-center gap-[1px]">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`h-2 w-2 ${i < stars ? "fill-[#E8A800] text-[#E8A800]" : "fill-[#E0D8EE] text-[#E0D8EE]"}`} />
+              <Star key={i} className={`h-2 w-2 ${i < stars ? "fill-[#E8A800] text-[#E8A800]" : "fill-[#DDD6EE] text-[#DDD6EE]"}`} />
             ))}
           </span>
-          <span className="text-[9px] text-[#9B8CB5] ml-0.5">{product.reviewCount.toLocaleString()}</span>
+          <span className="text-tiny text-[#9B8CB5] ml-0.5">{product.reviewCount.toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="flex items-center gap-0.5 text-[9px] font-semibold text-[#6B5B83]">
+          <span className="flex items-center gap-0.5 text-tiny font-semibold text-[#6B5B83]">
             <Clock className="h-2 w-2" /> {product.deliveryDays <= 1 ? "Tomorrow" : `${product.deliveryDays} days`}
           </span>
           {product.stockLevel <= 10 && (
-            <span className="text-[9px] font-black text-[#E91E63] border border-[#E91E63]/40 rounded px-1">
+            <span className="text-tiny font-black text-[#E91E63] border border-[#E91E63]/40 rounded px-1">
               {product.stockLevel} left
             </span>
           )}
           {blocked && (
-            <span className="text-[9px] font-black text-[#E91E63]">Unavailable in your area</span>
+            <span className="text-tiny font-black text-[#E91E63]">Unavailable in your area</span>
           )}
         </div>
         {product.onSale && product.saleName && (
-          <span className="mt-1 self-start rounded bg-[#7CB518] px-1.5 py-0.5 text-[8px] font-black text-white uppercase">
+          <span className="mt-1 self-start rounded bg-[#7CB518] px-1.5 py-0.5 text-tiny font-black text-white uppercase">
             {product.saleName}
           </span>
         )}

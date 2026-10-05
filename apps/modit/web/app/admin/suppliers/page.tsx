@@ -22,8 +22,8 @@ function ScoreBar({ label, pct, display }: { label: string; pct: number; display
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{label}</span>
-        <span className="text-[11px] font-extrabold text-white tabular-nums">{display}</span>
+        <span className="text-tiny font-bold text-white/40 uppercase tracking-widest">{label}</span>
+        <span className="text-micro font-extrabold text-white tabular-nums">{display}</span>
       </div>
       <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
         <div
@@ -31,10 +31,10 @@ function ScoreBar({ label, pct, display }: { label: string; pct: number; display
           style={{
             width: `${Math.min(100, Math.max(0, pct))}%`,
             background: pct >= 90
-              ? "linear-gradient(90deg,#7CB518,#a4e635)"
+              ? "linear-gradient(90deg,#7CB518,#7cb518)"
               : pct >= 70
-                ? "linear-gradient(90deg,#00BCD4,#4de3ff)"
-                : "linear-gradient(90deg,#E91E63,#ff6b9d)",
+                ? "linear-gradient(90deg,#00BCD4,#00bcd4)"
+                : "linear-gradient(90deg,#E91E63,#e91e63)",
           }}
         />
       </div>
@@ -43,10 +43,10 @@ function ScoreBar({ label, pct, display }: { label: string; pct: number; display
 }
 
 const STATUS_STYLE: Record<SupplierStatus, { dot: string; ring: string; text: string; chip: string }> = {
-  verified: { dot: "bg-[#7CB518]", ring: "ring-[#7CB518]/30", text: "text-[#7CB518]", chip: "bg-[#7CB518]/15 text-[#a4e635] border-[#7CB518]/30" },
-  pending: { dot: "bg-[#FF9800]", ring: "ring-[#FF9800]/30", text: "text-[#FF9800]", chip: "bg-[#FF9800]/15 text-[#ffb020] border-[#FF9800]/30" },
-  paused: { dot: "bg-[#00BCD4]", ring: "ring-[#00BCD4]/30", text: "text-[#00BCD4]", chip: "bg-[#00BCD4]/15 text-[#4de3ff] border-[#00BCD4]/30" },
-  rejected: { dot: "bg-[#E91E63]", ring: "ring-[#E91E63]/30", text: "text-[#E91E63]", chip: "bg-[#E91E63]/15 text-[#ff6b9d] border-[#E91E63]/30" },
+  verified: { dot: "bg-[#7CB518]", ring: "ring-[#7CB518]/30", text: "text-[#7CB518]", chip: "bg-[#7CB518]/15 text-[#7cb518] border-[#7CB518]/30" },
+  pending: { dot: "bg-[#FF9800]", ring: "ring-[#FF9800]/30", text: "text-[#FF9800]", chip: "bg-[#FF9800]/15 text-[#ff9800] border-[#FF9800]/30" },
+  paused: { dot: "bg-[#00BCD4]", ring: "ring-[#00BCD4]/30", text: "text-[#00BCD4]", chip: "bg-[#00BCD4]/15 text-[#00bcd4] border-[#00BCD4]/30" },
+  rejected: { dot: "bg-[#E91E63]", ring: "ring-[#E91E63]/30", text: "text-[#E91E63]", chip: "bg-[#E91E63]/15 text-[#e91e63] border-[#E91E63]/30" },
 };
 
 export default function AdminSuppliersPage() {
@@ -123,28 +123,28 @@ export default function AdminSuppliersPage() {
     <div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-[20px] font-extrabold text-[#150726] flex items-center gap-2">
+          <h1 className="text-title-lg font-extrabold text-[#150726] flex items-center gap-2">
             <Building2 className="h-5 w-5 text-[#2D1B69]" /> Supplier Command
           </h1>
-          <p className="text-[12px] text-[#9B8CB5] mt-0.5">Verify, pause or onboard suppliers — pausing hides their products from the store instantly.</p>
+          <p className="text-caption text-[#9B8CB5] mt-0.5">Verify, pause or onboard suppliers — pausing hides their products from the store instantly.</p>
         </div>
-        <button onClick={() => { setFormError(""); setShowAdd(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245]">
+        <button onClick={() => { setFormError(""); setShowAdd(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]">
           <Plus className="h-4 w-4" /> Onboard supplier
         </button>
       </div>
 
       {/* KPI strip */}
-      <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-5 rounded-2xl p-4" style={{ background: "linear-gradient(135deg,#150726 0%,#2D1B69 60%,#1E0F4A 100%)" }}>
+      <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-5 rounded-2xl p-4" style={{ background: "linear-gradient(135deg,#150726 0%,#2D1B69 60%,#150726 100%)" }}>
         {[
           { label: "Suppliers", value: stats.total, accent: "#ffffff" },
-          { label: "Verified", value: stats.verified, accent: "#a4e635" },
-          { label: "Pending", value: stats.pending, accent: "#ffb020" },
-          { label: "Paused", value: stats.paused, accent: "#4de3ff" },
-          { label: "Avg on-time", value: `${stats.avgOnTime}%`, accent: "#a4e635" },
+          { label: "Verified", value: stats.verified, accent: "#7cb518" },
+          { label: "Pending", value: stats.pending, accent: "#ff9800" },
+          { label: "Paused", value: stats.paused, accent: "#00bcd4" },
+          { label: "Avg on-time", value: `${stats.avgOnTime}%`, accent: "#7cb518" },
         ].map((k) => (
           <div key={k.label} className="rounded-xl bg-white/5 border border-white/10 px-3 py-2.5">
-            <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{k.label}</p>
-            <p className="text-[22px] font-black tabular-nums" style={{ color: k.accent }}>{k.value}</p>
+            <p className="text-tiny font-bold text-white/40 uppercase tracking-widest">{k.label}</p>
+            <p className="text-title-lg font-black tabular-nums" style={{ color: k.accent }}>{k.value}</p>
           </div>
         ))}
       </div>
@@ -157,14 +157,14 @@ export default function AdminSuppliersPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search supplier, code, brand..."
-            className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-[13px] focus:outline-none focus:border-[#2D1B69]"
+            className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-body-sm focus:outline-none focus:border-[#2D1B69]"
           />
         </div>
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setFilter(t.id)}
-            className={`px-3 py-2 rounded-xl text-[11px] font-bold border-2 transition-all ${filter === t.id ? "border-[#2D1B69] bg-[#2D1B69] text-white" : "border-[#DDD6EE] bg-white text-[#9B8CB5] hover:border-[#C9B8E8]"}`}
+            className={`px-3 py-2 rounded-xl text-micro font-bold border-2 transition-all ${filter === t.id ? "border-[#2D1B69] bg-[#2D1B69] text-white" : "border-[#DDD6EE] bg-white text-[#9B8CB5] hover:border-[#C9B8E8]"}`}
           >
             {t.label} · {t.count}
           </button>
@@ -187,7 +187,7 @@ export default function AdminSuppliersPage() {
         ))}
       </div>
       {filtered.length === 0 && (
-        <p className="text-center text-[13px] text-[#9B8CB5] py-10">No suppliers match this view.</p>
+        <p className="text-center text-body-sm text-[#9B8CB5] py-10">No suppliers match this view.</p>
       )}
 
       {/* Add modal */}
@@ -195,7 +195,7 @@ export default function AdminSuppliersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={() => setShowAdd(false)}>
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[15px] font-bold text-[#150726]">Onboard supplier</h2>
+              <h2 className="text-body-lg font-bold text-[#150726]">Onboard supplier</h2>
               <button onClick={() => setShowAdd(false)} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
             </div>
             <div className="space-y-3">
@@ -206,20 +206,20 @@ export default function AdminSuppliersPage() {
                 { k: "city", label: "City", ph: "e.g. Delhi NCR" },
               ] as const).map((f) => (
                 <div key={f.k}>
-                  <label className="block text-[11px] font-bold text-[#150726] mb-1.5">{f.label}</label>
+                  <label className="block text-micro font-bold text-[#150726] mb-1.5">{f.label}</label>
                   <input
                     value={form[f.k]}
                     onChange={(e) => setForm({ ...form, [f.k]: e.target.value })}
                     placeholder={f.ph}
-                    className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-[13px] font-semibold focus:outline-none focus:border-[#2D1B69]"
+                    className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#2D1B69]"
                   />
                 </div>
               ))}
             </div>
-            {formError && <p className="text-[11px] text-red-500 font-semibold mt-3">{formError}</p>}
+            {formError && <p className="text-micro text-red-500 font-semibold mt-3">{formError}</p>}
             <div className="mt-4 flex justify-end gap-2">
-              <button onClick={() => setShowAdd(false)} className="px-4 py-2.5 rounded-lg text-[12px] font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
-              <button onClick={handleAdd} className="px-5 py-2.5 rounded-lg bg-[#2D1B69] text-white text-[12px] font-bold hover:bg-[#1E1245]">Add as pending</button>
+              <button onClick={() => setShowAdd(false)} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
+              <button onClick={handleAdd} className="px-5 py-2.5 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]">Add as pending</button>
             </div>
           </div>
         </div>
@@ -244,29 +244,29 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
   const initials = s.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-[#2D1B69]/40" style={{ background: "linear-gradient(160deg,#150726 0%,#241245 55%,#150726 100%)", boxShadow: "0 8px 32px rgba(21,7,38,0.35)" }}>
+    <div className="rounded-2xl overflow-hidden border border-[#2D1B69]/40" style={{ background: "linear-gradient(160deg,#150726 0%,#150726 55%,#150726 100%)", boxShadow: "0 8px 32px rgba(21,7,38,0.35)" }}>
       {/* top row */}
       <div className="p-4">
         <div className="flex items-start gap-3">
           <div className="relative flex-shrink-0">
-            <div className="h-12 w-12 rounded-2xl flex items-center justify-center text-[15px] font-black text-white" style={{ background: "linear-gradient(135deg,#7CB518,#00BCD4)" }}>
+            <div className="h-12 w-12 rounded-2xl flex items-center justify-center text-body-lg font-black text-white" style={{ background: "linear-gradient(135deg,#7CB518,#00BCD4)" }}>
               {initials}
             </div>
             <span className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-[#150726] ${st.dot} ring-2 ${st.ring}`} />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-[14px] font-extrabold text-white truncate">{s.name}</p>
-              <span className={`rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border ${st.chip}`}>{SUPPLIER_STATUS_LABEL[s.status]}</span>
+              <p className="text-body-md font-extrabold text-white truncate">{s.name}</p>
+              <span className={`rounded-full px-2 py-0.5 text-tiny font-black uppercase tracking-wider border ${st.chip}`}>{SUPPLIER_STATUS_LABEL[s.status]}</span>
             </div>
-            <p className="text-[11px] text-white/50 mt-0.5 flex items-center gap-1.5">
+            <p className="text-micro text-white/50 mt-0.5 flex items-center gap-1.5">
               <span className="font-mono font-bold text-white/70">{s.code}</span> ·
               <MapPin className="h-3 w-3" /> {s.city} · since {s.since}
             </p>
           </div>
-          <div className="flex items-center gap-0.5 text-[#ffb020]">
-            <Star className="h-3.5 w-3.5 fill-[#ffb020]" />
-            <span className="text-[14px] font-black text-white tabular-nums">{s.scorecard.rating.toFixed(1)}</span>
+          <div className="flex items-center gap-0.5 text-[#ff9800]">
+            <Star className="h-3.5 w-3.5 fill-[#ff9800]" />
+            <span className="text-body-md font-black text-white tabular-nums">{s.scorecard.rating.toFixed(1)}</span>
           </div>
         </div>
 
@@ -275,25 +275,25 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
           <ScoreBar label="On-time" pct={s.scorecard.onTime} display={`${s.scorecard.onTime}%`} />
           <ScoreBar label="Quality claims" pct={100 - s.scorecard.claims * 8} display={`${s.scorecard.claims}%`} />
         </div>
-        <div className="mt-2 flex items-center gap-4 text-[10px] text-white/50">
+        <div className="mt-2 flex items-center gap-4 text-tiny text-white/50">
           <span className="flex items-center gap-1"><Clock3 className="h-3 w-3" /> {s.scorecard.responseHrs}h response</span>
           <span>{s.scorecard.reviews.toLocaleString()} reviews</span>
-          {s.status === "verified" && <span className="flex items-center gap-1 text-[#a4e635] font-bold"><ShieldCheck className="h-3 w-3" /> BIS/ISI compliant</span>}
+          {s.status === "verified" && <span className="flex items-center gap-1 text-[#7cb518] font-bold"><ShieldCheck className="h-3 w-3" /> BIS/ISI compliant</span>}
         </div>
 
         {/* KPI strip */}
         <div className="mt-3 grid grid-cols-3 gap-2">
           <div className="rounded-xl bg-white/5 border border-white/10 px-2.5 py-2 text-center">
-            <p className="text-[15px] font-black text-white tabular-nums">{catalog.length}</p>
-            <p className="text-[8px] font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><Package className="h-2.5 w-2.5" /> Products</p>
+            <p className="text-body-lg font-black text-white tabular-nums">{catalog.length}</p>
+            <p className="text-tiny font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><Package className="h-2.5 w-2.5" /> Products</p>
           </div>
           <div className="rounded-xl bg-white/5 border border-white/10 px-2.5 py-2 text-center">
-            <p className="text-[15px] font-black text-white tabular-nums">₹{(stockValue / 100000).toFixed(1)}L</p>
-            <p className="text-[8px] font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><IndianRupee className="h-2.5 w-2.5" /> Stock value</p>
+            <p className="text-body-lg font-black text-white tabular-nums">₹{(stockValue / 100000).toFixed(1)}L</p>
+            <p className="text-tiny font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><IndianRupee className="h-2.5 w-2.5" /> Stock value</p>
           </div>
           <div className="rounded-xl bg-white/5 border border-white/10 px-2.5 py-2 text-center">
-            <p className={`text-[15px] font-black tabular-nums ${lowCount > 0 ? "text-[#ffb020]" : "text-white"}`}>{lowCount}</p>
-            <p className="text-[8px] font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><AlertTriangle className="h-2.5 w-2.5" /> Low stock</p>
+            <p className={`text-body-lg font-black tabular-nums ${lowCount > 0 ? "text-[#ff9800]" : "text-white"}`}>{lowCount}</p>
+            <p className="text-tiny font-bold text-white/40 uppercase tracking-widest flex items-center justify-center gap-1"><AlertTriangle className="h-2.5 w-2.5" /> Low stock</p>
           </div>
         </div>
 
@@ -301,30 +301,30 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
         <div className="mt-3 flex flex-wrap gap-2">
           {s.status === "pending" && (
             <>
-              <button onClick={() => onAct(s, "verified")} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7CB518] text-white text-[11px] font-bold hover:bg-[#6aa514] shadow-lg shadow-green-500/25">
+              <button onClick={() => onAct(s, "verified")} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7CB518] text-white text-micro font-bold hover:bg-[#5a8010] shadow-lg shadow-green-500/25">
                 <Check className="h-3.5 w-3.5" /> Verify & go live
               </button>
-              <button onClick={() => { if (confirm(`Reject ${s.name}?`)) onAct(s, "rejected"); }} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E91E63]/40 text-[#ff6b9d] text-[11px] font-bold hover:bg-[#E91E63]/15">
+              <button onClick={() => { if (confirm(`Reject ${s.name}?`)) onAct(s, "rejected"); }} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E91E63]/40 text-[#e91e63] text-micro font-bold hover:bg-[#E91E63]/15">
                 <Ban className="h-3.5 w-3.5" /> Reject
               </button>
             </>
           )}
           {s.status === "verified" && (
-            <button onClick={() => { if (confirm(`Pause ${s.name}? Their ${catalog.length} products will hide from the store.`)) onAct(s, "paused"); }} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#00BCD4]/40 text-[#4de3ff] text-[11px] font-bold hover:bg-[#00BCD4]/15">
+            <button onClick={() => { if (confirm(`Pause ${s.name}? Their ${catalog.length} products will hide from the store.`)) onAct(s, "paused"); }} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#00BCD4]/40 text-[#00bcd4] text-micro font-bold hover:bg-[#00BCD4]/15">
               <Pause className="h-3.5 w-3.5" /> Pause supplier
             </button>
           )}
           {s.status === "paused" && (
-            <button onClick={() => onAct(s, "verified")} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7CB518] text-white text-[11px] font-bold hover:bg-[#6aa514] shadow-lg shadow-green-500/25">
+            <button onClick={() => onAct(s, "verified")} className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7CB518] text-white text-micro font-bold hover:bg-[#5a8010] shadow-lg shadow-green-500/25">
               <Play className="h-3.5 w-3.5" /> Resume — restore {catalog.length} products
             </button>
           )}
           {s.status === "rejected" && (
-            <button onClick={() => onAct(s, "pending")} className="px-3.5 py-2 rounded-xl border border-white/20 text-white/70 text-[11px] font-bold hover:bg-white/10">
+            <button onClick={() => onAct(s, "pending")} className="px-3.5 py-2 rounded-xl border border-white/20 text-white/70 text-micro font-bold hover:bg-white/10">
               Reconsider → pending
             </button>
           )}
-          <button onClick={onToggle} className="ml-auto flex items-center gap-1 px-3 py-2 rounded-xl text-[11px] font-bold text-white/60 hover:text-white hover:bg-white/10">
+          <button onClick={onToggle} className="ml-auto flex items-center gap-1 px-3 py-2 rounded-xl text-micro font-bold text-white/60 hover:text-white hover:bg-white/10">
             {expanded ? "Less" : "Products & notes"} <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
           </button>
         </div>
@@ -333,26 +333,26 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
       {/* expanded */}
       {expanded && (
         <div className="border-t border-white/10 px-4 py-3 bg-black/20">
-          <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-2">Catalog under this supplier ({catalog.length})</p>
+          <p className="text-tiny font-bold text-white/40 uppercase tracking-widest mb-2">Catalog under this supplier ({catalog.length})</p>
           <div className="space-y-1.5 max-h-44 overflow-y-auto">
             {catalog.slice(0, 8).map((p) => (
-              <div key={p.id} className="flex items-center justify-between gap-2 text-[11px]">
+              <div key={p.id} className="flex items-center justify-between gap-2 text-micro">
                 <span className="text-white/80 font-semibold truncate">{p.name}</span>
                 <span className="text-white/50 tabular-nums whitespace-nowrap">₹{p.price.toLocaleString()} · {p.stockLevel} pcs</span>
               </div>
             ))}
-            {catalog.length === 0 && <p className="text-[11px] text-white/40">No catalog products match brand “{s.brand}”.</p>}
-            {catalog.length > 8 && <p className="text-[10px] text-white/40">+{catalog.length - 8} more in catalog</p>}
+            {catalog.length === 0 && <p className="text-micro text-white/40">No catalog products match brand “{s.brand}”.</p>}
+            {catalog.length > 8 && <p className="text-tiny text-white/40">+{catalog.length - 8} more in catalog</p>}
           </div>
-          <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mt-3 mb-1.5 flex items-center gap-1"><MessageSquareText className="h-3 w-3" /> Internal notes</p>
+          <p className="text-tiny font-bold text-white/40 uppercase tracking-widest mt-3 mb-1.5 flex items-center gap-1"><MessageSquareText className="h-3 w-3" /> Internal notes</p>
           <div className="flex gap-2">
             <input
               value={notesDraft}
               onChange={(e) => onNotesChange(e.target.value)}
               placeholder="e.g. GSTIN verified, audit pending..."
-              className="flex-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-2 text-[11px] text-white placeholder:text-white/25 focus:outline-none focus:border-[#7CB518]"
+              className="flex-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-2 text-micro text-white placeholder:text-white/25 focus:outline-none focus:border-[#7CB518]"
             />
-            <button onClick={onNotesSave} className="px-3 py-2 rounded-lg bg-white/10 text-[11px] font-bold text-white hover:bg-[#7CB518]">Save</button>
+            <button onClick={onNotesSave} className="px-3 py-2 rounded-lg bg-white/10 text-micro font-bold text-white hover:bg-[#7CB518]">Save</button>
           </div>
         </div>
       )}

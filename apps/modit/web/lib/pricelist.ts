@@ -24,7 +24,7 @@ export function renderPricelistHtml(title: string, subtitle: string, rows: Price
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:right;">${r.price.toLocaleString("en-IN")}</td>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:right;">${r.mrp != null ? r.mrp.toLocaleString("en-IN") : "—"}</td>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;">${r.bulkPrice != null && r.bulkMinQty != null ? `₹${r.bulkPrice.toLocaleString("en-IN")} @ ${r.bulkMinQty}+` : "—"}</td>
-        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;color:${r.inStock ? "#6aa514" : "#d33"};font-weight:bold;">${r.inStock ? "In Stock" : "Sold Out"}</td>
+        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;color:${r.inStock ? "#5a8010" : "#e91e63"};font-weight:bold;">${r.inStock ? "In Stock" : "Sold Out"}</td>
       </tr>`
     )
     .join("");
@@ -35,15 +35,15 @@ export function renderPricelistHtml(title: string, subtitle: string, rows: Price
 <p style="color:#9B8CB5;font-size:11px;margin:0 0 20px;">Generated on ${generatedAt} • Prices in INR • GST extra as applicable • Contact support@modit.in for volume pricing</p>
 <table style="border-collapse:collapse;width:100%;">
 <thead><tr style="background:#2D1B69;color:white;">
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">#</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Product</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Brand</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Category</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Unit</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;text-align:right;">Price</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;text-align:right;">MRP</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Bulk Rate</th>
-<th style="padding:8px;border:1px solid #1E0F4A;font-size:11px;">Status</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">#</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Product</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Brand</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Category</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Unit</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;text-align:right;">Price</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;text-align:right;">MRP</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Bulk Rate</th>
+<th style="padding:8px;border:1px solid #150726;font-size:11px;">Status</th>
 </tr></thead>
 <tbody>${body}</tbody>
 </table>

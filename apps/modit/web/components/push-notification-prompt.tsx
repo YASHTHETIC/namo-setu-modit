@@ -57,7 +57,7 @@ export function PushNotificationPrompt() {
   if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-[90] max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">
+    <div className="fixed bottom-20 left-4 right-4 z-sheet max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">
       <div className="bg-[#150726] rounded-2xl border border-white/10 p-4 shadow-2xl shadow-black/40">
         {confirming ? (
           <div className="flex items-start gap-3">
@@ -65,8 +65,8 @@ export function PushNotificationPrompt() {
               <Check className="h-5 w-5 text-[#7CB518]" />
             </div>
             <div className="flex-1">
-              <p className="text-[13px] font-bold text-white">Notifications on</p>
-              <p className="text-[11px] text-white/50 mt-0.5">{status || "Setting up..."}</p>
+              <p className="text-body-sm font-bold text-white">Notifications on</p>
+              <p className="text-micro text-white/50 mt-0.5">{status || "Setting up..."}</p>
             </div>
           </div>
         ) : (
@@ -79,13 +79,13 @@ export function PushNotificationPrompt() {
             <BellRing className="h-5 w-5 text-[#E91E63]" />
           </div>
           <div className="flex-1">
-            <p className="text-[13px] font-bold text-white">Stay Updated</p>
-            <p className="text-[11px] text-white/50 mt-0.5">Get notified about order status, flash deals, and delivery updates</p>
+            <p className="text-body-sm font-bold text-white">Stay Updated</p>
+            <p className="text-micro text-white/50 mt-0.5">Get notified about order status, flash deals, and delivery updates</p>
             <div className="flex gap-2 mt-3">
-              <button onClick={handleAllow} className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#7CB518] text-white text-[11px] font-bold hover:bg-[#6A9C14] transition-all">
+              <button onClick={handleAllow} className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#7CB518] text-white text-micro font-bold hover:bg-[#6A9C14] transition-all">
                 <Check className="h-3 w-3" /> Enable
               </button>
-              <button onClick={handleDismiss} className="px-4 py-2 rounded-full bg-white/10 text-white/50 text-[11px] font-semibold hover:bg-white/15 transition-all">
+              <button onClick={handleDismiss} className="px-4 py-2 rounded-full bg-white/10 text-white/50 text-micro font-semibold hover:bg-white/15 transition-all">
                 Later
               </button>
             </div>

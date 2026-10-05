@@ -69,7 +69,7 @@ export function ProductRail({
       <div className="section-header">
         <h2>{title}</h2>
         {seeAllHref && (
-          <Link href={seeAllHref} className={`${colorMap[accentColor]} text-[13px] font-semibold flex items-center gap-1 hover:gap-2 transition-all`}>
+          <Link href={seeAllHref} className={`${colorMap[accentColor]} text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all`}>
             See all <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         )}

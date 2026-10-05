@@ -37,8 +37,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center">
             <Lock className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-[18px] font-extrabold text-[#150726]">Staff access only</h1>
-          <p className="text-[12px] text-[#9B8CB5] mt-1">This panel controls live prices, sales and orders.</p>
+          <h1 className="text-title-md font-extrabold text-[#150726]">Staff access only</h1>
+          <p className="text-caption text-[#9B8CB5] mt-1">This panel controls live prices, sales and orders.</p>
           <input
             value={pin}
             onChange={(e) => { setPin(e.target.value.replace(/\D/g, "").slice(0, 8)); setPinError(""); }}
@@ -52,17 +52,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             type="password"
             placeholder="Enter staff PIN"
             autoFocus
-            className="mt-5 w-full rounded-xl border-2 border-[#DDD6EE] px-4 py-3 text-center text-[16px] font-extrabold tracking-[0.4em] focus:outline-none focus:border-[#2D1B69]"
+            className="mt-5 w-full rounded-xl border-2 border-[#DDD6EE] px-4 py-3 text-center text-body-lg font-extrabold tracking-[0.4em] focus:outline-none focus:border-[#2D1B69]"
           />
-          {pinError && <p className="mt-2 text-[11px] font-bold text-red-500">{pinError}</p>}
+          {pinError && <p className="mt-2 text-micro font-bold text-red-500">{pinError}</p>}
           <button
             onClick={() => { if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel"); else setPinError("Incorrect PIN. Try again."); }}
-            className="mt-3 w-full h-12 rounded-xl bg-[#2D1B69] text-white text-[14px] font-bold hover:bg-[#1E1245]"
+            className="mt-3 w-full h-12 rounded-xl bg-[#2D1B69] text-white text-body-md font-bold hover:bg-[#1E1245]"
           >
             Unlock panel
           </button>
-          <p className="mt-3 text-[11px] text-[#9B8CB5]">{getAdminPinHint()}</p>
-          <Link href="/" className="mt-4 inline-block text-[12px] font-bold text-[#2D1B69] hover:underline">← Back to store</Link>
+          <p className="mt-3 text-micro text-[#9B8CB5]">{getAdminPinHint()}</p>
+          <Link href="/" className="mt-4 inline-block text-caption font-bold text-[#2D1B69] hover:underline">← Back to store</Link>
         </div>
       </div>
     );
@@ -76,8 +76,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="font-bold text-[#150726]">Admin Panel</span>
-          <span className="ml-1 rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-[10px] font-bold text-[#E91E63]">STAFF ONLY</span>
-          <button onClick={lock} title="Lock panel" className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:bg-[#FCE8F0]">
+          <span className="ml-1 rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-tiny font-bold text-[#E91E63]">STAFF ONLY</span>
+          <button onClick={lock} title="Lock panel" className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:bg-[#FCE8F0]">
             <LogOut className="h-3.5 w-3.5" /> Lock
           </button>
         </div>
@@ -92,7 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <Link
                       key={l.href}
                       href={l.href}
-                      className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-[13px] font-bold whitespace-nowrap transition-all ${
+                      className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-body-sm font-bold whitespace-nowrap transition-all ${
                         active
                           ? "bg-[#2D1B69] text-white shadow-md"
                           : "text-[#6B5B83] hover:bg-[#F0ECF9] hover:text-[#2D1B69]"
