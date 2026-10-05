@@ -19,7 +19,6 @@ import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
-import { AppDownload } from "@/components/app-download";
 import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
@@ -329,13 +328,6 @@ export default function ModitHomePage() {
               <span className="text-tiny text-white/40 font-medium">75+ products</span>
             </Link>
           </div>
-        </div>
-      </RevealSection>
-
-      {/* ═══ GET THE APP — top of homepage ═══ */}
-      <RevealSection>
-        <div id="get-app" className="mt-4 scroll-mt-24">
-          <AppDownload />
         </div>
       </RevealSection>
 
