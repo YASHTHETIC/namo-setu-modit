@@ -325,7 +325,7 @@ export default function ModitHomePage() {
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
-              <span className="text-tiny text-white/40 font-medium">75+ products</span>
+              <span className="text-tiny text-white/40 font-medium">{products.length}+ products</span>
             </Link>
           </div>
         </div>

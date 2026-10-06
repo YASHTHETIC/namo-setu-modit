@@ -32,7 +32,7 @@ export function SaleBanner() {
     return (
       <Link href="/products" className="block">
         <div className="relative overflow-hidden" style={{ background: "linear-gradient(90deg, #2D1B69 0%, #E91E63 55%, #FF9800 100%)" }}>
-          <div className="mx-auto max-w-[1400px] px-4 py-2.5 flex items-center justify-center gap-3 flex-wrap">
+          <div className="mx-auto max-w-[1400px] px-4 py-2.5 flex items-center justify-center gap-3 flex-nowrap overflow-x-auto scrollbar-hide whitespace-nowrap">
             <span className="flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-tiny font-black text-white uppercase tracking-wider">
               <Zap className="h-3 w-3" /> Sale live
             </span>
@@ -55,7 +55,7 @@ export function SaleBanner() {
     const s = Math.floor((ms % 60000) / 1000);
     return (
       <div className="bg-[#150726]">
-        <div className="mx-auto max-w-[1400px] px-4 py-2 flex items-center justify-center gap-2.5 flex-wrap">
+        <div className="mx-auto max-w-[1400px] px-4 py-2 flex items-center justify-center gap-2.5 flex-nowrap overflow-x-auto scrollbar-hide whitespace-nowrap">
           <Timer className="h-3.5 w-3.5 text-[#FF9800]" />
           <p className="text-caption font-bold text-white">
             {upcoming.name} starts in <span className="tabular-nums text-[#FF9800]">{pad(h)}:{pad(m)}:{pad(s)}</span>

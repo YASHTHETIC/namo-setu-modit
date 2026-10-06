@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { products, type Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
 import { useRequireLogin } from "@/lib/use-auth";
@@ -20,7 +20,17 @@ export function OutOfStockSubstitutes({ product }: OutOfStockSubstitutesProps) {
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => !!p && p.inStock);
 
-  if (substitutes.length === 0) return null;
+  if (substitutes.length === 0) {
+    return (
+      <div className="rounded-2xl border border-[#FF9800]/20 bg-[#FFF8E1] p-4">
+        <div className="flex items-center gap-2 mb-1">
+          <AlertTriangle className="h-4 w-4 text-[#FF9800]" />
+          <p className="text-body-sm font-bold text-[#150726]">Currently out of stock</p>
+        </div>
+        <p className="text-micro text-[#5C4A7A]">No alternatives right now — use Notify Me above and we&apos;ll alert you when it&apos;s back.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-[#FF9800]/20 bg-[#FFF8E1] p-4">

@@ -228,7 +228,7 @@ export default function OrdersPage() {
                               <div className="flex items-center justify-between mb-1.5">
                                 <span className="text-tiny font-semibold text-[#9B8CB5] uppercase tracking-wide">Progress</span>
                                 <span className="text-tiny font-bold text-[#2D1B69]">
-                                  {liveStatus === "confirmed" ? "30%" : liveStatus === "processing" ? "50%" : liveStatus === "dispatched" ? "70%" : "85%"}
+                                  Step {liveStatus === "confirmed" ? "1" : liveStatus === "processing" ? "2" : "3"} of 4 · {liveStatus === "confirmed" ? "30%" : liveStatus === "processing" ? "50%" : liveStatus === "dispatched" ? "70%" : "85%"}
                                 </span>
                               </div>
                               <div className="h-1.5 rounded-full bg-[#F0ECF9] overflow-hidden">
@@ -261,10 +261,10 @@ export default function OrdersPage() {
                           </div>
                           <button
                             onClick={(e) => {
-                              e.preventDefault();
+                              e.stopPropagation();
                               handleReorder(order);
                             }}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-micro font-bold transition-all ${
+                            className={`flex flex-1 sm:flex-none items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-micro font-bold transition-all ${
                               reorderedId === order.id
                                 ? "bg-[#7CB518] text-white"
                                 : "bg-[#7CB518]/10 text-[#7CB518] hover:bg-[#7CB518] hover:text-white"
