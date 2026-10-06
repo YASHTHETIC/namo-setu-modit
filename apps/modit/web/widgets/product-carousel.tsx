@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Star, Truck } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -29,7 +30,7 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
     <div className="min-w-[160px] max-w-[160px] bg-white rounded-2xl border border-[var(--border)] overflow-hidden shrink-0">
       <div className="relative aspect-square bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)]">
         <Link href={`/products/${p.id}`}>
-          <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover" />
+          <Image src={p.image_url} alt={p.name} fill sizes="160px" loading="lazy" draggable={false} className="object-contain p-2" />
         </Link>
         {p.badge && (
           <span className="absolute top-1.5 left-1.5 bg-[var(--green)] text-white text-tiny font-bold px-1.5 py-0.5 rounded">{p.badge}</span>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Star, Truck } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -29,7 +30,7 @@ function GridProductCard({ p }: { p: ProductSummary }) {
     <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden group hover:shadow-lg transition-all">
       <div className="relative aspect-square bg-gradient-to-br from-[var(--brand-50)] to-[var(--brand-100)] overflow-hidden">
         <Link href={`/products/${p.id}`}>
-          <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <Image src={p.image_url} alt={p.name} fill sizes="(max-width: 640px) 50vw, 300px" loading="lazy" draggable={false} className="object-contain p-2" />
         </Link>
         {live.discount >= 20 && (
           <span className="absolute top-2 left-2 bg-gradient-to-r from-[var(--pink)] to-[var(--pink-hover)] text-white text-tiny font-bold px-2 py-1 rounded-lg">{live.discount}% OFF</span>
