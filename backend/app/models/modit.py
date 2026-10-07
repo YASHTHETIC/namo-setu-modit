@@ -574,6 +574,8 @@ class Order(BaseModel):
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PLACED.value, nullable=False)
     placed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    shipping_address_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    gstin: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
     organization = relationship("Organization", back_populates="orders")
     purchase_order = relationship("PurchaseOrder")
@@ -618,11 +620,15 @@ class Invoice(BaseModel):
 
 class ModitPayment(BaseModel):
     __tablename__ = "modit_payments"
-    __table_args__ = (Index("ix_modit_payments_org_status", "organization_id", "payment_status"),)
+    __table_args__ = (
+        Index("ix_modit_payments_org_status", "organization_id", "payment_status"),
+        Index("ix_modit_payments_order", "order_id"),
+    )
 
     organization_id: Mapped[str] = mapped_column(ForeignKey("modit_organizations.id", ondelete="CASCADE"), nullable=False)
     purchase_order_id: Mapped[str | None] = mapped_column(ForeignKey("purchase_orders.id", ondelete="CASCADE"), nullable=True)
     invoice_id: Mapped[str | None] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"), nullable=True)
+    order_id: Mapped[str | None] = mapped_column(ForeignKey("orders.id", ondelete="SET NULL"), nullable=True)
     payment_reference: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     payment_status: Mapped[str] = mapped_column(String(20), default="pending", nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False)

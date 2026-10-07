@@ -533,6 +533,72 @@ class OrderItemRead(ORMModel):
 
 class OrderDetailRead(OrderRead):
     items: list[OrderItemRead]
+    delivery_id: str | None = None
+
+
+# B2C Checkout (real order placement — server is the source of truth
+# for prices, taxes, shipping and coupons; the client never is).
+class CheckoutItem(BaseModel):
+    sku: str = Field(min_length=1, max_length=100)
+    quantity: float = Field(gt=0, le=100000)
+
+
+class CheckoutRequest(BaseModel):
+    items: list[CheckoutItem] = Field(min_length=1, max_length=100)
+    payment_method: str = Field(pattern="^(cod|razorpay|upi|credit)$")
+    address_snapshot: dict | None = None
+    gstin: str | None = Field(default=None, max_length=20)
+    coupon_code: str | None = Field(default=None, max_length=50)
+    notes: str | None = Field(default=None, max_length=1000)
+
+
+class CheckoutItemRead(BaseModel):
+    product_id: str
+    sku: str
+    name: str
+    quantity: float
+    unit_price: float
+    gst_amount: float
+    line_total: float
+
+
+class CheckoutResponse(BaseModel):
+    id: str
+    order_number: str
+    purchase_order_id: str
+    status: str
+    subtotal: float
+    discount_total: float
+    shipping_total: float
+    gst_total: float
+    grand_total: float
+    payment_id: str
+    payment_status: str
+    payment_reference: str
+    items: list[CheckoutItemRead]
+
+
+class RazorpayOrderRequest(BaseModel):
+    order_id: str
+
+
+class RazorpayOrderResponse(BaseModel):
+    key_id: str
+    razorpay_order_id: str
+    amount_paise: int
+    currency: str = "INR"
+
+
+class RazorpayVerifyRequest(BaseModel):
+    order_id: str
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+
+
+class RazorpayVerifyResponse(BaseModel):
+    verified: bool
+    payment_status: str
 
 
 class PurchaseOrderBase(BaseModel):

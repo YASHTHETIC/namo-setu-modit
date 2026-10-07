@@ -14,6 +14,9 @@ from backend.app.models.user import User
 
 settings = get_settings()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_v1_prefix}/auth/login")
+oauth2_optional_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.api_v1_prefix}/auth/login", auto_error=False
+)
 
 
 async def get_current_user(
@@ -44,6 +47,56 @@ async def get_current_user(
     if user is None or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
+
+
+async def get_optional_user(
+    token: str | None = Depends(oauth2_optional_scheme),
+    db: AsyncSession = Depends(get_db),
+) -> User | None:
+    """Best-effort auth: returns None for anonymous/invalid tokens (never 401).
+
+    Used by list endpoints to scope results without breaking public clients.
+    """
+    if not token:
+        return None
+    try:
+        payload = decode_token(token)
+    except Exception:
+        return None
+    if payload.get("type") != "access":
+        return None
+    user_id = payload.get("sub")
+    if not user_id:
+        return None
+
+    from backend.app.models.shared import UserProfile
+
+    result = await db.execute(
+        select(User)
+        .options(
+            selectinload(User.roles),
+            selectinload(User.profile).selectinload(UserProfile.avatar_media),
+            selectinload(User.sessions),
+            selectinload(User.addresses),
+        )
+        .where(User.id == user_id)
+    )
+    user = result.scalar_one_or_none()
+    if user is None or not user.is_active:
+        return None
+    return user
+
+
+STAFF_ROLE_NAMES = {"super_admin", "admin", "support", "manager"}
+
+
+def is_staff(user: User | None) -> bool:
+    if user is None:
+        return False
+    try:
+        return any(getattr(role, "name", None) in STAFF_ROLE_NAMES for role in (user.roles or []))
+    except Exception:
+        return False
 
 
 def require_permission(permission: PermissionName):

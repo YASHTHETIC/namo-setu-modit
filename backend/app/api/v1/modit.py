@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.api.deps import get_current_user, require_permission
+from backend.app.api.deps import get_current_user, get_optional_user, is_staff, require_permission
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
 from backend.app.models.enums import ProductCode
@@ -61,6 +61,8 @@ from backend.app.schemas.modit import (
     CartCreate,
     CartRead,
     CategoryRead,
+    CheckoutRequest,
+    CheckoutResponse,
     ConstructionSiteCreate,
     ConstructionSiteRead,
     DeliveryCreate,
@@ -167,6 +169,7 @@ from backend.app.services.modit import (
     track_analytics_event,
     voice_order_processing,
 )
+from backend.app.services.checkout import place_checkout_order
 
 router = APIRouter(prefix="/modit", tags=["modit"])
 admin_dependency = Depends(require_permission(PermissionName.CONFIG_READ))
@@ -517,13 +520,44 @@ async def create_cart(payload: CartCreate, db: AsyncSession = Depends(get_db)) -
 
 
 @router.get("/orders", response_model=list[OrderRead])
-async def list_orders(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[OrderRead]:
-    """List orders."""
+async def list_orders(
+    organization_id: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
+) -> list[OrderRead]:
+    """List orders. Anonymous callers see nothing; customers see their own
+    orgs; staff see everything when no org filter is given."""
+    from backend.app.models.modit import OrganizationUser
+
     stmt = select(Order)
     if organization_id:
         stmt = stmt.where(Order.organization_id == organization_id)
+    elif not is_staff(user):
+        if user is None:
+            return []
+        org_ids = (
+            (
+                await db.execute(
+                    select(OrganizationUser.organization_id).where(OrganizationUser.user_id == user.id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        if not org_ids:
+            return []
+        stmt = stmt.where(Order.organization_id.in_(org_ids))
     result = await db.execute(stmt.order_by(Order.created_at.desc()))
     return [OrderRead.model_validate(item) for item in result.scalars().all()]
+
+
+@router.post("/checkout", response_model=CheckoutResponse, status_code=status.HTTP_201_CREATED)
+async def checkout(
+    payload: CheckoutRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> CheckoutResponse:
+    """Real B2C checkout. Prices/tax/shipping/coupons come from the server
+    catalog — client totals are never trusted."""
+    return await place_checkout_order(db, user, payload)
 
 
 @router.post("/orders", response_model=OrderDetailRead, status_code=status.HTTP_201_CREATED)
@@ -547,14 +581,21 @@ async def create_order(payload: OrderCreate, db: AsyncSession = Depends(get_db),
 
 @router.get("/orders/{order_id}", response_model=OrderDetailRead)
 async def get_order(order_id: str, db: AsyncSession = Depends(get_db)) -> OrderDetailRead:
-    """Get order details."""
+    """Get order details (shareable by unguessable UUID, e.g. family tracking)."""
     order = await db.get(Order, order_id)
     if order is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     await db.refresh(order, ["items"])
+    delivery_id: str | None = None
+    try:
+        delivery = await get_order_delivery(db, order_id)
+        delivery_id = getattr(delivery, "id", None)
+    except HTTPException:
+        delivery_id = None
     return OrderDetailRead(
         **OrderRead.model_validate(order).model_dump(),
         items=[OrderItemRead.model_validate(item) for item in order.items],
+        delivery_id=delivery_id,
     )
 
 
