@@ -499,7 +499,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           open={returnOpen}
           onClose={() => setReturnOpen(false)}
           orderId={order.id}
-          items={order.items.map((i) => ({ sku: i.sku, name: i.name, quantity: i.quantity, unitPrice: i.unitPrice, unitCode: i.unitCode }))}
+          purchaseOrderId={(order as any).purchase_order_id ?? null}
+          items={(order.items || []).map((i: any) => ({
+            sku: i.sku ?? i.product_id ?? "unknown",
+            name: i.name ?? `Item ${(i.product_id ?? "").slice(0, 8)}`,
+            quantity: i.quantity ?? 1,
+            unitPrice: i.unitPrice ?? i.unit_price ?? 0,
+            unitCode: i.unitCode ?? "",
+          }))}
         />
       )}
     </div>

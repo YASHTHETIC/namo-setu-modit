@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useCartStore, getBulkUnitPrice } from "@/lib/cart-store";
-import { placeOrder } from "@/lib/hybrid-api";
+import { useCartStore } from "@/lib/cart-store";
+import { placeOrder, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
 import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2, KeyRound, Phone } from "lucide-react";
 import { requestOtp, verifyOtp, formatPhoneForDisplay } from "@/lib/otp";
@@ -16,11 +16,12 @@ declare global {
 
 interface PaymentProps {
   total: number;
-  onPaymentComplete: (orderId: string) => void;
+  onPaymentComplete: (orderId: string, serverTotal?: number) => void;
   gstin?: string;
+  shippingAddress?: Record<string, unknown> | null;
 }
 
-export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps) {
+export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddress }: PaymentProps) {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const toast = useToast();
@@ -57,29 +58,31 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
     toast.success("Phone verified!", "You can now place your COD order.");
   };
 
+  const cartPayload = () => ({
+    items: items.map((i) => ({
+      sku: i.product.sku,
+      quantity: i.quantity,
+    })),
+    addressSnapshot: shippingAddress,
+    gstin,
+  });
+
   const handleCredit = async () => {
     setError(null);
     setProcessing(true);
     try {
-      const result = await placeOrder({
-        items: items.map((i) => ({
-          productId: i.product.id,
-          quantity: i.quantity,
-          price: getBulkUnitPrice(i),
-        })),
-        paymentMethod: "credit",
-        gstin,
-      });
+      const result = await placeOrder({ ...cartPayload(), paymentMethod: "credit" });
       if (result.success && result.orderId) {
+        const due = result.total ?? total;
         clearCart();
-        toast.success("Order placed!", `Order ${result.orderId} confirmed — credit terms (net 30 days)`);
+        toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — credit terms (net 30 days)`);
         notifyOrderEvent({
           title: "Order placed (Credit)",
           body: `Order ${result.orderId} confirmed on Net-30 credit terms — invoice due in 30 days from delivery.`,
           type: "order",
           orderId: result.orderId,
         });
-        onPaymentComplete(result.orderId);
+        onPaymentComplete(result.orderId, due);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
         toast.error("Order failed", result.error || "Please try again");
@@ -96,76 +99,79 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
     setError(null);
     setProcessing(true);
     try {
-      const orderData = {
-        items: items.map((i) => ({
-          productId: i.product.id,
-          quantity: i.quantity,
-          price: getBulkUnitPrice(i),
-        })),
-        paymentMethod: "razorpay",
-        gstin,
-      };
-
-      const result = await placeOrder(orderData);
-      if (result.success && result.orderId) {
-        if (total <= 0) {
-          clearCart();
-          onPaymentComplete(result.orderId);
-          return;
-        }
-        const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_demo",
-          amount: total * 100,
-          currency: "INR",
-          name: "MODIT",
-          description: `Order ${result.orderId}`,
-          order_id: result.orderId,
-          handler: function (response: any) {
+      // 1. Real server order first (server prices/tax/shipping/coupons).
+      const result = await placeOrder({ ...cartPayload(), paymentMethod: "razorpay" });
+      if (!result.success || !result.orderId) {
+        setError(result.error || "Failed to create order. Please try again.");
+        setProcessing(false);
+        return;
+      }
+      // 2. Server-side Razorpay order (amount from the server order, never the client).
+      let rzp: { key_id: string; razorpay_order_id: string; amount_paise: number; currency: string };
+      try {
+        rzp = await createRazorpayOrder(result.orderId);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Payment setup failed. Your order is saved — retry from Orders.");
+        setProcessing(false);
+        return;
+      }
+      const due = result.total ?? total;
+      const options = {
+        key: rzp.key_id,
+        amount: rzp.amount_paise,
+        currency: rzp.currency,
+        name: "MODIT",
+        description: `Order ${result.orderId}`,
+        order_id: rzp.razorpay_order_id,
+        handler: async function (response: any) {
+          try {
+            const verification = await verifyRazorpayPayment({
+              orderId: result.orderId!,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+            if (!verification.verified) throw new Error("verification failed");
             clearCart();
             toast.success("Payment successful!", `Order ${result.orderId} confirmed`);
             notifyOrderEvent({
               title: "Payment successful",
-              body: `Order ${result.orderId} confirmed — ₹${total.toLocaleString("en-IN")} paid online. Receipt and GST invoice available on the order page.`,
+              body: `Order ${result.orderId} confirmed — ₹${due.toLocaleString("en-IN")} paid online. Receipt and GST invoice available on the order page.`,
               type: "payment",
               orderId: result.orderId,
             });
-            onPaymentComplete(result.orderId!);
-          },
-          prefill: {
-            name: "",
-            email: "",
-            contact: "",
-          },
-          theme: {
-            color: "#2D1B69",
-          },
-          modal: {
-            ondismiss: function () {
-              setProcessing(false);
-            },
-          },
-        };
-
-        if (typeof window !== "undefined" && window.Razorpay) {
-          const rzp = new window.Razorpay(options);
-          rzp.on("payment.failed", function () {
-            setError("Payment failed. Please try again.");
-            toast.error("Payment failed", "Please try again or use a different method");
+            onPaymentComplete(result.orderId!, due);
+          } catch {
+            setError("Payment verification failed. If money was debited it will auto-refund. Your order is saved — retry from Orders.");
+            toast.error("Verification failed", "Order saved. Please retry payment from Orders.");
             setProcessing(false);
-          });
-          rzp.open();
-        } else {
-          clearCart();
-          notifyOrderEvent({
-            title: "Order placed",
-            body: `Order ${result.orderId} confirmed — ₹${total.toLocaleString("en-IN")}.`,
-            type: "order",
-            orderId: result.orderId,
-          });
-          onPaymentComplete(result.orderId);
-        }
+          }
+        },
+        prefill: {
+          name: "",
+          email: "",
+          contact: "",
+        },
+        theme: {
+          color: "#2D1B69",
+        },
+        modal: {
+          ondismiss: function () {
+            setProcessing(false);
+          },
+        },
+      };
+
+      if (typeof window !== "undefined" && window.Razorpay) {
+        const rzpInstance = new window.Razorpay(options);
+        rzpInstance.on("payment.failed", function () {
+          setError("Payment failed. Your order is saved — retry payment from Orders. Nothing was charged.");
+          toast.error("Payment failed", "Order saved. Please try again from Orders.");
+          setProcessing(false);
+        });
+        rzpInstance.open();
       } else {
-        setError(result.error || "Failed to create order. Please try again.");
+        setError("Payment gateway failed to load. Check your connection — your order is saved, retry from Orders.");
         setProcessing(false);
       }
     } catch (err) {
@@ -178,25 +184,18 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
     setError(null);
     setProcessing(true);
     try {
-      const result = await placeOrder({
-        items: items.map((i) => ({
-          productId: i.product.id,
-          quantity: i.quantity,
-          price: getBulkUnitPrice(i),
-        })),
-        paymentMethod: "cod",
-        gstin,
-      });
+      const result = await placeOrder({ ...cartPayload(), paymentMethod: "cod" });
       if (result.success && result.orderId) {
+        const due = result.total ?? total;
         clearCart();
-        toast.success("Order placed!", `Order ${result.orderId} confirmed — pay on delivery`);
+        toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — pay on delivery`);
         notifyOrderEvent({
           title: "Order placed (COD)",
-          body: `Order ${result.orderId} confirmed — ₹${total.toLocaleString("en-IN")} payable on delivery. Confirmation sent to ${formatPhoneForDisplay(codPhone)}.`,
+          body: `Order ${result.orderId} confirmed — ₹${due.toLocaleString("en-IN")} payable on delivery. Confirmation sent to ${formatPhoneForDisplay(codPhone)}.`,
           type: "order",
           orderId: result.orderId,
         });
-        onPaymentComplete(result.orderId);
+        onPaymentComplete(result.orderId, due);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
         toast.error("Order failed", result.error || "Please try again");
@@ -217,26 +216,20 @@ export function PaymentSection({ total, onPaymentComplete, gstin }: PaymentProps
     setError(null);
     setProcessing(true);
     try {
-      const result = await placeOrder({
-        items: items.map((i) => ({
-          productId: i.product.id,
-          quantity: i.quantity,
-          price: getBulkUnitPrice(i),
-        })),
-        paymentMethod: "upi",
-        upiId: upiId,
-        gstin,
-      });
+      // Manual UPI-to-merchant flow: the order is recorded with server totals;
+      // the pending payment is settled outside the widget (collect on delivery).
+      const result = await placeOrder({ ...cartPayload(), paymentMethod: "upi" });
       if (result.success && result.orderId) {
+        const due = result.total ?? total;
         clearCart();
-        toast.success("Order placed!", `Order ${result.orderId} confirmed — UPI payment pending`);
+        toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — UPI payment pending`);
         notifyOrderEvent({
           title: "Order placed (UPI)",
-          body: `Order ${result.orderId} confirmed — complete your UPI payment of ₹${total.toLocaleString("en-IN")} to ${upiId}.`,
+          body: `Order ${result.orderId} confirmed — complete your UPI payment of ₹${due.toLocaleString("en-IN")} to ${upiId}.`,
           type: "order",
           orderId: result.orderId,
         });
-        onPaymentComplete(result.orderId);
+        onPaymentComplete(result.orderId, due);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
         toast.error("Order failed", result.error || "Please try again");

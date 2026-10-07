@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const { addresses, selectedAddressId, selectAddress, addAddress, deleteAddress, setDefault, getSelected } = useAddressStore();
   const { selectedSlotId, slots, selectSlot, getSelected: getSlot } = useDeliveryStore();
   const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon } = useCouponStore();
-  const { balance, points, addPoints, deductBalance } = useWalletStore();
+  const { balance, points, addPoints } = useWalletStore();
   const { addSubscription } = useSubscriptionStore();
   const toast = useToast();
 
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState("");
   const [couponInput, setCouponInput] = useState("");
   const [showAddAddress, setShowAddAddress] = useState(false);
-  const [useWallet, setUseWallet] = useState(false);
+  const [serverTotal, setServerTotal] = useState<number | null>(null);
   const [subscribe, setSubscribe] = useState(false);
   const [subscribeFreq, setSubscribeFreq] = useState<"weekly" | "biweekly" | "monthly">("monthly");
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
@@ -51,8 +51,9 @@ export default function CheckoutPage() {
   const couponDiscount = getDiscount(subtotal);
   const isFreeShipping = appliedCoupon?.discountType === "free_shipping";
   const effectiveShipping = isFreeShipping ? 0 : shipping;
-  const walletDeduct = useWallet ? Math.min(balance, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount) : 0;
-  const total = Math.max(0, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount - walletDeduct);
+  // NOTE: wallet redemption is display-only until balances move server-side.
+  // The payable total never subtracts wallet money (unverifiable client state).
+  const total = Math.max(0, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount);
   const bestCoupon = getBestCoupon(subtotal);
   const selectedAddr = getSelected();
 
@@ -68,17 +69,21 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePlaceOrder = (apiOrderId?: string) => {
-    const id = apiOrderId || `ORD-${Date.now().toString(36).toUpperCase()}`;
+  const handlePlaceOrder = (apiOrderId?: string, due?: number) => {
+    if (!apiOrderId) {
+      toast.error("Order failed", "Server did not confirm the order. Cart kept — please retry.");
+      return;
+    }
+    const id = apiOrderId;
     const cartItems = [...items];
     if (subscribe) {
       cartItems.forEach((item) => addSubscription(item.product, item.quantity, subscribeFreq, item.variantId));
     }
-    if (useWallet && walletDeduct > 0) deductBalance(walletDeduct, `Order ${id}`);
     addPoints(Math.floor(total / 10), `Points for order ${id}`);
     removeCoupon();
     clearCart();
     setOrderId(id);
+    setServerTotal(typeof due === "number" ? due : null);
     setOrderPlaced(true);
   };
 
@@ -139,6 +144,11 @@ export default function CheckoutPage() {
           </div>
           <h2 className="text-title-lg font-bold text-[#150726]">Order Placed!</h2>
           <p className="text-body-sm text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
+          {serverTotal !== null && (
+            <p className="mt-2 inline-block rounded-full bg-[#F0F9E8] px-4 py-1.5 text-body-sm font-bold text-[#2D1B69]">
+              Amount due: ₹{serverTotal.toLocaleString("en-IN")} (server-verified)
+            </p>
+          )}
           <div className="mt-6 flex items-center justify-center gap-2 text-caption text-[#7CB518] font-semibold">
             <Truck className="h-4 w-4" /> Estimated delivery: {slot?.time ?? "60 minutes"}
           </div>
@@ -466,24 +476,16 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Wallet */}
+                {/* Wallet — display only until balances move server-side */}
                 {balance > 0 && (
                   <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Wallet className="h-4 w-4 text-[#FF9800]" />
-                        <div>
-                          <span className="text-body-sm font-bold text-[#150726]">Wallet Balance: ₹{balance.toLocaleString()}</span>
-                          <p className="text-tiny text-[#9B8CB5]">{points} loyalty points</p>
-                        </div>
+                    <div className="flex items-center gap-2">
+                      <Wallet className="h-4 w-4 text-[#FF9800]" />
+                      <div>
+                        <span className="text-body-sm font-bold text-[#150726]">Wallet Balance: ₹{balance.toLocaleString()}</span>
+                        <p className="text-tiny text-[#9B8CB5]">{points} loyalty points · redemption moves server-side soon</p>
                       </div>
-                      <button onClick={() => setUseWallet(!useWallet)} aria-label="Use wallet balance" className={`relative w-11 h-6 rounded-full transition-all flex-shrink-0 ${useWallet ? "bg-[#7CB518]" : "bg-[#DDD6EE]"}`}>
-                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${useWallet ? "left-[22px]" : "left-0.5"}`} />
-                      </button>
                     </div>
-                    {useWallet && walletDeduct > 0 && (
-                      <p className="text-micro text-[#7CB518] font-semibold mt-2">Using ₹{walletDeduct.toLocaleString()} from wallet</p>
-                    )}
                   </div>
                 )}
 
@@ -601,12 +603,6 @@ export default function CheckoutPage() {
                       <span className="text-[#7CB518] font-semibold">-₹{couponDiscount.toLocaleString()}</span>
                     </div>
                   )}
-                  {useWallet && walletDeduct > 0 && (
-                    <div className="flex justify-between text-body-sm">
-                      <span className="text-[#FF9800]">Wallet</span>
-                      <span className="text-[#FF9800] font-semibold">-₹{walletDeduct.toLocaleString()}</span>
-                    </div>
-                  )}
                   <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
                     <span className="text-body-lg font-bold text-[#150726]">Total</span>
                     <span className="text-title-md font-extrabold text-[#2D1B69]">₹{total.toLocaleString()}</span>
@@ -614,11 +610,12 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {activeStep === 3 ? (
+                {activeStep === 3 ? (
                 <PaymentSection
                   total={total}
                   onPaymentComplete={handlePlaceOrder}
                   gstin={gstin || undefined}
+                  shippingAddress={(selectedAddr ?? null) as Record<string, unknown> | null}
                 />
               ) : (
                 <button onClick={() => {

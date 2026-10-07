@@ -18,11 +18,12 @@ interface ReturnModalProps {
   open: boolean;
   onClose: () => void;
   orderId: string;
+  purchaseOrderId?: string | null;
   items: ReturnableItem[];
   onSubmitted?: (returnId: string) => void;
 }
 
-export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: ReturnModalProps) {
+export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, onSubmitted }: ReturnModalProps) {
   const [selected, setSelected] = useState<Record<string, number>>(() =>
     Object.fromEntries(items.map((i) => [i.sku, i.quantity]))
   );
@@ -85,12 +86,14 @@ export function ReturnModal({ open, onClose, orderId, items, onSubmitted }: Retu
       phone: phone.replace(/\D/g, ""),
     });
     try {
-      await createReturnApi.mutateAsync({
-        order_id: orderId,
-        items: chosen,
-        reason,
-        notes: detail.trim() || undefined,
-      } as never);
+      // Server record when the order has a purchase order (real backend
+      // orders); demo/local orders stay local-only. Never blocks the flow.
+      if (purchaseOrderId) {
+        await createReturnApi.mutateAsync({
+          purchase_order_id: purchaseOrderId,
+          reason: `${reason} — ${chosen.map((i) => `${i.name} x${i.quantity}`).join(", ")}`.slice(0, 500),
+        } as never);
+      }
     } catch {
       /* backend unavailable — request stays local and syncs later */
     }

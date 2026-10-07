@@ -160,20 +160,104 @@ export async function searchProducts(query: string): Promise<HybridProduct[]> {
   return staticSearch(query);
 }
 
+export interface CheckoutResult {
+  success: boolean;
+  orderId?: string;
+  orderNumber?: string;
+  total?: number;
+  error?: string;
+}
+
 export async function placeOrder(orderData: {
-  items: Array<{ productId: string; quantity: number; price: number }>;
-  addressId?: string;
+  items: Array<{ sku: string; quantity: number }>;
   paymentMethod: string;
+  addressSnapshot?: Record<string, unknown> | null;
   couponCode?: string;
-  upiId?: string;
   gstin?: string;
-}): Promise<{ success: boolean; orderId?: string; error?: string }> {
-  const apiData = await apiFetch<any>("/orders", {
+  notes?: string;
+}): Promise<CheckoutResult> {
+  // Real checkout — the server validates SKUs, computes totals from the
+  // synced catalog and creates Order + items + payment. NEVER invent an
+  // order id here: failures must surface as errors, not fake success.
+  try {
+    const token = typeof window !== "undefined" ? localStorage.getItem("modit_access_token") : null;
+    if (!API_BASE) return { success: false, error: "Server not configured." };
+    const res = await fetch(`${API_BASE}/modit/checkout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        items: orderData.items,
+        payment_method: orderData.paymentMethod,
+        address_snapshot: orderData.addressSnapshot ?? null,
+        coupon_code: orderData.couponCode ?? null,
+        gstin: orderData.gstin ?? null,
+        notes: orderData.notes ?? null,
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (res.status === 401) {
+      return { success: false, error: "Please log in again to place your order." };
+    }
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data?.id) {
+      const detail = typeof data?.detail === "string" ? data.detail : null;
+      return { success: false, error: detail || `Checkout failed (${res.status}). Nothing was charged.` };
+    }
+    return {
+      success: true,
+      orderId: data.id,
+      orderNumber: data.order_number,
+      total: data.grand_total,
+    };
+  } catch {
+    return { success: false, error: "Couldn't reach the server. Check your connection and retry — nothing was charged." };
+  }
+}
+
+async function postPayments<T>(path: string, body: unknown): Promise<T> {
+  const token = typeof window !== "undefined" ? localStorage.getItem("modit_access_token") : null;
+  if (!API_BASE) throw new Error("Server not configured.");
+  const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
-    body: JSON.stringify(orderData),
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(20000),
   });
-  if (apiData?.id) return { success: true, orderId: apiData.id };
-  return { success: true, orderId: `ORD-${Date.now()}` };
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const detail = typeof data?.detail === "string" ? data.detail : null;
+    throw new Error(detail || `Request failed (${res.status})`);
+  }
+  return data as T;
+}
+
+export function createRazorpayOrder(orderId: string): Promise<{
+  key_id: string;
+  razorpay_order_id: string;
+  amount_paise: number;
+  currency: string;
+}> {
+  return postPayments("/payments/razorpay/order", { order_id: orderId });
+}
+
+export function verifyRazorpayPayment(input: {
+  orderId: string;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+}): Promise<{ verified: boolean; payment_status: string }> {
+  return postPayments("/payments/razorpay/verify", {
+    order_id: input.orderId,
+    razorpay_order_id: input.razorpayOrderId,
+    razorpay_payment_id: input.razorpayPaymentId,
+    razorpay_signature: input.razorpaySignature,
+  });
 }
 
 export async function fetchOrders(): Promise<any[]> {
