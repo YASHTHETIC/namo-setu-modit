@@ -18,6 +18,7 @@ import {
   Check,
 } from "lucide-react";
 import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useCouponStore } from "@/lib/coupon-store";
 import { resolveProduct } from "@/lib/pricing";
 import { formatINR } from "@/lib/utils";
@@ -40,6 +41,7 @@ export default function CartPage() {
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [couponCode, setCouponCode] = useState("");
+  const headerHidden = useHideOnScroll(140);
   const appliedCoupon = useCouponStore((s) => s.appliedCoupon);
   const couponError = useCouponStore((s) => s.couponError);
   const applyCoupon = useCouponStore((s) => s.applyCoupon);
@@ -59,7 +61,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+        <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/" className="text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
@@ -104,7 +106,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <Link href="/products" className="text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />

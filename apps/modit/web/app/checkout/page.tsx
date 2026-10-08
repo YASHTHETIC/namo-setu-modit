@@ -7,6 +7,7 @@ import {
   Tag, Wallet, Calendar, Zap, X, Trash2, Gift, Repeat, FileText
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore, type Address } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
   const toast = useToast();
 
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const headerHidden = useHideOnScroll(140);
   const [orderId, setOrderId] = useState("");
   const [couponInput, setCouponInput] = useState("");
   const [showAddAddress, setShowAddAddress] = useState(false);
@@ -90,7 +92,7 @@ export default function CheckoutPage() {
   if (!loggedIn) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+        <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
             <h1 className="text-body-lg font-bold text-white">Checkout</h1>
@@ -113,7 +115,7 @@ export default function CheckoutPage() {
   if (items.length === 0 && !orderPlaced) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+        <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
             <h1 className="text-body-lg font-bold text-white">Checkout</h1>
@@ -133,7 +135,7 @@ export default function CheckoutPage() {
   if (orderPlaced) {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
-        <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+        <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <h1 className="text-body-lg font-bold text-white">Order Confirmed</h1>
           </div>
@@ -170,7 +172,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
-      <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
+      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <Link href="/cart" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
           <h1 className="text-body-lg font-bold text-white">Checkout</h1>

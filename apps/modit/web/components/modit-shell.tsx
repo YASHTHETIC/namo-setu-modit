@@ -44,6 +44,7 @@ import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { LocationMenu } from "@/components/location-menu";
 import { HighlightedText } from "@/components/highlighted-text";
 import { SiteFooter } from "@/components/site-footer";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { SaleBanner } from "@/components/sale-banner";
 
 /** Trade icon per category slug (mega menu + mobile menu). Falls back to Package. */
@@ -75,6 +76,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const headerHidden = useHideOnScroll(140);
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIdx, setHighlightIdx] = useState(-1);
   const [recentTerms, setRecentTerms] = useState<string[]>(() => {
@@ -161,7 +163,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-purple-200/60 transition-shadow duration-300" style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
+      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-purple-200/60 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
         <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
           <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
             <ModitLogo className="h-[36px] sm:h-[42px] w-auto" />

@@ -23,6 +23,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
@@ -109,6 +110,7 @@ export default function ModitHomePage() {
   const router = useRouter();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const headerHidden = useHideOnScroll(140);
   useModalBehavior(showPincodeModal, () => setShowPincodeModal(false));
   useModalBehavior(showSearch, () => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); });
   const [showMenu, setShowMenu] = useState(false);
@@ -208,8 +210,8 @@ export default function ModitHomePage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
-      {/* ═══ HEADER ═══ */}
-      <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-shadow hover:shadow-lg hover:shadow-purple-900/20">
+      {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
+      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
