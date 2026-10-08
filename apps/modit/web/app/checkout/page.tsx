@@ -13,6 +13,7 @@ import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
 import { useWalletStore } from "@/lib/wallet-store";
 import { useSubscriptionStore } from "@/lib/subscription-store";
+import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
 import { useAuthReady } from "@/lib/use-auth";
@@ -210,6 +211,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-8 space-y-4">
             {/* Address Section */}
             {activeStep === 1 && (
+              <Reveal>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                 <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                   <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
@@ -334,10 +336,12 @@ export default function CheckoutPage() {
                 </button>
                 {addressError && !showAddAddress && <p className="text-micro text-red-500 mt-2">{addressError}</p>}
               </div>
+              </Reveal>
             )}
 
             {/* Delivery Slot Section */}
             {activeStep === 2 && (
+              <Reveal>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                 <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
                   <Clock className="h-4 w-4 text-[#2D1B69]" /> Delivery Time
@@ -410,11 +414,12 @@ export default function CheckoutPage() {
                   </button>
                 </div>
               </div>
+              </Reveal>
             )}
 
             {/* Payment Section */}
             {activeStep === 3 && (
-              <>
+              <Reveal>
                 {/* Business GSTIN */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
@@ -554,7 +559,7 @@ export default function CheckoutPage() {
                 <button onClick={() => setActiveStep(2)} className="w-full py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
                   Back to Delivery
                 </button>
-              </>
+              </Reveal>
             )}
           </div>
 

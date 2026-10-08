@@ -17,6 +17,7 @@ import {
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
+import { Reveal } from "@/components/reveal";
 import { useState } from "react";
 
 export default function WishlistPage() {
@@ -81,7 +82,7 @@ export default function WishlistPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="product-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {items.map((product) => (
           <div
             key={product.id}

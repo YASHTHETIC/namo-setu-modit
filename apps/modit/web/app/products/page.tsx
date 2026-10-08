@@ -24,6 +24,7 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
+import { Reveal } from "@/components/reveal";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
@@ -223,6 +224,7 @@ function ProductsContent() {
         {/* Sidebar Filters */}
         {showFilters && (
           <aside className="hidden w-64 shrink-0 lg:block">
+            <Reveal direction="none">
             <div
               className="sticky top-24 space-y-0 overflow-hidden rounded-2xl border border-[#DDD6EE] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
             >
@@ -453,12 +455,14 @@ function ProductsContent() {
                 )}
               </div>
             </div>
+            </Reveal>
           </aside>
         )}
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Sort Bar */}
+          <Reveal direction="none">
           <div
             className="mb-4 flex items-center justify-between rounded-2xl border px-5 py-3.5"
             style={{
@@ -545,6 +549,7 @@ function ProductsContent() {
               </div>
             </div>
           </div>
+          </Reveal>
 
           {/* Active Filters */}
           {hasActiveFilters && (

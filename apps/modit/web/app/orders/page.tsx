@@ -9,6 +9,7 @@ import { getProductById } from "@/lib/product-data";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { useAdminStore } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
+import { Reveal } from "@/components/reveal";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
@@ -172,7 +173,7 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="space-y-3 px-4 sm:px-0">
-            {orderList.map((order) => {
+            {orderList.map((order, idx) => {
               const liveStatus = adminOrderStatuses[order.id]?.status ?? order.status;
               const st = statusConfig[liveStatus] || statusConfig.placed;
               const Icon = st.icon;
@@ -186,8 +187,8 @@ export default function OrdersPage() {
               const total = (order as any).total || 0;
 
               return (
+                <Reveal key={order.id} delay={Math.min(idx * 60, 300)}>
                 <div
-                  key={order.id}
                   role="link"
                   tabIndex={0}
                   onClick={() => router.push(`/orders/${order.id}`)}
@@ -276,6 +277,7 @@ export default function OrdersPage() {
                       )}
                     </div>
                   </div>
+                </Reveal>
               );
             })}
           </div>

@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
+import { Reveal } from "@/components/reveal";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
@@ -401,6 +402,7 @@ export default function ProductDetailPage({
 
         {/* Right: Product Info + Buy Box */}
         <div className="lg:col-span-7 space-y-6">
+          <Reveal direction="right">
           {/* Brand & Title */}
           <div>
             {product.brand && (
@@ -716,6 +718,7 @@ export default function ProductDetailPage({
               <span className="text-micro font-medium text-[var(--text-secondary)]">GST invoice available for all orders</span>
             </div>
           </div>
+          </Reveal>
         </div>
       </div>
 
@@ -831,6 +834,7 @@ export default function ProductDetailPage({
 
       {/* Frequently Bought Together */}
       {frequentlyBought.length > 0 && (
+        <Reveal>
         <div className="mt-10">
           <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Frequently Bought Together</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -845,10 +849,12 @@ export default function ProductDetailPage({
             ))}
           </div>
         </div>
+        </Reveal>
       )}
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
+        <Reveal>
         <div className="mt-10 mb-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">Similar Products in {product.category}</h3>
@@ -873,6 +879,7 @@ export default function ProductDetailPage({
             ))}
           </div>
         </div>
+        </Reveal>
       )}
 
       <RFQModal

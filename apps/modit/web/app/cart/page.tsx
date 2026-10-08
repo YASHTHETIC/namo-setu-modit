@@ -22,6 +22,7 @@ import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useCouponStore } from "@/lib/coupon-store";
 import { resolveProduct } from "@/lib/pricing";
 import { formatINR } from "@/lib/utils";
+import { Reveal } from "@/components/reveal";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -135,7 +136,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-3">
-            {items.map((item) => {
+            {items.map((item, idx) => {
               const resolved = resolveProduct(item.product);
               const basePrice = getLiveUnitPrice(item);
               const itemPrice = getBulkUnitPrice(item);
@@ -148,7 +149,8 @@ export default function CartPage() {
                   ? Math.round(((basePrice - itemPrice) / basePrice) * 100)
                   : 0;
               return (
-                <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
+                <Reveal key={`${item.product.id}:${item.variantId || "default"}`} delay={Math.min(idx * 60, 300)}>
+                <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={`/products/${item.product.id}`} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
                     <Image src={item.product.images[0]} alt={item.product.name} fill sizes="112px" loading="lazy" draggable={false} className="object-contain" />
@@ -253,6 +255,7 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
+                </Reveal>
               );
             })}
 

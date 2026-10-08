@@ -27,6 +27,7 @@ import {
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { formatINR } from "@/lib/utils";
+import { Reveal } from "@/components/reveal";
 
 interface Payment {
   id: string;
@@ -92,6 +93,7 @@ export default function ModitPaymentHistoryPage() {
         </p>
       </div>
 
+      <Reveal direction="none">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Panel className="p-5">
           <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">
@@ -118,7 +120,9 @@ export default function ModitPaymentHistoryPage() {
           </p>
         </Panel>
       </div>
+      </Reveal>
 
+      <Reveal direction="none">
       <Panel>
         <div className="flex flex-wrap items-center gap-3 border-b border-[var(--border-subtle)] px-6 py-4">
           <div className="relative flex-1 min-w-[200px]">
@@ -224,6 +228,7 @@ export default function ModitPaymentHistoryPage() {
           </>
         )}
       </Panel>
+      </Reveal>
     </main>
   );
 }
