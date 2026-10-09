@@ -9,9 +9,11 @@ Companion seeder: backend/app/seeders/catalog.py (must run at least once).
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import hmac
 import json
+import logging
 from datetime import date, datetime, timezone
 from uuid import uuid4
 
@@ -23,6 +25,7 @@ from backend.app.models.modit import (
     Category,
     GST,
     Inventory,
+    ModitNotification,
     ModitPayment,
     Order,
     OrderItem,
@@ -328,7 +331,30 @@ async def place_checkout_order(
         transaction_type="debit",
     )
     session.add(payment)
+
+    # Staff see the order in admin immediately (same transaction).
+    await _notify_staff_new_order(session, computed["retail_org"].id, order, computed["grand_total"])
     await session.commit()
+
+    # Customer email is fire-and-forget (SMTP must never slow checkout).
+    customer_email = getattr(user, "email", None)
+    if customer_email:
+        lines_html = "".join(
+            f"<li>{it['name']} × {it['quantity']:g} — ₹{it['line_total']:,.0f}</li>" for it in item_reads
+        )
+        try:
+            asyncio.get_running_loop().create_task(
+                _send_order_email(
+                    customer_email,
+                    f"Order confirmed: {order.order_number}",
+                    f"<p>Hi, your MODIT order <b>{order.order_number}</b> is confirmed.</p>"
+                    f"<ul>{lines_html}</ul>"
+                    f"<p><b>Amount due: ₹{computed['grand_total']:,.0f}</b></p>"
+                    f"<p>Track it anytime from Orders in the app.</p>",
+                )
+            )
+        except RuntimeError:
+            pass  # no running loop (e.g. scripts) — skip silently
 
     return CheckoutResponse(
         id=order.id,
@@ -355,3 +381,50 @@ def verify_razorpay_signature(order_id: str, payment_id: str, signature: str, se
         secret.encode("utf-8"), f"{order_id}|{payment_id}".encode("utf-8"), hashlib.sha256
     ).hexdigest()
     return hmac.compare_digest(expected, signature)
+
+
+logger = logging.getLogger(__name__)
+
+
+async def _send_order_email(to: str | None, subject: str, html_body: str) -> None:
+    """Best-effort only — never raises, never blocks checkout."""
+    if not to:
+        return
+    try:
+        from backend.app.services.email_service import EmailService
+
+        await EmailService().send_email(to, subject, html_body, html=True)
+    except Exception as exc:
+        logger.warning("order email failed (non-fatal): %s", exc)
+
+
+async def _notify_staff_new_order(session: AsyncSession, retail_org_id: str, order: Order, grand_total: float) -> None:
+    """In-app notification for every staff member. Swallowed on error."""
+    try:
+        from backend.app.models.user import Role, User
+
+        staff = (
+            (
+                await session.execute(
+                    select(User)
+                    .join(User.roles)
+                    .where(Role.name.in_(["super_admin", "admin"]), User.is_active.is_(True))
+                )
+            )
+            .scalars()
+            .all()
+        )
+        for member in staff:
+            session.add(
+                ModitNotification(
+                    id=str(uuid4()),
+                    organization_id=retail_org_id,
+                    user_id=getattr(member, "id", None),
+                    channel="in_app",
+                    title=f"New order {order.order_number}",
+                    body=f"₹{grand_total:,.0f} · {order.order_number} placed. Dispatch from Purchases.",
+                    status="queued",
+                )
+            )
+    except Exception as exc:
+        logger.warning("staff order notification failed (non-fatal): %s", exc)
