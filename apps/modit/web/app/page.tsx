@@ -563,7 +563,7 @@ export default function ModitHomePage() {
       {/* ═══ BACK TO TOP ═══ */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed z-40 right-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`fixed z-40 left-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
           showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
