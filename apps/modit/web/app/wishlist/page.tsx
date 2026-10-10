@@ -50,7 +50,7 @@ export default function WishlistPage() {
         <p className="mt-2 text-body-sm text-[#9B8CB5] max-w-xs mx-auto">Save products you love for later. Tap the heart icon on any product to add it here.</p>
         <Link
           href="/products"
-          className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-body-sm font-bold hover:bg-[#150726] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20"
+          className="btn-shine mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#2D1B69] text-white text-body-sm font-bold hover:bg-[#150726] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20"
         >
           <ArrowLeft className="h-4 w-4" /> Browse Products
         </Link>

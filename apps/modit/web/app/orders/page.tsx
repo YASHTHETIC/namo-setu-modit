@@ -160,13 +160,13 @@ export default function OrdersPage() {
           </div>
         ) : orderList.length === 0 ? (
           <div className="py-20 text-center px-4">
-            <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
+            <div className="fx-float-slow mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
               <Package className="h-10 w-10 text-[#2D1B69]" />
             </div>
             <h2 className="text-title-md font-bold text-[#150726]">No orders yet</h2>
             <p className="mt-2 text-body-sm text-[#9B8CB5] max-w-xs mx-auto">When you place an order, it will appear here with tracking details and delivery updates.</p>
             <Link href="/products"
-              className="mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
+              className="btn-shine mt-6 inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
               <ShoppingCart className="h-4 w-4" />
               Start Shopping
             </Link>

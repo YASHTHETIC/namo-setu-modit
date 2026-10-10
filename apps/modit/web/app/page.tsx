@@ -556,7 +556,7 @@ export default function ModitHomePage() {
             </div>
             <Link
               href="/calculator"
-              className="flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
+              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
             >
               Calculate <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -574,7 +574,7 @@ export default function ModitHomePage() {
             </div>
             <Link
               href="/rfq"
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
+              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
             >
               Start RFQ <ArrowRight className="h-4 w-4" />
             </Link>
@@ -588,6 +588,7 @@ export default function ModitHomePage() {
       {/* ═══ BACK TO TOP ═══ */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Back to top"
         className={`fixed z-40 left-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
           showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
@@ -614,7 +615,7 @@ export default function ModitHomePage() {
                 <h3 className="text-body-lg font-bold text-[#150726]">Enter Pincode</h3>
                 <p className="text-micro text-[#9B8CB5] mt-0.5">Check delivery availability</p>
               </div>
-              <button onClick={() => setShowPincodeModal(false)} className="p-1 text-[#9B8CB5] hover:text-[#150726] transition-colors hover:rotate-90 duration-300">
+              <button onClick={() => setShowPincodeModal(false)} aria-label="Close" className="p-1 text-[#9B8CB5] hover:text-[#150726] transition-colors hover:rotate-90 duration-300">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -623,6 +624,7 @@ export default function ModitHomePage() {
                 type="text"
                 value={pincode}
                 autoFocus
+                aria-label="Delivery pincode"
                 onKeyDown={(e) => { if (e.key === "Escape") setShowPincodeModal(false); }}
                 onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="Enter 6-digit pincode"

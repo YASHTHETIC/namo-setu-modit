@@ -71,7 +71,7 @@ export function PushNotificationPrompt() {
           </div>
         ) : (
         <>
-        <button onClick={handleDismiss} className="absolute top-2 right-2 p-1 text-white/30 hover:text-white transition-colors">
+        <button onClick={handleDismiss} aria-label="Dismiss" className="absolute top-2 right-2 p-1 text-white/30 hover:text-white transition-colors">
           <X className="h-4 w-4" />
         </button>
         <div className="flex items-start gap-3">

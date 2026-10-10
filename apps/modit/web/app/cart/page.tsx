@@ -77,7 +77,7 @@ export default function CartPage() {
           </div>
           <h2 className="text-title-md font-bold text-[#150726]">Your cart is empty</h2>
           <p className="mt-2 text-body-sm text-[#9B8CB5]">Add construction materials to your cart to proceed.</p>
-          <Link href="/products" className="mt-5 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+          <Link href="/products" className="btn-shine mt-5 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
             <ArrowLeft className="h-4 w-4" />
             Browse Products
           </Link>

@@ -596,7 +596,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   className="w-full h-12 rounded-xl bg-white/10 border border-white/10 pl-10 pr-10 text-body-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#7CB518] transition-colors"
                 />
                 {searchQuery && (
-                  <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                  <button onClick={() => setSearchQuery("")} aria-label="Clear search"
+className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
                     <X className="h-4 w-4" />
                   </button>
                 )}
