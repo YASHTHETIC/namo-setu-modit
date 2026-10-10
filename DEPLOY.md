@@ -12,7 +12,7 @@ Everything is automated. Total hands-on time: **~5 minutes** (plus ~10 min of un
 ## Deploy (one command)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh)
 ```
 
 It asks 3 things, then works alone:
@@ -32,7 +32,7 @@ Skip prompts (non-interactive):
 
 ```bash
 DOMAIN=modit.in CERTBOT_EMAIL=you@example.com RAZORPAY_KEY_ID=rzp_test_xxx \
-bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh)
 ```
 
 ## Verify
@@ -51,11 +51,15 @@ Then open your domain (or `http://SERVER_IP`) in a browser.
 cd /opt/modit
 git pull
 npm install --legacy-peer-deps
+.venv/bin/python -m alembic -c backend/alembic.ini upgrade head
+# first time / empty catalog only (fills 499 products + inventory):
+cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog && cd /opt/modit
 npm run build --workspace=@modit/web
 pm2 restart modit-web modit-api
-# only if migrations changed:
-.venv/bin/python -m alembic -c backend/alembic.ini upgrade head
+pm2 status
 ```
+Staff PIN for `/admin`: `grep '^NEXT_PUBLIC_ADMIN_PIN=' /opt/modit/apps/modit/web/.env.local`
+(first setup prints it; override anytime with `ADMIN_PIN=xxxxxx bash deploy/setup.sh`).
 
 ## Where things live
 
@@ -86,7 +90,7 @@ pm2 restart modit-web modit-api
 | Symptom | Fix |
 |---|---|
 | Site 502 | `pm2 status` → if an app is stopped: `pm2 logs modit-api` (or `modit-web`) |
-| Empty/odd catalog | `pm2 logs modit-api` during seeds; re-run: `cd /opt/modit/backend && PYTHONPATH=".." DATABASE_URL=$(grep '^DATABASE_URL=' /opt/modit/.env \| cut -d= -f2-) ../.venv/bin/python -m seeds.runner` |
+| Empty/odd catalog | Fill it: `cd /opt/modit/backend && PYTHONPATH=".." DATABASE_URL=$(grep '^DATABASE_URL=' /opt/modit/.env \| cut -d= -f2-) ../.venv/bin/python -m backend.app.seeders.catalog` |
 | SSL failed | Point DNS first (`ping yourdomain` = VPS IP), then: `certbot --nginx -d yourdomain.com -d api.yourdomain.com -m you@email.com` |
 | DB not reachable | `systemctl status postgresql`; check `DATABASE_URL` in `/opt/modit/.env` |
 | Port 80 blocked | `ufw status` · also check Hostinger's panel firewall |
@@ -116,10 +120,10 @@ cat /root/.ssh/modit_deploy.pub        # copy this output
 echo "Host github.com" >> /root/.ssh/config
 echo "  IdentityFile /root/.ssh/modit_deploy" >> /root/.ssh/config
 ssh-keyscan github.com >> /root/.ssh/known_hosts
-git -C /opt/modit remote set-url origin git@github.com:YASHTHETIC/modit.git
+git -C /opt/modit remote set-url origin git@github.com:YASHTHETIC/namo-setu-modit.git
 git -C /opt/modit pull                 # "Already up to date" = working
 ```
 
 Alternative for a fresh clone without SSH: export a read-only tokeninline —
 `GITHUB_TOKEN=<token> bash setup.sh` — or download the script with
-`curl -H "Authorization: Bearer <token>" -fsSL https://raw.githubusercontent.com/YASHTHETIC/modit/main/deploy/setup.sh`.
+`curl -H "Authorization: Bearer <token>" -fsSL https://raw.githubusercontent.com/YASHTHETIC/namo-setu-modit/main/deploy/setup.sh`.

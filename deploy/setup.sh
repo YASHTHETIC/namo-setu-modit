@@ -199,6 +199,13 @@ else
   warn "Seeds failed — site still works (frontend falls back to built-in catalog)"
 fi
 
+stage "Catalog seed (storefront products + inventory)"
+if (cd backend && PYTHONPATH=".." DATABASE_URL="$DATABASE_URL_VAL" "$APP_DIR/.venv/bin/python" -m backend.app.seeders.catalog); then
+  echo "  catalog loaded"
+else
+  warn "Catalog seed failed — storefront falls back to built-in catalog"
+fi
+
 # ---------------------------------------------------------------------------
 # 6. Frontend: install, VAPID keys, .env.local, build
 # ---------------------------------------------------------------------------
@@ -217,6 +224,7 @@ if [ ! -f "$WEB_ENV" ]; then
     echo "VAPID_PRIVATE_KEY=${VAPID_PRIV}"
     echo "VAPID_SUBJECT=mailto:support@modit.in"
     [ -n "$RAZORPAY_KEY_ID" ] && echo "NEXT_PUBLIC_RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}"
+    echo "NEXT_PUBLIC_ADMIN_PIN=${ADMIN_PIN:-$(shuf -i 100000-999999 -n 1)}"
   } > "$WEB_ENV"
   chmod 600 "$WEB_ENV"
   echo "  created $WEB_ENV (VAPID keys generated)"
@@ -226,6 +234,10 @@ else
     echo "  updated API base for domain mode"
   else
     echo "  kept existing $WEB_ENV"
+  fi
+  if ! grep -q '^NEXT_PUBLIC_ADMIN_PIN=' "$WEB_ENV"; then
+    echo "NEXT_PUBLIC_ADMIN_PIN=${ADMIN_PIN:-$(shuf -i 100000-999999 -n 1)}" >> "$WEB_ENV"
+    echo "  staff PIN generated (see summary)"
   fi
 fi
 
@@ -465,6 +477,7 @@ cat <<EOF
 $(printf '\033[1;32m')DEPLOY COMPLETE$(printf '\033[0m')
   Site : $FRONTEND_URL
   API  : $API_BASE/healthz
+  Staff PIN (admin panel): $(grep '^NEXT_PUBLIC_ADMIN_PIN=' "$WEB_ENV" | cut -d= -f2-)
   Logs : pm2 logs        |  status: pm2 status
   Env  : $ENV_FILE  &  $WEB_ENV   (chmod 600, never in git)
   Update flow: see DEPLOY.md
