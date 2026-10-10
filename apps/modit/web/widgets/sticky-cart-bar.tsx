@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { X } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 
 interface StickyCartBarProps {
@@ -11,13 +13,25 @@ interface StickyCartBarProps {
 
 export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   const items = useCartStore((s) => s.items);
+  // Dismiss hides the bar until the cart itself changes (add/remove/price).
+  const [dismissedKey, setDismissedKey] = useState<string | null>(null);
   if (itemCount === 0) return null;
 
   const lastItem = items[items.length - 1];
   const saved = items.reduce((sum, i) => sum + (i.product.mrp - i.product.price) * i.quantity, 0);
+  const key = `${itemCount}:${total}`;
+  if (dismissedKey === key) return null;
 
   return (
     <div className="sticky-cart-bar group/cart">
+      {/* Dismiss — header cart icon always keeps the cart reachable */}
+      <button
+        onClick={() => setDismissedKey(key)}
+        aria-label="Hide cart bar"
+        className="absolute -top-2.5 -right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#150726] shadow-md transition-transform hover:scale-110 active:scale-95"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
       {/* Left side — mini product preview + totals */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {/* Mini product thumbnail */}
