@@ -24,11 +24,11 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
 
   return (
     <div className="sticky-cart-bar group/cart">
-      {/* Dismiss — header cart icon always keeps the cart reachable */}
+      {/* Dismiss — top-left, clear of the chat bubble on the right */}
       <button
         onClick={() => setDismissedKey(key)}
         aria-label="Hide cart bar"
-        className="absolute -top-2.5 -right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#150726] shadow-md transition-transform hover:scale-110 active:scale-95"
+        className="absolute -top-2.5 -left-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#150726] shadow-md transition-transform hover:scale-110 active:scale-95"
       >
         <X className="h-3.5 w-3.5" />
       </button>

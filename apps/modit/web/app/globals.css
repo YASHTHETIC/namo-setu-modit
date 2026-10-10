@@ -1715,10 +1715,11 @@ input:focus:not(:focus-visible) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transform: translateZ(0);
   white-space: nowrap;
 }
-.trust3d-overlay { animation: trust-badge-float 4s ease-in-out infinite; }
+/* NOTE: badge motion (float/drive/ring) removed — low-end Android and older
+   iOS GPUs rendered it inconsistently. Static 3D depth (bevels/shadows) stays. */
+.trust3d-overlay { animation: none; }
 
 /* Door badge: dark glass with 3D bevel + driving truck */
 .trust3d-door {
@@ -1737,7 +1738,6 @@ input:focus:not(:focus-visible) {
 }
 .trust3d-door .truck {
   color: #7CB518;
-  animation: trust-truck-drive 1.6s ease-in-out infinite;
   filter: drop-shadow(0 0 4px rgba(124, 181, 24, 0.7));
 }
 /* shine sweep when the parent card is hovered */
@@ -1765,17 +1765,8 @@ input:focus:not(:focus-visible) {
     0 6px 16px rgba(21, 7, 38, 0.18);
 }
 .trust3d-ring::before {
-  content: "";
-  position: absolute;
-  inset: -2.5px;
-  border-radius: 12px;
-  padding: 1.5px;
-  background: conic-gradient(from 0deg, #7CB518, #00BCD4, #E91E63, #7CB518);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: trust-ring-spin 4s linear infinite;
-  pointer-events: none;
+  /* Energy ring removed — mask-composite does not render on older mobile GPUs. */
+  display: none;
 }
 
 /* 3D product image: pops toward the viewer on card hover (desktop) */
