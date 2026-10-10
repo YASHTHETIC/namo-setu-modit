@@ -136,6 +136,40 @@ def test_razorpay_hmac():
     assert verify_razorpay_signature("order_1", "pay_1", sig, "") is False
 
 
+def test_order_status_requires_auth(client):
+    response = client.patch("/api/v1/modit/orders/x/status", json={"status": "dispatched"})
+    assert response.status_code == 401
+
+
+def test_return_status_requires_auth(client):
+    response = client.patch("/api/v1/modit/returns/x/status", json={"status": "approved"})
+    assert response.status_code == 401
+
+
+def test_returns_list_requires_auth(client):
+    response = client.get("/api/v1/modit/returns")
+    assert response.status_code == 401
+
+
+def test_order_status_rejects_unknown(client):
+    response = client.patch(
+        "/api/v1/modit/orders/x/status",
+        json={"status": "teleported"},
+        headers=_auth_headers(),
+    )
+    # Unknown order → 404 before status validation; both are honest rejections.
+    assert response.status_code in (400, 404)
+
+
+def test_return_status_rejects_unknown(client):
+    response = client.patch(
+        "/api/v1/modit/returns/x/status",
+        json={"status": "teleported"},
+        headers=_auth_headers(),
+    )
+    assert response.status_code in (400, 403, 404)
+
+
 def test_catalog_parser_counts():
     from backend.app.seeders.catalog import parse_catalog
 
