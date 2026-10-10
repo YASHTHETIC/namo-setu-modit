@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.models.modit import (
     Category,
+    CreditAccount,
     GST,
     Inventory,
     ModitNotification,
@@ -253,12 +254,31 @@ async def _decrement_inventory(session: AsyncSession, product_id: str, quantity:
         remaining -= take
 
 
+async def _require_credit_approval(session: AsyncSession, organization_id: str, grand_total: float) -> None:
+    """Net-30 needs an active credit account covering the order. Fail loudly otherwise."""
+    stmt = (
+        select(CreditAccount)
+        .where(CreditAccount.organization_id == organization_id, CreditAccount.is_active.is_(True))
+        .limit(1)
+    )
+    account = (await session.execute(stmt)).scalars().first()
+    if account is None or float(account.available_credit) < float(grand_total):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Business credit needs approval for this account. Use COD/UPI or contact support@modit.in for Net-30 terms.",
+        )
+
+
 async def place_checkout_order(
     session: AsyncSession, user: User, payload: CheckoutRequest
 ) -> CheckoutResponse:
     """Create PO + Order + items + payment atomically. Returns server totals."""
     computed = await compute_checkout_totals(session, payload)
     org = await get_or_create_personal_org(session, user)
+
+    if str(getattr(payload, "payment_method", "cod") or "cod").lower() == "credit":
+        await _require_credit_approval(session, org.id, computed["grand_total"])
+
     now = _utcnow()
 
     po = PurchaseOrder(

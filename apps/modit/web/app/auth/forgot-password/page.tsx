@@ -7,7 +7,6 @@ import { createApiClient } from "@foundation/api-client";
 import { Mail, CheckCircle, ArrowLeft } from "lucide-react";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -78,7 +77,6 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 }

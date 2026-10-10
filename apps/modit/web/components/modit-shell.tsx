@@ -38,7 +38,6 @@ import { categories, type Product } from "@/lib/product-data";
 import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
 import { useDisplayProducts } from "@/lib/pricing";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { LocationMenu } from "@/components/location-menu";
@@ -678,13 +677,12 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
         )}
       </AnimatePresence>
 
-      <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
+      <main className="fx-page market-container min-h-[60vh] py-6">{children}</main>
 
       <SiteFooter />
 
       <PushNotificationPrompt />
       <ComparisonBar />
-      <BottomNav />
     </div>
   );
 }

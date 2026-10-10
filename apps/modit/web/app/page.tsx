@@ -8,11 +8,10 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Shield, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt, TicketPercent, Copy, Check
+  BadgeCheck, Undo2, Receipt
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
@@ -129,7 +128,6 @@ export default function ModitHomePage() {
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [deliveryPulse, setDeliveryPulse] = useState(true);
-  const [offerCopied, setOfferCopied] = useState(false);
   const [cartToast, setCartToast] = useState<{ name: string; price: number } | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
@@ -276,28 +274,6 @@ export default function ModitHomePage() {
             <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
             <span className="text-tiny font-medium">Live</span>
           </div>
-        </div>
-      </div>
-
-      {/* ═══ LAUNCH OFFER BAR — FIRST100 ═══ */}
-      <div className="px-4 pt-3">
-        <div className="max-w-[1440px] mx-auto flex items-center gap-2.5 rounded-2xl px-3.5 py-2.5" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 100%)" }}>
-          <TicketPercent className="h-4 w-4 shrink-0 text-[#7CB518]" />
-          <p className="min-w-0 flex-1 truncate text-caption font-semibold text-white">
-            Launch offer: <span className="font-black text-[#7CB518]">₹100 OFF</span> first order over ₹1000
-          </p>
-          <button
-            onClick={() => {
-              const done = () => { setOfferCopied(true); setTimeout(() => setOfferCopied(false), 2000); };
-              if (navigator.clipboard?.writeText) navigator.clipboard.writeText("FIRST100").then(done).catch(done);
-              else done();
-            }}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-[#7CB518]/60 bg-white/10 px-2.5 py-1.5 text-caption font-black tracking-wider text-white transition-colors hover:bg-white/20"
-            aria-label="Copy coupon code FIRST100"
-          >
-            {offerCopied ? <Check className="h-3.5 w-3.5 text-[#7CB518]" /> : <Copy className="h-3.5 w-3.5 text-[#7CB518]" />}
-            {offerCopied ? "Copied!" : "FIRST100"}
-          </button>
         </div>
       </div>
 
@@ -590,18 +566,17 @@ export default function ModitHomePage() {
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
         className={`fixed z-40 left-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
-          showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
+          showBackToTop ? "bottom-24 opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
         <ChevronUp className="h-5 w-5" />
       </button>
 
       {/* ═══ BOTTOM NAV ═══ */}
-      <SiteFooter className="pb-24" />
+      <SiteFooter />
       <PushNotificationPrompt />
       <PwaInstallPrompt />
       <ComparisonBar />
-      <BottomNav />
 
           {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (

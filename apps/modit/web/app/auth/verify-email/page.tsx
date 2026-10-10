@@ -9,7 +9,6 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { setAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 
 function VerifyEmailForm() {
   const router = useRouter();
@@ -83,7 +82,6 @@ function VerifyEmailForm() {
           </div>
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 }

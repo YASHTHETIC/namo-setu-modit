@@ -29,14 +29,13 @@ interface WalletState {
 export const useWalletStore = create<WalletState>()(
   persist(
     (set, get) => ({
-      balance: 500,
-      points: 250,
+      // Launch-safe: real balances live server-side. Start at zero so the
+      // storefront never shows stub money; points accrue from real orders.
+      balance: 0,
+      points: 0,
       referralCode: "MODIT2026",
       referralCount: 0,
-      transactions: [
-        { id: "t1", type: "credit", amount: 200, description: "Welcome bonus", createdAt: Date.now() - 86400000 * 5 },
-        { id: "t2", type: "credit", amount: 300, description: "Referral reward - Rahul S.", createdAt: Date.now() - 86400000 * 2 },
-      ],
+      transactions: [],
 
       addBalance: (amount, description, orderId) => {
         set((state) => ({
@@ -114,7 +113,8 @@ export const useWalletStore = create<WalletState>()(
       getTransactionHistory: () => get().transactions,
     }),
     {
-      name: "modit-wallet",
+      // v2 key: drops pre-launch stub balances (₹500/250pts) from old devices.
+      name: "modit-wallet-v2",
       partialize: (state) => ({
         balance: state.balance,
         points: state.points,

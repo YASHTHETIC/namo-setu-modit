@@ -121,6 +121,47 @@ def test_coupon_math():
     assert (disc, ship) == (400.0, False)  # capped
     with pytest.raises(HTTPException):
         validate_coupon("DIWALI20", 2000.0, {"tiling"}, date(2026, 12, 1))  # expired
+
+
+def test_credit_needs_approved_account():
+    import asyncio
+
+    from backend.app.services import checkout as svc
+
+    class Rows:
+        def __init__(self, row):
+            self._row = row
+
+        def scalars(self):
+            return self
+
+        def first(self):
+            return self._row
+
+    class NoAccountSession:
+        async def execute(self, stmt):
+            return Rows(None)
+
+    class RichSession(NoAccountSession):
+        async def execute(self, stmt):
+            class Acct:
+                available_credit = 100000.0
+
+            return Rows(Acct())
+
+    class PoorSession(NoAccountSession):
+        async def execute(self, stmt):
+            class Acct:
+                available_credit = 10.0
+
+            return Rows(Acct())
+
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(svc._require_credit_approval(NoAccountSession(), "org-1", 500.0))
+    assert exc.value.status_code == 400
+    with pytest.raises(HTTPException):
+        asyncio.run(svc._require_credit_approval(PoorSession(), "org-1", 500.0))
+    asyncio.run(svc._require_credit_approval(RichSession(), "org-1", 500.0))  # no raise
     with pytest.raises(HTTPException):
         validate_coupon("CEMENT50", 500.0, {"cement"}, date(2026, 1, 1))  # under min
     with pytest.raises(HTTPException):

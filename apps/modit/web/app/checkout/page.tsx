@@ -4,15 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
-  Tag, Wallet, Calendar, Zap, X, Trash2, Gift, Repeat, FileText
+  Tag, Calendar, Zap, X, Trash2, Gift, FileText
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore, type Address } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
-import { useWalletStore } from "@/lib/wallet-store";
-import { useSubscriptionStore } from "@/lib/subscription-store";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
@@ -29,8 +27,6 @@ export default function CheckoutPage() {
   const { addresses, selectedAddressId, selectAddress, addAddress, deleteAddress, setDefault, getSelected } = useAddressStore();
   const { selectedSlotId, slots, selectSlot, getSelected: getSlot } = useDeliveryStore();
   const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon } = useCouponStore();
-  const { balance, points, addPoints } = useWalletStore();
-  const { addSubscription } = useSubscriptionStore();
   const toast = useToast();
 
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -39,8 +35,6 @@ export default function CheckoutPage() {
   const [couponInput, setCouponInput] = useState("");
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [serverTotal, setServerTotal] = useState<number | null>(null);
-  const [subscribe, setSubscribe] = useState(false);
-  const [subscribeFreq, setSubscribeFreq] = useState<"weekly" | "biweekly" | "monthly">("monthly");
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
   const [activeStep, setActiveStep] = useState(1);
   const [addressError, setAddressError] = useState("");
@@ -54,8 +48,6 @@ export default function CheckoutPage() {
   const couponDiscount = getDiscount(subtotal);
   const isFreeShipping = appliedCoupon?.discountType === "free_shipping";
   const effectiveShipping = isFreeShipping ? 0 : shipping;
-  // NOTE: wallet redemption is display-only until balances move server-side.
-  // The payable total never subtracts wallet money (unverifiable client state).
   const total = Math.max(0, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount);
   const bestCoupon = getBestCoupon(subtotal);
   const selectedAddr = getSelected();
@@ -78,11 +70,6 @@ export default function CheckoutPage() {
       return;
     }
     const id = apiOrderId;
-    const cartItems = [...items];
-    if (subscribe) {
-      cartItems.forEach((item) => addSubscription(item.product, item.quantity, subscribeFreq, item.variantId));
-    }
-    addPoints(Math.floor(total / 10), `Points for order ${id}`);
     removeCoupon();
     clearCart();
     setOrderId(id);
@@ -149,14 +136,11 @@ export default function CheckoutPage() {
           <p className="text-body-sm text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
           {serverTotal !== null && (
             <p className="mt-2 inline-block rounded-full bg-[#F0F9E8] px-4 py-1.5 text-body-sm font-bold text-[#2D1B69]">
-              Amount due: ₹{serverTotal.toLocaleString("en-IN")} (server-verified)
+              Amount due: ₹{serverTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (server-verified)
             </p>
           )}
           <div className="mt-6 flex items-center justify-center gap-2 text-caption text-[#7CB518] font-semibold">
             <Truck className="h-4 w-4" /> Estimated delivery: {slot?.time ?? "60 minutes"}
-          </div>
-          <div className="mt-3 flex items-center justify-center gap-2 text-caption text-[#2D1B69]">
-            <Wallet className="h-4 w-4" /> +{Math.floor(total / 10)} points earned
           </div>
           <div className="mt-8 flex gap-3 justify-center">
             <Link href={`/orders/${orderId}`} className="bg-[#2D1B69] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#1E1245] transition-all">
@@ -483,46 +467,6 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Wallet — display only until balances move server-side */}
-                {balance > 0 && (
-                  <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                    <div className="flex items-center gap-2">
-                      <Wallet className="h-4 w-4 text-[#FF9800]" />
-                      <div>
-                        <span className="text-body-sm font-bold text-[#150726]">Wallet Balance: ₹{balance.toLocaleString()}</span>
-                        <p className="text-tiny text-[#9B8CB5]">{points} loyalty points · redemption moves server-side soon</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Subscription */}
-                <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Repeat className="h-4 w-4 text-[#00BCD4]" />
-                      <div>
-                        <span className="text-body-sm font-bold text-[#150726]">Subscribe & Save</span>
-                        <p className="text-tiny text-[#9B8CB5]">Auto-reorder these items</p>
-                      </div>
-                    </div>
-                      <button onClick={() => setSubscribe(!subscribe)} aria-label="Subscribe and save" className={`relative w-11 h-6 rounded-full transition-all flex-shrink-0 ${subscribe ? "bg-[#00BCD4]" : "bg-[#DDD6EE]"}`}>
-                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${subscribe ? "left-[22px]" : "left-0.5"}`} />
-                      </button>
-                  </div>
-                  {subscribe && (
-                    <div className="flex gap-2 mt-3">
-                      {(["weekly", "biweekly", "monthly"] as const).map((f) => (
-                        <button key={f} onClick={() => setSubscribeFreq(f)} className={`flex-1 py-2 rounded-lg text-micro font-bold transition-all ${
-                          subscribeFreq === f ? "bg-[#00BCD4] text-white" : "bg-[#F0ECF9] text-[#9B8CB5] hover:bg-[#E8F9FC]"
-                        }`}>
-                          {f === "weekly" ? "Weekly" : f === "biweekly" ? "Every 2 Weeks" : "Monthly"}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
                 {/* Order Items */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
@@ -590,7 +534,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST</span>
-                    <span className="text-[#150726]">₹{gst.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                    <span className="text-[#150726]">₹{gst.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Shipping</span>
@@ -612,7 +556,7 @@ export default function CheckoutPage() {
                   )}
                   <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
                     <span className="text-body-lg font-bold text-[#150726]">Total</span>
-                    <span className="text-title-md font-extrabold text-[#2D1B69]">₹{total.toLocaleString()}</span>
+                    <span className="text-title-md font-extrabold text-[#2D1B69]">₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>

@@ -16,7 +16,7 @@ export function ComparisonBar() {
   if (HIDDEN_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) return null;
 
   return (
-    <div className="fixed bottom-[140px] left-0 right-0 z-40 px-4 pb-2">
+    <div className="fixed bottom-[76px] left-0 right-0 z-40 px-4 pb-2">
       <div className="max-w-[600px] mx-auto bg-[#150726] rounded-2xl border border-white/10 p-3 shadow-2xl shadow-black/30">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">

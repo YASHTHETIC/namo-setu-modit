@@ -9,7 +9,6 @@ import { Mail, Lock, Eye, EyeOff, User, Truck, Shield, Clock } from "lucide-reac
 import { setAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -149,7 +148,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 }

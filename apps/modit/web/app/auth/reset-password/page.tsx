@@ -8,7 +8,6 @@ import { createApiClient } from "@foundation/api-client";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -96,7 +95,6 @@ function ResetPasswordForm() {
           </div>
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 }

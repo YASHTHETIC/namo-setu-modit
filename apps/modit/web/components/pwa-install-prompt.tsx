@@ -40,7 +40,7 @@ export function PwaInstallPrompt() {
   if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
 
   return (
-    <div className="fixed bottom-36 left-4 right-4 z-sheet max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">
+    <div className="fixed bottom-20 left-4 right-4 z-sheet max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">
       <div className="bg-[#150726] rounded-2xl border border-white/10 p-4 shadow-2xl shadow-black/40 relative">
         <button onClick={handleDismiss} aria-label="Dismiss" className="absolute top-2 right-2 p-1 text-white/30 hover:text-white transition-colors">
           <X className="h-4 w-4" />

@@ -9,7 +9,6 @@ import { ReferralModal } from "@/components/referral-modal";
 
 /**
  * Shared site footer (all pages, including home).
- * Extra bottom padding keeps the fixed bottom nav clear of the legal row.
  */
 export function SiteFooter({ className = "" }: { className?: string }) {
   const [showReferral, setShowReferral] = useState(false);
