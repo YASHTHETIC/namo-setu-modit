@@ -10,6 +10,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
+import { DoorBadge, ReplaceBadge } from "@/components/fx";
 
 /** Parse "50kg" / "5 kg" / "20 L" into { qty, label } for per-unit pricing. */
 function parseUnit(unit: string, fallback: string): { qty: number; label: string } | null {
@@ -57,7 +58,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const stars = Math.max(0, Math.min(5, Math.round(product.rating)));
 
   return (
-    <div className="bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col">
+    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col">
       {/* Image */}
       <div className="relative bg-[#F7F4FC]">
         <Link href={`/products/${product.id}`} className="relative block aspect-square">
@@ -69,7 +70,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
               sizes="50vw"
               loading="lazy"
               draggable={false}
-              className="object-contain animate-fade-in"
+              className="object-contain animate-fade-in card3d-img"
             />
           ) : null}
         </Link>
@@ -85,6 +86,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         >
           <Heart className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "text-[#9B8CB5]"}`} />
         </button>
+        <DoorBadge overlay />
 
         {/* Overlapping unit + ADD row */}
         <div className="absolute -bottom-4 left-2 right-2 flex items-end justify-between gap-1">
@@ -95,7 +97,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
               disabled={blocked}
-              className="rounded-lg bg-white px-5 py-1.5 text-caption font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
+              className="btn-shine rounded-lg bg-white px-5 py-1.5 text-caption font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
             >
               {blocked ? "N/A" : "ADD"}
             </button>
@@ -166,6 +168,9 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           {blocked && (
             <span className="text-tiny font-black text-[#E91E63]">Unavailable in your area</span>
           )}
+        </div>
+        <div className="mt-1.5">
+          <ReplaceBadge />
         </div>
         {product.onSale && product.saleName && (
           <span className="mt-1 self-start rounded bg-[#7CB518] px-1.5 py-0.5 text-tiny font-black text-white uppercase">

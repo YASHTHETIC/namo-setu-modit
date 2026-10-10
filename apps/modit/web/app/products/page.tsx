@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { Reveal } from "@/components/reveal";
+import { DoorBadge, ReplaceBadge } from "@/components/fx";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
@@ -860,7 +861,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain"
+                className="object-contain card3d-img"
               />
             ) : (
             <div className="flex h-full items-center justify-center">
@@ -870,6 +871,11 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           {/* Bottom gradient overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
+
+        {/* 3D Material-on-Door overlay */}
+        <div className="trust3d-overlay absolute bottom-3 right-3 z-20">
+          <DoorBadge />
+        </div>
 
         {/* Wishlist */}
         <button
@@ -985,11 +991,13 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           )}
         </div>
 
-        <DeliveryBadge
-          days={product.deliveryDays}
-          freeDelivery={product.freeDelivery}
-          className="mt-2.5"
-        />
+        <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+          <DeliveryBadge
+            days={product.deliveryDays}
+            freeDelivery={product.freeDelivery}
+          />
+          <ReplaceBadge />
+        </div>
 
         {product.pincodeStock && (
           <div className="mt-2">
@@ -1000,7 +1008,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Add to Cart */}
         <button
           onClick={handleAdd}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300"
+          className="btn-shine mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300"
           style={
             added
               ? {
@@ -1200,11 +1208,12 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
           </div>
 
           <DeliveryBadge days={product.deliveryDays} freeDelivery={product.freeDelivery} />
+          <ReplaceBadge />
 
           <div className="ml-auto flex flex-col items-stretch gap-2">
             <button
               onClick={handleAdd}
-              className="flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300"
+              className="btn-shine flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300"
               style={
                 added
                   ? { background: 'linear-gradient(135deg, #059669, #059669)', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }
