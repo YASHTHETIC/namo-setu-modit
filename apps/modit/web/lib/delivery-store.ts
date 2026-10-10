@@ -25,7 +25,9 @@ interface DeliveryState {
 }
 
 const defaultSlots: DeliverySlot[] = [
-  { id: "express-30", label: "Express 30 min", time: "30 min", cutoff: "Now", type: "express", fee: 49, available: true },
+  // Launch: all slots free. (The server totals have no slot-fee concept, so any
+  // nonzero fee here would show in the estimate but never be charged.)
+  { id: "express-30", label: "Express 30 min", time: "30 min", cutoff: "Now", type: "express", fee: 0, available: true },
   { id: "express-60", label: "Express 60 min", time: "60 min", cutoff: "Now", type: "express", fee: 0, available: true },
   { id: "standard-2hr", label: "Standard 2 hrs", time: "2 hours", cutoff: "Order by 6 PM", type: "standard", fee: 0, available: true },
   { id: "scheduled-morning", label: "Tomorrow Morning", time: "8 AM - 12 PM", cutoff: "Order by 10 PM", type: "scheduled", fee: 0, available: true },

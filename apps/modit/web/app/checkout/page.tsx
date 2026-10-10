@@ -21,7 +21,6 @@ export default function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const getCartTotal = useCartStore((s) => s.getCartTotal);
   const getCartGST = useCartStore((s) => s.getCartGST);
-  const getCartShipping = useCartStore((s) => s.getCartShipping);
   const clearCart = useCartStore((s) => s.clearCart);
 
   const { addresses, selectedAddressId, selectAddress, addAddress, deleteAddress, setDefault, getSelected } = useAddressStore();
@@ -42,12 +41,14 @@ export default function CheckoutPage() {
 
   const subtotal = getCartTotal();
   const gst = getCartGST();
-  const shipping = getCartShipping();
-  const slot = getSlot();
-  const deliveryFee = slot?.fee ?? 0;
   const couponDiscount = getDiscount(subtotal);
   const isFreeShipping = appliedCoupon?.discountType === "free_shipping";
+  // Mirror the server: free shipping only when the POST-discount subtotal
+  // clears ₹5000 (compute_checkout_totals uses subtotal - discount).
+  const shipping = subtotal - couponDiscount >= 5000 ? 0 : 250;
   const effectiveShipping = isFreeShipping ? 0 : shipping;
+  const slot = getSlot();
+  const deliveryFee = slot?.fee ?? 0;
   const total = Math.max(0, subtotal + gst + effectiveShipping + deliveryFee - couponDiscount);
   const bestCoupon = getBestCoupon(subtotal);
   const selectedAddr = getSelected();
