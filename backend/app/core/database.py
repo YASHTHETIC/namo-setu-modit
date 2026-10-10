@@ -57,16 +57,20 @@ NAMING_CONVENTION = {
 # every request hang for a minute. Fail fast instead.
 _connect_args = {"timeout": 5} if "+asyncpg" in db_url else {}
 
-engine = create_async_engine(
-    db_url,
-    echo=False,
-    pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20,
-    pool_recycle=1800,
-    pool_timeout=10,
-    connect_args=_connect_args,
-)
+# sqlite (aiosqlite) uses NullPool — pool_size/max_overflow/pool_timeout are
+# invalid there. Only pass pool tuning for real server databases so the app
+# (and seeder tests) can also run against sqlite.
+_engine_kwargs: dict = {"echo": False, "connect_args": _connect_args}
+if "+aiosqlite" not in db_url and db_url.split(":")[0] != "sqlite":
+    _engine_kwargs.update(
+        pool_pre_ping=True,
+        pool_size=10,
+        max_overflow=20,
+        pool_recycle=1800,
+        pool_timeout=10,
+    )
+
+engine = create_async_engine(db_url, **_engine_kwargs)
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base(metadata=MetaData(naming_convention=NAMING_CONVENTION))
 
