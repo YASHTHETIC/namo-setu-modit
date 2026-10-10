@@ -7,6 +7,7 @@ export type AdminActionType =
   | "product.update"
   | "product.reset"
   | "product.bulk_update"
+  | "product.create"
   | "sale.create"
   | "sale.update"
   | "sale.toggle"
@@ -19,6 +20,9 @@ export type AdminActionType =
   | "return.advance"
   | "supplier.status"
   | "supplier.add"
+  | "store.create"
+  | "store.restock"
+  | "store.reorder"
   | "admin.unlock";
 
 export interface AdminActivity {
@@ -39,6 +43,7 @@ export const ADMIN_ACTION_LABEL: Record<AdminActionType, string> = {
   "product.update": "Price / stock updated",
   "product.reset": "Product reset to default",
   "product.bulk_update": "Bulk price update",
+  "product.create": "Product added to catalog",
   "sale.create": "Sale created",
   "sale.update": "Sale updated",
   "sale.toggle": "Sale paused / activated",
@@ -51,6 +56,9 @@ export const ADMIN_ACTION_LABEL: Record<AdminActionType, string> = {
   "return.advance": "Return advanced",
   "supplier.status": "Supplier status changed",
   "supplier.add": "Supplier onboarded",
+  "store.create": "Store opened",
+  "store.restock": "Stock adjusted",
+  "store.reorder": "AI reorder run",
   "admin.unlock": "Panel unlocked",
 };
 

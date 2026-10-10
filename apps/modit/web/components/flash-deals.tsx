@@ -43,7 +43,7 @@ export function FlashDeals() {
   const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)
     .sort((a, b) => b.discount - a.discount)
-    .slice(0, 6);
+    .slice(0, 8);
 
   const endTime = new Date();
   endTime.setHours(23, 59, 59, 999);

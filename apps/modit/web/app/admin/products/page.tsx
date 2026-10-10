@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, Pencil, EyeOff, Eye, RotateCcw, Check, X, Upload } from "lucide-react";
+import { Search, Pencil, EyeOff, Eye, RotateCcw, Check, X, Upload, Plus } from "lucide-react";
 import { products, type Product } from "@/lib/product-data";
 import { useAdminStore, type ProductOverride } from "@/lib/admin-store";
 import { resolveProduct } from "@/lib/pricing";
 import { logAdminActivity } from "@/lib/admin-activity";
-import { getModitApi } from "@/lib/modit-api";
+import { getModitApi, useCategories, useBrands, useUnits, useWarehouses, useCreateProduct } from "@/lib/modit-api";
 import { useToast } from "@foundation/ui";
 
 export default function AdminProductsPage() {
@@ -14,6 +14,7 @@ export default function AdminProductsPage() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [bulkRows, setBulkRows] = useState<{ sku: string; name: string; price?: number; mrp?: number; stock?: number; matched: boolean; id?: string }[] | null>(null);
   const [bulkError, setBulkError] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
   const overrides = useAdminStore((s) => s.overrides);
   const setOverride = useAdminStore((s) => s.setOverride);
   const clearOverride = useAdminStore((s) => s.clearOverride);
@@ -137,6 +138,12 @@ export default function AdminProductsPage() {
             className="w-full rounded-xl border border-[#DDD6EE] bg-white pl-9 pr-3 py-2.5 text-body-sm focus:outline-none focus:border-[#2D1B69]"
           />
         </div>
+        <button
+          onClick={() => setShowAdd(true)}
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
+        >
+          <Plus className="h-4 w-4" /> Add product
+        </button>
         <label className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-dashed border-[#DDD6EE] text-[#2D1B69] text-caption font-bold hover:border-[#2D1B69] cursor-pointer bg-white">
           <Upload className="h-4 w-4" /> Bulk upload
           <input
@@ -285,6 +292,8 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+
+      {showAdd && <AddProductModal onClose={() => setShowAdd(false)} />}
     </div>
   );
 }
@@ -363,6 +372,159 @@ function EditProductModal({ product, onClose, onSave }: { product: Product; onCl
           <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
           <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#7CB518] text-white text-caption font-bold hover:bg-[#5a8010] flex items-center gap-1.5">
             <Check className="h-3.5 w-3.5" /> Save & publish
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function slugify(s: string) {
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "product";
+}
+
+/** Create a product straight in the server catalog (source of truth for checkout). */
+function AddProductModal({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
+  const { data: categories = [] } = useCategories();
+  const { data: brands = [] } = useBrands();
+  const { data: units = [] } = useUnits();
+  const { data: warehouses = [] } = useWarehouses();
+  const createProduct = useCreateProduct();
+
+  const [name, setName] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [unitId, setUnitId] = useState("");
+  const [brandId, setBrandId] = useState("");
+  const [price, setPrice] = useState("");
+  const [mrp, setMrp] = useState("");
+  const [desc, setDesc] = useState("");
+  const [error, setError] = useState("");
+
+  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#2D1B69] bg-white";
+  const label = "block text-micro font-bold text-[#150726] mb-1.5";
+
+  const handleCreate = () => {
+    setError("");
+    const orgId = warehouses[0]?.organization_id;
+    if (!orgId) {
+      setError("No store found — open a store first (Stores & Stock) or run the seeder.");
+      return;
+    }
+    if (name.trim().length < 3) {
+      setError("Give the product a proper name (3+ characters).");
+      return;
+    }
+    if (!categoryId || !unitId) {
+      setError("Pick a category and a unit.");
+      return;
+    }
+    const listPrice = Number(price);
+    if (!Number.isFinite(listPrice) || listPrice <= 0) {
+      setError("Enter a valid selling price.");
+      return;
+    }
+    const mrpNum = mrp.trim() === "" ? undefined : Number(mrp);
+    if (mrpNum !== undefined && (!Number.isFinite(mrpNum) || mrpNum < listPrice)) {
+      setError("MRP must be empty or above the selling price.");
+      return;
+    }
+    const catCode = (categories.find((c: any) => c.id === categoryId)?.slug ?? "gen").slice(0, 3).toUpperCase();
+    const stamp = Date.now().toString(36).toUpperCase().slice(-4);
+    const sku = `${catCode}-${stamp}`;
+    createProduct.mutate(
+      {
+        organization_id: orgId,
+        brand_id: brandId || null,
+        category_id: categoryId,
+        unit_id: unitId,
+        sku,
+        name: name.trim(),
+        slug: `${slugify(name)}-${stamp.toLowerCase()}`,
+        description: desc.trim() || null,
+        mrp: mrpNum ?? null,
+        list_price: Math.round(listPrice),
+      },
+      {
+        onSuccess: (p: any) => {
+          logAdminActivity("product.create", `Product "${name.trim()}" added (${sku})`, p?.id);
+          toast.success("Product added", `${name.trim()} is live in the server catalog.`);
+          onClose();
+        },
+        onError: (e: any) => setError(e?.message || "Could not add product."),
+      }
+    );
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-body-lg font-bold text-[#150726]">Add product</h2>
+          <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+        </div>
+        <p className="text-caption text-[#9B8CB5] mb-4">Goes straight into the server catalog — buyers see it on the next catalog sync.</p>
+
+        <div className="space-y-3">
+          <div>
+            <label className={label}>Product name</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. UltraTech Super 53 Grade, 50kg" className={field} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={label}>Category</label>
+              <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={field}>
+                <option value="">Select…</option>
+                {(categories as any[]).map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={label}>Unit</label>
+              <select value={unitId} onChange={(e) => setUnitId(e.target.value)} className={field}>
+                <option value="">Select…</option>
+                {(units as any[]).map((u) => (
+                  <option key={u.id} value={u.id}>{u.name} ({u.code})</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className={label}>Brand (optional)</label>
+            <select value={brandId} onChange={(e) => setBrandId(e.target.value)} className={field}>
+              <option value="">No brand</option>
+              {(brands as any[]).map((b) => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={label}>Selling price (₹)</label>
+              <input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="numeric" placeholder="e.g. 370" className={field} />
+            </div>
+            <div>
+              <label className={label}>MRP (₹, optional)</label>
+              <input value={mrp} onChange={(e) => setMrp(e.target.value)} inputMode="numeric" placeholder="e.g. 395" className={field} />
+            </div>
+          </div>
+          <div>
+            <label className={label}>Description (optional)</label>
+            <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Short spec line" className={field} />
+          </div>
+        </div>
+
+        {error && <p className="mt-3 text-caption font-bold text-[#E91E63]">{error}</p>}
+
+        <div className="mt-4 flex justify-end gap-2">
+          <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
+          <button
+            onClick={handleCreate}
+            disabled={createProduct.isPending}
+            className="px-5 py-2.5 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] disabled:opacity-50 flex items-center gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> {createProduct.isPending ? "Adding…" : "Add to catalog"}
           </button>
         </div>
       </div>
