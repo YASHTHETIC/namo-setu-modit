@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     email_verification_token_expire_minutes: int = 1440
     max_sessions_per_user: int = 5
     storage_root: str = "storage"
+    # First-staff bootstrap: this login email auto-gets super_admin on
+    # register/login. Unset = disabled. Set once on the server, then remove.
+    bootstrap_admin_email: str | None = None
     # NoDecode: pydantic-settings JSON-decodes list fields at the source level,
     # which rejects plain "a,b,c" env values before validators run. Skip the
     # source decoding; parse_cors_origins below handles str -> list.

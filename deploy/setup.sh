@@ -70,6 +70,9 @@ fi
 if [ -t 0 ] && [ -z "$RAZORPAY_KEY_ID" ]; then
   read -r -p "Razorpay key id (blank = keep demo/test placeholder): " RAZORPAY_KEY_ID
 fi
+if [ -t 0 ] && [ -z "$BOOTSTRAP_ADMIN_EMAIL" ]; then
+  read -r -p "Staff login email (auto super-admin on first login, blank = skip): " BOOTSTRAP_ADMIN_EMAIL
+fi
 
 echo "  IP:      $SERVER_IP"
 echo "  Domain:  ${DOMAIN:-<none — IP mode>}"
@@ -163,11 +166,16 @@ REDIS_URL=redis://localhost:6379/0
 JWT_SECRET_KEY=$(openssl rand -hex 32)
 BACKEND_CORS_ORIGINS=${CORS_ORIGINS}
 FRONTEND_URL=${FRONTEND_URL}
+BOOTSTRAP_ADMIN_EMAIL=${BOOTSTRAP_ADMIN_EMAIL:-}
 EOF
   chmod 600 "$ENV_FILE"
   echo "  created $ENV_FILE"
 else
   echo "  kept existing $ENV_FILE"
+  if [ -n "${BOOTSTRAP_ADMIN_EMAIL:-}" ] && ! grep -q '^BOOTSTRAP_ADMIN_EMAIL=' "$ENV_FILE"; then
+    echo "BOOTSTRAP_ADMIN_EMAIL=${BOOTSTRAP_ADMIN_EMAIL}" >> "$ENV_FILE"
+    echo "  staff email recorded (takes effect on next staff login)"
+  fi
   if [ -n "$DOMAIN" ]; then
     sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=${FRONTEND_URL}|" "$ENV_FILE"
     sed -i "s|^BACKEND_CORS_ORIGINS=.*|BACKEND_CORS_ORIGINS=${CORS_ORIGINS}|" "$ENV_FILE"
@@ -478,6 +486,7 @@ $(printf '\033[1;32m')DEPLOY COMPLETE$(printf '\033[0m')
   Site : $FRONTEND_URL
   API  : $API_BASE/healthz
   Staff PIN (admin panel): $(grep '^NEXT_PUBLIC_ADMIN_PIN=' "$WEB_ENV" | cut -d= -f2-)
+  Staff email (super-admin): $(grep '^BOOTSTRAP_ADMIN_EMAIL=' "$ENV_FILE" | cut -d= -f2-)
   Logs : pm2 logs        |  status: pm2 status
   Env  : $ENV_FILE  &  $WEB_ENV   (chmod 600, never in git)
   Update flow: see DEPLOY.md

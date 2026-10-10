@@ -47,6 +47,19 @@ async def _ensure_default_role(session: AsyncSession, role_name: str) -> Role:
     return role
 
 
+async def _ensure_bootstrap_admin(session: AsyncSession, user: User) -> None:
+    """First-staff bootstrap: the configured email auto-gets super_admin on
+    register/login (role is in the token because this runs before signing).
+    Disabled when BOOTSTRAP_ADMIN_EMAIL is unset."""
+    target = (get_settings().bootstrap_admin_email or "").strip().lower()
+    if not target or (user.email or "").strip().lower() != target:
+        return
+    role = await _ensure_default_role(session, RoleName.SUPER_ADMIN.value)
+    if all(getattr(r, "name", None) != role.name for r in (user.roles or [])):
+        user.roles.append(role)
+        await session.flush()
+
+
 async def _load_user_with_roles(session: AsyncSession, user_id: str) -> User | None:
     result = await session.execute(
         select(User)
@@ -101,6 +114,7 @@ async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db))
     )
     default_role = await _ensure_default_role(db, RoleName.USER.value)
     user.roles.append(default_role)
+    await _ensure_bootstrap_admin(db, user)
     db.add(user)
     await db.commit()
     user = await _load_user_with_roles(db, user.id) or user
@@ -137,6 +151,7 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> To
     if user is None or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
+    await _ensure_bootstrap_admin(db, user)
     session_id = uuid4().hex
     access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
     refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
