@@ -106,3 +106,9 @@ def test_ai_procurement_assistant(client):
     data = response.json()
     assert "answer" in data
     assert "suggested_actions" in data
+
+
+def test_seed_catalog_requires_staff(client):
+    """One-click seeding is staff-only."""
+    response = client.post("/api/v1/modit/admin/seed-catalog")
+    assert response.status_code == 401

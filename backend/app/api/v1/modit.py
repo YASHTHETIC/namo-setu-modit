@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pathlib
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -1192,3 +1193,25 @@ async def post_support_message(
     """Send a message; returns the instant bot reply (user msg stored too)."""
     _user_message, bot_message = await post_user_message(db, user.id, conversation_id, payload.body)
     return SupportMessageRead.model_validate(bot_message)
+
+
+@router.post("/admin/seed-catalog", dependencies=[admin_dependency])
+async def seed_catalog_endpoint(db: AsyncSession = Depends(get_db)) -> dict:
+    """One-click catalog fill for staff: parses the bundled static catalog and
+    upserts org/brands/categories/products/warehouse/inventory. Idempotent —
+    safe to re-run; existing rows are updated, never duplicated."""
+    from backend.app.seeders.catalog import parse_catalog, seed_catalog
+
+    catalog_path = (
+        pathlib.Path(__file__).resolve().parents[4]
+        / "apps" / "modit" / "web" / "lib" / "product-data.ts"
+    )
+    if not catalog_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Bundled catalog not found on server.",
+        )
+    items = parse_catalog(catalog_path.read_text(encoding="utf-8"))
+    stats = await seed_catalog(db, items)
+    await db.commit()
+    return {"seeded": True, **stats}

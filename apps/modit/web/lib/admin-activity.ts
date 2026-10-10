@@ -23,6 +23,7 @@ export type AdminActionType =
   | "store.create"
   | "store.restock"
   | "store.reorder"
+  | "store.seed"
   | "admin.unlock";
 
 export interface AdminActivity {
@@ -59,6 +60,7 @@ export const ADMIN_ACTION_LABEL: Record<AdminActionType, string> = {
   "store.create": "Store opened",
   "store.restock": "Stock adjusted",
   "store.reorder": "AI reorder run",
+  "store.seed": "Catalog seeded",
   "admin.unlock": "Panel unlocked",
 };
 

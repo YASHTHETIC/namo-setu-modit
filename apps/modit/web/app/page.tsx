@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
+import { BottomNav } from "@/components/bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
@@ -566,17 +567,18 @@ export default function ModitHomePage() {
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
         className={`fixed z-40 left-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
-          showBackToTop ? "bottom-24 opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
+          showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
         <ChevronUp className="h-5 w-5" />
       </button>
 
       {/* ═══ BOTTOM NAV ═══ */}
-      <SiteFooter />
+      <SiteFooter className="pb-24" />
       <PushNotificationPrompt />
       <PwaInstallPrompt />
       <ComparisonBar />
+      <BottomNav />
 
           {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (

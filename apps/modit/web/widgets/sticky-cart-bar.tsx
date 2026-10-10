@@ -49,7 +49,7 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
       {/* Right side — CTA */}
       <Link
         href="/cart"
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 flex-shrink-0"
+        className="btn-shine inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 flex-shrink-0"
       >
         View Cart
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

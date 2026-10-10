@@ -196,6 +196,14 @@ export function useCreateWarehouse() {
   });
 }
 
+export function useSeedCatalog() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => getModitApi().seedCatalog(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.all }),
+  });
+}
+
 // RFQ / Quotation
 export function useRFQs(organizationId?: string) {
   return useQuery({

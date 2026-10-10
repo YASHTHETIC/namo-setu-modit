@@ -10,6 +10,7 @@ import { setAccessToken } from "@/lib/auth";
 import { fetchLivePincode } from "@/lib/pincode-context";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
+import { BottomNav } from "@/components/bottom-nav";
 import { FxBackdrop } from "@/components/fx";
 import { Reveal } from "@/components/reveal";
 
@@ -215,6 +216,7 @@ function LoginForm() {
           </Reveal>
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 }

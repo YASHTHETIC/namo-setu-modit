@@ -649,6 +649,13 @@ export function createModitApi(client: ApiClient) {
       return client.request<WarehouseRead>(`${base}/warehouses`, { method: "POST", body: JSON.stringify(payload) });
     },
 
+    seedCatalog() {
+      return client.request<{ seeded: boolean; products_created: number; products_updated: number; skipped: number }>(
+        `${base}/admin/seed-catalog`,
+        { method: "POST" },
+      );
+    },
+
     // RFQ / Quotation
     listRFQs(organizationId?: string) {
       const qs = organizationId ? `?organization_id=${organizationId}` : "";

@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react";
 import {
   Warehouse, Plus, X, AlertTriangle, Sparkles, Package,
-  MapPin, Check, RefreshCw,
+  MapPin, Check, RefreshCw, Database,
 } from "lucide-react";
 import {
   useWarehouses, useCreateWarehouse, useInventory, useUpdateInventory,
-  useInventoryAlerts, useInventoryAnalytics, useAISmartReorder,
+  useInventoryAlerts, useInventoryAnalytics, useAISmartReorder, useSeedCatalog,
 } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { useToast } from "@foundation/ui";
@@ -30,6 +30,24 @@ export default function AdminStoresPage() {
   const createWarehouse = useCreateWarehouse();
   const updateInventory = useUpdateInventory();
   const smartReorder = useAISmartReorder();
+  const seedCatalog = useSeedCatalog();
+  const [seedResult, setSeedResult] = useState<string | null>(null);
+
+  const runSeed = () => {
+    setSeedResult(null);
+    seedCatalog.mutate(undefined, {
+      onSuccess: (res: any) => {
+        const msg = `${res?.products_created ?? 0} created · ${res?.products_updated ?? 0} updated · ${res?.skipped ?? 0} skipped`;
+        setSeedResult(msg);
+        logAdminActivity("store.seed", `Catalog seeded (${msg})`);
+        toast.success("Catalog live", msg);
+      },
+      onError: (e: any) => {
+        setSeedResult(null);
+        toast.error("Seed failed", e?.message || "Need staff login — sign in with a staff account first.");
+      },
+    });
+  };
 
   const [form, setForm] = useState({ name: "", code: "", address: "", pincode: "", lat: "", lng: "" });
   const [formError, setFormError] = useState("");
@@ -127,13 +145,26 @@ export default function AdminStoresPage() {
           <h1 className="text-title-lg font-extrabold text-[#150726]">Stores & Stock</h1>
           <p className="text-caption text-[#9B8CB5] mt-0.5">Dark-store ops — warehouses, live inventory, alerts and AI reorders.</p>
         </div>
+        <div className="flex flex-wrap gap-2">
+        <button
+          onClick={runSeed}
+          disabled={seedCatalog.isPending}
+          className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50"
+        >
+          <Database className={`h-4 w-4 ${seedCatalog.isPending ? "animate-pulse" : ""}`} />
+          {seedCatalog.isPending ? "Seeding…" : "Seed catalog"}
+        </button>
         <button
           onClick={() => setShowCreate(true)}
           className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
         >
           <Plus className="h-4 w-4" /> New store
         </button>
+        </div>
       </div>
+      {seedResult && (
+        <p className="mt-2 text-caption font-bold text-[#7CB518]">Catalog seed done — {seedResult}. Buyers see products immediately.</p>
+      )}
 
       {/* KPI strip */}
       {analytics && (

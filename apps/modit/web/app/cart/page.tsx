@@ -405,7 +405,7 @@ export default function CartPage() {
         </div>
 
         {/* Mobile sticky total — clears the support-chat gutter on the right */}
-        <div className="lg:hidden sticky bottom-4 z-40 ml-4 mr-20 mb-4">
+        <div className="lg:hidden sticky bottom-[76px] z-40 ml-4 mr-20 mb-4">
           <div className="flex items-center gap-3 rounded-2xl bg-[#150726] pl-4 pr-2 py-2 shadow-xl">
             <div className="flex-1 min-w-0">
               <p className="text-tiny text-white/50">Total</p>
