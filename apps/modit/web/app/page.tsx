@@ -24,6 +24,7 @@ import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
+import { FxBackdrop } from "@/components/fx";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
@@ -319,6 +320,7 @@ export default function ModitHomePage() {
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <RevealSection>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
+          <FxBackdrop tone="dark" />
           {/* Animated mesh gradient overlay (desktop only — saves mobile GPU) */}
           <div className="absolute inset-0 opacity-30 hidden sm:block" style={{
             background: "radial-gradient(circle at 20% 50%, rgba(124,181,24,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.2), transparent 50%)",
@@ -346,7 +348,7 @@ export default function ModitHomePage() {
               </div>
             </div>
             <Link href="/products" className="flex flex-col items-center gap-1 flex-shrink-0">
-              <div className="flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+              <div className="btn-shine flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>

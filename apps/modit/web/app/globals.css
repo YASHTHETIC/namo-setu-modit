@@ -1561,3 +1561,141 @@ input:focus:not(:focus-visible) {
   font-weight: 600;
   color: #5A8010;
 }
+
+/* ═══ Futuristic FX system — transform/opacity/background-position only ═══ */
+@keyframes fx-orb-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(56px, 36px) scale(1.15); }
+}
+@keyframes fx-orb-b {
+  0%, 100% { transform: translate(0, 0) scale(1.08); }
+  50% { transform: translate(-48px, -32px) scale(0.94); }
+}
+@keyframes fx-grid-pan {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 56px 56px, 56px 56px; }
+}
+@keyframes fx-shine-sweep {
+  from { transform: translateX(-160%) skewX(-20deg); }
+  to { transform: translateX(280%) skewX(-20deg); }
+}
+@keyframes fx-card-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fx-bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes fx-float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes fx-page-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fx-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 181, 24, 0.45); }
+  50% { box-shadow: 0 0 0 7px rgba(124, 181, 24, 0); }
+}
+
+/* Ambient scene: drifting orbs + panning grid. Parent must be relative. */
+.fx-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+}
+.fx-orb-a { animation: fx-orb-a 14s ease-in-out infinite; }
+.fx-orb-b { animation: fx-orb-b 18s ease-in-out infinite; }
+.fx-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: fx-grid-pan 12s linear infinite;
+  mask-image: radial-gradient(ellipse at center, black 25%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 78%);
+}
+.fx-grid-bg.light {
+  background-image:
+    linear-gradient(rgba(45, 27, 105, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 27, 105, 0.08) 1px, transparent 1px);
+}
+
+/* Shine sweep on hover/focus for primary CTAs */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-160%) skewX(-20deg);
+  pointer-events: none;
+}
+.btn-shine:hover::after,
+.btn-shine:focus-visible::after {
+  animation: fx-shine-sweep 0.8s ease;
+}
+
+/* Futuristic card hover lift */
+.card-lift {
+  transition: transform 0.3s var(--motion-spring), box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(26, 10, 51, 0.12);
+}
+
+/* Whole-page mount entrance */
+.fx-page { animation: fx-page-in 0.45s ease-out both; }
+
+/* Product grids cascade in on mount / filter change */
+.product-grid > * { animation: fx-card-in 0.5s var(--motion-spring) both; }
+.product-grid > *:nth-child(2) { animation-delay: 0.05s; }
+.product-grid > *:nth-child(3) { animation-delay: 0.1s; }
+.product-grid > *:nth-child(4) { animation-delay: 0.15s; }
+.product-grid > *:nth-child(5) { animation-delay: 0.2s; }
+.product-grid > *:nth-child(6) { animation-delay: 0.25s; }
+.product-grid > *:nth-child(7) { animation-delay: 0.3s; }
+.product-grid > *:nth-child(8) { animation-delay: 0.35s; }
+.product-grid > *:nth-child(9) { animation-delay: 0.4s; }
+.product-grid > *:nth-child(10) { animation-delay: 0.45s; }
+.product-grid > *:nth-child(n+11) { animation-delay: 0.5s; }
+
+/* Chart bars grow from the baseline */
+.fx-bar-grow {
+  transform-origin: bottom;
+  animation: fx-bar-grow 0.8s var(--motion-spring) both;
+}
+
+.fx-float-slow { animation: fx-float-y 5s ease-in-out infinite; }
+.fx-glow-dot { animation: fx-glow-pulse 2.2s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-orb-a,
+  .fx-orb-b,
+  .fx-grid-bg,
+  .fx-float-slow,
+  .fx-glow-dot {
+    animation: none;
+  }
+  .fx-page,
+  .product-grid > *,
+  .fx-bar-grow {
+    animation-duration: 0.01ms;
+  }
+  .btn-shine::after {
+    display: none;
+  }
+}

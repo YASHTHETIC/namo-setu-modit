@@ -192,7 +192,7 @@ export default function ProductDetailPage({
   const specs = Object.entries(product.specifications);
 
   return (
-    <div className="mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
+    <div className="fx-page mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -606,7 +606,7 @@ export default function ProductDetailPage({
             <div className="grid grid-cols-2 gap-2.5">
               <Button
                 onClick={handleAddToCart}
-                className="h-12 text-body-lg font-semibold"
+                className="btn-shine h-12 text-body-lg font-semibold"
                 disabled={!product.inStock || areaBlocked}
                 title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}
               >
@@ -616,7 +616,7 @@ export default function ProductDetailPage({
                   <><ShoppingCart className="h-5 w-5" /> Add to Cart</>
                 )}
               </Button>
-              <Button onClick={handleBuyNow} variant="secondary" className="h-12 text-body-lg font-semibold" disabled={areaBlocked} title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}>
+              <Button onClick={handleBuyNow} variant="secondary" className="btn-shine h-12 text-body-lg font-semibold" disabled={areaBlocked} title={areaBlocked ? `Not deliverable to ${deliveryPincode}` : undefined}>
                 <Zap className="h-5 w-5" /> Buy Now
               </Button>
               <Button onClick={() => { if (requireLogin()) setRfqOpen(true); }} variant="secondary" className="col-span-2 h-11 text-sm font-semibold" title="Request a competitive bulk quote from sellers">

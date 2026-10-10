@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowLeft, PackageSearch } from "lucide-react";
 
 import { DeliveryTracker } from "@/components/delivery-tracker";
+import { FxBackdrop } from "@/components/fx";
+import { Reveal } from "@/components/reveal";
 import { useDeliveryTrack } from "@/lib/modit-api";
 
 export default function TrackDeliveryPage({
@@ -16,7 +18,9 @@ export default function TrackDeliveryPage({
   const { data: track, isLoading, isError } = useDeliveryTrack(id);
 
   return (
-    <main className="mx-auto w-full max-w-xl px-4 py-6">
+    <main className="fx-page relative mx-auto w-full max-w-xl px-4 py-6">
+      <FxBackdrop tone="light" />
+      <div className="relative">
       <Link
         href="/orders"
         className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2D1B69]"
@@ -46,7 +50,12 @@ export default function TrackDeliveryPage({
         </div>
       )}
 
-      {track && <DeliveryTracker track={track} />}
+      {track && (
+        <Reveal variant="blur">
+          <DeliveryTracker track={track} />
+        </Reveal>
+      )}
+      </div>
     </main>
   );
 }

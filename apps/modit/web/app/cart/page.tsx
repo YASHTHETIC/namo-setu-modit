@@ -383,7 +383,7 @@ export default function CartPage() {
                 </div>
 
                 <Link href="/checkout">
-                  <button className="mt-4 w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
+                  <button className="btn-shine mt-4 w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
                     Place Order
                   </button>
                 </Link>

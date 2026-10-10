@@ -384,7 +384,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       <button
         onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : paymentMethod === "upi" ? handleUPI : handleCredit}
         disabled={processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@"))) || (paymentMethod === "cod" && !phoneVerified)}
-        className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-shine w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {processing ? (
           <span className="flex items-center justify-center gap-2">

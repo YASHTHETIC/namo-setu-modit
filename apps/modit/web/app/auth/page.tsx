@@ -11,6 +11,8 @@ import { fetchLivePincode } from "@/lib/pincode-context";
 import { env } from "@/lib/env";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { FxBackdrop } from "@/components/fx";
+import { Reveal } from "@/components/reveal";
 
 export default function LoginPage() {
   return (
@@ -63,6 +65,7 @@ function LoginForm() {
       {/* Left panel — brand */}
       <div className="hidden lg:flex lg:w-[480px] relative overflow-hidden flex-col justify-between p-10"
         style={{ background: "linear-gradient(160deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
+        <FxBackdrop tone="dark" />
         <div className="absolute inset-0 opacity-20" style={{
           background: "radial-gradient(circle at 30% 70%, rgba(124,181,24,0.4), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.3), transparent 50%)",
         }} />
@@ -115,6 +118,7 @@ function LoginForm() {
         </div>
 
         <div className="flex-1 flex items-center justify-center px-6 py-10">
+          <Reveal variant="zoom" className="w-full max-w-[420px]">
           <div className="w-full max-w-[420px]">
             <div className="mb-8">
               <h1 className="text-display font-extrabold text-[#150726] tracking-tight">Sign in</h1>
@@ -171,7 +175,7 @@ function LoginForm() {
                 <button
                   type="submit"
                   disabled={loginMutation.isPending}
-                  className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-lg font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                  className="btn-shine w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-lg font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                 >
                   {loginMutation.isPending ? (
                     <span className="flex items-center justify-center gap-2">
@@ -202,13 +206,14 @@ function LoginForm() {
               Don&apos;t have an account?{" "}
               <Link href="/auth/register" className="font-bold text-[#7CB518] hover:underline">Create one</Link>
             </p>
-            <p className="mt-4 text-center text-micro text-[#9B8CB5]">
+              <p className="mt-4 text-center text-micro text-[#9B8CB5]">
               By signing in, you agree to our{" "}
-              <Link href="#" className="underline hover:text-[#2D1B69]">Terms</Link>
+              <Link href="/terms" className="underline hover:text-[#2D1B69]">Terms</Link>
               {" "}and{" "}
-              <Link href="#" className="underline hover:text-[#2D1B69]">Privacy Policy</Link>
+              <Link href="/privacy" className="underline hover:text-[#2D1B69]">Privacy Policy</Link>
             </p>
           </div>
+          </Reveal>
         </div>
       </div>
       <BottomNav />

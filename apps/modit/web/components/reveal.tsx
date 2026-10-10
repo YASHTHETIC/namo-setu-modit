@@ -6,15 +6,17 @@ interface RevealProps {
   children: React.ReactNode;
   delay?: number;
   direction?: "up" | "left" | "right" | "none";
+  variant?: "default" | "zoom" | "blur";
   className?: string;
 }
 
 /**
  * Scroll-triggered entrance used site-wide (one pattern, one easing).
- * Slides from the given direction once, then stays. Honors
+ * Slides/fades from the given direction once, then stays. `zoom` adds a
+ * subtle scale, `blur` a focus-pull — both GPU-cheap. Honors
  * prefers-reduced-motion (renders instantly, no movement).
  */
-export function Reveal({ children, delay = 0, direction = "up", className = "" }: RevealProps) {
+export function Reveal({ children, delay = 0, direction = "up", variant = "default", className = "" }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -46,12 +48,14 @@ export function Reveal({ children, delay = 0, direction = "up", className = "" }
         : direction === "none"
           ? ""
           : "translate-y-6";
+  const hiddenFx =
+    variant === "zoom" ? "scale-95" : variant === "blur" ? "blur-sm scale-[0.98]" : "";
 
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out motion-reduce:transition-none ${className} ${
-        visible ? "opacity-100 translate-x-0 translate-y-0" : `opacity-0 ${offset}`
+        visible ? "opacity-100 translate-x-0 translate-y-0 scale-100 blur-0" : `opacity-0 ${offset} ${hiddenFx}`
       }`}
       style={{ transitionDelay: `${delay}ms` }}
     >

@@ -14,6 +14,7 @@ import { useReturnStore } from "@/lib/return-store";
 import { useAdminActivity } from "@/lib/admin-activity";
 import { useOrders } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { CountUp, Stagger } from "@/components/fx";
 
 const fallbackOrders = [
   { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
@@ -151,9 +152,10 @@ export default function AdminDashboard() {
       <p className="text-caption text-[#9B8CB5] mt-0.5">Live business overview — all numbers come from real orders, catalog and admin activity.</p>
 
       <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-3">
+        <Stagger step={60} className="h-full">
         {stats.map((c) => {
           const inner = (
-            <div className="rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow h-full">
+            <div className="card-lift rounded-2xl border border-[#DDD6EE] bg-white p-4 h-full">
               <div className="flex items-center justify-between">
                 <span className="text-micro font-bold text-[#9B8CB5] uppercase tracking-wide">{c.label}</span>
                 <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: c.bg }}>
@@ -166,6 +168,7 @@ export default function AdminDashboard() {
           );
           return c.href ? <Link key={c.label} href={c.href}>{inner}</Link> : <div key={c.label}>{inner}</div>;
         })}
+        </Stagger>
       </div>
 
       {/* Ops pipeline */}
@@ -181,7 +184,7 @@ export default function AdminDashboard() {
         <div className="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
           {ORDER_STATUSES.filter((s) => s !== "cancelled").map((st) => (
             <Link key={st} href="/admin/orders" className="rounded-xl bg-[#F7F4FC] border border-[#F0ECF9] px-2 py-2.5 text-center hover:border-[#2D1B69]/30 transition-all">
-              <p className="text-title-lg font-extrabold text-[#2D1B69]">{pipeline[st] ?? 0}</p>
+              <p className="text-title-lg font-extrabold text-[#2D1B69]"><CountUp value={pipeline[st] ?? 0} /></p>
               <p className="text-tiny font-bold text-[#9B8CB5] uppercase">{STAGE_LABEL[st]}</p>
             </Link>
           ))}
@@ -193,14 +196,15 @@ export default function AdminDashboard() {
         <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
           <h2 className="text-body-md font-bold text-[#150726]">Revenue — last 7 days</h2>
           <div className="mt-4 flex items-end gap-2 h-36">
-            {revenue7d.map((d) => (
+            {revenue7d.map((d, i) => (
               <div key={d.label} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
                 <span className="text-tiny font-bold text-[#6B5B83]">{d.total > 0 ? `₹${(d.total / 1000).toFixed(0)}k` : ""}</span>
                 <div
-                  className="w-full rounded-t-lg"
+                  className="fx-bar-grow w-full rounded-t-lg"
                   style={{
                     height: `${Math.max(4, (d.total / maxDay) * 100)}%`,
                     background: d.total > 0 ? "linear-gradient(180deg, #7CB518, #5a8010)" : "#F0ECF9",
+                    animationDelay: `${Math.min(i * 80, 480)}ms`,
                   }}
                 />
                 <span className="text-tiny font-bold text-[#9B8CB5]">{d.label}</span>

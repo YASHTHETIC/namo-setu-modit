@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Home, PackageSearch, Truck, Phone } from "lucide-react";
+import { FxBackdrop } from "@/components/fx";
 
 const shortcuts = [
   { icon: Home, label: "Home", href: "/" },
@@ -10,9 +11,10 @@ const shortcuts = [
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-[560px] rounded-2xl border border-[#DDD6EE] bg-white p-8 text-center sm:p-10">
-        <p className="text-7xl font-black text-[#2D1B69]">404</p>
+    <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <FxBackdrop tone="light" />
+      <div className="relative w-full max-w-[560px] rounded-2xl border border-[#DDD6EE] bg-white p-8 text-center sm:p-10">
+        <p className="fx-float-slow text-7xl font-black text-[#2D1B69]">404</p>
         <h1 className="mt-2 text-title-lg font-extrabold text-[#150726]">This aisle is empty</h1>
         <p className="mx-auto mt-2 max-w-[380px] text-body-sm text-[#6B5B83] leading-relaxed">
           The page you asked for moved, sold out, or never existed. Let&apos;s get your site work back on track.
