@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   Package, ShoppingCart, Ticket, Zap, AlertTriangle, ArrowRight, IndianRupee,
-  RotateCcw, Plus, Activity, BellRing, Send,
+  RotateCcw, Plus, Activity, BellRing, Send, Warehouse,
 } from "lucide-react";
 import { products } from "@/lib/product-data";
 import { useAdminStore, getActiveSaleAt, getUpcomingSaleAt, ORDER_STATUSES } from "@/lib/admin-store";
@@ -12,9 +12,9 @@ import { resolveProduct } from "@/lib/pricing";
 import { useCouponStore } from "@/lib/coupon-store";
 import { useReturnStore } from "@/lib/return-store";
 import { useAdminActivity } from "@/lib/admin-activity";
-import { useOrders } from "@/lib/modit-api";
+import { useOrders, useWarehouses } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
-import { CountUp, Stagger } from "@/components/fx";
+import { CountUp, Stagger, FxBackdrop } from "@/components/fx";
 
 const fallbackOrders = [
   { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
@@ -32,6 +32,15 @@ const STAGE_LABEL: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
+const STAGE_DOT: Record<string, string> = {
+  placed: "#E91E63",
+  confirmed: "#FF9800",
+  processing: "#00BCD4",
+  dispatched: "#2D1B69",
+  in_transit: "#7CB518",
+  delivered: "#7CB518",
+};
+
 export default function AdminDashboard() {
   const overrides = useAdminStore((s) => s.overrides);
   const sales = useAdminStore((s) => s.sales);
@@ -41,11 +50,19 @@ export default function AdminDashboard() {
   const returns = useReturnStore((s) => s.returns);
   const activity = useAdminActivity((s) => s.entries);
   const { data: apiOrders } = useOrders(undefined, fallbackOrders);
+  const { data: serverWarehouses = [] } = useWarehouses();
+  const warehousesReady = serverWarehouses.length > 0;
   const [pushTitle, setPushTitle] = useState("");
   const [pushBody, setPushBody] = useState("");
   const [pushStatus, setPushStatus] = useState("");
   const [pushSending, setPushSending] = useState(false);
   const [subCount, setSubCount] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     fetch("/api/push/send")
@@ -137,39 +154,121 @@ export default function AdminDashboard() {
     logAdminActivity("product.update", `${name} restocked +${add}`, `Stock ${current} → ${current + add}`);
   };
 
+  const lowStockCount = products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length;
   const stats = [
-    { label: "Revenue (GMV)", value: `₹${(gmv / 100000).toFixed(2)}L`, sub: `${orders.length} orders · AOV ₹${aov.toLocaleString("en-IN")}`, icon: IndianRupee, color: "#2D1B69", bg: "#F0ECF9" },
-    { label: "Products on sale", value: onSaleCount, sub: activeSale ? `${activeSale.name} LIVE` : "No sale live", icon: Zap, color: "#7CB518", bg: "#F0F9E8", href: "/admin/sales" },
-    { label: "Low stock", value: products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products" },
-    { label: "Active coupons", value: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE4EC", href: "/admin/coupons" },
-    { label: "Open returns", value: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE4EC", href: "/admin/returns" },
-    { label: "Staff actions", value: activity.length, sub: "logged in audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
+    { label: "Revenue (GMV)", value: `₹${(gmv / 100000).toFixed(2)}L`, raw: gmv, money: true, sub: `${orders.length} orders · AOV ₹${aov.toLocaleString("en-IN")}`, icon: IndianRupee, color: "#2D1B69", bg: "#F0ECF9" },
+    { label: "Products on sale", value: onSaleCount, raw: onSaleCount, sub: activeSale ? `${activeSale.name} LIVE` : "No sale live", icon: Zap, color: "#7CB518", bg: "#F0F9E8", href: "/admin/sales" },
+    { label: "Low stock", value: lowStockCount, raw: lowStockCount, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products", attention: lowStockCount > 0, ring: "ring-2 ring-[#FF9800]/40" },
+    { label: "Active coupons", value: coupons.filter((c) => c.active).length, raw: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE4EC", href: "/admin/coupons" },
+    { label: "Open returns", value: openReturns.length, raw: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE4EC", href: "/admin/returns", attention: openReturns.length > 0, ring: "ring-2 ring-[#E91E63]/40" },
+    { label: "Staff actions", value: activity.length, raw: activity.length, sub: "logged in audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
+  ];
+
+  const quickActions = [
+    { label: "New sale", href: "/admin/sales", icon: Zap },
+    { label: "Add product", href: "/admin/products", icon: Plus },
+    { label: "Open store", href: "/admin/stores", icon: Warehouse },
+    { label: "Announce", href: "#push", icon: BellRing },
+  ];
+
+  const launchSteps = [
+    { label: "Seed the catalog", sub: "499 products + stock on server", href: "/admin/stores", done: true },
+    { label: "Open your store", sub: "Noida live · add more pincodes", href: "/admin/stores", done: warehousesReady },
+    { label: "Launch a sale", sub: activeSale ? `${activeSale.name} is LIVE` : "Diwali deals go here", href: "/admin/sales", done: Boolean(activeSale) },
+    { label: "Place a test order", sub: "COD · fill the pipeline", href: "/products", done: orders.length > 0 },
   ];
 
   return (
     <div>
-      <h1 className="text-title-lg font-extrabold text-[#150726]">Dashboard</h1>
-      <p className="text-caption text-[#9B8CB5] mt-0.5">Live business overview — all numbers come from real orders, catalog and admin activity.</p>
+      {/* Command-center hero */}
+      <div className="relative overflow-hidden rounded-2xl" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 60%, #150726 100%)" }}>
+        <FxBackdrop tone="dark" />
+        <div className="relative p-5 sm:p-6">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="fx-glow-dot h-2.5 w-2.5 rounded-full bg-[#7CB518]" />
+                <p className="text-micro font-black uppercase tracking-[0.2em] text-[#7CB518]">Live · Command Center</p>
+              </div>
+              <h1 className="mt-1 text-title-lg font-extrabold text-white">Dashboard</h1>
+              <p className="text-caption text-white/50 tabular-nums">
+                {new Date(now).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kolkata" })}
+                {" · "}
+                {new Date(now).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Kolkata" })} IST
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {quickActions.map((a) => {
+                const ActionIcon = a.icon;
+                return (
+                  <Link
+                    key={a.label}
+                    href={a.href}
+                    className="btn-shine flex items-center gap-1.5 rounded-xl bg-white/10 border border-white/15 px-3.5 py-2.5 text-caption font-bold text-white transition-colors hover:bg-white/20"
+                  >
+                    <ActionIcon className="h-3.5 w-3.5 text-[#7CB518]" />
+                    {a.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="text-micro text-[#6B5B83] mt-2">All numbers come from real orders, catalog and admin activity.</p>
 
       <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-3">
         <Stagger step={60} className="h-full">
-        {stats.map((c) => {
+        {stats.map((c: any) => {
           const inner = (
-            <div className="card-lift rounded-2xl border border-[#DDD6EE] bg-white p-4 h-full">
+            <div className={`card-lift rounded-2xl border border-[#DDD6EE] bg-white p-4 h-full ${c.ring ?? ""}`}>
               <div className="flex items-center justify-between">
-                <span className="text-micro font-bold text-[#9B8CB5] uppercase tracking-wide">{c.label}</span>
+                <span className="text-micro font-bold text-[#6B5B83] uppercase tracking-wide">{c.label}</span>
                 <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: c.bg }}>
                   <c.icon className="h-4 w-4" style={{ color: c.color }} />
                 </div>
               </div>
-              <p className="text-display font-extrabold text-[#150726] mt-1">{c.value}</p>
-              <p className="text-micro text-[#9B8CB5]">{c.sub}</p>
+              <p className="text-display font-extrabold text-[#150726] mt-1 tabular-nums">
+                {c.money ? (
+                  <CountUp value={c.raw} format={(n) => `₹${(n / 100000).toFixed(2)}L`} />
+                ) : (
+                  <CountUp value={c.raw} />
+                )}
+              </p>
+              <p className="text-micro text-[#6B5B83]">{c.sub}</p>
             </div>
           );
           return c.href ? <Link key={c.label} href={c.href}>{inner}</Link> : <div key={c.label}>{inner}</div>;
         })}
         </Stagger>
       </div>
+
+      {/* Launch checklist — hides once real orders flow */}
+      {orders.length === 0 && (
+        <div className="mt-4 rounded-2xl border border-[#7CB518]/30 bg-white p-5">
+          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
+            <Zap className="h-4 w-4 text-[#7CB518]" /> Get launch-ready
+          </h2>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {launchSteps.map((s, i) => (
+              <Link
+                key={s.label}
+                href={s.href}
+                className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] px-3 py-2.5 hover:border-[#7CB518] transition-colors"
+              >
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-micro font-black ${s.done ? "bg-[#7CB518] text-white" : "bg-[#F0ECF9] text-[#2D1B69]"}`}>
+                  {s.done ? "✓" : i + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-caption font-bold text-[#150726]">{s.label}</span>
+                  <span className="block text-micro text-[#6B5B83] truncate">{s.sub}</span>
+                </span>
+                <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-[#9B8CB5]" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Ops pipeline */}
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
@@ -183,9 +282,13 @@ export default function AdminDashboard() {
         </div>
         <div className="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
           {ORDER_STATUSES.filter((s) => s !== "cancelled").map((st) => (
-            <Link key={st} href="/admin/orders" className="rounded-xl bg-[#F7F4FC] border border-[#F0ECF9] px-2 py-2.5 text-center hover:border-[#2D1B69]/30 transition-all">
-              <p className="text-title-lg font-extrabold text-[#2D1B69]"><CountUp value={pipeline[st] ?? 0} /></p>
-              <p className="text-tiny font-bold text-[#9B8CB5] uppercase">{STAGE_LABEL[st]}</p>
+            <Link key={st} href="/admin/orders" className="card-lift rounded-xl bg-[#F7F4FC] border border-[#F0ECF9] px-2 py-2.5 text-center">
+              <span
+                className="mx-auto mb-1 block h-1.5 w-1.5 rounded-full"
+                style={{ background: STAGE_DOT[st] ?? "#9B8CB5" }}
+              />
+              <p className="text-title-lg font-extrabold text-[#2D1B69] tabular-nums"><CountUp value={pipeline[st] ?? 0} /></p>
+              <p className="text-tiny font-bold text-[#6B5B83] uppercase">{STAGE_LABEL[st]}</p>
             </Link>
           ))}
         </div>
@@ -285,7 +388,7 @@ export default function AdminDashboard() {
       </div>
 
 {/* Push announcements */}
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
+      <div id="push" className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5 scroll-mt-24">
         <div className="flex items-center justify-between">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <BellRing className="h-4 w-4 text-[#E91E63]" /> Push announcement
