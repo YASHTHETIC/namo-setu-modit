@@ -1408,7 +1408,7 @@ input:focus:not(:focus-visible) {
 }
 .price-strike {
   font-size: 12px;
-  color: #9B8CB5;
+  color: #6B5B83;
   text-decoration: line-through;
 }
 .price-save {
@@ -1783,6 +1783,60 @@ input:focus:not(:focus-visible) {
 .card3d-img { transition: transform 0.45s var(--motion-spring); }
 .group:hover .card3d-img { transform: scale(1.07); }
 
+/* ═══ Assured / Feature strips — futuristic premium ═══ */
+@keyframes orb-breathe {
+  0%, 100% { box-shadow: 0 0 14px rgba(255, 255, 255, 0.08); }
+  50% { box-shadow: 0 0 26px rgba(255, 255, 255, 0.22); }
+}
+@keyframes ring-orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes strip-pan {
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
+}
+/* Glowing icon orb: breathing halo + orbiting dashed ring + gentle float */
+.assured-orb {
+  position: relative;
+  animation:
+    orb-breathe 3.2s ease-in-out infinite,
+    trust-badge-float 4.5s ease-in-out infinite;
+}
+.assured-orb::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 9999px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.28);
+  animation: ring-orbit 14s linear infinite;
+  pointer-events: none;
+}
+.assured-item {
+  transition: transform 0.3s var(--motion-spring);
+}
+.assured-item:hover {
+  transform: translateY(-3px);
+}
+/* Animated gradient top line */
+.strip-line {
+  background-size: 200% 100%;
+  animation: strip-pan 6s linear infinite;
+}
+/* Solid high-visibility discount pill (never clips, never wraps) */
+.price-save-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #E91E63, #C2185B);
+  border-radius: 9999px;
+  padding: 3px 8px;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(233, 30, 99, 0.45);
+}
+
 /* Admin/data tables cascade in row by row — add `fx-table` to any table */
 .fx-table tbody tr { animation: fx-card-in 0.45s var(--motion-spring) both; }
 .fx-table tbody tr:nth-child(2) { animation-delay: 0.05s; }
@@ -1803,8 +1857,13 @@ input:focus:not(:focus-visible) {
   .trust3d-overlay,
   .trust3d-door .truck,
   .trust3d-ring::before,
+  .assured-orb,
+  .assured-orb::before,
   .announce-bar::after {
     animation: none;
+  }
+  .strip-line {
+    animation-duration: 0.01ms;
   }
   .fx-page,
   .product-grid > *,

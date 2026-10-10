@@ -109,7 +109,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className={`product-card-mobile flex flex-col ${compact ? "w-[140px]" : "w-full"} group/card`}
+      className={`product-card-mobile card-lift flex flex-col ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
       {/* Image zone — uniform square, full product visible (Blinkit-style) */}
       <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
@@ -120,15 +120,15 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
             loading="lazy"
-            draggable={false}
-            className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
-          />
+                draggable={false}
+                className="object-contain animate-fade-in card3d-img transition-transform duration-500 group-hover/card:scale-105"
+              />
         )}
 
         {/* Badges — top area */}
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
           {discount > 0 && (
-            <span className="badge-pill badge-pink shadow-lg shadow-pink-500/20">
+            <span className="trust3d-overlay badge-pill badge-pink shadow-lg shadow-pink-500/20">
               {discount}% OFF
             </span>
           )}
@@ -182,7 +182,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             <button
               ref={btnRef}
               onClick={handleAdd}
-              className={`btn-add transition-all duration-200 ${justAdded ? "scale-95" : "hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"}`}
+              className={`btn-add btn-shine transition-all duration-200 ${justAdded ? "scale-95" : "hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"}`}
             >
               ADD
             </button>
@@ -269,16 +269,18 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price row */}
-        <div className="flex items-center gap-2 mt-1">
+        {/* Price row — hero + strike wrap safely, save pill never clips */}
+        <div className="flex items-baseline gap-1.5 mt-1 flex-wrap">
           <span className="price-hero">₹{activePrice.toLocaleString()}</span>
           {discount > 0 && (
-            <>
-              <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
-              <span className="price-save">{discount}% off</span>
-            </>
+            <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
           )}
         </div>
+        {discount > 0 && (
+          <div className="mt-1">
+            <span className="price-save-pill">SAVE {discount}%</span>
+          </div>
+        )}
 
         {/* Bulk pricing indicator */}
         {isBulk && !compact && live.bulkPrice && (

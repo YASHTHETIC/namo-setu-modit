@@ -338,13 +338,15 @@ export default function ModitHomePage() {
       {/* ═══ ASSURED STRIP ═══ */}
       <RevealSection delay={100}>
         <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
+          <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
+          <div className="fx-orb fx-orb-a" style={{ width: 180, height: 180, top: -70, right: -40, background: "rgba(233,30,99,0.20)" }} />
+          <div className="fx-orb fx-orb-b" style={{ width: 200, height: 200, bottom: -90, left: -50, background: "rgba(124,181,24,0.20)" }} />
           <div className="absolute -top-4 -right-2 w-20 h-32 bg-[#E91E63]/20 rotate-[25deg] rounded-full blur-xl group-hover:rotate-[35deg] transition-transform duration-500" />
           <div className="absolute -bottom-4 -left-2 w-20 h-32 bg-[#7CB518]/20 rotate-[-25deg] rounded-full blur-xl group-hover:rotate-[-35deg] transition-transform duration-500" />
           <div className="p-4 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-3">
               <h3 className="text-body-md font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
-              <div className="h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
+              <div className="assured-orb h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
                 <Shield className="h-3 w-3 text-[#7CB518]" />
               </div>
             </div>
@@ -355,9 +357,9 @@ export default function ModitHomePage() {
                 { title: "100% Genuine\nGuarantee", icon: Shield, color: "#7CB518" },
                 { title: "Easy\nReturns", icon: Package, color: "#E91E63" },
               ].map((f, i) => (
-                <div key={f.title} className="text-center group/item cursor-pointer">
-                  <div className="h-10 w-10 rounded-full mx-auto mb-1.5 flex items-center justify-center group-hover/item:scale-125 group-hover/item:rotate-6 transition-all duration-300"
-                    style={{ background: `${f.color}15`, border: `2px solid ${f.color}40` }}>
+                <div key={f.title} className="assured-item text-center group/item cursor-pointer">
+                  <div className="assured-orb h-10 w-10 rounded-full mx-auto mb-1.5 flex items-center justify-center group-hover/item:scale-125 transition-all duration-300"
+                    style={{ background: `${f.color}15`, border: `2px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
                     <f.icon className="h-5 w-5" style={{ color: f.color }} />
                   </div>
                   <p className="text-micro font-bold text-white leading-tight line-clamp-2 min-h-[28px]">{f.title}</p>
@@ -466,23 +468,22 @@ export default function ModitHomePage() {
 
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <RevealSection>
-        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden">
-          <div className="absolute -top-4 -right-4 w-16 h-16 bg-[#E91E63]/10 rounded-full blur-xl" />
-          <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#7CB518]/10 rounded-full blur-xl" />
+        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
+          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
+          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
           {/* Animated gradient line */}
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]"
-            style={{ backgroundSize: "200% 100%", animation: "shimmer 3s linear infinite" }} />
+          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]" />
           {[
             { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#E91E63" },
             { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#00BCD4" },
             { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
-          ].map((f) => (
-            <div key={f.title} className="flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
-              <div className="h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 group-hover/feat:rotate-6 transition-all duration-300"
-                style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40` }}>
+          ].map((f, i) => (
+            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
+              <div className="assured-orb h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
+                style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
                 <f.icon className="h-5 w-5" style={{ color: f.color }} />
               </div>
-              <p className="text-title-md font-black text-white leading-none">
+              <p className="text-title-md font-black text-white leading-none tabular-nums">
                 {f.value}{f.suffix}
               </p>
               <p className="text-tiny font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
