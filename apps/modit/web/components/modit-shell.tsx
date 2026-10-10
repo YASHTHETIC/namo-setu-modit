@@ -678,7 +678,7 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
         )}
       </AnimatePresence>
 
-      <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
+      <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-20">{children}</main>
 
       <SiteFooter />
 
