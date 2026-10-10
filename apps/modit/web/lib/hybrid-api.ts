@@ -2,6 +2,17 @@ import { products as staticProducts, categories as staticCategories, searchProdu
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
+/** Cheap connectivity probe: is the API itself reachable right now? */
+export async function checkServerUp(timeoutMs = 8000): Promise<boolean> {
+  if (!API_BASE || typeof window === "undefined") return false;
+  try {
+    const res = await fetch(`${API_BASE}/healthz`, { signal: AbortSignal.timeout(timeoutMs) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T | null> {
   if (!API_BASE) return null;
   try {
@@ -175,6 +186,7 @@ export async function placeOrder(orderData: {
   couponCode?: string;
   gstin?: string;
   notes?: string;
+  clientReference?: string;
 }): Promise<CheckoutResult> {
   // Real checkout — the server validates SKUs, computes totals from the
   // synced catalog and creates Order + items + payment. NEVER invent an
@@ -195,6 +207,7 @@ export async function placeOrder(orderData: {
         coupon_code: orderData.couponCode ?? null,
         gstin: orderData.gstin ?? null,
         notes: orderData.notes ?? null,
+        client_reference: orderData.clientReference ?? null,
       }),
       signal: AbortSignal.timeout(20000),
     });

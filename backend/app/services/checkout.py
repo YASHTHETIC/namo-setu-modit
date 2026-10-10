@@ -19,6 +19,7 @@ from uuid import uuid4
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.models.modit import (
@@ -269,12 +270,71 @@ async def _require_credit_approval(session: AsyncSession, organization_id: str, 
         )
 
 
+async def _find_order_by_reference(session: AsyncSession, organization_id: str, ref: str) -> Order | None:
+    """Idempotency lookup: same buyer org + same client reference = same order."""
+    stmt = (
+        select(Order)
+        .where(Order.organization_id == organization_id, Order.client_reference == ref)
+        .limit(1)
+    )
+    return (await session.execute(stmt)).scalars().first()
+
+
+async def _stored_checkout_response(session: AsyncSession, order: Order) -> CheckoutResponse:
+    """Rebuild a placement response from stored rows (retry-safe replays)."""
+    po = await session.get(PurchaseOrder, order.purchase_order_id) if order.purchase_order_id else None
+    pay_stmt = select(ModitPayment).where(ModitPayment.order_id == order.id).limit(1)
+    payment = (await session.execute(pay_stmt)).scalars().first()
+    item_stmt = select(OrderItem).where(OrderItem.order_id == order.id).order_by(OrderItem.id)
+    rows = (await session.execute(item_stmt)).scalars().all()
+    items = []
+    for row in rows:
+        product = await session.get(Product, row.product_id)
+        items.append(
+            {
+                "product_id": row.product_id,
+                "sku": getattr(product, "sku", None) or row.product_id,
+                "name": getattr(product, "name", None) or row.product_id,
+                "quantity": float(row.quantity),
+                "unit_price": float(row.unit_price),
+                "gst_amount": float(row.gst_amount),
+                "line_total": float(row.line_total),
+            }
+        )
+    try:
+        totals = json.loads(order.totals_json) if order.totals_json else {}
+    except (TypeError, ValueError):
+        totals = {}
+    return CheckoutResponse(
+        id=order.id,
+        order_number=order.order_number,
+        purchase_order_id=order.purchase_order_id or "",
+        status=order.status,
+        subtotal=float(totals.get("subtotal", 0.0)),
+        discount_total=float(totals.get("discount_total", 0.0)),
+        shipping_total=float(totals.get("shipping_total", 0.0)),
+        gst_total=float(totals.get("gst_total", 0.0)),
+        grand_total=float((po.total_amount if po is not None else totals.get("grand_total", 0.0)) or 0.0),
+        payment_id=payment.id if payment else "",
+        payment_status=payment.payment_status if payment else "pending",
+        payment_reference=payment.payment_reference if payment else "",
+        items=items,
+    )
+
+
 async def place_checkout_order(
     session: AsyncSession, user: User, payload: CheckoutRequest
 ) -> CheckoutResponse:
     """Create PO + Order + items + payment atomically. Returns server totals."""
     computed = await compute_checkout_totals(session, payload)
     org = await get_or_create_personal_org(session, user)
+
+    # Retry-safe: same buyer + same reference replays the stored order.
+    ref = (getattr(payload, "client_reference", None) or "").strip() or None
+    if ref:
+        existing = await _find_order_by_reference(session, org.id, ref)
+        if existing is not None:
+            return await _stored_checkout_response(session, existing)
 
     if str(getattr(payload, "payment_method", "cod") or "cod").lower() == "credit":
         await _require_credit_approval(session, org.id, computed["grand_total"])
@@ -309,6 +369,16 @@ async def place_checkout_order(
         notes=payload.notes,
         shipping_address_json=address_json,
         gstin=(payload.gstin or None),
+        client_reference=ref,
+        totals_json=json.dumps(
+            {
+                "subtotal": computed["subtotal"],
+                "discount_total": computed["discount_total"],
+                "shipping_total": computed["shipping_total"],
+                "gst_total": computed["gst_total"],
+                "grand_total": computed["grand_total"],
+            }
+        ),
     )
     session.add(order)
     await session.flush()
@@ -354,7 +424,16 @@ async def place_checkout_order(
 
     # Staff see the order in admin immediately (same transaction).
     await _notify_staff_new_order(session, computed["retail_org"].id, order, computed["grand_total"])
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as exc:
+        # Lost a double-tap race on client_reference: replay the winner.
+        await session.rollback()
+        if ref and "client_reference" in str(getattr(exc, "orig", exc)):
+            existing = await _find_order_by_reference(session, org.id, ref)
+            if existing is not None:
+                return await _stored_checkout_response(session, existing)
+        raise
 
     # Customer email is fire-and-forget (SMTP must never slow checkout).
     customer_email = getattr(user, "email", None)

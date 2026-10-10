@@ -554,6 +554,7 @@ class CheckoutRequest(BaseModel):
     gstin: str | None = Field(default=None, max_length=20)
     coupon_code: str | None = Field(default=None, max_length=50)
     notes: str | None = Field(default=None, max_length=1000)
+    client_reference: str | None = Field(default=None, max_length=64)
 
 
 class CheckoutItemRead(BaseModel):

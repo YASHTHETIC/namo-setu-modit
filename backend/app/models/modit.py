@@ -566,7 +566,10 @@ class PurchaseOrder(BaseModel):
 
 class Order(BaseModel):
     __tablename__ = "orders"
-    __table_args__ = (Index("ix_orders_org_status", "organization_id", "status"),)
+    __table_args__ = (
+        Index("ix_orders_org_status", "organization_id", "status"),
+        UniqueConstraint("client_reference", name="uq_orders_client_reference"),
+    )
 
     organization_id: Mapped[str] = mapped_column(ForeignKey("modit_organizations.id", ondelete="CASCADE"), nullable=False)
     purchase_order_id: Mapped[str | None] = mapped_column(ForeignKey("purchase_orders.id", ondelete="SET NULL"), nullable=True)
@@ -576,6 +579,8 @@ class Order(BaseModel):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     shipping_address_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     gstin: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    client_reference: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    totals_json: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     organization = relationship("Organization", back_populates="orders")
     purchase_order = relationship("PurchaseOrder")

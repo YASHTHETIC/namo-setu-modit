@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
-import { placeOrder, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
+import { placeOrder, checkServerUp, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
 import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2 } from "lucide-react";
 import { notifyOrderEvent } from "@/lib/order-notifications";
@@ -18,9 +18,11 @@ interface PaymentProps {
   onPaymentComplete: (orderId: string, serverTotal?: number) => void;
   gstin?: string;
   shippingAddress?: Record<string, unknown> | null;
+  couponCode?: string;
+  clientReference?: string;
 }
 
-export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddress }: PaymentProps) {
+export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddress, couponCode, clientReference }: PaymentProps) {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const toast = useToast();
@@ -28,6 +30,15 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
   const [processing, setProcessing] = useState(false);
   const [upiId, setUpiId] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // Server reachability probe — a dead API fails fast here instead of at tap.
+  const [serverUp, setServerUp] = useState<boolean | null>(null);
+  const pingServer = () => {
+    setServerUp(null);
+    checkServerUp().then(setServerUp);
+  };
+  useEffect(() => {
+    pingServer();
+  }, []);
 
   const cartPayload = () => ({
     items: items.map((i) => ({
@@ -36,6 +47,8 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
     })),
     addressSnapshot: shippingAddress,
     gstin,
+    couponCode,
+    clientReference,
   });
 
   const handleCredit = async () => {
@@ -213,6 +226,22 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
     }
   };
 
+  const placeHandler =
+    paymentMethod === "razorpay"
+      ? handleRazorpayPayment
+      : paymentMethod === "cod"
+        ? handleCOD
+        : paymentMethod === "upi"
+          ? handleUPI
+          : handleCredit;
+  const placeDisabled =
+    processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")));
+  const inr2 = { minimumFractionDigits: 2, maximumFractionDigits: 2 } as const;
+  const placeLabel =
+    paymentMethod === "upi" || paymentMethod === "razorpay"
+      ? `Pay ₹${total.toLocaleString("en-IN", inr2)} securely`
+      : `Place Order • ₹${total.toLocaleString("en-IN", inr2)}`;
+
   return (
     <div className="space-y-4">
       {/* Payment Methods */}
@@ -284,10 +313,26 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         </div>
       )}
 
+      {/* Server reachability — fail fast with retry instead of at tap */}
+      {serverUp === false && (
+        <div className="rounded-xl bg-[#FFFBF5] border border-[#FF9800]/40 px-4 py-3 flex items-center gap-3">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#FF9800] animate-pulse shrink-0" />
+          <p className="flex-1 text-caption font-semibold text-[#150726]">
+            Server se connect nahi ho raha. Order dabane se pehle connection check karo.
+          </p>
+          <button
+            onClick={pingServer}
+            className="px-3 py-1.5 rounded-lg bg-[#FF9800] text-white text-micro font-bold hover:opacity-90 shrink-0"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Place Order Button */}
       <button
-        onClick={paymentMethod === "razorpay" ? handleRazorpayPayment : paymentMethod === "cod" ? handleCOD : paymentMethod === "upi" ? handleUPI : handleCredit}
-        disabled={processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")))}
+        onClick={placeHandler}
+        disabled={placeDisabled}
         className="btn-shine w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {processing ? (
@@ -295,12 +340,8 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
             <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Processing...
           </span>
-        ) : paymentMethod === "upi" ? (
-          `Pay ₹${total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} securely`
-        ) : paymentMethod === "razorpay" ? (
-          `Pay ₹${total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} securely`
         ) : (
-          `Place Order • ₹${total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          placeLabel
         )}
       </button>
 
@@ -309,6 +350,21 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         <span className="flex items-center gap-1 whitespace-nowrap"><Shield className="h-3 w-3" /> 256-bit SSL</span>
         <span className="flex items-center gap-1 whitespace-nowrap"><Truck className="h-3 w-3" /> Free ₹5000+</span>
         <span className="flex items-center gap-1 whitespace-nowrap"><Clock className="h-3 w-3" /> 7-day returns</span>
+      </div>
+
+      {/* Sticky mobile order bar — button never buried at page bottom */}
+      <div className="lg:hidden fixed bottom-[76px] left-4 right-4 z-40 rounded-2xl border border-white/10 bg-[#150726]/95 backdrop-blur-md px-4 py-2.5 shadow-xl flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-tiny text-white/50">Total payable</p>
+          <p className="text-body-lg font-extrabold text-white tabular-nums">₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        </div>
+        <button
+          onClick={placeHandler}
+          disabled={placeDisabled}
+          className="btn-shine rounded-xl bg-[#7CB518] px-5 py-2.5 text-body-sm font-bold text-white flex-shrink-0 disabled:opacity-50"
+        >
+          {processing ? "…" : paymentMethod === "cod" || paymentMethod === "credit" ? "Order" : "Pay"}
+        </button>
       </div>
     </div>
   );

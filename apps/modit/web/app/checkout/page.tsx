@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
@@ -38,6 +38,15 @@ export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(1);
   const [addressError, setAddressError] = useState("");
   const [gstin, setGstin] = useState("");
+  // One idempotency key per checkout session: retries/replays after a
+  // network blip return the same server order instead of duplicating it.
+  const attemptKeyRef = useRef<string | null>(null);
+  if (attemptKeyRef.current === null) {
+    attemptKeyRef.current =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `att-${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+  }
 
   const subtotal = getCartTotal();
   const gst = getCartGST();
@@ -568,6 +577,8 @@ export default function CheckoutPage() {
                   onPaymentComplete={handlePlaceOrder}
                   gstin={gstin || undefined}
                   shippingAddress={(selectedAddr ?? null) as Record<string, unknown> | null}
+                  couponCode={appliedCoupon?.code}
+                  clientReference={attemptKeyRef.current ?? undefined}
                 />
               ) : (
                 <button onClick={() => {

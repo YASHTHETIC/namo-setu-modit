@@ -162,6 +162,33 @@ def test_credit_needs_approved_account():
     with pytest.raises(HTTPException):
         asyncio.run(svc._require_credit_approval(PoorSession(), "org-1", 500.0))
     asyncio.run(svc._require_credit_approval(RichSession(), "org-1", 500.0))  # no raise
+
+
+def test_find_order_by_reference():
+    import asyncio
+
+    from backend.app.services import checkout as svc
+
+    class Rows:
+        def __init__(self, row):
+            self._row = row
+
+        def scalars(self):
+            return self
+
+        def first(self):
+            return self._row
+
+    class EmptySession:
+        async def execute(self, stmt):
+            return Rows(None)
+
+    class HitSession:
+        async def execute(self, stmt):
+            return Rows(object())
+
+    assert asyncio.run(svc._find_order_by_reference(EmptySession(), "org-1", "ref-1")) is None
+    assert asyncio.run(svc._find_order_by_reference(HitSession(), "org-1", "ref-1")) is not None
     with pytest.raises(HTTPException):
         validate_coupon("CEMENT50", 500.0, {"cement"}, date(2026, 1, 1))  # under min
     with pytest.raises(HTTPException):
