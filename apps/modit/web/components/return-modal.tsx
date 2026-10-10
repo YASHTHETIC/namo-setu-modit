@@ -140,7 +140,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
                 const qty = selected[item.sku] ?? 0;
                 const active = qty > 0;
                 return (
-                  <div key={item.sku} className={`rounded-xl border-2 p-3 transition-all ${active ? "border-[#E91E63]/40 bg-[#FCE8F0]/40" : "border-[#F0ECF9] bg-white"}`}>
+                  <div key={item.sku} className={`rounded-xl border-2 p-3 transition-all ${active ? "border-[#E91E63]/40 bg-[#FCE4EC]/40" : "border-[#F0ECF9] bg-white"}`}>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => toggleItem(item.sku)}
@@ -183,7 +183,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
                 <button
                   key={m.id}
                   onClick={() => setRefundMethod(m.id)}
-                  className={`px-2 py-2 rounded-lg text-micro font-bold border-2 transition-all ${refundMethod === m.id ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}
+                  className={`px-2 py-2 rounded-lg text-micro font-bold border-2 transition-all ${refundMethod === m.id ? "border-[#E91E63] bg-[#FCE4EC] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}
                 >
                   {m.label}
                 </button>

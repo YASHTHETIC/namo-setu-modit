@@ -397,6 +397,38 @@ export function useOrderDelivery(orderId: string | undefined, enabled = true) {
   });
 }
 
+export function useUpdateOrderStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, status }: { orderId: string; status: string }) =>
+      getModitApi().updateOrderStatus(orderId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: moditKeys.orders() });
+      queryClient.invalidateQueries({ queryKey: moditKeys.all });
+    },
+  });
+}
+
+export function useServerReturns(enabled = true) {
+  return useQuery({
+    queryKey: [...moditKeys.all, "server-returns"] as const,
+    queryFn: () => getModitApi().listReturns(),
+    enabled,
+    ...fastQueryOpts,
+  });
+}
+
+export function useUpdateReturnStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ returnId, status }: { returnId: string; status: string }) =>
+      getModitApi().updateReturnStatus(returnId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...moditKeys.all, "server-returns"] });
+    },
+  });
+}
+
 export function useNearestWarehouse(lat?: number, lng?: number, organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.nearestWarehouse(lat, lng),

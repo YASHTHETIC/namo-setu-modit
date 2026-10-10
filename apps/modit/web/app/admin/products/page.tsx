@@ -6,6 +6,8 @@ import { products, type Product } from "@/lib/product-data";
 import { useAdminStore, type ProductOverride } from "@/lib/admin-store";
 import { resolveProduct } from "@/lib/pricing";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { getModitApi } from "@/lib/modit-api";
+import { useToast } from "@foundation/ui";
 
 export default function AdminProductsPage() {
   const [query, setQuery] = useState("");
@@ -15,6 +17,26 @@ export default function AdminProductsPage() {
   const overrides = useAdminStore((s) => s.overrides);
   const setOverride = useAdminStore((s) => s.setOverride);
   const clearOverride = useAdminStore((s) => s.clearOverride);
+  const toast = useToast();
+  const [syncMsg, setSyncMsg] = useState("");
+
+  // Push price/MRP to the server catalog (source of truth for checkout).
+  // Local override always applies instantly; server sync is best-effort.
+  const syncPriceToServer = async (sku: string, price?: number, mrp?: number): Promise<boolean> => {
+    try {
+      const res = await getModitApi().listProducts({ search: sku });
+      const match = (res.items ?? []).find((it: any) => it.sku === sku);
+      if (!match) return false;
+      const payload: Record<string, unknown> = {};
+      if (price !== undefined && price > 0) payload.list_price = price;
+      if (mrp !== undefined && mrp > 0) payload.mrp = mrp;
+      if (Object.keys(payload).length === 0) return true;
+      await getModitApi().updateProduct(match.id, payload);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -73,11 +95,12 @@ export default function AdminProductsPage() {
     reader.readAsText(file);
   };
 
-  const applyBulk = () => {
+  const applyBulk = async () => {
     if (!bulkRows) return;
     let count = 0;
-    bulkRows.forEach((r) => {
-      if (!r.matched || !r.id) return;
+    let synced = 0;
+    for (const r of bulkRows) {
+      if (!r.matched || !r.id) continue;
       const patch: ProductOverride = {};
       if (r.price !== undefined && r.price > 0) patch.price = Math.round(r.price);
       if (r.mrp !== undefined && r.mrp > 0) patch.mrp = Math.round(r.mrp);
@@ -88,9 +111,11 @@ export default function AdminProductsPage() {
       if (Object.keys(patch).length > 0) {
         setOverride(r.id, patch);
         count += 1;
+        if (await syncPriceToServer(r.sku, patch.price, patch.mrp)) synced += 1;
       }
-    });
-    logAdminActivity("product.bulk_update", `Bulk update applied to ${count} products`, "via CSV upload");
+    }
+    logAdminActivity("product.bulk_update", `Bulk update applied to ${count} products (${synced} synced to server)`, "via CSV upload");
+    toast.success("Bulk update done", `${count} updated locally, ${synced} synced to server`);
     setBulkRows(null);
   };
 
@@ -127,6 +152,7 @@ export default function AdminProductsPage() {
         </label>
       </div>
       {bulkError && <p className="mt-2 text-caption font-bold text-red-500">{bulkError}</p>}
+      {syncMsg && <p className="mt-2 text-caption font-semibold text-[#2D1B69]">{syncMsg}</p>}
 
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
         <div className="overflow-x-auto">
@@ -203,6 +229,14 @@ export default function AdminProductsPage() {
               `Price ₹${patch.price?.toLocaleString()} · MRP ₹${patch.mrp?.toLocaleString()} · Stock ${patch.stockLevel}${patch.hidden ? " · HIDDEN" : ""}`
             );
             setEditing(null);
+            void syncPriceToServer(editing.sku, patch.price, patch.mrp).then((ok) => {
+              const msg = ok
+                ? `${editing.sku} synced to server catalog`
+                : `${editing.sku} saved locally — server sync failed, retry later`;
+              setSyncMsg(msg);
+              if (ok) toast.success("Synced", msg);
+              else toast.error("Server sync failed", msg);
+            });
           }}
         />
       )}
@@ -317,7 +351,7 @@ function EditProductModal({ product, onClose, onSave }: { product: Product; onCl
           </div>
         </div>
 
-        <button onClick={() => setHidden(!hidden)} className={`mt-3 w-full flex items-center justify-between rounded-xl border-2 px-3 py-2.5 transition-all ${hidden ? "border-[#E91E63]/40 bg-[#FCE8F0]" : "border-[#DDD6EE]"}`}>
+        <button onClick={() => setHidden(!hidden)} className={`mt-3 w-full flex items-center justify-between rounded-xl border-2 px-3 py-2.5 transition-all ${hidden ? "border-[#E91E63]/40 bg-[#FCE4EC]" : "border-[#DDD6EE]"}`}>
           <span className="text-caption font-bold text-[#150726] flex items-center gap-2">
             {hidden ? <EyeOff className="h-4 w-4 text-[#E91E63]" /> : <Eye className="h-4 w-4 text-[#7CB518]" />}
             {hidden ? "Hidden from store" : "Visible on store"}

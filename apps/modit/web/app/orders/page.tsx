@@ -22,7 +22,7 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
   delivered: { label: "Delivered", color: "text-[#7CB518]", bg: "bg-[#F0F9E8]", border: "border-[#7CB518]/20", icon: CheckCircle2, dot: "bg-[#7CB518]" },
   in_transit: { label: "In Transit", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Truck, dot: "bg-[#00BCD4]" },
   confirmed: { label: "Confirmed", color: "text-[#2D1B69]", bg: "bg-[#F0ECF9]", border: "border-[#2D1B69]/20", icon: CheckCircle2, dot: "bg-[#2D1B69]" },
-  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE8F0]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
+  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE4EC]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
   placed: { label: "Placed", color: "text-[#9B8CB5]", bg: "bg-[#F8F6FC]", border: "border-[#DDD6EE]", icon: FileText, dot: "bg-[#9B8CB5]" },
   dispatched: { label: "Dispatched", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Truck, dot: "bg-[#00BCD4]" },
   cancelled: { label: "Cancelled", color: "text-red-500", bg: "bg-red-50", border: "border-red-200", icon: Clock, dot: "bg-red-400" },

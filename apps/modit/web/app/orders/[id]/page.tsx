@@ -76,7 +76,7 @@ const demoOrders: Record<string, OrderDetail> = {
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Package; dot: string }> = {
   confirmed: { label: "Confirmed", color: "text-[#2D1B69]", bg: "bg-[#F0ECF9]", border: "border-[#2D1B69]/20", icon: CheckCircle2, dot: "bg-[#2D1B69]" },
-  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE8F0]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
+  processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE4EC]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
   dispatched: { label: "Dispatched", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Package, dot: "bg-[#00BCD4]" },
   in_transit: { label: "In Transit", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Truck, dot: "bg-[#00BCD4]" },
   delivered: { label: "Delivered", color: "text-[#7CB518]", bg: "bg-[#F0F9E8]", border: "border-[#7CB518]/20", icon: CheckCircle2, dot: "bg-[#7CB518]" },
@@ -438,7 +438,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Special Instructions */}
         {order.specialInstructions && (
-          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE8F0] overflow-hidden">
+          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE4EC] overflow-hidden">
             <div className="p-5 flex items-start gap-3">
               <MessageCircle className="h-4 w-4 text-[#E91E63] mt-0.5" />
               <div>
@@ -451,7 +451,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         {/* Return status */}
         {existingReturn && (
-          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE8F0] overflow-hidden">
+          <div className="rounded-2xl border border-[#E91E63]/20 bg-[#FCE4EC] overflow-hidden">
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <p className="text-micro font-bold text-[#E91E63] uppercase tracking-wide flex items-center gap-1.5">
@@ -484,7 +484,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <Download className="h-4 w-4 text-[#2D1B69]" /> GST Invoice
           </button>
           {order.status === "delivered" && !existingReturn && (
-            <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE8F0] transition-all flex items-center justify-center gap-2">
+            <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE4EC] transition-all flex items-center justify-center gap-2">
               <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Return
             </button>
           )}

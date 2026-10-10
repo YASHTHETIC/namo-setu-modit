@@ -206,7 +206,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
             <label className="block text-micro font-bold text-[#150726] mb-1.5">Discount type</label>
             <div className="grid grid-cols-2 gap-2">
               {(["percent", "flat"] as const).map((t) => (
-                <button key={t} onClick={() => setType(t)} className={`py-2 rounded-lg text-caption font-bold border-2 ${type === t ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+                <button key={t} onClick={() => setType(t)} className={`py-2 rounded-lg text-caption font-bold border-2 ${type === t ? "border-[#E91E63] bg-[#FCE4EC] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
                   {t === "percent" ? "% Off" : "₹ Flat"}
                 </button>
               ))}
@@ -221,7 +221,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
         <label className="block text-micro font-bold text-[#150726] mb-1.5">Applies to</label>
         <div className="grid grid-cols-3 gap-2 mb-3">
           {((["all", "category", "products"] as const).map((sc) => (
-            <button key={sc} onClick={() => setScope(sc)} className={`py-2 rounded-lg text-caption font-bold border-2 capitalize ${scope === sc ? "border-[#E91E63] bg-[#FCE8F0] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
+            <button key={sc} onClick={() => setScope(sc)} className={`py-2 rounded-lg text-caption font-bold border-2 capitalize ${scope === sc ? "border-[#E91E63] bg-[#FCE4EC] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
               {sc === "all" ? "Entire store" : sc}
             </button>
           )))}

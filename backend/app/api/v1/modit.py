@@ -91,6 +91,7 @@ from backend.app.schemas.modit import (
     OrderDetailRead,
     OrderItemCreate,
     OrderRead,
+    OrderStatusUpdate,
     ProductCreate,
     ProductDetailRead,
     ProductImageCreate,
@@ -116,6 +117,7 @@ from backend.app.schemas.modit import (
     RFQRead,
     ReturnCreate,
     ReturnRead,
+    ReturnStatusUpdate,
     SmartReorderResponse,
     SmartReorderRequest,
     SubCategoryCreate,
@@ -605,6 +607,48 @@ async def get_order_delivery_endpoint(order_id: str, db: AsyncSession = Depends(
     return DeliveryRead.model_validate(await get_order_delivery(db, order_id))
 
 
+ORDER_STATUS_VALUES = frozenset({
+    "draft", "placed", "accepted", "packed", "confirmed",
+    "processing", "dispatched", "in_transit", "delivered", "cancelled",
+})
+
+
+async def _own_org_ids(session: AsyncSession, user: User) -> list[str]:
+    from backend.app.models.modit import OrganizationUser
+
+    rows = (
+        (await session.execute(select(OrganizationUser.organization_id).where(OrganizationUser.user_id == user.id)))
+        .scalars()
+        .all()
+    )
+    return [r for r in rows if isinstance(r, str)]
+
+
+@router.patch("/orders/{order_id}/status", response_model=OrderRead)
+async def update_order_status(
+    order_id: str,
+    payload: OrderStatusUpdate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> OrderRead:
+    """Advance an order through fulfillment. Staff: any order. Customers:
+    cancel their own org's orders only."""
+    order = await db.get(Order, order_id)
+    if order is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    if payload.status not in ORDER_STATUS_VALUES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Unknown status: {payload.status}")
+    if not is_staff(user):
+        if payload.status != "cancelled":
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only staff can change order status")
+        if order.organization_id not in await _own_org_ids(db, user):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    order.status = payload.status
+    await db.commit()
+    await db.refresh(order)
+    return OrderRead.model_validate(order)
+
+
 @router.get("/purchase-orders", response_model=list[PurchaseOrderRead])
 async def list_purchase_orders(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[PurchaseOrder]:
     """List purchase orders."""
@@ -686,16 +730,72 @@ async def create_return(payload: ReturnCreate, db: AsyncSession = Depends(get_db
     return ReturnRead.model_validate(ret)
 
 
+RETURN_STATUS_VALUES = frozenset({"requested", "approved", "received", "rejected"})
+
+
+@router.get("/returns", response_model=list[ReturnRead])
+async def list_returns(
+    db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> list[ReturnRead]:
+    """List returns. Staff see all; customers see returns on their own orgs' orders."""
+    from backend.app.models.modit import PurchaseOrder
+
+    stmt = select(Return)
+    if not is_staff(user):
+        own_orgs = await _own_org_ids(db, user)
+        if not own_orgs:
+            return []
+        po_ids = (
+            (await db.execute(select(PurchaseOrder.id).where(PurchaseOrder.organization_id.in_(own_orgs))))
+            .scalars()
+            .all()
+        )
+        if not po_ids:
+            return []
+        stmt = stmt.where(Return.purchase_order_id.in_(po_ids))
+    result = await db.execute(stmt.order_by(Return.created_at.desc()))
+    return [ReturnRead.model_validate(item) for item in result.scalars().all()]
+
+
+@router.patch("/returns/{return_id}/status", response_model=ReturnRead)
+async def update_return_status(
+    return_id: str,
+    payload: ReturnStatusUpdate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> ReturnRead:
+    """Approve/reject/receive a return. Staff only."""
+    if not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only staff can update returns")
+    ret = await db.get(Return, return_id)
+    if ret is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Return not found")
+    if payload.status not in RETURN_STATUS_VALUES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Unknown status: {payload.status}")
+    ret.status = payload.status
+    if payload.status in ("approved", "received"):
+        ret.approved_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(ret)
+    return ReturnRead.model_validate(ret)
+
+
 # =====================================================
 # 5. Inventory
 # =====================================================
 
 @router.get("/inventory", response_model=list[InventoryRead])
-async def list_inventory(warehouse_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Inventory]:
+async def list_inventory(
+    warehouse_id: str | None = None,
+    product_id: str | None = None,
+    db: AsyncSession = Depends(get_db),
+) -> list[Inventory]:
     """List inventory."""
     stmt = select(Inventory)
     if warehouse_id:
         stmt = stmt.where(Inventory.warehouse_id == warehouse_id)
+    if product_id:
+        stmt = stmt.where(Inventory.product_id == product_id)
     result = await db.execute(stmt.order_by(Inventory.product_id.asc()))
     return result.scalars().all()
 

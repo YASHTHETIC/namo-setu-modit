@@ -757,6 +757,18 @@ export function createModitApi(client: ApiClient) {
       return client.request<DeliveryRead>(`${base}/orders/${orderId}/delivery`);
     },
 
+    updateOrderStatus(orderId: string, status: string) {
+      return client.request<OrderRead>(`${base}/orders/${orderId}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+    },
+
+    listReturns() {
+      return client.request<ReturnRead[]>(`${base}/returns`);
+    },
+
+    updateReturnStatus(returnId: string, status: string) {
+      return client.request<ReturnRead>(`${base}/returns/${returnId}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+    },
+
     getNearestWarehouse(lat: number, lng: number, organizationId?: string) {
       const qs = new URLSearchParams({ lat: String(lat), lng: String(lng) });
       if (organizationId) qs.set("organization_id", organizationId);

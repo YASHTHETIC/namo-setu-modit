@@ -277,7 +277,7 @@ export default function ProductDetailPage({
                   onClick={(e) => { e.stopPropagation(); if (product) toggleWishlist(product); }}
                   title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                   className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
-                    wishlisted ? "bg-[#FCE8F0] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
+                    wishlisted ? "bg-[#FCE4EC] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#E91E63]" : ""}`} />
@@ -447,7 +447,7 @@ export default function ProductDetailPage({
                 60 Min Delivery
               </span>
               {product.cashbackPercent && product.cashbackPercent > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE8F0] border border-[#E91E63]/20 px-2.5 py-1 text-micro font-bold text-[#E91E63]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE4EC] border border-[#E91E63]/20 px-2.5 py-1 text-micro font-bold text-[#E91E63]">
                   Assured {product.cashbackPercent}% Cashback
                 </span>
               )}

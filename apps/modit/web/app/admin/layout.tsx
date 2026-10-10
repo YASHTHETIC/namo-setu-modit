@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <ChevronRight className="h-3 w-3" />
           <span className="font-bold text-[#150726]">Admin Panel</span>
           <span className="ml-1 rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-tiny font-bold text-[#E91E63]">STAFF ONLY</span>
-          <button onClick={lock} title="Lock panel" className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:bg-[#FCE8F0]">
+          <button onClick={lock} title="Lock panel" className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:bg-[#FCE4EC]">
             <LogOut className="h-3.5 w-3.5" /> Lock
           </button>
         </div>

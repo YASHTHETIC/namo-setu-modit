@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ChevronRight, Check } from "lucide-react";
-import { useOrders } from "@/lib/modit-api";
+import { Search, ChevronRight, Check, Truck } from "lucide-react";
+import { useOrders, useUpdateOrderStatus, useCreateDelivery } from "@/lib/modit-api";
 import { useAdminStore, ORDER_STATUSES } from "@/lib/admin-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { logAdminActivity } from "@/lib/admin-activity";
@@ -28,7 +28,12 @@ const STATUS_LABEL: Record<string, string> = {
 export default function AdminOrdersPage() {
   const [query, setQuery] = useState("");
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [dispatched, setDispatched] = useState<Record<string, string>>({});
   const { data: orders } = useOrders(undefined, fallbackOrders);
+  const updateStatus = useUpdateOrderStatus();
+  const createDelivery = useCreateDelivery();
   const orderStatuses = useAdminStore((s) => s.orderStatuses);
   const setOrderStatus = useAdminStore((s) => s.setOrderStatus);
 
@@ -42,7 +47,7 @@ export default function AdminOrdersPage() {
     ? list.filter((o: any) => (o.order_number || o.id).toLowerCase().includes(query.trim().toLowerCase()))
     : list;
 
-  const handleStatus = (order: any, status: string) => {
+  const handleStatus = async (order: any, status: string) => {
     setOrderStatus(order.id, status);
     logAdminActivity("order.status", `Order ${order.order_number || order.id} → ${STATUS_LABEL[status] ?? status}`);
     broadcastPush(
@@ -58,6 +63,29 @@ export default function AdminOrdersPage() {
     });
     setSavedId(order.id);
     setTimeout(() => setSavedId(null), 1500);
+    // Persist server-side for real orders. Demo/fallback rows have no
+    // backend record (404) and stay local-only — that is expected.
+    try {
+      await updateStatus.mutateAsync({ orderId: order.id, status });
+    } catch {
+      setSyncError(`Server sync failed for ${order.order_number || order.id} — status kept locally only.`);
+    }
+  };
+
+  const handleDispatch = async (order: any) => {
+    const poId = order.purchase_order_id;
+    if (!poId || busyId) return;
+    setBusyId(order.id);
+    setSyncError("");
+    try {
+      const delivery = await createDelivery.mutateAsync({ purchase_order_id: poId });
+      setDispatched((prev) => ({ ...prev, [order.id]: delivery.delivery_number }));
+      await handleStatus(order, "dispatched");
+    } catch {
+      setSyncError(`Could not create delivery for ${order.order_number || order.id}.`);
+    } finally {
+      setBusyId(null);
+    }
   };
 
   return (
@@ -111,11 +139,31 @@ export default function AdminOrdersPage() {
                   {STATUS_LABEL[st]}
                 </button>
               ))}
+              {o.purchase_order_id && !["dispatched", "in_transit", "delivered", "cancelled"].includes(o.status) && (
+                <button
+                  onClick={() => handleDispatch(o)}
+                  disabled={busyId === o.id}
+                  className="px-3 py-1.5 rounded-lg text-micro font-bold bg-[#2D1B69] text-white hover:bg-[#1E1245] transition-all disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  <Truck className="h-3.5 w-3.5" />
+                  {busyId === o.id ? "Dispatching…" : "Dispatch + delivery"}
+                </button>
+              )}
             </div>
+            {dispatched[o.id] && (
+              <p className="mt-2 text-micro font-bold text-[#7CB518]">
+                Delivery {dispatched[o.id]} created — buyer can track it live.
+              </p>
+            )}
           </div>
         ))}
         {filtered.length === 0 && (
           <p className="text-center text-body-sm text-[#9B8CB5] py-10">No orders match “{query}”.</p>
+        )}
+        {syncError && (
+          <p className="rounded-xl border border-[#E91E63]/30 bg-[#FCE4EC] px-4 py-2.5 text-caption font-semibold text-[#E91E63]">
+            {syncError}
+          </p>
         )}
       </div>
     </div>

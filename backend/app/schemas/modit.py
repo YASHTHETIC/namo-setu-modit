@@ -536,6 +536,10 @@ class OrderDetailRead(OrderRead):
     delivery_id: str | None = None
 
 
+class OrderStatusUpdate(BaseModel):
+    status: str = Field(min_length=1, max_length=20)
+
+
 # B2C Checkout (real order placement — server is the source of truth
 # for prices, taxes, shipping and coupons; the client never is).
 class CheckoutItem(BaseModel):
@@ -980,6 +984,10 @@ class ReturnRead(ORMModel):
     reason: str | None
     approved_at: datetime | None
     created_at: datetime
+
+
+class ReturnStatusUpdate(BaseModel):
+    status: str = Field(min_length=1, max_length=20)
 
 
 # AI Features

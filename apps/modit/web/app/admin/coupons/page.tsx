@@ -77,7 +77,7 @@ export default function AdminCouponsPage() {
           <div key={c.code} className={`rounded-2xl border-2 bg-white p-4 ${c.active ? "border-[#DDD6EE]" : "border-dashed border-[#DDD6EE] opacity-70"}`}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2.5">
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${c.active ? "bg-[#FCE8F0]" : "bg-[#F0ECF9]"}`}>
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${c.active ? "bg-[#FCE4EC]" : "bg-[#F0ECF9]"}`}>
                   <Ticket className={`h-5 w-5 ${c.active ? "text-[#E91E63]" : "text-[#9B8CB5]"}`} />
                 </div>
                 <div>

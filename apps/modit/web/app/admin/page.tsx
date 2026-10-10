@@ -140,8 +140,8 @@ export default function AdminDashboard() {
     { label: "Revenue (GMV)", value: `₹${(gmv / 100000).toFixed(2)}L`, sub: `${orders.length} orders · AOV ₹${aov.toLocaleString("en-IN")}`, icon: IndianRupee, color: "#2D1B69", bg: "#F0ECF9" },
     { label: "Products on sale", value: onSaleCount, sub: activeSale ? `${activeSale.name} LIVE` : "No sale live", icon: Zap, color: "#7CB518", bg: "#F0F9E8", href: "/admin/sales" },
     { label: "Low stock", value: products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products" },
-    { label: "Active coupons", value: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE8F0", href: "/admin/coupons" },
-    { label: "Open returns", value: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE8F0", href: "/admin/returns" },
+    { label: "Active coupons", value: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE4EC", href: "/admin/coupons" },
+    { label: "Open returns", value: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE4EC", href: "/admin/returns" },
     { label: "Staff actions", value: activity.length, sub: "logged in audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
   ];
 
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
           </h2>
           <div className="mt-3 space-y-2.5 max-h-56 overflow-y-auto">
             {openReturns.slice(0, 3).map((r) => (
-              <Link key={r.id} href="/admin/returns" className="flex items-center justify-between rounded-xl bg-[#FCE8F0] px-3 py-2.5 hover:bg-[#F8BBD0]/40">
+              <Link key={r.id} href="/admin/returns" className="flex items-center justify-between rounded-xl bg-[#FCE4EC] px-3 py-2.5 hover:bg-[#F8BBD0]/40">
                 <span className="text-caption font-bold text-[#150726]">Return {r.id} · {r.reason}</span>
                 <ArrowRight className="h-3.5 w-3.5 text-[#E91E63]" />
               </Link>
