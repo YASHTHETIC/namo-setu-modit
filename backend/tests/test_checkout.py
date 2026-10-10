@@ -117,8 +117,10 @@ def test_coupon_math():
     assert (disc, ship) == (0.0, True)
     with pytest.raises(HTTPException):
         validate_coupon("NOPE", 2000.0, set(), date(2026, 1, 1))
+    disc, ship = validate_coupon("DIWALI20", 2000.0, {"tiling"}, date(2026, 10, 10))
+    assert (disc, ship) == (400.0, False)  # capped
     with pytest.raises(HTTPException):
-        validate_coupon("MONSOON20", 2000.0, {"tiling"}, date(2026, 10, 2))  # expired
+        validate_coupon("DIWALI20", 2000.0, {"tiling"}, date(2026, 12, 1))  # expired
     with pytest.raises(HTTPException):
         validate_coupon("CEMENT50", 500.0, {"cement"}, date(2026, 1, 1))  # under min
     with pytest.raises(HTTPException):

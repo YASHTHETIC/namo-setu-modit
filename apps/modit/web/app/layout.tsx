@@ -31,11 +31,20 @@ export const metadata: Metadata = {
     siteName: "MODIT",
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MODIT — Construction materials delivered to your site in 60 minutes",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "MODIT — Construction Materials Delivered",
     description: "Cement, paint, lighting, tiling — delivered to your site in 60 minutes.",
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   manifest: "/manifest.json",

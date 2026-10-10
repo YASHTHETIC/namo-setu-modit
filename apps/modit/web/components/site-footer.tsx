@@ -93,6 +93,8 @@ export function SiteFooter({ className = "" }: { className?: string }) {
               <Link href="/terms" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Terms</Link>
               <Link href="/privacy" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Privacy</Link>
               <Link href="/shipping" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Shipping</Link>
+              <Link href="/returns" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Returns</Link>
+              <Link href="/contact" className="hover:!text-white/50 transition-colors" style={{ color: "rgba(255,255,255,0.3)" }}>Contact</Link>
             </div>
           </div>
         </div>

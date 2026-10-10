@@ -51,7 +51,7 @@ BUILT_IN_COUPONS: tuple[dict, ...] = (
     {"code": "CEMENT50", "type": "flat", "value": 50.0, "max": None, "min_order": 2000.0, "till": "2026-12-31", "category": "cement"},
     {"code": "PAINT15", "type": "percent", "value": 15.0, "max": 300.0, "min_order": 1000.0, "till": "2026-12-31", "category": "painting"},
     {"code": "FREESHIP", "type": "ship", "value": 0.0, "max": None, "min_order": 0.0, "till": "2026-12-31", "category": None},
-    {"code": "MONSOON20", "type": "percent", "value": 20.0, "max": 400.0, "min_order": 1500.0, "till": "2026-09-30", "category": "tiling"},
+    {"code": "DIWALI20", "type": "percent", "value": 20.0, "max": 400.0, "min_order": 1500.0, "till": "2026-11-30", "category": "tiling"},
     {"code": "LIGHT200", "type": "flat", "value": 200.0, "max": None, "min_order": 3000.0, "till": "2026-12-31", "category": "lighting"},
 )
 

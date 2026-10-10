@@ -42,7 +42,7 @@ const defaultCoupons: Coupon[] = [
   { code: "CEMENT50", description: "₹50 off on cement orders", discountType: "flat", discountValue: 50, minOrder: 2000, validTill: "2026-12-31", usageLimit: 3, usedCount: 0, category: "cement", active: true },
   { code: "PAINT15", description: "15% off on paints", discountType: "percentage", discountValue: 15, maxDiscount: 300, minOrder: 1000, validTill: "2026-12-31", usageLimit: 3, usedCount: 0, category: "painting", active: true },
   { code: "FREESHIP", description: "Free delivery on all orders", discountType: "free_shipping", discountValue: 0, minOrder: 0, validTill: "2026-12-31", usageLimit: 10, usedCount: 0, active: true },
-  { code: "MONSOON20", description: "20% off on waterproofing", discountType: "percentage", discountValue: 20, maxDiscount: 400, minOrder: 1500, validTill: "2026-09-30", usageLimit: 2, usedCount: 0, category: "tiling", active: true },
+  { code: "DIWALI20", description: "20% off on tiles — festive sale", discountType: "percentage", discountValue: 20, maxDiscount: 400, minOrder: 1500, validTill: "2026-11-30", usageLimit: 2, usedCount: 0, category: "tiling", active: true },
   { code: "LIGHT200", description: "₹200 off on lighting above ₹3000", discountType: "flat", discountValue: 200, minOrder: 3000, validTill: "2026-12-31", usageLimit: 2, usedCount: 0, category: "lighting", active: true },
 ];
 
