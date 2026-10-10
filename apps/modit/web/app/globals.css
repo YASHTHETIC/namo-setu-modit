@@ -1767,6 +1767,17 @@ input:focus:not(:focus-visible) {
 .card3d-img { transition: transform 0.45s var(--motion-spring); }
 .group:hover .card3d-img { transform: scale(1.07); }
 
+/* Admin/data tables cascade in row by row — add `fx-table` to any table */
+.fx-table tbody tr { animation: fx-card-in 0.45s var(--motion-spring) both; }
+.fx-table tbody tr:nth-child(2) { animation-delay: 0.05s; }
+.fx-table tbody tr:nth-child(3) { animation-delay: 0.1s; }
+.fx-table tbody tr:nth-child(4) { animation-delay: 0.15s; }
+.fx-table tbody tr:nth-child(5) { animation-delay: 0.2s; }
+.fx-table tbody tr:nth-child(6) { animation-delay: 0.25s; }
+.fx-table tbody tr:nth-child(7) { animation-delay: 0.3s; }
+.fx-table tbody tr:nth-child(8) { animation-delay: 0.35s; }
+.fx-table tbody tr:nth-child(n+9) { animation-delay: 0.4s; }
+
 @media (prefers-reduced-motion: reduce) {
   .fx-orb-a,
   .fx-orb-b,
@@ -1780,7 +1791,8 @@ input:focus:not(:focus-visible) {
   }
   .fx-page,
   .product-grid > *,
-  .fx-bar-grow {
+  .fx-bar-grow,
+  .fx-table tbody tr {
     animation-duration: 0.01ms;
   }
   .btn-shine::after {

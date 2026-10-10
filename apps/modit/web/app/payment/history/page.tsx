@@ -80,7 +80,7 @@ export default function ModitPaymentHistoryPage() {
     payments?.items?.reduce((sum, p) => (p.status === "captured" ? sum + p.amount : sum), 0) ?? 0;
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="fx-page mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
           Finance

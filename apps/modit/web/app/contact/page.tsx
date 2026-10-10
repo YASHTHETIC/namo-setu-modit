@@ -12,7 +12,7 @@ const rows = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#F8F6FC]">
+    <div className="fx-page min-h-screen bg-[#F8F6FC]">
       <div className="mx-auto max-w-[800px] px-4 py-8 sm:px-6">
         <Link href="/" className="inline-flex items-center gap-1.5 text-caption text-[#9B8CB5] hover:text-[#2D1B69]">
           <ArrowLeft className="h-3 w-3" /> Back to home

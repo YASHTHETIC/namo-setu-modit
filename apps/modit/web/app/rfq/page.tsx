@@ -25,7 +25,7 @@ export default function RFQPage() {
   };
 
   return (
-    <div>
+    <div className="fx-page">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-h1 text-[var(--text-primary)]">Requests for Quotation</h1>

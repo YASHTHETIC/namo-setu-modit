@@ -42,7 +42,7 @@ export default function WishlistPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-[1400px] py-20 text-center">
+      <div className="fx-page mx-auto max-w-[1400px] py-20 text-center">
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center">
           <Heart className="h-10 w-10 text-[#E91E63]" />
         </div>
@@ -59,7 +59,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1400px] py-4 sm:px-6">
+    <div className="fx-page mx-auto max-w-[1400px] py-4 sm:px-6">
       {/* Breadcrumb */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[#9B8CB5]">
         <Link href="/" className="hover:text-[#2D1B69]">Home</Link>

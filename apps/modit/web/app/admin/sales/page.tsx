@@ -7,6 +7,7 @@ import { products } from "@/lib/product-data";
 import { useCategories } from "@/lib/api-hooks";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { saleAppliesTo } from "@/lib/pricing";
+import { Stagger } from "@/components/fx";
 import { broadcastPush } from "@/lib/pwa";
 
 function toLocalInput(ts: number) {
@@ -51,12 +52,13 @@ export default function AdminSalesPage() {
           <h1 className="text-title-lg font-extrabold text-[#150726]">Sales & Banners</h1>
           <p className="text-caption text-[#9B8CB5] mt-0.5">Schedule discounts like Blinkit/Zepto — prices drop and revert automatically, banners announce it.</p>
         </div>
-        <button onClick={() => { setEditingId(null); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
+        <button onClick={() => { setEditingId(null); setShowForm(true); }} className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
           <Plus className="h-4 w-4" /> New sale
         </button>
       </div>
 
       <div className="mt-4 space-y-3">
+        <Stagger step={60}>
         {sales.length === 0 && (
           <div className="rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
             <Zap className="h-8 w-8 text-[#FF9800] mx-auto mb-2" />
@@ -102,6 +104,7 @@ export default function AdminSalesPage() {
             </div>
           );
         })}
+        </Stagger>
       </div>
 
       {showForm && (
@@ -278,7 +281,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
 
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
-          <button onClick={handleSave} className="px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">{initial ? "Save changes" : "Launch sale"}</button>
+          <button onClick={handleSave} className="btn-shine px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">{initial ? "Save changes" : "Launch sale"}</button>
         </div>
       </div>
     </div>

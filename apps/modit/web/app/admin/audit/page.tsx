@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FileText, Search, Trash2 } from "lucide-react";
 import { useAdminActivity, ADMIN_ACTION_LABEL, type AdminActionType } from "@/lib/admin-activity";
+import { Stagger } from "@/components/fx";
 
 const TYPE_COLORS: Record<string, string> = {
   "product.update": "bg-[#E8F9FC] text-[#00BCD4]",
@@ -85,6 +86,7 @@ export default function AdminAuditPage() {
         </div>
       ) : (
         <div className="mt-4 space-y-5">
+          <Stagger step={70}>
           {Array.from(groups.entries()).map(([day, list]) => (
             <div key={day}>
               <p className="text-micro font-black uppercase tracking-wider text-[#9B8CB5] mb-2">{day}</p>
@@ -106,6 +108,7 @@ export default function AdminAuditPage() {
               </div>
             </div>
           ))}
+          </Stagger>
         </div>
       )}
     </div>

@@ -97,7 +97,7 @@ export default function AdminPayoutsPage() {
 
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[720px]">
+          <table className="fx-table w-full text-left min-w-[720px]">
             <thead>
               <tr className="bg-[#F7F4FC] text-tiny uppercase tracking-wider text-[#9B8CB5]">
                 <th className="px-4 py-3 font-bold">Order</th>

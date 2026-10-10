@@ -144,7 +144,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8F6FC]">
+      <div className="fx-page min-h-screen bg-[#F8F6FC]">
         <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
           <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
             <div className="flex items-center gap-3 animate-pulse">
@@ -166,7 +166,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-[#F8F6FC]">
+      <div className="fx-page min-h-screen bg-[#F8F6FC]">
         <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
           <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
             <Link href="/orders" className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2">
@@ -193,7 +193,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const StatusIcon = st.icon;
 
   return (
-    <div className="min-h-screen bg-[#F8F6FC]">
+    <div className="fx-page min-h-screen bg-[#F8F6FC]">
       {/* Gradient header */}
       <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />

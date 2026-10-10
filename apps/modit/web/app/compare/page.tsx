@@ -14,7 +14,7 @@ export default function ComparePage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-[#F8F6FC]">
+      <div className="fx-page min-h-screen bg-[#F8F6FC]">
         <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
@@ -36,7 +36,7 @@ export default function ComparePage() {
   const allSpecKeys = Array.from(new Set(items.flatMap((p) => Object.keys(p.specifications))));
 
   return (
-    <div className="min-h-screen bg-[#F8F6FC]">
+    <div className="fx-page min-h-screen bg-[#F8F6FC]">
       <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <Link href="/products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>

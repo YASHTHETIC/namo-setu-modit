@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, X, Power, Trash2, Ticket, Check } from "lucide-react";
 import { useCouponStore, type Coupon } from "@/lib/coupon-store";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { Stagger } from "@/components/fx";
 
 const emptyForm = {
   code: "",
@@ -67,14 +68,15 @@ export default function AdminCouponsPage() {
           <h1 className="text-title-lg font-extrabold text-[#150726]">Coupons</h1>
           <p className="text-caption text-[#9B8CB5] mt-0.5">{coupons.filter((c) => c.active).length} active · buyers apply these at cart & checkout</p>
         </div>
-        <button onClick={() => { setForm(emptyForm); setError(""); setShowForm(true); }} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
+        <button onClick={() => { setForm(emptyForm); setError(""); setShowForm(true); }} className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
           <Plus className="h-4 w-4" /> New coupon
         </button>
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <Stagger step={60} className="h-full">
         {coupons.map((c) => (
-          <div key={c.code} className={`rounded-2xl border-2 bg-white p-4 ${c.active ? "border-[#DDD6EE]" : "border-dashed border-[#DDD6EE] opacity-70"}`}>
+          <div key={c.code} className={`rounded-2xl border-2 bg-white p-4 h-full ${c.active ? "border-[#DDD6EE]" : "border-dashed border-[#DDD6EE] opacity-70"}`}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2.5">
                 <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${c.active ? "bg-[#FCE4EC]" : "bg-[#F0ECF9]"}`}>
@@ -131,6 +133,7 @@ export default function AdminCouponsPage() {
             </div>
           </div>
         ))}
+        </Stagger>
       </div>
 
       {showForm && (

@@ -140,7 +140,7 @@ export default function AdminProductsPage() {
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
+          className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
         >
           <Plus className="h-4 w-4" /> Add product
         </button>
@@ -163,7 +163,7 @@ export default function AdminProductsPage() {
 
       <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[760px]">
+          <table className="fx-table w-full text-left min-w-[760px]">
             <thead>
               <tr className="bg-[#F7F4FC] text-tiny uppercase tracking-wider text-[#9B8CB5]">
                 <th className="px-4 py-3 font-bold">Product</th>

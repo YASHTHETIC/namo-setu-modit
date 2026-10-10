@@ -10,6 +10,7 @@ import {
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
+import { Stagger } from "@/components/fx";
 import { useOrderNotificationStore } from "@/lib/order-notifications";
 
 function getClient() {
@@ -90,7 +91,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div>
+    <div className="fx-page">
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-h1 text-[var(--text-primary)]">Notifications</h1>
@@ -149,6 +150,7 @@ export default function NotificationsPage() {
         </Card>
       ) : (
         <div className="space-y-2">
+          <Stagger step={50} maxDelay={300}>
           {visible.map((notification) => (
             <Card
               key={notification.id}
@@ -196,6 +198,7 @@ export default function NotificationsPage() {
               </CardContent>
             </Card>
           ))}
+          </Stagger>
         </div>
       )}
     </div>

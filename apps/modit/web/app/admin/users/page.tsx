@@ -132,7 +132,7 @@ export default function AdminUsersPage() {
             />
           </CardContent>
         ) : (
-          <Table>
+          <Table className="fx-table">
             <TableHead>
               <TableRow>
                 <TableHeaderCell>User</TableHeaderCell>

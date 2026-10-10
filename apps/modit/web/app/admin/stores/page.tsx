@@ -129,7 +129,7 @@ export default function AdminStoresPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
+          className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
         >
           <Plus className="h-4 w-4" /> New store
         </button>
@@ -224,7 +224,7 @@ export default function AdminStoresPage() {
           <button
             onClick={runReorder}
             disabled={!selected || smartReorder.isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50"
+            className="btn-shine flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${smartReorder.isPending ? "animate-spin" : ""}`} />
             {smartReorder.isPending ? "Thinking…" : selected ? `Suggest for ${selected.name}` : "Select a store"}
@@ -259,7 +259,7 @@ export default function AdminStoresPage() {
           <span className="ml-auto text-micro font-bold text-[#9B8CB5]">{inventory.length} SKUs</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[680px]">
+          <table className="fx-table w-full text-left min-w-[680px]">
             <thead>
               <tr className="bg-[#F7F4FC] text-tiny uppercase tracking-wider text-[#9B8CB5]">
                 <th className="px-4 py-3 font-bold">SKU / Product</th>

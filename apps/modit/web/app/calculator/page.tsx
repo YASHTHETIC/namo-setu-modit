@@ -65,7 +65,7 @@ export default function CalculatorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F6FC]">
+    <div className="fx-page min-h-screen bg-[#F8F6FC]">
       {/* Header */}
       <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%)" }} />
@@ -187,7 +187,7 @@ export default function CalculatorPage() {
               <button
                 onClick={handleAddAll}
                 disabled={addedItems.length > 0}
-                className="flex items-center gap-1.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold px-4 py-2 hover:bg-[#6A9C14] transition-all disabled:opacity-50"
+                className="btn-shine flex items-center gap-1.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold px-4 py-2 hover:bg-[#6A9C14] transition-all disabled:opacity-50"
               >
                 {addedItems.length > 0 ? (
                   <><CheckCircle2 className="h-3.5 w-3.5" /> Added!</>

@@ -110,7 +110,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </aside>
 
-          <div className="flex-1 min-w-0">{children}</div>
+          <div className="fx-page flex-1 min-w-0">{children}</div>
         </div>
       </div>
     </div>

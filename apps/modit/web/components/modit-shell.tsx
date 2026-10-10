@@ -677,7 +677,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      <main className="market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
+      <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-6">{children}</main>
 
       <SiteFooter />
 

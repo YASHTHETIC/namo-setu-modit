@@ -53,7 +53,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="fx-page space-y-6">
       {/* Welcome banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#2D1B69] to-[#150726] p-6 text-white">
         <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-[#7CB518]/20 blur-2xl" />
