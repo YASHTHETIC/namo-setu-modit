@@ -34,33 +34,10 @@ interface AddressState {
 export const useAddressStore = create<AddressState>()(
   persist(
     (set, get) => ({
-      addresses: [
-        {
-          id: "a1",
-          label: "Site Office",
-          name: "Rajesh Kumar",
-          phone: "+91 98765 43210",
-          line1: "42, MG Road, Near Metro Station",
-          city: "Mumbai",
-          state: "Maharashtra",
-          pincode: "400001",
-          isDefault: true,
-          type: "site",
-        },
-        {
-          id: "a2",
-          label: "Warehouse",
-          name: "Rajesh Kumar",
-          phone: "+91 98765 43210",
-          line1: "15, Industrial Area Phase 2",
-          city: "Mumbai",
-          state: "Maharashtra",
-          pincode: "400070",
-          isDefault: false,
-          type: "warehouse",
-        },
-      ],
-      selectedAddressId: "a1",
+      // Launch-safe: start empty. (Old builds shipped two demo Mumbai
+      // addresses — never show another person's address to a buyer.)
+      addresses: [],
+      selectedAddressId: null,
 
       addAddress: (addr) => {
         const id = `a${Date.now()}`;
@@ -136,7 +113,8 @@ export const useAddressStore = create<AddressState>()(
       },
     }),
     {
-      name: "modit-addresses",
+      // v2 key: drops pre-launch demo addresses from old devices.
+      name: "modit-addresses-v2",
       partialize: (state) => ({
         addresses: state.addresses,
         selectedAddressId: state.selectedAddressId,

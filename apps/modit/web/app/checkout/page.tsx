@@ -32,7 +32,9 @@ export default function CheckoutPage() {
   const headerHidden = useHideOnScroll(140);
   const [orderId, setOrderId] = useState("");
   const [couponInput, setCouponInput] = useState("");
-  const [showAddAddress, setShowAddAddress] = useState(false);
+  const [showAddAddress, setShowAddAddress] = useState(
+    () => useAddressStore.getState().addresses.length === 0
+  );
   const [serverTotal, setServerTotal] = useState<number | null>(null);
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
   const [activeStep, setActiveStep] = useState(1);
@@ -582,7 +584,10 @@ export default function CheckoutPage() {
                 />
               ) : (
                 <button onClick={() => {
-                  if (activeStep === 1 && !selectedAddr) return;
+                  if (activeStep === 1 && !selectedAddr) {
+                    setShowAddAddress(true);
+                    return;
+                  }
                   setActiveStep(Math.min(activeStep + 1, 3));
                 }} className={`w-full py-3 rounded-xl text-white text-body-md font-bold transition-all shadow-lg ${
                   activeStep === 1 && !selectedAddr
@@ -591,6 +596,11 @@ export default function CheckoutPage() {
                 }`}>
                   {activeStep === 1 ? "Continue to Delivery" : "Continue to Payment"}
                 </button>
+              )}
+              {activeStep === 1 && !selectedAddr && (
+                <p className="mt-2 text-center text-micro font-semibold text-[#9B8CB5]">
+                  Add a delivery address above to continue — it takes 20 seconds
+                </p>
               )}
             </div>
           </div>
