@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { X } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { useCartUi } from "@/lib/cart-ui";
 
 interface StickyCartBarProps {
   itemCount: number;
@@ -13,6 +13,7 @@ interface StickyCartBarProps {
 
 export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   const items = useCartStore((s) => s.items);
+  const openDrawer = useCartUi((s) => s.openDrawer);
   // Dismiss hides the bar until the cart itself changes (add/remove/price).
   const [dismissedKey, setDismissedKey] = useState<string | null>(null);
   if (itemCount === 0) return null;
@@ -60,16 +61,16 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
         </div>
       </div>
 
-      {/* Right side — CTA */}
-      <Link
-        href="/cart"
+      {/* Right side — CTA opens the quick cart drawer (Blinkit-style) */}
+      <button
+        onClick={openDrawer}
         className="btn-shine inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 flex-shrink-0"
       >
         View Cart
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
-      </Link>
+      </button>
     </div>
   );
 }

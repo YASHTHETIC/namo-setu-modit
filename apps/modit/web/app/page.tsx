@@ -28,6 +28,8 @@ import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { Reveal } from "@/components/reveal";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
+import { CartDrawer } from "@/widgets/cart-drawer";
+import { useCartUi } from "@/lib/cart-ui";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
 /* ── Scroll-reveal hook ──────────────────────────────────────────── */
@@ -93,6 +95,7 @@ export default function ModitHomePage() {
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const router = useRouter();
+  const openDrawer = useCartUi((s) => s.openDrawer);
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const headerHidden = useHideOnScroll(140);
@@ -208,14 +211,14 @@ export default function ModitHomePage() {
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
+            <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-tiny font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
         {/* Search row — full width, opens the search sheet */}
@@ -530,8 +533,9 @@ export default function ModitHomePage() {
         </div>
       </Reveal>
 
-      {/* ═══ STICKY CART BAR ═══ */}
+      {/* ═══ STICKY CART BAR + QUICK DRAWER ═══ */}
       <StickyCartBar itemCount={cartCount} total={cartTotal} />
+      <CartDrawer />
 
       {/* ═══ BACK TO TOP ═══ */}
       <button

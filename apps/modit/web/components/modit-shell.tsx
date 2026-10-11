@@ -40,6 +40,8 @@ import { useDisplayProducts } from "@/lib/pricing";
 import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { CartDrawer } from "@/widgets/cart-drawer";
+import { useCartUi } from "@/lib/cart-ui";
 import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { LocationMenu } from "@/components/location-menu";
@@ -109,6 +111,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
   const cartItems = useCartStore((state) => state.items);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const openDrawer = useCartUi((s) => s.openDrawer);
 
   const megaMenuItems = useMemo(
     () =>
@@ -397,9 +400,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Desktop: Blinkit-style — green cart button + account (no ops entries in buyer chrome) */}
+          {/* Desktop: green cart button opens the quick drawer + account (no ops entries in buyer chrome) */}
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <Link href="/cart" className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Cart">
+            <button onClick={() => openDrawer()} className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />
               Cart
               {cartCount > 0 && (
@@ -407,7 +410,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
-            </Link>
+            </button>
             <div ref={userMenuRef} className="relative">
               <button
                 type="button"
@@ -468,14 +471,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-5 w-5" />
             </button>
-            <Link href="/cart" className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Cart">
+            <button onClick={() => openDrawer()} className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white shadow-lg shadow-pink-500/30">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
-            </Link>
+            </button>
             <button
               type="button"
               onClick={() => setShowMobileMenu((value) => !value)}
@@ -663,6 +666,7 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
       <PushNotificationPrompt />
       <ComparisonBar />
       <BottomNav />
+      <CartDrawer />
     </div>
   );
 }
