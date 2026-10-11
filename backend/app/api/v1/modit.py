@@ -66,6 +66,7 @@ from backend.app.schemas.modit import (
     CartQuantityUpdate,
     CartRead,
     CategoryRead,
+    CategoryUpdate,
     CheckoutRequest,
     CheckoutResponse,
     ConstructionSiteCreate,
@@ -127,6 +128,7 @@ from backend.app.schemas.modit import (
     SmartReorderRequest,
     SubCategoryCreate,
     SubCategoryRead,
+    SubCategoryUpdate,
     SupportConversationCreate,
     SupportConversationDetailRead,
     SupportConversationRead,
@@ -293,6 +295,21 @@ async def create_category(payload: dict, db: AsyncSession = Depends(get_db)) -> 
     return category
 
 
+@router.patch("/categories/{category_id}", response_model=CategoryRead, dependencies=[admin_dependency])
+async def update_category(category_id: str, payload: CategoryUpdate, db: AsyncSession = Depends(get_db)) -> Category:
+    """Rename / describe / activate / deactivate a category. No deletes —
+    deactivation hides it everywhere while products keep working."""
+    category = await db.get(Category, category_id)
+    if category is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    data = payload.model_dump(exclude_unset=True)
+    for field, value in data.items():
+        setattr(category, field, value)
+    await db.commit()
+    await db.refresh(category)
+    return category
+
+
 # Subcategories
 @router.get("/subcategories", response_model=list[SubCategoryRead])
 async def list_subcategories(category_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[SubCategory]:
@@ -309,6 +326,20 @@ async def create_subcategory(payload: SubCategoryCreate, db: AsyncSession = Depe
     """Create a subcategory."""
     item = SubCategory(**payload.model_dump())
     db.add(item)
+    await db.commit()
+    await db.refresh(item)
+    return SubCategoryRead.model_validate(item)
+
+
+@router.patch("/subcategories/{subcategory_id}", response_model=SubCategoryRead, dependencies=[admin_dependency])
+async def update_subcategory(subcategory_id: str, payload: SubCategoryUpdate, db: AsyncSession = Depends(get_db)) -> SubCategory:
+    """Rename / describe / activate / deactivate a subcategory."""
+    item = await db.get(SubCategory, subcategory_id)
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Subcategory not found")
+    data = payload.model_dump(exclude_unset=True)
+    for field, value in data.items():
+        setattr(item, field, value)
     await db.commit()
     await db.refresh(item)
     return SubCategoryRead.model_validate(item)

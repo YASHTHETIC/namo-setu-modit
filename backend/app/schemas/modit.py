@@ -64,6 +64,12 @@ class CategoryCreate(CategoryBase):
     pass
 
 
+class CategoryUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    is_active: bool | None = None
+
+
 class CategoryRead(ORMModel):
     id: str
     name: str
@@ -83,6 +89,12 @@ class SubCategoryBase(BaseModel):
 
 class SubCategoryCreate(SubCategoryBase):
     pass
+
+
+class SubCategoryUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    is_active: bool | None = None
 
 
 class SubCategoryRead(ORMModel):

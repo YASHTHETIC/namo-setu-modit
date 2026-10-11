@@ -8,6 +8,8 @@ export type AdminActionType =
   | "product.reset"
   | "product.bulk_update"
   | "product.create"
+  | "category.create"
+  | "category.update"
   | "sale.create"
   | "sale.update"
   | "sale.toggle"
@@ -45,6 +47,8 @@ export const ADMIN_ACTION_LABEL: Record<AdminActionType, string> = {
   "product.reset": "Product reset to default",
   "product.bulk_update": "Bulk price update",
   "product.create": "Product added to catalog",
+  "category.create": "Category created",
+  "category.update": "Category updated",
   "sale.create": "Sale created",
   "sale.update": "Sale updated",
   "sale.toggle": "Sale paused / activated",

@@ -114,6 +114,21 @@ def test_seed_catalog_requires_staff(client):
     assert response.status_code == 401
 
 
+def test_category_endpoints_require_staff(client):
+    assert client.post("/api/v1/modit/categories", json={"name": "X", "slug": "x"}).status_code == 401
+    assert client.patch("/api/v1/modit/categories/x", json={"name": "Y"}).status_code == 401
+    assert client.post("/api/v1/modit/subcategories", json={"category_id": "c", "name": "X", "slug": "x"}).status_code == 401
+    assert client.patch("/api/v1/modit/subcategories/x", json={"name": "Y"}).status_code == 401
+
+
+def test_category_update_schema():
+    from backend.app.schemas.modit import CategoryUpdate, SubCategoryUpdate
+
+    assert CategoryUpdate().model_dump(exclude_unset=True) == {}
+    assert CategoryUpdate(name="Cement").model_dump(exclude_unset=True) == {"name": "Cement"}
+    assert SubCategoryUpdate(is_active=False).model_dump(exclude_unset=True) == {"is_active": False}
+
+
 def test_cart_endpoints_require_auth(client):
     """Server cart is per-buyer: every route needs login."""
     assert client.get("/api/v1/modit/cart/items").status_code == 401

@@ -627,9 +627,21 @@ export function createModitApi(client: ApiClient) {
       return client.request(`${base}/categories`, { method: "POST", body: JSON.stringify(payload) });
     },
 
+    updateCategory(id: string, payload: Record<string, unknown>) {
+      return client.request<CategoryRead>(`${base}/categories/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+    },
+
     listSubCategories(categoryId?: string) {
       const qs = categoryId ? `?category_id=${categoryId}` : "";
       return client.request<SubCategoryRead[]>(`${base}/subcategories${qs}`);
+    },
+
+    createSubCategory(payload: Record<string, unknown>) {
+      return client.request<SubCategoryRead>(`${base}/subcategories`, { method: "POST", body: JSON.stringify(payload) });
+    },
+
+    updateSubCategory(id: string, payload: Record<string, unknown>) {
+      return client.request<SubCategoryRead>(`${base}/subcategories/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
     },
 
     listBrands() {

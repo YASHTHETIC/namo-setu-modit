@@ -29,6 +29,7 @@ import { DoorBadge, ReplaceBadge } from "@/components/fx";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
+import { useSubCategories } from "@/lib/modit-api";
 import { useDisplayProducts } from "@/lib/pricing";
 import { downloadPricelistCsv, downloadPricelistHtml, buildPricelistRows, getCategoryName } from "@/lib/pricelist";
 import { FileDown, Download } from "lucide-react";
@@ -54,6 +55,9 @@ function ProductsContent() {
 
   const [search, setSearch] = useState(searchParams.get("search") || searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
+  const [selectedSub, setSelectedSub] = useState("");
+  // Subcategory belongs to its category — reset on category switch.
+  useEffect(() => { setSelectedSub(""); }, [selectedCategory]);
 
   const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
@@ -110,6 +114,9 @@ function ProductsContent() {
     if (selectedCategory) {
       result = result.filter((p) => p.categorySlug === selectedCategory);
     }
+    if (selectedSub) {
+      result = result.filter((p) => p.subCategorySlug === selectedSub);
+    }
 
     if (selectedBrands.length > 0) {
       result = result.filter((p) => selectedBrands.includes(p.brand || ""));
@@ -141,12 +148,12 @@ function ProductsContent() {
     }
 
     return result;
-  }, [search, selectedCategory, selectedBrands, priceRange, minRating, inStockOnly, sort]);
+  }, [search, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
   // Pagination: render 24 at a time so thousand-product categories stay fast.
   const PAGE_SIZE = 24;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, selectedCategory, selectedBrands, priceRange, minRating, inStockOnly, sort]);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
   const toggleBrand = useCallback((brand: string) => {
@@ -158,15 +165,25 @@ function ProductsContent() {
   const clearFilters = useCallback(() => {
     setSearch("");
     setSelectedCategory("");
+    setSelectedSub("");
     setSelectedBrands([]);
     setPriceRange([0, 100000]);
     setMinRating(0);
     setInStockOnly(false);
   }, []);
 
-  const hasActiveFilters = search || selectedCategory || selectedBrands.length > 0 || priceRange[0] > 0 || priceRange[1] < 100000 || minRating > 0 || inStockOnly;
+  const hasActiveFilters = search || selectedCategory || selectedSub || selectedBrands.length > 0 || priceRange[0] > 0 || priceRange[1] < 100000 || minRating > 0 || inStockOnly;
 
   const catColor = selectedCategory ? getCatColor(selectedCategory) : null;
+
+  // Subcategories of the active category (static embeds first, server lookup second).
+  const activeCategory = categories.find((c: any) => c.slug === selectedCategory) as any;
+  const { data: serverSubs = [] } = useSubCategories(activeCategory?.id);
+  const subList = (
+    activeCategory?.subCategories?.length > 0
+      ? activeCategory.subCategories
+      : (serverSubs as any[]).filter((s) => s.category_id === activeCategory?.id)
+  ) as { name: string; slug: string }[];
 
   const handleExport = (kind: "html" | "csv") => {
     const rows = buildPricelistRows(filteredProducts.map((p) => ({
@@ -551,6 +568,35 @@ function ProductsContent() {
             </div>
           </div>
           </Reveal>
+
+          {/* Subcategory pills — only for the active category */}
+          {selectedCategory && subList.length > 0 && (
+            <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              <button
+                onClick={() => setSelectedSub("")}
+                className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-all ${
+                  !selectedSub
+                    ? "bg-[#2D1B69] text-white border-[#2D1B69]"
+                    : "border-[#DDD6EE] bg-white text-[#6B5B83] hover:border-[#2D1B69]"
+                }`}
+              >
+                All
+              </button>
+              {subList.map((s) => (
+                <button
+                  key={s.slug}
+                  onClick={() => setSelectedSub(selectedSub === s.slug ? "" : s.slug)}
+                  className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-all whitespace-nowrap ${
+                    selectedSub === s.slug
+                      ? "bg-[#2D1B69] text-white border-[#2D1B69]"
+                      : "border-[#DDD6EE] bg-white text-[#6B5B83] hover:border-[#2D1B69]"
+                  }`}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Active Filters */}
           {hasActiveFilters && (

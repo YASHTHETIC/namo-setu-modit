@@ -129,6 +129,45 @@ export function useSubCategories(categoryId?: string) {
   });
 }
 
+function invalidateCatalog(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: moditKeys.categories() });
+  queryClient.invalidateQueries({ queryKey: moditKeys.all });
+}
+
+export function useCreateCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: getModitApi().createCategory,
+    onSuccess: () => invalidateCatalog(queryClient),
+  });
+}
+
+export function useUpdateCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Record<string, unknown> }) =>
+      getModitApi().updateCategory(id, payload),
+    onSuccess: () => invalidateCatalog(queryClient),
+  });
+}
+
+export function useCreateSubCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: getModitApi().createSubCategory,
+    onSuccess: () => invalidateCatalog(queryClient),
+  });
+}
+
+export function useUpdateSubCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Record<string, unknown> }) =>
+      getModitApi().updateSubCategory(id, payload),
+    onSuccess: () => invalidateCatalog(queryClient),
+  });
+}
+
 export function useBrands() {
   return useQuery({
     queryKey: moditKeys.brands(),

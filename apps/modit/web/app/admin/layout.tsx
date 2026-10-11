@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
   Lock, RotateCcw, LogOut, IndianRupee, FileText, Building2, Warehouse,
-  Users, ShieldCheck, KeyRound,
+  Users, ShieldCheck, Tags, KeyRound,
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
@@ -137,6 +137,7 @@ function StaffBanner() {
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products & Pricing", icon: Package },
+  { href: "/admin/categories", label: "Categories", icon: Tags },
   { href: "/admin/sales", label: "Sales & Banners", icon: Zap },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/stores", label: "Stores & Stock", icon: Warehouse },
