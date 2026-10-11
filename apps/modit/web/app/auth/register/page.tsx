@@ -148,7 +148,7 @@ export default function RegisterPage() {
               </form>
             </div>
             <p className="mt-6 text-center text-body-md text-[#6B5B83]">Already have an account? <Link href="/auth" className="font-bold text-[#7CB518] hover:underline">Sign in</Link></p>
-            <p className="mt-4 text-center text-micro text-[#9B8CB5]">By creating an account, you agree to our <Link href="#" className="underline hover:text-[#2D1B69]">Terms</Link> and <Link href="#" className="underline hover:text-[#2D1B69]">Privacy Policy</Link></p>
+            <p className="mt-4 text-center text-micro text-[#9B8CB5]">By creating an account, you agree to our <Link href="/terms" className="underline hover:text-[#2D1B69]">Terms</Link> and <Link href="/privacy" className="underline hover:text-[#2D1B69]">Privacy Policy</Link></p>
           </div>
         </div>
       </div>
