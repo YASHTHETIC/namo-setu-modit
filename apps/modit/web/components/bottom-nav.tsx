@@ -22,8 +22,8 @@ export function BottomNav() {
   const pathname = usePathname();
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
-  // Buyer nav on all screens (desktop included) — never inside staff panel.
-  if (pathname.startsWith("/admin")) return null;
+  // Buyer nav on all screens (desktop included) — never inside staff panel or supplier hub.
+  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
 
   return (
     <nav

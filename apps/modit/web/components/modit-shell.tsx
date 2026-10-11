@@ -395,7 +395,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Desktop: Blinkit-style — supplier link, green cart button, account */}
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[#2D1B69] hover:text-[#2D1B69]">
+            <Link href="/supplier" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[#2D1B69] hover:text-[#2D1B69]">
               Supplier Login
             </Link>
             <Link href="/cart" className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Cart">

@@ -685,6 +685,41 @@ export function createModitApi(client: ApiClient) {
       );
     },
 
+    // Supplier surface — own catalog/orders/payouts only (supplier role).
+    supplierMe() {
+      return client.request<{ id: string; supplier_code: string; organization_id: string | null; is_verified: boolean; product_count: number }>(
+        "/supplier/me",
+      );
+    },
+
+    supplierProducts(params?: { page?: number; page_size?: number }) {
+      const query = new URLSearchParams();
+      if (params?.page) query.set("page", String(params.page));
+      if (params?.page_size) query.set("page_size", String(params.page_size));
+      const qs = query.toString();
+      return client.request<{ items: Array<{ id: string; sku: string | null; name: string | null; list_price: number; mrp: number | null; is_active: boolean; approval_status: string | null }>; total: number; page: number; page_size: number }>(
+        `/supplier/products${qs ? `?${qs}` : ""}`,
+      );
+    },
+
+    supplierOrders() {
+      return client.request<Array<{ id: string; order_number: string | null; status: string | null; placed_at: string | null; lines: Array<{ product_name: string | null; sku: string | null; quantity: number; unit_price: number; line_total: number }>; my_total: number }>>(
+        "/supplier/orders",
+      );
+    },
+
+    supplierSummary() {
+      return client.request<{ supplier_code: string; is_verified: boolean; product_count: number; active_product_count: number; order_count: number; revenue: number; payable: number }>(
+        "/supplier/summary",
+      );
+    },
+
+    supplierPayouts() {
+      return client.request<Array<{ order_id: string; order_number: string | null; status: string | null; amount: number; state: string; placed_at: string | null }>>(
+        "/supplier/payouts",
+      );
+    },
+
     // RFQ / Quotation
     listRFQs(organizationId?: string) {
       const qs = organizationId ? `?organization_id=${organizationId}` : "";

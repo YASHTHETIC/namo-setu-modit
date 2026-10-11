@@ -7,6 +7,10 @@ class RoleName(str, Enum):
     SUPPORT = "support"
     MANAGER = "manager"
     USER = "user"
+    # Blinkit-style seller: sees ONLY their own catalog/orders/payouts.
+    # Deliberately NOT in STAFF_ROLE_NAMES (api/deps.py) — suppliers must
+    # never pass is_staff() checks that open the full admin surface.
+    SUPPLIER = "supplier"
 
 
 class PermissionName(str, Enum):
@@ -69,6 +73,12 @@ ROLE_PERMISSIONS: dict[RoleName, set[PermissionName]] = {
         PermissionName.USER_UPDATE_SELF,
         PermissionName.USER_ADDRESS_MANAGE,
         PermissionName.NOTIFICATION_READ,
+    },
+    RoleName.SUPPLIER: {
+        PermissionName.USER_READ_SELF,
+        PermissionName.USER_UPDATE_SELF,
+        PermissionName.NOTIFICATION_READ,
+        PermissionName.ORGANIZATION_READ,
     },
 }
 

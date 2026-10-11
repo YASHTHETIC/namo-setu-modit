@@ -32,11 +32,12 @@ from backend.app.models.modit import (
     Organization,
     Product,
     SubCategory,
+    Supplier,
     Unit,
     Warehouse,
 )
 from backend.app.models.shared import City, Country, State
-from backend.app.models.user import User
+from backend.app.models.user import Role, User, user_roles
 
 RETAIL_ORG_NAME = "MODIT Retail"
 WAREHOUSE_CODE = "WH-NOIDA-01"
@@ -229,7 +230,58 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
         if not inv_created:
             inv.quantity_on_hand = max(inv.quantity_on_hand, qty)
 
+    await _seed_demo_supplier(session, org)
+
     return stats
+
+
+async def _seed_demo_supplier(session: AsyncSession, org: Organization) -> None:
+    """Blinkit-style seller login: supplier@modit.in owns the first catalog
+    slice, so the /supplier surface is demonstrable after one seed run.
+    Credentials: supplier@modit.in / Supplier@1234"""
+    role = (
+        (await session.execute(select(Role).where(Role.name == "supplier")))
+        .scalars()
+        .first()
+    )
+    if role is None:
+        role = Role(name="supplier", description="Supplier (own catalog only)")
+        session.add(role)
+        await session.flush()
+
+    user, _ = await _get_or_create(
+        session, User, {"email": "supplier@modit.in"},
+        {"full_name": "Demo Supplier", "hashed_password": hash_password("Supplier@1234"),
+         "is_active": True, "is_verified": True},
+    )
+    # Async-safe role attach (never touches the lazy user.roles collection).
+    linked = (
+        await session.execute(
+            select(Role.id).join(user_roles, user_roles.c.role_id == Role.id).where(
+                user_roles.c.user_id == user.id, Role.id == role.id
+            )
+        )
+    ).first()
+    if linked is None:
+        await session.execute(
+            user_roles.insert().values(user_id=user.id, role_id=role.id)
+        )
+
+    sup, _ = await _get_or_create(
+        session, Supplier, {"supplier_code": "SUP-DEMO"},
+        {"organization_id": org.id, "is_verified": True, "user_id": user.id},
+    )
+    sup.user_id = user.id
+    sup.is_verified = True
+
+    result = await session.execute(
+        select(Product)
+        .where(Product.organization_id == org.id, Product.supplier_id.is_(None))
+        .order_by(Product.sku.asc())
+        .limit(30)
+    )
+    for product in result.scalars().all():
+        product.supplier_id = sup.id
 
 
 async def main() -> None:

@@ -89,6 +89,8 @@ async def get_optional_user(
 
 STAFF_ROLE_NAMES = {"super_admin", "admin", "support", "manager"}
 
+SUPPLIER_ROLE_NAME = "supplier"
+
 
 def is_staff(user: User | None) -> bool:
     if user is None:
@@ -97,6 +99,31 @@ def is_staff(user: User | None) -> bool:
         return any(getattr(role, "name", None) in STAFF_ROLE_NAMES for role in (user.roles or []))
     except Exception:
         return False
+
+
+def is_supplier(user: User | None) -> bool:
+    """Blinkit-style seller: has the supplier role (never staff)."""
+    if user is None:
+        return False
+    try:
+        return any(getattr(role, "name", None) == SUPPLIER_ROLE_NAME for role in (user.roles or []))
+    except Exception:
+        return False
+
+
+def require_supplier():
+    """Logged-in user with the supplier role. Staff-only admins fail here
+    only if they lack the role — suppliers and staff are separate surfaces."""
+
+    async def dependency(user: User = Depends(get_current_user)) -> User:
+        if not is_supplier(user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Supplier access only — ask an administrator for a supplier login.",
+            )
+        return user
+
+    return dependency
 
 
 def require_permission(permission: PermissionName):

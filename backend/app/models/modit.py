@@ -196,6 +196,12 @@ class Supplier(BaseModel):
     organization_id: Mapped[str] = mapped_column(ForeignKey("modit_organizations.id", ondelete="CASCADE"), nullable=False)
     supplier_code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # Blinkit-style seller login: which user owns this supplier profile.
+    # Nullable so legacy/org-only suppliers keep working; unique enforces
+    # one login per supplier.
+    user_id: Mapped[str | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True, unique=True
+    )
 
     organization = relationship("Organization")
     vendors = relationship("Vendor", back_populates="supplier", cascade="all, delete-orphan")

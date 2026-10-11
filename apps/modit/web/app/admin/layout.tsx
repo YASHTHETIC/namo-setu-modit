@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
@@ -12,6 +12,7 @@ import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { onlyDigits } from "@/lib/utils";
 import { getAccessToken } from "@/lib/auth";
+import { useCurrentUser } from "@/lib/use-current-user";
 import { env } from "@/lib/env";
 
 /** One-click staff setup: shows only while this login lacks staff rights. */
@@ -157,8 +158,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const lock = useAdminAuth((s) => s.lock);
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState("");
+  // Real logins bypass the demo PIN wall: staff keep full access, supplier
+  // logins are redirected to their own hub below (never the staff surface).
+  const { loggedIn, isStaff, isSupplier } = useCurrentUser();
+  const authed = loggedIn && (isStaff || isSupplier);
+  const supplierOnly = authed && isSupplier && !isStaff;
+  const router = useRouter();
+  useEffect(() => {
+    // Blinkit rule: a seller login never lands on the staff surface.
+    if (supplierOnly) router.replace("/supplier");
+  }, [supplierOnly, router]);
 
-  if (!unlocked) {
+  if (!unlocked && !authed) {
     return (
       <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4">
         <div className="w-full max-w-sm rounded-2xl border border-[#DDD6EE] bg-white p-8 text-center shadow-lg">
@@ -192,6 +203,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="mt-3 text-micro text-[#9B8CB5]">{getAdminPinHint()}</p>
           <Link href="/" className="mt-4 inline-block text-caption font-bold text-[#2D1B69] hover:underline">← Back to store</Link>
         </div>
+      </div>
+    );
+  }
+
+  if (supplierOnly) {
+    return (
+      <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4">
+        <p className="text-body-sm font-bold text-[#9B8CB5]">Opening your supplier hub…</p>
       </div>
     );
   }
