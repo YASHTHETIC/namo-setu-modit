@@ -8,14 +8,15 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
-import { useAddressStore, type Address } from "@/lib/address-store";
+import { useAddressStore } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
-import { formatINR2, onlyDigits } from "@/lib/utils";
+import { formatINR2 } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
 import { ProductThumb } from "@/components/product-thumb";
+import { AddressForm } from "@/components/address-form";
 import { useAuthReady } from "@/lib/use-auth";
 
 export default function CheckoutPage() {
@@ -38,7 +39,6 @@ export default function CheckoutPage() {
     () => useAddressStore.getState().addresses.length === 0
   );
   const [serverTotal, setServerTotal] = useState<number | null>(null);
-  const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
   // Returning buyers skip step 1 when an address is already selected.
   const [activeStep, setActiveStep] = useState(() =>
     useAddressStore.getState().addresses.length > 0 ? 2 : 1
@@ -252,73 +252,14 @@ export default function CheckoutPage() {
                   ))}
 
                   {showAddAddress ? (
-                    <div className="p-4 rounded-xl border-2 border-[#2D1B69] bg-[#F8F6FC] space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-body-sm font-bold text-[#150726]">New Address</span>
-                        <button onClick={() => setShowAddAddress(false)} className="text-[#9B8CB5] hover:text-[#150726]"><X className="h-4 w-4" /></button>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Address type</span>
-                          <select value={newAddr.type} onChange={(e) => setNewAddr({ ...newAddr, type: e.target.value as Address["type"] })} className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]">
-                            <option value="site">Construction Site</option>
-                            <option value="home">Home</option>
-                            <option value="warehouse">Warehouse</option>
-                            <option value="office">Office</option>
-                          </select>
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Label</span>
-                          <input placeholder="e.g. Site A" value={newAddr.label} onChange={(e) => setNewAddr({ ...newAddr, label: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Full name</span>
-                          <input placeholder="Full Name" value={newAddr.name} onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Phone</span>
-                          <input placeholder="10-digit mobile" inputMode="numeric" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: onlyDigits(e.target.value, 10) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Pincode</span>
-                          <input placeholder="6-digit pincode" inputMode="numeric" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: onlyDigits(e.target.value, 6) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block sm:col-span-2">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">Address line 1</span>
-                          <input placeholder="House / plot / street" value={newAddr.line1} onChange={(e) => setNewAddr({ ...newAddr, line1: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">City</span>
-                          <input placeholder="City" value={newAddr.city} onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                        <label className="block">
-                          <span className="mb-1 block text-micro font-bold text-[#150726]">State</span>
-                          <input placeholder="State" value={newAddr.state} onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
-                        </label>
-                      </div>
-                      {addressError && <p className="text-micro text-red-500">{addressError}</p>}
-                      <button onClick={() => {
-                        if (!newAddr.label || !newAddr.name || !newAddr.line1 || !newAddr.city || !newAddr.state || !newAddr.pincode) {
-                          setAddressError("Please fill in all required fields");
-                          return;
-                        }
-                        if (newAddr.pincode.length !== 6) {
-                          setAddressError("Pincode must be 6 digits");
-                          return;
-                        }
-                        if (newAddr.phone && newAddr.phone.length !== 10) {
-                          setAddressError("Phone must be 10 digits");
-                          return;
-                        }
-                        setAddressError("");
-                        addAddress({ ...newAddr, isDefault: addresses.length === 0 });
-                        toast.success("Address saved!", `${newAddr.label} added successfully`);
-                        setNewAddr({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" });
+                    <AddressForm
+                      onSave={(v) => {
+                        addAddress({ ...v, isDefault: addresses.length === 0 });
+                        toast.success("Address saved!", `${v.label} added successfully`);
                         setShowAddAddress(false);
-                      }} className="w-full py-2 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all">
-                        Save Address
-                      </button>
-                    </div>
+                      }}
+                      onCancel={() => setShowAddAddress(false)}
+                    />
                   ) : (
                     <button onClick={() => setShowAddAddress(true)} className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#DDD6EE] text-caption font-semibold text-[#9B8CB5] hover:border-[#2D1B69] hover:text-[#2D1B69] transition-all">
                       <Plus className="h-4 w-4" /> Add New Address

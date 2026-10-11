@@ -4,14 +4,18 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import {
-  User, Shield, Bell, Key, Eye, EyeOff, CheckCircle, Loader2,
+  User, Shield, Bell, Key, Eye, EyeOff, CheckCircle, Loader2, MapPin, Plus, Trash2,
 } from "lucide-react";
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
+import { useAddressStore } from "@/lib/address-store";
+import { AddressForm } from "@/components/address-form";
+import { useToast } from "@foundation/ui";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: User },
+  { id: "addresses", label: "Addresses", icon: MapPin },
   { id: "sessions", label: "Sessions", icon: Key },
   { id: "security", label: "Security", icon: Shield },
   { id: "notifications", label: "Notifications", icon: Bell },
@@ -102,6 +106,95 @@ function OverviewTab() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function AddressesTab() {
+  const toast = useToast();
+  const {
+    addresses, selectedAddressId, selectAddress, addAddress,
+    deleteAddress, setDefault,
+  } = useAddressStore();
+  const [showForm, setShowForm] = useState(false);
+
+  return (
+    <div>
+      <h3 className="text-body-md font-bold text-[#150726]">Saved Addresses</h3>
+      <p className="text-micro text-[#9B8CB5] mt-0.5">Used at checkout for fast delivery.</p>
+      <div className="mt-4 space-y-2">
+        {addresses.length === 0 && !showForm && (
+          <p className="text-body-sm text-[#9B8CB5]">No addresses yet — add your site or home below.</p>
+        )}
+        {addresses.map((addr) => (
+          <div
+            key={addr.id}
+            className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-all ${
+              selectedAddressId === addr.id ? "border-[#2D1B69] bg-[#F0ECF9]" : "border-[#DDD6EE] bg-white"
+            }`}
+          >
+            <button onClick={() => selectAddress(addr.id)} className="flex-1 text-left flex items-start gap-3">
+              <div className={`mt-0.5 h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                selectedAddressId === addr.id ? "border-[#2D1B69]" : "border-[#DDD6EE]"
+              }`}>
+                {selectedAddressId === addr.id && <div className="h-2 w-2 rounded-full bg-[#2D1B69]" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-caption font-bold text-[#150726]">{addr.label}</span>
+                  <span className="px-1.5 py-0.5 rounded text-tiny font-bold bg-[#F0ECF9] text-[#2D1B69] uppercase">{addr.type}</span>
+                  {addr.isDefault && <span className="px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-tiny font-bold text-[#7CB518]">DEFAULT</span>}
+                </div>
+                <p className="text-caption text-[#150726] mt-0.5">{addr.name} · {addr.phone}</p>
+                <p className="text-micro text-[#9B8CB5]">{addr.line1}, {addr.city}, {addr.state} - {addr.pincode}</p>
+              </div>
+            </button>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {!addr.isDefault && (
+                <button
+                  onClick={() => {
+                    setDefault(addr.id);
+                    toast.success("Default updated", `${addr.label} is now default.`);
+                  }}
+                  className="px-2 py-1 rounded-lg text-tiny font-bold text-[#7CB518] hover:bg-[#F0F9E8]"
+                >
+                  Default
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  deleteAddress(addr.id);
+                  toast.success("Address removed", addr.label);
+                }}
+                className="p-1.5 rounded-lg text-[#9B8CB5] hover:text-red-500 hover:bg-red-50"
+                title="Delete"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showForm ? (
+        <div className="mt-3">
+          <AddressForm
+            onSave={(v) => {
+              addAddress({ ...v, isDefault: addresses.length === 0 });
+              toast.success("Address saved!", `${v.label} added successfully`);
+              setShowForm(false);
+            }}
+            onCancel={() => setShowForm(false)}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="mt-3 w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#DDD6EE] text-caption font-semibold text-[#9B8CB5] hover:border-[#2D1B69] hover:text-[#2D1B69] transition-all"
+        >
+          <Plus className="h-4 w-4" /> Add New Address
+        </button>
+      )}
     </div>
   );
 }
@@ -486,6 +579,7 @@ export default function ProfilePage() {
         <div className="flex-1">
           <div className="rounded-2xl border border-[#DDD6EE] bg-white p-6">
             {activeTab === "overview" && <OverviewTab />}
+            {activeTab === "addresses" && <AddressesTab />}
             {activeTab === "sessions" && <SessionsTab />}
             {activeTab === "security" && <SecurityTab />}
             {activeTab === "notifications" && <NotificationsPreferencesTab />}
