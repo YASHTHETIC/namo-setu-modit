@@ -37,6 +37,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { categories, type Product } from "@/lib/product-data";
 import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
 import { useDisplayProducts } from "@/lib/pricing";
+import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { ComparisonBar } from "@/components/comparison-bar";
@@ -69,6 +70,7 @@ function CategoryTileIcon({ slug, className }: { slug: string; className?: strin
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchHint = useRotatingText(SEARCH_HINTS);
   const router = useRouter();
   const isHome = pathname === "/";
   const isAuth = pathname.startsWith("/auth");
@@ -289,7 +291,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       setSearchFocused(false);
                     }
                   }}
-                  placeholder="Search cement, steel, tiles, paint…"
+                  placeholder={searchHint}
                   aria-label="Search products"
                   aria-expanded={showSearch}
                   role="combobox"
@@ -591,7 +593,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); else if (e.key === "Escape") { setShowMobileSearch(false); setSearchQuery(""); } }}
-                  placeholder="Search cement, paint, lighting..."
+                  placeholder={searchHint}
                   autoFocus
                   className="w-full h-12 rounded-xl bg-white/10 border border-white/10 pl-10 pr-10 text-body-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#7CB518] transition-colors"
                 />

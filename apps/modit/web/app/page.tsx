@@ -21,6 +21,7 @@ import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
 import { onlyDigits } from "@/lib/utils";
+import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
@@ -101,6 +102,7 @@ export default function ModitHomePage() {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setPincode: setContextPincode } = usePincode();
+  const searchHint = useRotatingText(SEARCH_HINTS);
   const [pincode, setPincodeLocal] = useState("201301");
   const setPincode = useCallback((val: string) => {
     setPincodeLocal(val);
@@ -228,7 +230,7 @@ export default function ModitHomePage() {
             aria-label="Search products"
           >
             <Search className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">Search cement, paint, lighting…</span>
+            <span className="truncate">{searchHint}</span>
           </button>
         </div>
       </header>
@@ -711,7 +713,7 @@ export default function ModitHomePage() {
                         setHighlightIdx(-1);
                       }
                     }}
-                    placeholder="Search cement, paint, lighting..."
+                    placeholder={searchHint}
                     className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-10 py-3.5 text-body-lg text-white placeholder-white/40 focus:outline-none focus:border-[#7CB518]/50 focus:bg-white/15 transition-all"
                   />
                   {searchQuery && (
