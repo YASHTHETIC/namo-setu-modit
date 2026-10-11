@@ -15,3 +15,14 @@ export function formatINR(value: number | null | undefined): string {
   if (!Number.isFinite(n)) return "₹0";
   return `₹${Math.round(n).toLocaleString("en-IN")}`;
 }
+
+/**
+ * Paise-exact formatter for server totals (GST/grand can carry paise).
+ * Same output as toLocaleString("en-IN", {minimumFractionDigits: 2,
+ * maximumFractionDigits: 2}) — one name instead of the options object.
+ */
+export function formatINR2(value: number | null | undefined): string {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "₹0.00";
+  return `₹${n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}

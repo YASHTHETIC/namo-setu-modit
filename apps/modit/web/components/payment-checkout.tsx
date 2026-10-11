@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { placeOrder, checkServerUp, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
+import { formatINR2 } from "@/lib/utils";
 import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2 } from "lucide-react";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 
@@ -134,7 +135,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
             toast.success("Payment successful!", `Order ${result.orderId} confirmed`);
             notifyOrderEvent({
               title: "Payment successful",
-              body: `Order ${result.orderId} confirmed — ₹${due.toLocaleString("en-IN")} paid online. Receipt and GST invoice available on the order page.`,
+              body: `Order ${result.orderId} confirmed — ${formatINR2(due)} paid online. Receipt and GST invoice available on the order page.`,
               type: "payment",
               orderId: result.orderId,
             });
@@ -189,7 +190,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — pay on delivery`);
         notifyOrderEvent({
           title: "Order placed (COD)",
-          body: `Order ${result.orderId} confirmed — ₹${due.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} payable on delivery.`,
+          body: `Order ${result.orderId} confirmed — ${formatINR2(due)} payable on delivery.`,
           type: "order",
           orderId: result.orderId,
         });
@@ -223,7 +224,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — UPI payment pending`);
         notifyOrderEvent({
           title: "Order placed (UPI)",
-          body: `Order ${result.orderId} confirmed — complete your UPI payment of ₹${due.toLocaleString("en-IN")} to ${upiId}.`,
+          body: `Order ${result.orderId} confirmed — complete your UPI payment of ${formatINR2(due)} to ${upiId}.`,
           type: "order",
           orderId: result.orderId,
         });
@@ -250,11 +251,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           : handleCredit;
   const placeDisabled =
     processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")));
-  const inr2 = { minimumFractionDigits: 2, maximumFractionDigits: 2 } as const;
   const placeLabel =
     paymentMethod === "upi" || paymentMethod === "razorpay"
-      ? `Pay ₹${total.toLocaleString("en-IN", inr2)} securely`
-      : `Place Order • ₹${total.toLocaleString("en-IN", inr2)}`;
+      ? `Pay ${formatINR2(total)} securely`
+      : `Place Order • ${formatINR2(total)}`;
 
   return (
     <div className="space-y-4">
@@ -370,7 +370,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       <div className="lg:hidden fixed bottom-[76px] left-4 right-4 z-40 rounded-2xl border border-white/10 bg-[#150726]/95 backdrop-blur-md px-4 py-2.5 shadow-xl flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-tiny text-white/50">Total payable</p>
-          <p className="text-body-lg font-extrabold text-white tabular-nums">₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          <p className="text-body-lg font-extrabold text-white tabular-nums">{formatINR2(total)}</p>
         </div>
         <button
           onClick={placeHandler}

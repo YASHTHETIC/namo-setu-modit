@@ -4,16 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { AlertTriangle } from "lucide-react";
 import { products, type Product } from "@/lib/product-data";
-import { useCartStore } from "@/lib/cart-store";
-import { useRequireLogin } from "@/lib/use-auth";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 
 interface OutOfStockSubstitutesProps {
   product: Product;
 }
 
 export function OutOfStockSubstitutes({ product }: OutOfStockSubstitutesProps) {
-  const addItem = useCartStore((s) => s.addItem);
-  const requireLogin = useRequireLogin();
+  const tryAdd = useAddToCart();
   if (product.inStock) return null;
 
   const substitutes = (product.substitutes || [])
@@ -56,7 +54,7 @@ export function OutOfStockSubstitutes({ product }: OutOfStockSubstitutesProps) {
               <p className="text-body-md font-extrabold text-[#2D1B69]">₹{sub.price.toLocaleString("en-IN")}</p>
             </div>
             <button
-              onClick={() => { if (requireLogin()) addItem(sub); }}
+              onClick={() => { tryAdd(sub); }}
               className="rounded-lg bg-white px-4 py-1.5 text-caption font-black text-[#5A8010] shadow-md border border-[#5A8010]/40 active:scale-95 transition-transform flex-shrink-0"
             >
               ADD

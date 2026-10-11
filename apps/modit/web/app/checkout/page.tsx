@@ -11,6 +11,7 @@ import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore, type Address } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
+import { formatINR2 } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
@@ -151,7 +152,7 @@ export default function CheckoutPage() {
           <p className="text-body-sm text-[#9B8CB5] mt-2">Your order <span className="font-bold text-[#2D1B69]">{orderId}</span> has been placed successfully.</p>
           {serverTotal !== null && (
             <p className="mt-2 inline-block rounded-full bg-[#F0F9E8] px-4 py-1.5 text-body-sm font-bold text-[#2D1B69]">
-              Amount due: ₹{serverTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (server-verified)
+              Amount due: {formatINR2(serverTotal)} (server-verified)
             </p>
           )}
           <div className="mt-6 flex items-center justify-center gap-2 text-caption text-[#7CB518] font-semibold">
@@ -549,7 +550,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST</span>
-                    <span className="text-[#150726]">₹{gst.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="text-[#150726]">{formatINR2(gst)}</span>
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Shipping</span>
@@ -571,7 +572,7 @@ export default function CheckoutPage() {
                   )}
                   <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
                     <span className="text-body-lg font-bold text-[#150726]">Total</span>
-                    <span className="text-title-md font-extrabold text-[#2D1B69]">₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="text-title-md font-extrabold text-[#2D1B69]">{formatINR2(total)}</span>
                   </div>
                 </div>
               </div>

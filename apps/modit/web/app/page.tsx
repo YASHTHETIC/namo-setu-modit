@@ -25,6 +25,7 @@ import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { FxBackdrop } from "@/components/fx";
+import { Reveal } from "@/components/reveal";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 
@@ -61,24 +62,6 @@ function useCountUp(target: number, duration = 1200, start = false) {
     return () => cancelAnimationFrame(raf);
   }, [start, target, duration]);
   return val;
-}
-
-/* ── Reveal section wrapper ──────────────────────────────────────── */
-function RevealSection({ children, delay = 0, className = "" }: {
-  children: React.ReactNode; delay?: number; className?: string;
-}) {
-  const { ref, visible } = useScrollReveal(0.1);
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${className} ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      }`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
 }
 
 /* ── Ripple button ───────────────────────────────────────────────── */
@@ -295,7 +278,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
-      <RevealSection>
+      <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
           <FxBackdrop tone="dark" />
           {/* Animated mesh gradient overlay (desktop only — saves mobile GPU) */}
@@ -333,10 +316,10 @@ export default function ModitHomePage() {
             </Link>
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ ASSURED STRIP ═══ */}
-      <RevealSection delay={100}>
+      <Reveal delay={100}>
         <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative group">
           <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
           <div className="fx-orb fx-orb-a" style={{ width: 180, height: 180, top: -70, right: -40, background: "rgba(233,30,99,0.20)" }} />
@@ -368,10 +351,10 @@ export default function ModitHomePage() {
             </div>
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
-      <RevealSection delay={150}>
+      <Reveal delay={150}>
         <div className="mt-5">
           <div className="section-header">
             <h2>Shop by Category</h2>
@@ -412,62 +395,62 @@ export default function ModitHomePage() {
             ))}
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
 
       {/* ═══ PRODUCT RAILS ═══ */}
       <div className="max-w-[1440px] mx-auto pb-8">
-        <RevealSection delay={100}>
+        <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
             products={discountedProducts}
             seeAllHref="/products?sort=discount"
             accentColor="pink"
           />
-        </RevealSection>
-        <RevealSection delay={150}>
+        </Reveal>
+        <Reveal delay={150}>
           <ProductRail
             title="Popular Right Now"
             products={popularProducts}
             seeAllHref="/products?sort=rating"
           />
-        </RevealSection>
-        <RevealSection delay={150}>
+        </Reveal>
+        <Reveal delay={150}>
           <ProductRail
             title="Top Picks in Cement"
             products={cementProducts}
             seeAllHref="/products?category=cement"
           />
-        </RevealSection>
-        <RevealSection delay={200}>
+        </Reveal>
+        <Reveal delay={200}>
           <ProductRail
             title="Lighting Essentials"
             products={lightingProducts}
             seeAllHref="/products?category=lighting"
             accentColor="cyan"
           />
-        </RevealSection>
-        <RevealSection delay={250}>
+        </Reveal>
+        <Reveal delay={250}>
           <ProductRail
             title="Tiling & Waterproofing"
             products={tilingProducts}
             seeAllHref="/products?category=tiling"
           />
-        </RevealSection>
-        <RevealSection delay={300}>
+        </Reveal>
+        <Reveal delay={300}>
           <ProductRail
             title="Painting Supplies"
             products={paintingProducts.slice(0, 10)}
             seeAllHref="/products?category=painting"
             accentColor="pink"
           />
-        </RevealSection>
+        </Reveal>
       </div>
 
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
-      <RevealSection>
+      <Reveal>
         <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
           <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
           <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
@@ -491,10 +474,10 @@ export default function ModitHomePage() {
             </div>
           ))}
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ BRAND STRIP ═══ */}
-      <RevealSection>
+      <Reveal>
         <div className="market-container mb-6 px-4 pb-2 sm:px-6">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
@@ -509,7 +492,7 @@ export default function ModitHomePage() {
             ))}
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ RECENTLY VIEWED ═══ */}
       <div className="market-container px-4 py-6 sm:px-6">
@@ -517,7 +500,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
-      <RevealSection>
+      <Reveal>
         <div className="market-container px-4 pt-2 pb-6 sm:px-6">
           <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
@@ -540,10 +523,10 @@ export default function ModitHomePage() {
             </Link>
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ BULK / BUSINESS CTA ═══ */}
-      <RevealSection>
+      <Reveal>
         <div className="market-container px-4 pb-6 sm:px-6">
           <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1">
@@ -558,7 +541,7 @@ export default function ModitHomePage() {
             </Link>
           </div>
         </div>
-      </RevealSection>
+      </Reveal>
 
       {/* ═══ STICKY CART BAR ═══ */}
       <StickyCartBar itemCount={cartCount} total={cartTotal} />

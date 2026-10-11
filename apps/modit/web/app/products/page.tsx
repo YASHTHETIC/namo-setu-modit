@@ -801,7 +801,7 @@ function ProductsContent() {
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { MobileProductCard } from "@/components/mobile-product-card";
-import { useRequireLogin } from "@/lib/use-auth";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 import { usePincode } from "@/lib/pincode-context";
 import { isServiceablePin } from "@/lib/serviceability";
 
@@ -812,7 +812,7 @@ function useAreaBlocked() {
 
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
-  const requireLogin = useRequireLogin();
+  const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
@@ -826,8 +826,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
     e.preventDefault();
     e.stopPropagation();
     if (blocked) return;
-    if (!requireLogin()) return;
-    onAddToCart(product);
+    if (!tryAdd(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -1080,7 +1079,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
 function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
-  const requireLogin = useRequireLogin();
+  const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optLabel = optionsLabel(product);
@@ -1094,8 +1093,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
     e.preventDefault();
     e.stopPropagation();
     if (blocked) return;
-    if (!requireLogin()) return;
-    onAddToCart(product);
+    if (!tryAdd(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };

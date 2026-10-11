@@ -7,10 +7,10 @@ import { Star, Clock, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { usePincode } from "@/lib/pincode-context";
-import { useRequireLogin } from "@/lib/use-auth";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { DoorBadge, ReplaceBadge } from "@/components/fx";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 
 /** Parse "50kg" / "5 kg" / "20 L" into { qty, label } for per-unit pricing. */
 function parseUnit(unit: string, fallback: string): { qty: number; label: string } | null {
@@ -35,7 +35,6 @@ function perUnitText(price: number, unit: string, unitCode: string): string | nu
  * delivery time + stock left.
  */
 export function MobileProductCard({ product }: { product: DisplayProduct }) {
-  const addItem = useCartStore((s) => s.addItem);
   const stepDown = useCartStore((s) => s.stepDown);
   const items = useCartStore((s) => s.items);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
@@ -44,7 +43,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
 
   const wishlisted = isWishlisted(product.id);
   const optLabel = optionsLabel(product);
-  const requireLogin = useRequireLogin();
+  const tryAdd = useAddToCart();
   const { pincode: myPin, serviceable: myAreaOk } = usePincode();
   const blocked = Boolean(myPin) && !myAreaOk;
 
@@ -95,7 +94,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </span>
           {qty === 0 ? (
             <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
               disabled={blocked}
               className="btn-shine rounded-lg bg-white px-5 py-1.5 text-caption font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
             >
@@ -112,7 +111,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
               </button>
               <span className="px-1 text-caption font-black tabular-nums min-w-[18px] text-center">{qty}</span>
               <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked && requireLogin()) addItem(product); }}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
                 className="px-2.5 py-1.5 text-body-md font-black leading-none"
                 aria-label="Increase"
               >

@@ -6,9 +6,9 @@ import Link from "next/link";
 import { Zap, Clock, ArrowRight, Flame } from "lucide-react";
 import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useDisplayProducts } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
-import { useRequireLogin } from "@/lib/use-auth";
 
 function Countdown({ target }: { target: number }) {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -33,12 +33,11 @@ function Countdown({ target }: { target: number }) {
 }
 
 export function FlashDeals() {
-  const addItem = useCartStore((s) => s.addItem);
+  const tryAdd = useAddToCart();
   const items = useCartStore((s) => s.items);
   const { data: allProducts = [] } = useProducts({});
   const allProductsList = useDisplayProducts(allProducts as Product[]);
   const [optionsFor, setOptionsFor] = useState<(typeof allProductsList)[number] | null>(null);
-  const requireLogin = useRequireLogin();
 
   const flashProducts = allProductsList
     .filter((p) => p.discount >= 20 && p.inStock)
@@ -99,7 +98,7 @@ export function FlashDeals() {
                   </div>
                   <div className="mt-2 min-h-[70px]">
                     <button
-                      onClick={() => { if (requireLogin()) addItem(product); }}
+                      onClick={() => { tryAdd(product); }}
                       className={`w-full py-1.5 rounded-lg text-tiny font-bold transition-all ${
                         inCart
                           ? "bg-[#7CB518]/20 text-[#7CB518]"

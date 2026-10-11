@@ -14,6 +14,7 @@ import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { useRequireLogin } from "@/lib/use-auth";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 
 interface ProductCardProps {
   product: Product;
@@ -40,6 +41,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const [justAdded, setJustAdded] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const requireLogin = useRequireLogin();
+  const tryAdd = useAddToCart();
   const btnRef = useRef<HTMLButtonElement>(null);
   const optLabel = optionsLabel(live);
 
@@ -61,8 +63,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!requireLogin()) return;
-    addItem(live, 1, selectedVariantId ?? undefined);
+    if (!tryAdd(live, 1, selectedVariantId ?? undefined)) return;
     setFlashing(true);
     setJustAdded(true);
     setTimeout(() => setFlashing(false), 400);

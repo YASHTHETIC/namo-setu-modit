@@ -36,7 +36,7 @@ import { Reveal } from "@/components/reveal";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
-import { useCartStore } from "@/lib/cart-store";
+import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -64,7 +64,7 @@ export default function ProductDetailPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [rawProduct, adminOverrides, adminSales, adminSuppliers]
   );
-  const addItem = useCartStore((s) => s.addItem);
+  const tryAdd = useAddToCart();
   const addRecentlyViewed = useRecentlyViewed((s) => s.addProduct);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -115,18 +115,16 @@ export default function ProductDetailPage({
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
-    if (!requireLogin()) return;
-    addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
+    if (!tryAdd(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 3000);
-  }, [product, quantity, addItem, selectedVariant, selectedShade, requireLogin]);
+  }, [product, quantity, tryAdd, selectedVariant, selectedShade]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
-    if (!requireLogin()) return;
-    addItem(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined);
+    if (!tryAdd(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined)) return;
     window.location.href = "/checkout";
-  }, [product, quantity, addItem, selectedVariant, selectedShade, requireLogin]);
+  }, [product, quantity, tryAdd, selectedVariant, selectedShade]);
 
   const handleShare = useCallback(async () => {
     if (!product) return;
