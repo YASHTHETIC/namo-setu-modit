@@ -83,13 +83,13 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         });
         onPaymentComplete(result.orderId, due);
       } else {
+        // Single error surface: the inline box below. (No toast here —
+        // one tap must never stack two "Order failed" popups.)
         setError(result.error || "Failed to place order. Please try again.");
-        toast.error("Order failed", result.error || "Please try again");
         setProcessing(false);
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
-      toast.error("Something went wrong", "Please try again");
       setProcessing(false);
     }
   };
@@ -142,7 +142,6 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
             onPaymentComplete(result.orderId!, due);
           } catch {
             setError("Payment verification failed. If money was debited it will auto-refund. Your order is saved — retry from Orders.");
-            toast.error("Verification failed", "Order saved. Please retry payment from Orders.");
             setProcessing(false);
           }
         },
@@ -165,7 +164,6 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         const rzpInstance = new window.Razorpay(options);
         rzpInstance.on("payment.failed", function () {
           setError("Payment failed. Your order is saved — retry payment from Orders. Nothing was charged.");
-          toast.error("Payment failed", "Order saved. Please try again from Orders.");
           setProcessing(false);
         });
         rzpInstance.open();
@@ -197,12 +195,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         onPaymentComplete(result.orderId, due);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
-        toast.error("Order failed", result.error || "Please try again");
         setProcessing(false);
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
-      toast.error("Something went wrong", "Please try again");
       setProcessing(false);
     }
   };
@@ -231,12 +227,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         onPaymentComplete(result.orderId, due);
       } else {
         setError(result.error || "Failed to place order. Please try again.");
-        toast.error("Order failed", result.error || "Please try again");
         setProcessing(false);
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
-      toast.error("Something went wrong", "Please try again");
       setProcessing(false);
     }
   };

@@ -1,6 +1,10 @@
 import { products as staticProducts, categories as staticCategories, searchProducts as staticSearch, getProductById as staticGetById } from "./product-data";
+import { env } from "./env";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+// Single source of truth for the API base (production-first default lives
+// in ./env). Never read process.env directly here — Vercel builds without
+// the variable set would silently talk to nobody ("Server not configured").
+const API_BASE = env.NEXT_PUBLIC_API_BASE_URL;
 
 /** Cheap connectivity probe: is the API itself reachable right now? */
 export async function checkServerUp(timeoutMs = 8000): Promise<boolean> {
