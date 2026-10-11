@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   Bath,
   Bell,
@@ -182,14 +181,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <ChevronDown className="h-4 w-4" />
             </button>
 
-            <AnimatePresence>
-              {showMegaMenu && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  className="absolute left-0 top-full z-50 mt-3 w-[760px] overflow-hidden rounded-[28px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)]"
-                >
+            {showMegaMenu && (
+              <div className="absolute left-0 top-full z-50 mt-3 w-[760px] overflow-hidden rounded-[28px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down">
                   <div className="grid grid-cols-[1.1fr_0.9fr]">
                     <div className="border-r border-[var(--border-subtle)] p-4">
                       <div className="mb-3 flex items-center justify-between">
@@ -251,9 +244,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </div>
 
           <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
@@ -308,15 +300,11 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 </button>
               </div>
 
-              <AnimatePresence>
-                {(showSearch || (searchFocused && searchResults.length === 0)) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    onMouseDown={(e) => e.preventDefault()}
-                    className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)]"
-                  >
+              {(showSearch || (searchFocused && searchResults.length === 0)) && (
+                <div
+                  onMouseDown={(e) => e.preventDefault()}
+                  className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down"
+                >
                     {searchQuery.trim() === "" ? (
                       <div className="p-4">
                         {recentTerms.length > 0 && (
@@ -400,9 +388,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         </span>
                       </button>
                     )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+              )}
             </div>
           </div>
 
@@ -437,14 +424,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 Account
                 <ChevronDown className="h-4 w-4" />
               </button>
-              <AnimatePresence>
-                {showUserMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)]"
-                  >
+              {showUserMenu && (
+                <div className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down"
+                >
                     <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-subtle)] px-4 py-4">
                       <p className="text-sm font-semibold text-[var(--text)]">Welcome back</p>
                       <p className="text-xs text-[var(--text-muted)]">Access orders, invoices, and saved projects</p>
@@ -467,9 +449,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                         <Bell className="h-4 w-4" /> Notifications
                       </Link>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+              )}
             </div>
           </div>
 
@@ -531,17 +512,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
       <SaleBanner />
 
-      <AnimatePresence>
-        {showMobileMenu && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-modal lg:hidden">
-            <button type="button" className="absolute inset-0 bg-[rgba(20,23,31,0.42)]" onClick={() => setShowMobileMenu(false)} aria-label="Close navigation" />
-            <motion.aside
-              initial={{ x: -320 }}
-              animate={{ x: 0 }}
-              exit={{ x: -320 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              className="relative flex h-full w-[86vw] max-w-sm flex-col bg-white shadow-[var(--shadow-xl)]"
-            >
+      {showMobileMenu && (
+        <div className="fixed inset-0 z-modal lg:hidden animate-fade-in">
+          <button type="button" className="absolute inset-0 bg-[rgba(20,23,31,0.42)]" onClick={() => setShowMobileMenu(false)} aria-label="Close navigation" />
+          <aside className="relative flex h-full w-[86vw] max-w-sm flex-col bg-white shadow-[var(--shadow-xl)] animate-drawer-in">
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-4">
                 <div className="flex items-center gap-3">
                   <ModitLogo className="h-[38px] w-auto" />
@@ -577,14 +551,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
               </div>
-            </motion.aside>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </aside>
+        </div>
+      )}
 
-      <AnimatePresence>
-        {(showSearch || showMobileSearch) && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-modal flex flex-col lg:hidden" style={{ background: "rgba(21,7,38,0.97)" }}>
+      {(showSearch || showMobileSearch) && (
+        <div className="fixed inset-0 z-modal flex flex-col lg:hidden animate-fade-in" style={{ background: "rgba(21,7,38,0.97)" }}>
             <div className="flex items-center gap-3 px-4 pt-4 pb-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -676,9 +648,8 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
                 </div>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
 
       <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-20">{children}</main>
 

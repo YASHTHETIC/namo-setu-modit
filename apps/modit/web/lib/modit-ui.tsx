@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -21,15 +20,15 @@ export function Panel({
 }) {
   if (hover) {
     return (
-      <motion.div
-        whileHover={{ y: -2, boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }}
+      <div
         className={cn(
           "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-sm)]",
+          "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
           className
         )}
       >
         {children}
-      </motion.div>
+      </div>
     );
   }
 
@@ -82,12 +81,9 @@ export function MetricTile({
   }, [value]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+    <div
       className={cn(
-        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)] animate-fade-up",
         className
       )}
     >
@@ -120,7 +116,7 @@ export function MetricTile({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -213,13 +209,12 @@ export function Button({
   disabled?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <motion.button
-      whileHover={disabled ? undefined : { scale: 1.02 }}
-      whileTap={disabled ? undefined : { scale: 0.98 }}
+    <button
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition-all duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed",
+        "enabled:hover:scale-[1.02] enabled:active:scale-[0.98]",
         {
           "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm": variant === "primary",
           "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)]": variant === "secondary",
@@ -237,7 +232,7 @@ export function Button({
       {...(props as any)}
     >
       {children}
-    </motion.button>
+    </button>
   );
 }
 
@@ -259,7 +254,7 @@ export function LinkButton({
   className?: string;
 }) {
   return (
-    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex">
+    <div className="inline-flex transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
       <Link
         href={href}
         className={cn(
@@ -280,7 +275,7 @@ export function LinkButton({
       >
         {children}
       </Link>
-    </motion.div>
+    </div>
   );
 }
 
@@ -434,11 +429,7 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center justify-center py-16 text-center"
-    >
+    <div className="flex flex-col items-center justify-center py-16 text-center animate-scale-in">
       {icon && (
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--brand-50)] text-[var(--brand)]">
           {icon}
@@ -447,7 +438,7 @@ export function EmptyState({
       <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
       {description && <p className="mt-2 max-w-sm text-sm text-[var(--text-muted)]">{description}</p>}
       {action && <div className="mt-6">{action}</div>}
-    </motion.div>
+    </div>
   );
 }
 
@@ -458,10 +449,8 @@ export function EmptyState({
 export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   return (
     <div className="flex items-center justify-center py-12">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className={cn("rounded-full border-2 border-[var(--border)] border-t-[var(--brand)]", {
+      <div
+        className={cn("animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--brand)]", {
           "h-5 w-5": size === "sm",
           "h-8 w-8": size === "md",
           "h-12 w-12": size === "lg",

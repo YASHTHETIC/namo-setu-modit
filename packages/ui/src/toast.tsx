@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useCallback, useState, useEffect } from "react";
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export type ToastType = "success" | "error" | "warning" | "info" | "loading";
 
@@ -109,11 +108,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: string) => void }) {
   return (
     <div className="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none">
-      <AnimatePresence mode="popLayout">
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
-        ))}
-      </AnimatePresence>
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
+      ))}
     </div>
   );
 }
@@ -136,12 +133,8 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 100, scale: 0.9 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 100, scale: 0.9 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`pointer-events-auto max-w-sm w-full rounded-xl border ${bgColors[toast.type]} shadow-lg p-4`}
+    <div
+      className={`pointer-events-auto max-w-sm w-full rounded-xl border ${bgColors[toast.type]} shadow-lg p-4 animate-toast-in`}
     >
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">{icons[toast.type]}</div>
@@ -168,6 +161,6 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
