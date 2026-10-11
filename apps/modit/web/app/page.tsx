@@ -26,6 +26,7 @@ import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
+import { FxBackdrop } from "@/components/fx";
 import { Reveal } from "@/components/reveal";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
@@ -196,22 +197,22 @@ export default function ModitHomePage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
-      {/* ═══ HEADER — Blinkit-clean white, hides on scroll ═══ */}
-      <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#DDD6EE] transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
+      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-          <RippleButton className="p-2 text-[#6B5B83] hover:text-[#2D1B69] transition-colors rounded-xl hover:bg-[#F0ECF9]" onClick={() => setShowMenu(true)}>
+          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
           <div className="flex-1 flex justify-center">
             <Link href="/" className="transition-all hover:scale-105 active:scale-95">
-              <ModitLogo className="h-[40px] w-auto" />
+              <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            <RippleButton className="p-2 text-[#6B5B83] hover:text-[#2D1B69] transition-colors rounded-xl hover:bg-[#F0ECF9]" onClick={() => setShowSearch(true)}>
+            <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowSearch(true)}>
               <Search className="h-5 w-5" />
             </RippleButton>
-            <Link href="/cart" className="relative p-2 text-[#6B5B83] hover:text-[#2D1B69] transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-[#F0ECF9]">
+            <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-tiny font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
@@ -225,7 +226,7 @@ export default function ModitHomePage() {
         <div className="px-4 pb-3">
           <button
             onClick={() => setShowSearch(true)}
-            className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-[#F0ECF9] border border-[#DDD6EE] px-4 text-body-md text-[#9B8CB5] transition-colors hover:border-[#2D1B69]"
+            className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
             aria-label="Search products"
           >
             <Search className="h-4 w-4 flex-shrink-0" />
@@ -234,29 +235,29 @@ export default function ModitHomePage() {
         </div>
       </header>
 
-      {/* ═══ DELIVERY BAR — clean white, Blinkit-style ═══ */}
-      <div className="bg-white border-b border-[#DDD6EE] px-4 py-2.5">
+      {/* ═══ DELIVERY BAR — Pulsing bolt ═══ */}
+      <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-[#F0F9E8] border border-[#7CB518]/40 rounded-xl px-3 py-1.5">
+          <div className="flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/40 rounded-xl px-3 py-1.5 shadow-md shadow-green-500/20">
             <div className="relative">
-              <Zap className="h-4 w-4 text-[#5A8010] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
+              <Zap className="h-4 w-4 text-[#7CB518] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
               {deliveryPulse && (
                 <span className="absolute inset-0 rounded-full border border-[#7CB518]/40 animate-ping" />
               )}
             </div>
-            <span className="text-body-lg font-black text-[#5A8010]">60</span>
-            <span className="text-tiny font-bold text-[#5A8010] uppercase leading-tight">Mins</span>
+            <span className="text-body-lg font-black text-[#7CB518]">60</span>
+            <span className="text-tiny font-bold text-[#7CB518] uppercase leading-tight">Mins</span>
           </div>
           <button
             onClick={() => setShowPincodeModal(true)}
-            className="flex items-center gap-1.5 text-[#150726] hover:text-[#2D1B69] transition-colors group"
+            className="flex items-center gap-1.5 text-white hover:text-white/90 transition-colors group"
           >
-            <MapPin className="h-3.5 w-3.5 text-[#9B8CB5] group-hover:text-[#7CB518] transition-colors" />
+            <MapPin className="h-3.5 w-3.5 text-white/50 group-hover:text-[#7CB518] transition-colors" />
             <span className="text-caption font-semibold">Deliver To</span>
-            <ChevronDown className="h-3.5 w-3.5 text-[#9B8CB5] group-hover:rotate-180 transition-transform duration-300" />
+            <ChevronDown className="h-3.5 w-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-300" />
           </button>
-          <span className="text-body-sm font-bold text-[#5A8010]">{pincode}</span>
-          <div className="ml-auto flex items-center gap-1.5 text-[#9B8CB5]">
+          <span className="text-body-sm font-bold text-[#7CB518]">{pincode}</span>
+          <div className="ml-auto flex items-center gap-1.5 text-white/40">
             <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
             <span className="text-tiny font-medium">Live</span>
           </div>
@@ -279,25 +280,33 @@ export default function ModitHomePage() {
         ))}
       </div>
 
-      {/* ═══ HERO BANNER — Blinkit-clean light, MODIT colors ═══ */}
+      {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <Reveal>
-        <div className="mt-4 rounded-2xl overflow-hidden relative group border border-[#DDD6EE] bg-gradient-to-br from-[#F0ECF9] via-white to-[#F0F9E8]">
+        <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
+          <FxBackdrop tone="dark" />
+          {/* Animated mesh gradient overlay (desktop only — saves mobile GPU) */}
+          <div className="absolute inset-0 opacity-30 hidden sm:block" style={{
+            background: "radial-gradient(circle at 20% 50%, rgba(124,181,24,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.2), transparent 50%)",
+            animation: "meshMove 8s ease-in-out infinite alternate",
+          }} />
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#7CB518]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+          <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#E91E63]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <div className="relative z-10 p-4 flex items-center justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2.5 py-1 rounded-full mb-2">
+              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-tiny font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h2 className="text-[#150726] text-title-md font-bold leading-tight">Materials On Door</h2>
-              <p className="text-[#6B5B83] text-caption mt-1">Construction materials delivered to your site</p>
+              <h2 className="text-white text-title-md font-bold leading-tight">Materials On Door</h2>
+              <p className="text-white/60 text-caption mt-1">Construction materials delivered to your site</p>
               <div className="flex items-center gap-2 mt-2">
-                <div className="flex items-center gap-1 bg-[#F0F9E8] border border-[#7CB518]/30 rounded-full px-2 py-0.5">
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-                  <span className="text-tiny font-semibold text-[#5A8010]">Live tracking</span>
+                  <span className="text-tiny font-semibold text-white/70">Live tracking</span>
                 </div>
-                <div className="flex items-center gap-1 bg-[#F0ECF9] border border-[#DDD6EE] rounded-full px-2 py-0.5">
-                  <Shield className="h-2.5 w-2.5 text-[#2D1B69]" />
-                  <span className="text-tiny font-semibold text-[#2D1B69]">Assured</span>
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
+                  <Shield className="h-2.5 w-2.5 text-[#00BCD4]" />
+                  <span className="text-tiny font-semibold text-white/70">Assured</span>
                 </div>
               </div>
             </div>
@@ -306,28 +315,32 @@ export default function ModitHomePage() {
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
-              <span className="text-tiny text-[#9B8CB5] font-medium">{products.length}+ products</span>
+              <span className="text-tiny text-white/40 font-medium">{products.length}+ products</span>
             </Link>
           </div>
         </div>
       </Reveal>
 
-      {/* ═══ ASSURED STRIP — clean white cards ═══ */}
+      {/* ═══ ASSURED STRIP ═══ */}
       <Reveal delay={100}>
-        <div className="mt-4 rounded-2xl overflow-hidden bg-white border border-[#DDD6EE] relative">
-          <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#F8CB46] to-[#2D1B69]" />
+        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative group">
+          <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
+          <div className="fx-orb fx-orb-a" style={{ width: 180, height: 180, top: -70, right: -40, background: "rgba(233,30,99,0.20)" }} />
+          <div className="fx-orb fx-orb-b" style={{ width: 200, height: 200, bottom: -90, left: -50, background: "rgba(124,181,24,0.20)" }} />
+          <div className="absolute -top-4 -right-2 w-20 h-32 bg-[#E91E63]/20 rotate-[25deg] rounded-full blur-xl group-hover:rotate-[35deg] transition-transform duration-500" />
+          <div className="absolute -bottom-4 -left-2 w-20 h-32 bg-[#7CB518]/20 rotate-[-25deg] rounded-full blur-xl group-hover:rotate-[-35deg] transition-transform duration-500" />
           <div className="p-4 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <h3 className="text-body-md font-bold text-[#150726]">Modit <span className="text-[#5A8010]">Assured</span></h3>
-              <div className="h-5 w-5 rounded-full bg-[#F0F9E8] border border-[#7CB518]/40 flex items-center justify-center">
-                <Shield className="h-3 w-3 text-[#5A8010]" />
+              <h3 className="text-body-md font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
+              <div className="assured-orb h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
+                <Shield className="h-3 w-3 text-[#7CB518]" />
               </div>
             </div>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { title: "7 Day\nReplacement", icon: Shield, color: "#E91E63" },
-                { title: "4 Hour\nResolution", icon: Clock, color: "#5A8010" },
-                { title: "100% Genuine\nGuarantee", icon: Shield, color: "#2D1B69" },
+                { title: "4 Hour\nResolution", icon: Clock, color: "#7CB518" },
+                { title: "100% Genuine\nGuarantee", icon: Shield, color: "#7CB518" },
                 { title: "Easy\nReturns", icon: Package, color: "#E91E63" },
               ].map((f, i) => (
                 <div key={f.title} className="assured-item text-center group/item cursor-pointer">
@@ -335,7 +348,7 @@ export default function ModitHomePage() {
                     style={{ background: `${f.color}15`, border: `2px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
                     <f.icon className="h-5 w-5" style={{ color: f.color }} />
                   </div>
-                  <p className="text-micro font-bold text-[#150726] leading-tight line-clamp-2 min-h-[28px]">{f.title}</p>
+                  <p className="text-micro font-bold text-white leading-tight line-clamp-2 min-h-[28px]">{f.title}</p>
                 </div>
               ))}
             </div>

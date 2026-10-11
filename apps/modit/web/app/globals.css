@@ -325,17 +325,19 @@ img { display: block; max-width: 100%; }
   left: 12px;
   right: 12px;
   z-index: 40;
-  background: #FFFFFF;
-  color: var(--text);
+  background: linear-gradient(135deg, #150726 0%, #1E1245 100%);
+  color: white;
   padding: 12px 12px 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   border-radius: 20px;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 32px rgba(45, 27, 105, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(21, 7, 38, 0.45);
   animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .sticky-cart-bar::before {
   content: '';
