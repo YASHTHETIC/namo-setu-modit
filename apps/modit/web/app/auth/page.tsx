@@ -35,6 +35,10 @@ function LoginForm() {
 
   const handleAuthSuccess = (data: { access_token: string }) => {
     setAccessToken(data.access_token);
+    // Cross-device cart: merge guest cart up, union server rows down.
+    try {
+      void import("@/lib/server-cart").then((m) => m.syncCartOnLogin());
+    } catch { /* offline — local cart stays */ }
     // Auto-fetch delivery location right after login (best effort)
     try {
       void fetchLivePincode().then((pin) => {

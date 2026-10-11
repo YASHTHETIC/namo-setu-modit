@@ -112,3 +112,34 @@ def test_seed_catalog_requires_staff(client):
     """One-click seeding is staff-only."""
     response = client.post("/api/v1/modit/admin/seed-catalog")
     assert response.status_code == 401
+
+
+def test_cart_endpoints_require_auth(client):
+    """Server cart is per-buyer: every route needs login."""
+    assert client.get("/api/v1/modit/cart/items").status_code == 401
+    assert client.post("/api/v1/modit/cart/items", json={"product_id": "x", "quantity": 1}).status_code == 401
+    assert client.patch("/api/v1/modit/cart/items/x", json={"quantity": 2}).status_code == 401
+    assert client.delete("/api/v1/modit/cart/items/x").status_code == 401
+    assert client.delete("/api/v1/modit/cart").status_code == 401
+    assert client.post("/api/v1/modit/cart/merge", json={"items": []}).status_code == 401
+
+
+def test_cart_variant_key():
+    from backend.app.api.v1.modit import _cart_variant_key
+
+    assert _cart_variant_key(None) == ""
+    assert _cart_variant_key("  ") == ""
+    assert _cart_variant_key("v-123") == "v-123"
+
+
+def test_cart_schemas_reject_bad_quantities():
+    import pytest
+    from pydantic import ValidationError
+
+    from backend.app.schemas.modit import CartItemUpsert, CartQuantityUpdate
+
+    with pytest.raises(ValidationError):
+        CartItemUpsert(product_id="p", quantity=0)
+    with pytest.raises(ValidationError):
+        CartQuantityUpdate(quantity=0)
+    assert CartItemUpsert(product_id="p", quantity=2).variant_key is None

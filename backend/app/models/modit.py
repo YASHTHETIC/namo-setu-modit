@@ -604,6 +604,27 @@ class OrderItem(BaseModel):
     product = relationship("Product", back_populates="order_items")
 
 
+class CartItem(BaseModel):
+    """Server-persisted buyer cart (Blinkit-style cross-device cart).
+
+    One row per buyer + product + variant. variant_key is "" when the
+    product has no variant (plain UNIQUE needs no NULL handling that way).
+    Guests keep using the local cart; logged-in carts sync here.
+    """
+
+    __tablename__ = "cart_items"
+    __table_args__ = (
+        Index("ix_cart_items_user", "user_id"),
+        UniqueConstraint("user_id", "product_id", "variant_key", name="uq_cart_items_user_product_variant"),
+    )
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    product_id: Mapped[str] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
+    variant_key: Mapped[str] = mapped_column(String(100), default="", nullable=False)
+    shade: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    quantity: Mapped[float] = mapped_column(Numeric(12, 3), nullable=False)
+
+
 class Invoice(BaseModel):
     __tablename__ = "invoices"
     __table_args__ = (Index("ix_invoices_org_status", "organization_id", "status"),)

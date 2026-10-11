@@ -36,6 +36,9 @@ export default function RegisterPage() {
     onSuccess: (data) => {
       if (data.access_token) {
         setAccessToken(data.access_token);
+        try {
+          void import("@/lib/server-cart").then((m) => m.syncCartOnLogin());
+        } catch { /* offline — local cart stays */ }
         router.push("/products");
       } else {
         setSuccess("Account created! Check your email to verify your account.");

@@ -3,6 +3,8 @@
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "@foundation/ui";
+import { useCartStore } from "@/lib/cart-store";
+import { queueServerResync } from "@/lib/server-cart";
 
 let ToastProvider: React.ComponentType<{ children: React.ReactNode }> | null = null;
 try {
@@ -35,6 +37,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const content = (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+
+  // Mirror logged-in cart edits to the server cart (debounced, best-effort).
+  React.useEffect(() => {
+    let last = "";
+    const unsub = useCartStore.subscribe((s) => {
+      const sig = s.items
+        .map((i) => `${i.product.id}:${i.variantId ?? ""}:${i.quantity}`)
+        .join("|");
+      if (sig !== last) {
+        last = sig;
+        queueServerResync();
+      }
+    });
+    return unsub;
+  }, []);
 
   return (
     <ErrorBoundary>

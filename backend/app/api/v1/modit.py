@@ -60,6 +60,10 @@ from backend.app.schemas.modit import (
     BOQRead,
     BrandRead,
     CartCreate,
+    CartItemRead,
+    CartItemUpsert,
+    CartMergeRequest,
+    CartQuantityUpdate,
     CartRead,
     CategoryRead,
     CheckoutRequest,
@@ -1258,3 +1262,175 @@ async def seed_catalog_endpoint(db: AsyncSession = Depends(get_db)) -> dict:
     stats = await seed_catalog(db, items)
     await db.commit()
     return {"seeded": True, **stats}
+
+
+def _cart_variant_key(variant_key: str | None) -> str:
+    return (variant_key or "").strip()[:100]
+
+
+async def _get_cart_row(session: AsyncSession, user_id: str, product_id: str, variant_key: str):
+    from backend.app.models.modit import CartItem
+
+    stmt = (
+        select(CartItem)
+        .where(
+            CartItem.user_id == user_id,
+            CartItem.product_id == product_id,
+            CartItem.variant_key == variant_key,
+        )
+        .limit(1)
+    )
+    return (await session.execute(stmt)).scalars().first()
+
+
+async def _require_cart_product(session: AsyncSession, product_id: str):
+    from backend.app.models.modit import Product
+
+    product = (
+        (
+            await session.execute(
+                select(Product).where(
+                    Product.id == product_id,
+                    Product.is_active.is_(True),
+                    Product.deleted_at.is_(None),
+                )
+            )
+        )
+        .scalars()
+        .first()
+    )
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    return product
+
+
+@router.get("/cart/items", response_model=list[CartItemRead])
+async def list_cart_items(
+    db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> list:
+    """Buyer server cart (cross-device). Guests keep using the local cart."""
+    from backend.app.models.modit import CartItem
+
+    rows = (
+        (
+            await db.execute(
+                select(CartItem).where(CartItem.user_id == user.id).order_by(CartItem.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return [CartItemRead.model_validate(r) for r in rows]
+
+
+@router.post("/cart/items", response_model=CartItemRead, status_code=status.HTTP_201_CREATED)
+async def add_cart_item(
+    payload: CartItemUpsert, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+):
+    """Add (or top up) one cart row. Quantities add up, never duplicate rows."""
+    from backend.app.models.modit import CartItem
+
+    await _require_cart_product(db, payload.product_id)
+    key = _cart_variant_key(payload.variant_key)
+    row = await _get_cart_row(db, user.id, payload.product_id, key)
+    if row is None:
+        row = CartItem(
+            user_id=user.id,
+            product_id=payload.product_id,
+            variant_key=key,
+            shade=(payload.shade or None),
+            quantity=min(float(payload.quantity), 99999.0),
+        )
+        db.add(row)
+    else:
+        row.quantity = min(float(row.quantity or 0) + float(payload.quantity), 99999.0)
+        if payload.shade:
+            row.shade = payload.shade
+    await db.commit()
+    await db.refresh(row)
+    return CartItemRead.model_validate(row)
+
+
+@router.patch("/cart/items/{item_id}", response_model=CartItemRead)
+async def update_cart_item(
+    item_id: str, payload: CartQuantityUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+):
+    """Set quantity (use DELETE to remove). Users can only touch their own rows."""
+    from backend.app.models.modit import CartItem
+
+    row = await db.get(CartItem, item_id)
+    if row is None or row.user_id != user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found")
+    row.quantity = min(float(payload.quantity), 99999.0)
+    await db.commit()
+    await db.refresh(row)
+    return CartItemRead.model_validate(row)
+
+
+@router.delete("/cart/items/{item_id}", response_model=StandardResponse[str])
+async def delete_cart_item(
+    item_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> StandardResponse[str]:
+    from backend.app.models.modit import CartItem
+
+    row = await db.get(CartItem, item_id)
+    if row is None or row.user_id != user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found")
+    await db.delete(row)
+    await db.commit()
+    return StandardResponse(message="Cart item removed", data=item_id)
+
+
+@router.delete("/cart", response_model=StandardResponse[str])
+async def clear_cart(
+    db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> StandardResponse[str]:
+    from backend.app.models.modit import CartItem
+
+    rows = (
+        (await db.execute(select(CartItem).where(CartItem.user_id == user.id))).scalars().all()
+    )
+    for row in rows:
+        await db.delete(row)
+    await db.commit()
+    return StandardResponse(message="Cart cleared", data=user.id)
+
+
+@router.post("/cart/merge", response_model=list[CartItemRead])
+async def merge_cart(
+    payload: CartMergeRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+) -> list:
+    """Merge a guest/local cart into the server cart on login. Unknown
+    products are skipped; quantities add up (capped). Returns the full cart."""
+    from backend.app.models.modit import CartItem
+
+    for item in payload.items[:100]:
+        try:
+            await _require_cart_product(db, item.product_id)
+        except HTTPException:
+            continue
+        key = _cart_variant_key(item.variant_key)
+        row = await _get_cart_row(db, user.id, item.product_id, key)
+        if row is None:
+            db.add(
+                CartItem(
+                    user_id=user.id,
+                    product_id=item.product_id,
+                    variant_key=key,
+                    shade=(item.shade or None),
+                    quantity=min(float(item.quantity), 99999.0),
+                )
+            )
+        else:
+            row.quantity = min(float(row.quantity or 0) + float(item.quantity), 99999.0)
+    await db.commit()
+    rows = (
+        (
+            await db.execute(
+                select(CartItem).where(CartItem.user_id == user.id).order_by(CartItem.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return [CartItemRead.model_validate(r) for r in rows]

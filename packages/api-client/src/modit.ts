@@ -297,6 +297,23 @@ export interface InventoryRead {
   created_at: string;
 }
 
+export interface CartItemRead {
+  id: string;
+  user_id: string;
+  product_id: string;
+  variant_key: string;
+  shade: string | null;
+  quantity: number;
+  created_at: string;
+}
+
+export interface CartItemUpsert {
+  product_id: string;
+  variant_key?: string | null;
+  shade?: string | null;
+  quantity: number;
+}
+
 export interface InventoryAlert {
   product_id: string;
   product_name: string;
@@ -744,6 +761,31 @@ export function createModitApi(client: ApiClient) {
     getInventoryAnalytics(organizationId?: string) {
       const qs = organizationId ? `?organization_id=${organizationId}` : "";
       return client.request<InventoryAnalytics>(`${base}/inventory/analytics${qs}`);
+    },
+
+    // Buyer server cart (cross-device; guests keep the local cart)
+    listCartItems() {
+      return client.request<CartItemRead[]>(`${base}/cart/items`);
+    },
+
+    addCartItem(payload: CartItemUpsert) {
+      return client.request<CartItemRead>(`${base}/cart/items`, { method: "POST", body: JSON.stringify(payload) });
+    },
+
+    updateCartItem(itemId: string, quantity: number) {
+      return client.request<CartItemRead>(`${base}/cart/items/${itemId}`, { method: "PATCH", body: JSON.stringify({ quantity }) });
+    },
+
+    deleteCartItem(itemId: string) {
+      return client.request<{ message: string; data: string }>(`${base}/cart/items/${itemId}`, { method: "DELETE" });
+    },
+
+    clearServerCart() {
+      return client.request<{ message: string; data: string }>(`${base}/cart`, { method: "DELETE" });
+    },
+
+    mergeServerCart(items: CartItemUpsert[]) {
+      return client.request<CartItemRead[]>(`${base}/cart/merge`, { method: "POST", body: JSON.stringify({ items }) });
     },
 
     // Delivery

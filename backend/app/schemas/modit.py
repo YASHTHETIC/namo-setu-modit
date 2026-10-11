@@ -505,6 +505,31 @@ class OrderRead(ORMModel):
     created_at: datetime
 
 
+class CartItemUpsert(BaseModel):
+    product_id: str
+    variant_key: str | None = Field(default=None, max_length=100)
+    shade: str | None = Field(default=None, max_length=100)
+    quantity: float = Field(gt=0, le=99999)
+
+
+class CartQuantityUpdate(BaseModel):
+    quantity: float = Field(gt=0, le=99999)
+
+
+class CartMergeRequest(BaseModel):
+    items: list[CartItemUpsert] = Field(default_factory=list, max_length=100)
+
+
+class CartItemRead(ORMModel):
+    id: str
+    user_id: str
+    product_id: str
+    variant_key: str
+    shade: str | None
+    quantity: float
+    created_at: datetime
+
+
 class OrderItemBase(BaseModel):
     order_id: str
     purchase_order_id: str | None = None
