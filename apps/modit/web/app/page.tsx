@@ -310,10 +310,10 @@ export default function ModitHomePage() {
       {/* ═══ PROMO CARDS — Blinkit solid-color row, construction edition ═══ */}
       <div className="mt-3 flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
         {[
-          { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
-          { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
-          { title: "Site Lighting", sub: "Philips LEDs, panels & battens", img: "/products/lighting/Philip Ultra Glow LED Downlight Round.webp", alt: "LED lights", href: "/products?category=lighting", bg: "#00BCD4", dark: false, cta: "Order Now" },
-          { title: "Tiles & Fix-It Range", sub: "Adhesives, grouts & repair", img: "/products/tiling/Dr Fixit.png", alt: "Waterproofing and tile care", href: "/products?category=tiling", bg: "#F8CB46", dark: true, cta: "Order Now" },
+          { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
+          { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
+          { title: "Site Lighting", sub: "Philips LEDs, panels & battens", tag: "NEW RANGE", img: "/products/lighting/Philip Ultra Glow LED Downlight Round.webp", alt: "LED lights", href: "/products?category=lighting", bg: "#00BCD4", dark: false, cta: "Order Now" },
+          { title: "Tiles & Fix-It Range", sub: "Adhesives, grouts & repair", tag: "PRO CHOICE", img: "/products/tiling/Dr Fixit.png", alt: "Waterproofing and tile care", href: "/products?category=tiling", bg: "#F8CB46", dark: true, cta: "Order Now" },
         ].map((p) => (
           <Link
             key={p.title}
@@ -328,8 +328,13 @@ export default function ModitHomePage() {
                 {p.cta}
               </span>
             </div>
-            <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl bg-white/95 p-1.5 flex-shrink-0">
-              <Image src={p.img} alt={p.alt} width={112} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+            <div className="relative flex-shrink-0">
+              <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-[28px] bg-white p-2 shadow-xl ring-4 ring-white/40">
+                <Image src={p.img} alt={p.alt} width={128} height={128} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+              </div>
+              <span className={`absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full text-tiny font-black tracking-wide shadow-md ${p.dark ? "bg-[#150726] text-[#F8CB46]" : "bg-[#150726] text-white"}`}>
+                {p.tag}
+              </span>
             </div>
           </Link>
         ))}
