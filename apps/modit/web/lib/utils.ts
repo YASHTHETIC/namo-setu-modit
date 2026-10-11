@@ -26,3 +26,12 @@ export function formatINR2(value: number | null | undefined): string {
   if (!Number.isFinite(n)) return "₹0.00";
   return `₹${n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
+
+/**
+ * Single digit-scrubber for numeric inputs (pincode, phone, OTP, PIN).
+ * One pattern instead of copy-pasted replace(/\D/g, "").slice(...) chains.
+ */
+export function onlyDigits(value: string | null | undefined, maxLength?: number): string {
+  const digits = (value ?? "").replace(/\D/g, "");
+  return typeof maxLength === "number" ? digits.slice(0, maxLength) : digits;
+}

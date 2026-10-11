@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { onlyDigits } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -45,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-caption text-[#9B8CB5] mt-1">This panel controls live prices, sales and orders.</p>
           <input
             value={pin}
-            onChange={(e) => { setPin(e.target.value.replace(/\D/g, "").slice(0, 8)); setPinError(""); }}
+            onChange={(e) => { setPin(onlyDigits(e.target.value, 8)); setPinError(""); }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel");

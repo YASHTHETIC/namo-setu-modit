@@ -10,6 +10,7 @@ import {
   useInventoryAlerts, useInventoryAnalytics, useAISmartReorder, useSeedCatalog,
 } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { onlyDigits } from "@/lib/utils";
 import { useToast } from "@foundation/ui";
 
 const inputCls =
@@ -363,7 +364,7 @@ export default function AdminStoresPage() {
               <input placeholder="Store name — e.g. Indirapuram" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} />
               <div className="grid grid-cols-2 gap-2.5">
                 <input placeholder="Code — e.g. GZB-02" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} className={inputCls} />
-                <input placeholder="Pincode — 6 digits" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} inputMode="numeric" className={inputCls} />
+                <input placeholder="Pincode — 6 digits" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: onlyDigits(e.target.value, 6) })} inputMode="numeric" className={inputCls} />
               </div>
               <input placeholder="Address line" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} />
               <div className="grid grid-cols-2 gap-2.5">

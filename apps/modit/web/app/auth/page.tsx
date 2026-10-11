@@ -9,6 +9,7 @@ import { Mail, Lock, Eye, EyeOff, Truck, Shield, Clock, Phone, KeyRound } from "
 import { setAccessToken } from "@/lib/auth";
 import { fetchLivePincode } from "@/lib/pincode-context";
 import { env } from "@/lib/env";
+import { onlyDigits } from "@/lib/utils";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { FxBackdrop } from "@/components/fx";
@@ -248,7 +249,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
     return () => clearTimeout(t);
   }, [cooldown]);
 
-  const digits = phone.replace(/\D/g, "");
+  const digits = onlyDigits(phone);
   const validPhone = digits.length === 10;
 
   const send = async () => {
@@ -276,7 +277,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
 
   const verify = async () => {
     setError("");
-    if (code.replace(/\D/g, "").length !== 6) {
+    if (onlyDigits(code).length !== 6) {
       setError("Enter the 6-digit code.");
       return;
     }
@@ -285,7 +286,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
       const client = createApiClient({ baseUrl: env.NEXT_PUBLIC_API_BASE_URL });
       const res = (await client.request("/auth/otp/verify", {
         method: "POST",
-        body: JSON.stringify({ phone: digits, code: code.replace(/\D/g, "") }),
+        body: JSON.stringify({ phone: digits, code: onlyDigits(code) }),
       })) as { access_token: string };
       onSuccess(res);
     } catch (err) {
@@ -321,7 +322,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
               placeholder="98765 43210"
               value={phone}
               onChange={(e) => {
-                setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                setPhone(onlyDigits(e.target.value, 10));
                 setSent(false);
                 setError("");
               }}
@@ -340,7 +341,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
                 inputMode="numeric"
                 placeholder="••••••"
                 value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onChange={(e) => setCode(onlyDigits(e.target.value, 6))}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") verify();
                 }}
@@ -361,7 +362,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
         ) : (
           <button
             onClick={verify}
-            disabled={busy || code.replace(/\D/g, "").length !== 6}
+            disabled={busy || onlyDigits(code).length !== 6}
             className="btn-shine w-full h-12 rounded-xl bg-[#2D1B69] text-white text-body-lg font-bold hover:bg-[#150726] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-2"
           >
             {busy ? "Verifying…" : "Verify & Continue"}

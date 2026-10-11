@@ -20,6 +20,7 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
+import { onlyDigits } from "@/lib/utils";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
@@ -587,7 +588,7 @@ export default function ModitHomePage() {
                 autoFocus
                 aria-label="Delivery pincode"
                 onKeyDown={(e) => { if (e.key === "Escape") setShowPincodeModal(false); }}
-                onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onChange={(e) => setPincode(onlyDigits(e.target.value, 6))}
                 placeholder="Enter 6-digit pincode"
                 className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-body-lg font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
                 maxLength={6}

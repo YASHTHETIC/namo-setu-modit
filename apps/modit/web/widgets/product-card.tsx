@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Heart, GitCompareArrows } from "lucide-react";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
+import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useComparisonStore } from "@/lib/comparison-store";
 import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { resolveProduct } from "@/lib/pricing";
@@ -52,9 +52,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const activeMrp = selectedVariant?.mrp ?? live.mrp;
   const activeStock = selectedVariant?.stockLevel ?? live.stockLevel;
 
-  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
-  const wishlisted = isWishlisted(product.id);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
 
   const discount = activeMrp > activePrice
     ? Math.round(((activeMrp - activePrice) / activeMrp) * 100)
@@ -87,7 +85,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist(product);
+    toggleWishlist();
   };
 
   const { addToCompare, removeFromCompare, isInCompare, canAdd } = useComparisonStore();

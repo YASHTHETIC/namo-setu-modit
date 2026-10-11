@@ -37,7 +37,7 @@ import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
-import { useWishlistStore } from "@/lib/wishlist-store";
+import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
 import { resolveProduct } from "@/lib/pricing";
@@ -88,12 +88,10 @@ export default function ProductDetailPage({
     if (product) addRecentlyViewed(product);
   }, [product?.id]);
 
-  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const { pincode: deliveryPincode, serviceable: areaServiceable } = usePincode();
   const requireLogin = useRequireLogin();
   const areaBlocked = Boolean(deliveryPincode) && !areaServiceable;
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
-  const wishlisted = product ? isWishlisted(product.id) : false;
 
   const { data: allProducts = [] } = useProducts({});
   const allProductsList = allProducts as Product[];
@@ -272,7 +270,7 @@ export default function ProductDetailPage({
               {/* Wishlist + Share on image */}
               <div className="absolute top-3 right-3 flex flex-col gap-2">
                 <button
-                  onClick={(e) => { e.stopPropagation(); if (product) toggleWishlist(product); }}
+                  onClick={(e) => { e.stopPropagation(); toggleWishlist(); }}
                   title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                   className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
                     wishlisted ? "bg-[#FCE4EC] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"

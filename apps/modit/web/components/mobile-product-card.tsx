@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, Clock, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
+import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { usePincode } from "@/lib/pincode-context";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
@@ -37,11 +37,9 @@ function perUnitText(price: number, unit: string, unitCode: string): string | nu
 export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const stepDown = useCartStore((s) => s.stepDown);
   const items = useCartStore((s) => s.items);
-  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const [optionsOpen, setOptionsOpen] = useState(false);
 
-  const wishlisted = isWishlisted(product.id);
   const optLabel = optionsLabel(product);
   const tryAdd = useAddToCart();
   const { pincode: myPin, serviceable: myAreaOk } = usePincode();
@@ -79,7 +77,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </span>
         )}
         <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
           aria-label="Wishlist"
         >

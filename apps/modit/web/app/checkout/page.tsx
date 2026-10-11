@@ -11,7 +11,7 @@ import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore, type Address } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
-import { formatINR2 } from "@/lib/utils";
+import { formatINR2, onlyDigits } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
@@ -276,11 +276,11 @@ export default function CheckoutPage() {
                         </label>
                         <label className="block">
                           <span className="mb-1 block text-micro font-bold text-[#150726]">Phone</span>
-                          <input placeholder="10-digit mobile" inputMode="numeric" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                          <input placeholder="10-digit mobile" inputMode="numeric" value={newAddr.phone} onChange={(e) => setNewAddr({ ...newAddr, phone: onlyDigits(e.target.value, 10) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
                         </label>
                         <label className="block">
                           <span className="mb-1 block text-micro font-bold text-[#150726]">Pincode</span>
-                          <input placeholder="6-digit pincode" inputMode="numeric" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
+                          <input placeholder="6-digit pincode" inputMode="numeric" value={newAddr.pincode} onChange={(e) => setNewAddr({ ...newAddr, pincode: onlyDigits(e.target.value, 6) })} className="w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]" />
                         </label>
                         <label className="block sm:col-span-2">
                           <span className="mb-1 block text-micro font-bold text-[#150726]">Address line 1</span>

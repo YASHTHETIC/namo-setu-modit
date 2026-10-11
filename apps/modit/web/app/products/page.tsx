@@ -27,7 +27,7 @@ import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/mod
 import { Reveal } from "@/components/reveal";
 import { DoorBadge, ReplaceBadge } from "@/components/fx";
 import { useCartStore } from "@/lib/cart-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
+import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 import { useDisplayProducts } from "@/lib/pricing";
 import { downloadPricelistCsv, downloadPricelistHtml, buildPricelistRows, getCategoryName } from "@/lib/pricelist";
@@ -815,9 +815,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
-  const wishlisted = isWishlisted(product.id);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const catColor = getCatColor(product.categorySlug);
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
   const optLabel = optionsLabel(product);
@@ -834,7 +832,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist(product);
+    toggleWishlist();
   };
 
   return (
@@ -1083,9 +1081,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
   const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optLabel = optionsLabel(product);
-  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted);
-  const wishlisted = isWishlisted(product.id);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const catColor = getCatColor(product.categorySlug);
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
 
@@ -1101,7 +1097,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist(product);
+    toggleWishlist();
   };
 
   return (

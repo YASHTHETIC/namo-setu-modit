@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MapPin, ChevronDown, LocateFixed, Check, Store } from "lucide-react";
 import { usePincode } from "@/lib/pincode-context";
 import { useNearestWarehouse } from "@/lib/modit-api";
+import { onlyDigits } from "@/lib/utils";
 
 /** Header delivery-location picker: live GPS fix + manual pincode. */
 export function LocationMenu() {
@@ -38,7 +39,7 @@ export function LocationMenu() {
   };
 
   const handleManual = () => {
-    const clean = manual.replace(/\D/g, "").slice(0, 6);
+    const clean = onlyDigits(manual, 6);
     if (clean.length !== 6) {
       setError("Enter a valid 6-digit pincode.");
       return;
@@ -91,7 +92,7 @@ export function LocationMenu() {
           <div className="flex gap-2">
             <input
               value={manual}
-              onChange={(e) => { setManual(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
+              onChange={(e) => { setManual(onlyDigits(e.target.value, 6)); setError(""); }}
               inputMode="numeric"
               placeholder="Pincode"
               className="flex-1 rounded-xl border border-[#DDD6EE] px-3 py-2 text-body-sm font-bold tabular-nums focus:outline-none focus:border-[#2D1B69]"

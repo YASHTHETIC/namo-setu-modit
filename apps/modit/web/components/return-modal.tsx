@@ -5,6 +5,7 @@ import { X, Check, RotateCcw, Minus, Plus } from "lucide-react";
 import { useReturnStore, RETURN_REASONS, type ReturnItem } from "@/lib/return-store";
 import { useCreateReturn } from "@/lib/modit-api";
 import { notifyOrderEvent } from "@/lib/order-notifications";
+import { onlyDigits } from "@/lib/utils";
 
 export interface ReturnableItem {
   sku: string;
@@ -67,7 +68,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
 
   const valid =
     chosen.length > 0 &&
-    phone.replace(/\D/g, "").length === 10 &&
+    onlyDigits(phone).length === 10 &&
     (refundMethod === "source" || refundTarget.trim().length >= 4);
 
   const handleSubmit = async () => {
@@ -83,7 +84,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
       detail: detail.trim(),
       refundMethod,
       refundTarget: refundMethod === "source" ? "Original payment source" : refundTarget.trim(),
-      phone: phone.replace(/\D/g, ""),
+      phone: onlyDigits(phone),
     });
     try {
       // Server record when the order has a purchase order (real backend
@@ -201,7 +202,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
             <p className="text-micro font-bold text-[#150726] mb-2">Contact phone <span className="text-red-500">*</span></p>
             <input
               value={phone}
-              onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+              onChange={(e) => setPhone(onlyDigits(e.target.value, 10))}
               inputMode="numeric"
               placeholder="10-digit mobile for pickup coordination"
               className="w-full px-3 py-2.5 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#E91E63] mb-3"
