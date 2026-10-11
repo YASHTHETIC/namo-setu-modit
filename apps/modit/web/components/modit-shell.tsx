@@ -489,32 +489,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </button>
           </div>
         </div>
-
-        <div className="dark-nav border-t border-white/5">
-          <div className="market-container flex items-center gap-0 overflow-x-auto scrollbar-hide pr-12 lg:pr-0">
-            {[
-              { label: "Products", href: "/products" },
-              { label: "Calculator", href: "/calculator" },
-              { label: "Get Quote", href: "/rfq" },
-              { label: "Orders", href: "/orders" },
-            ].map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/") || (item.href === "/products" && pathname.startsWith("/products"));
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`shrink-0 px-5 py-2.5 text-caption font-semibold transition-all ${
-                    isActive
-                      ? "text-[#7CB518] bg-[#7CB518]/10 border-b-2 border-[#7CB518]"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
       </header>
 
       <SaleBanner />
