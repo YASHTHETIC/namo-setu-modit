@@ -802,10 +802,18 @@ import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { MobileProductCard } from "@/components/mobile-product-card";
 import { useRequireLogin } from "@/lib/use-auth";
+import { usePincode } from "@/lib/pincode-context";
+import { isServiceablePin } from "@/lib/serviceability";
+
+function useAreaBlocked() {
+  const { pincode } = usePincode();
+  return Boolean(pincode) && !isServiceablePin(pincode);
+}
 
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
   const requireLogin = useRequireLogin();
+  const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted);
@@ -817,6 +825,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (blocked) return;
     if (!requireLogin()) return;
     onAddToCart(product);
     setAdded(true);
@@ -992,10 +1001,12 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         </div>
 
         <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-          <DeliveryBadge
-            days={product.deliveryDays}
-            freeDelivery={product.freeDelivery}
-          />
+          {!blocked && (
+            <DeliveryBadge
+              days={product.deliveryDays}
+              freeDelivery={product.freeDelivery}
+            />
+          )}
           <ReplaceBadge />
         </div>
 
@@ -1008,7 +1019,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Add to Cart */}
         <button
           onClick={handleAdd}
-          className="btn-shine mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300"
+          disabled={blocked}
+          title={blocked ? "Not serving your pincode yet" : undefined}
+          className="btn-shine mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           style={
             added
               ? {
@@ -1068,6 +1081,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
   const requireLogin = useRequireLogin();
+  const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optLabel = optionsLabel(product);
   const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
@@ -1079,6 +1093,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (blocked) return;
     if (!requireLogin()) return;
     onAddToCart(product);
     setAdded(true);
@@ -1207,13 +1222,17 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             )}
           </div>
 
-          <DeliveryBadge days={product.deliveryDays} freeDelivery={product.freeDelivery} />
+          {!blocked && (
+            <DeliveryBadge days={product.deliveryDays} freeDelivery={product.freeDelivery} />
+          )}
           <ReplaceBadge />
 
           <div className="ml-auto flex flex-col items-stretch gap-2">
             <button
               onClick={handleAdd}
-              className="btn-shine flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300"
+              disabled={blocked}
+              title={blocked ? "Not serving your pincode yet" : undefined}
+              className="btn-shine flex items-center gap-2 rounded-xl px-6 py-3 text-xs font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               style={
                 added
                   ? { background: 'linear-gradient(135deg, #059669, #059669)', color: 'white', boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }

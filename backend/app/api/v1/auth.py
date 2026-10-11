@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import secrets
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -10,6 +13,7 @@ from backend.app.api.deps import get_current_user
 from backend.app.core.config import get_settings
 from backend.app.core.database import get_db
 from backend.app.core.rbac import RoleName
+from backend.app.core.redis import get_redis
 from backend.app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -18,15 +22,19 @@ from backend.app.core.security import (
     hash_password,
     verify_password,
 )
-from backend.app.models.shared import UserSession
+from backend.app.models.shared import UserProfile, UserSession
 from backend.app.models.user import Permission, RefreshToken, Role, User
 from backend.app.schemas.auth import (
     LoginRequest,
     LogoutRequest,
+    OtpRequest,
+    OtpRequestResponse,
+    OtpVerifyRequest,
     RefreshRequest,
     RegisterRequest,
     TokenResponse,
 )
+from backend.app.services.otp_service import normalize_phone, request_login_otp, verify_login_otp
 from backend.app.schemas.user import UserRead
 
 router = APIRouter()
@@ -152,6 +160,85 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> To
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     await _ensure_bootstrap_admin(db, user)
+    session_id = uuid4().hex
+    access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
+    refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
+    await _create_session(db, user, refresh_token, session_id=session_id)
+
+    refresh_row = RefreshToken(
+        user_id=user.id,
+        token_hash=hash_token(refresh_token),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days),
+        revoked=False,
+    )
+    db.add(refresh_row)
+    await db.commit()
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        user=_user_to_schema(user),
+    )
+
+
+@router.post("/otp/request", response_model=OtpRequestResponse)
+async def otp_request(
+    payload: OtpRequest,
+    db: AsyncSession = Depends(get_db),
+    redis=Depends(get_redis),
+) -> OtpRequestResponse:
+    """Send a login code to an Indian mobile number (SMS gateway or logs)."""
+    phone = normalize_phone(payload.phone)
+    await request_login_otp(
+        redis,
+        phone,
+        settings.sms_gateway_url,
+        settings.sms_api_key,
+        settings.sms_sender,
+        settings.otp_debug_to_logs,
+    )
+    return OtpRequestResponse(sent=True)
+
+
+@router.post("/otp/verify", response_model=TokenResponse)
+async def otp_verify(
+    payload: OtpVerifyRequest,
+    db: AsyncSession = Depends(get_db),
+    redis=Depends(get_redis),
+) -> TokenResponse:
+    """Verify a login code; logs in or creates the phone account (mobile-only signup)."""
+    phone = normalize_phone(payload.phone)
+    if not await verify_login_otp(redis, phone, payload.code):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired code")
+
+    profile = (
+        (await db.execute(select(UserProfile).where(UserProfile.phone_number == phone)))
+        .scalars()
+        .first()
+    )
+    user: User | None = None
+    if profile is not None:
+        user = await _load_user_with_roles(db, profile.user_id)
+    if user is None:
+        user = User(
+            email=f"{phone}@phone.modit.in",
+            full_name=None,
+            hashed_password=hash_password(secrets.token_urlsafe(32)),
+            is_active=True,
+            is_verified=True,
+        )
+        default_role = await _ensure_default_role(db, RoleName.USER.value)
+        user.roles.append(default_role)
+        db.add(user)
+        await db.flush()
+        db.add(UserProfile(user_id=user.id, phone_number=phone))
+        await _ensure_bootstrap_admin(db, user)
+        await db.commit()
+        user = await _load_user_with_roles(db, user.id) or user
+    else:
+        await _ensure_bootstrap_admin(db, user)
+        await db.commit()
+
     session_id = uuid4().hex
     access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
     refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})

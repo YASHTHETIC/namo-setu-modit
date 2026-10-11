@@ -115,3 +115,15 @@ def test_bootstrap_admin_assigns_super_admin(monkeypatch):
     third = SimpleNamespace(email="boss@modit.in", roles=[])
     asyncio.run(auth_module._ensure_bootstrap_admin(FakeSession(), third))
     assert third.roles == []
+
+
+def test_otp_endpoints_validate_phone(client):
+    response = client.post("/api/v1/auth/otp/request", json={"phone": "12345"})
+    assert response.status_code == 422
+    response = client.post("/api/v1/auth/otp/verify", json={"phone": "12345", "code": "000000"})
+    assert response.status_code == 422
+
+
+def test_otp_verify_wrong_code_is_401(client):
+    response = client.post("/api/v1/auth/otp/verify", json={"phone": "9876543210", "code": "000000"})
+    assert response.status_code == 401

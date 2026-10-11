@@ -27,3 +27,16 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class OtpRequest(BaseModel):
+    phone: str
+
+
+class OtpVerifyRequest(BaseModel):
+    phone: str
+    code: str
+
+
+class OtpRequestResponse(BaseModel):
+    sent: bool

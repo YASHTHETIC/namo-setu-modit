@@ -254,11 +254,36 @@ class FakeDatabaseSession:
 
 
 class FakeRedisClient:
+    _hashes: dict[str, dict[str, str]] = {}
+
     async def ping(self) -> bool:
         return True
 
     async def aclose(self) -> None:
         pass
+
+    async def hset(self, key, mapping=None, **kwargs):
+        data = dict(mapping or {})
+        data.update(kwargs)
+        self._hashes[key] = {k: str(v) for k, v in data.items()}
+        return len(data)
+
+    async def expire(self, key, seconds):
+        return True
+
+    async def hgetall(self, key):
+        return dict(self._hashes.get(key, {}))
+
+    async def hincrby(self, key, field, amount):
+        current = int(self._hashes.get(key, {}).get(field, 0))
+        self._hashes.setdefault(key, {})[field] = str(current + amount)
+        return current + amount
+
+    async def delete(self, key):
+        return self._hashes.pop(key, None) is not None
+
+    async def ttl(self, key):
+        return -2 if key not in self._hashes else 300
 
 
 async def override_get_db() -> AsyncGenerator[FakeDatabaseSession, None]:

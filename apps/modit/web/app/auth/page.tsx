@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
-import { Mail, Lock, Eye, EyeOff, Truck, Shield, Clock } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Truck, Shield, Clock, Phone, KeyRound } from "lucide-react";
 import { setAccessToken } from "@/lib/auth";
 import { fetchLivePincode } from "@/lib/pincode-context";
 import { env } from "@/lib/env";
@@ -30,6 +30,22 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [mode, setMode] = useState<"otp" | "email">("otp");
+
+  const handleAuthSuccess = (data: { access_token: string }) => {
+    setAccessToken(data.access_token);
+    // Auto-fetch delivery location right after login (best effort)
+    try {
+      void fetchLivePincode().then((pin) => {
+        if (pin) {
+          try {
+            localStorage.setItem("modit_pincode", pin);
+          } catch { /* ignore */ }
+        }
+      });
+    } catch { /* geolocation unavailable */ }
+    router.push(next.startsWith("/") ? next : "/products");
+  };
 
   const loginMutation = useMutation({
     mutationFn: async () => {
@@ -42,18 +58,7 @@ function LoginForm() {
       return res as { access_token: string };
     },
     onSuccess: (data) => {
-      setAccessToken(data.access_token);
-      // Auto-fetch delivery location right after login (best effort)
-      try {
-        void fetchLivePincode().then((pin) => {
-          if (pin) {
-            try {
-              localStorage.setItem("modit_pincode", pin);
-            } catch { /* ignore */ }
-          }
-        });
-      } catch { /* geolocation unavailable */ }
-      router.push(next.startsWith("/") ? next : "/products");
+      handleAuthSuccess(data);
     },
     onError: (err: Error) => {
       setError(err.message || "Invalid email or password");
@@ -125,6 +130,26 @@ function LoginForm() {
               <p className="mt-2 text-body-md text-[#6B5B83]">Access your MODIT account</p>
             </div>
 
+            {/* Mobile OTP first (Blinkit-style), email as fallback */}
+            <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl bg-[#F0ECF9] p-1">
+              {(["otp", "email"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={`rounded-lg py-2 text-body-sm font-bold transition-all ${
+                    mode === m ? "bg-white text-[#2D1B69] shadow-sm" : "text-[#9B8CB5]"
+                  }`}
+                >
+                  {m === "otp" ? "Mobile OTP" : "Email"}
+                </button>
+              ))}
+            </div>
+
+            {mode === "otp" ? (
+              <OtpForm onSuccess={handleAuthSuccess} />
+            ) : (
+              <>
             <div className="rounded-2xl border border-[#E8E0F0] bg-white p-6 shadow-sm">
               <form onSubmit={(e) => { e.preventDefault(); loginMutation.mutate(); }} className="space-y-4">
                 {error && (
@@ -212,11 +237,166 @@ function LoginForm() {
               {" "}and{" "}
               <Link href="/privacy" className="underline hover:text-[#2D1B69]">Privacy Policy</Link>
             </p>
+              </>
+            )}
           </div>
           </Reveal>
         </div>
       </div>
       <BottomNav />
+    </div>
+  );
+}
+
+/** Blinkit-style mobile OTP login-or-signup. One flow — no name/email needed. */
+function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) => void }) {
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const digits = phone.replace(/\D/g, "");
+  const validPhone = digits.length === 10;
+
+  const send = async () => {
+    setError("");
+    if (!validPhone) {
+      setError("Enter a valid 10-digit mobile number.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const client = createApiClient({ baseUrl: env.NEXT_PUBLIC_API_BASE_URL });
+      await client.request("/auth/otp/request", {
+        method: "POST",
+        body: JSON.stringify({ phone: digits }),
+      });
+      setSent(true);
+      setCode("");
+      setCooldown(30);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send OTP.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verify = async () => {
+    setError("");
+    if (code.replace(/\D/g, "").length !== 6) {
+      setError("Enter the 6-digit code.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const client = createApiClient({ baseUrl: env.NEXT_PUBLIC_API_BASE_URL });
+      const res = (await client.request("/auth/otp/verify", {
+        method: "POST",
+        body: JSON.stringify({ phone: digits, code: code.replace(/\D/g, "") }),
+      })) as { access_token: string };
+      onSuccess(res);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "OTP verification failed.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const field =
+    "w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-body-md text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all";
+
+  return (
+    <div className="rounded-2xl border border-[#E8E0F0] bg-white p-6 shadow-sm">
+      <div className="space-y-4">
+        {error && (
+          <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-body-sm font-medium text-red-600 flex items-center gap-2">
+            <div className="h-5 w-5 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+              <span className="text-micro font-bold text-red-500">!</span>
+            </div>
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <label className="block text-body-sm font-semibold text-[#150726]">Mobile number</label>
+          <div className="relative">
+            <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
+            <div className="absolute left-10 top-1/2 -translate-y-1/2 text-body-md font-bold text-[#150726]">+91</div>
+            <input
+              type="tel"
+              inputMode="numeric"
+              placeholder="98765 43210"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                setSent(false);
+                setError("");
+              }}
+              className={`${field} pl-[70px] tabular-nums tracking-wider`}
+            />
+          </div>
+        </div>
+
+        {sent && (
+          <div className="space-y-1.5">
+            <label className="block text-body-sm font-semibold text-[#150726]">6-digit code</label>
+            <div className="relative">
+              <KeyRound className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
+              <input
+                type="tel"
+                inputMode="numeric"
+                placeholder="••••••"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") verify();
+                }}
+                className={`${field} text-center tracking-[0.4em] font-extrabold tabular-nums`}
+              />
+            </div>
+          </div>
+        )}
+
+        {!sent ? (
+          <button
+            onClick={send}
+            disabled={busy || !validPhone}
+            className="btn-shine w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-lg font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          >
+            {busy ? "Sending…" : "Send OTP"}
+          </button>
+        ) : (
+          <button
+            onClick={verify}
+            disabled={busy || code.replace(/\D/g, "").length !== 6}
+            className="btn-shine w-full h-12 rounded-xl bg-[#2D1B69] text-white text-body-lg font-bold hover:bg-[#150726] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          >
+            {busy ? "Verifying…" : "Verify & Continue"}
+          </button>
+        )}
+
+        {sent && (
+          <button
+            onClick={send}
+            disabled={busy || cooldown > 0}
+            className="w-full text-center text-caption font-bold text-[#7CB518] hover:underline disabled:opacity-50 disabled:no-underline"
+          >
+            {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
+          </button>
+        )}
+
+        <p className="text-micro text-[#9B8CB5] text-center leading-relaxed">
+          No password needed — new numbers get an account automatically.
+        </p>
+      </div>
     </div>
   );
 }

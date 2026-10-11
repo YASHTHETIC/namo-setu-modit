@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     # First-staff bootstrap: this login email auto-gets super_admin on
     # register/login. Unset = disabled. Set once on the server, then remove.
     bootstrap_admin_email: str | None = None
+    # Phone-OTP login: generic SMS gateway (POST {phone, code, sender}).
+    # Unset gateway = OTP cannot send; OTP_DEBUG_TO_LOGS prints codes to
+    # server logs for internal testing only (never to the client).
+    sms_gateway_url: str | None = None
+    sms_api_key: str | None = None
+    sms_sender: str = "MODIT"
+    otp_debug_to_logs: bool = False
     # NoDecode: pydantic-settings JSON-decodes list fields at the source level,
     # which rejects plain "a,b,c" env values before validators run. Skip the
     # source decoding; parse_cors_origins below handles str -> list.
