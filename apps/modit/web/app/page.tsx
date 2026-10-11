@@ -312,37 +312,6 @@ export default function ModitHomePage() {
         </div>
       </Reveal>
 
-      {/* ═══ ASSURED STRIP ═══ */}
-      <Reveal delay={100}>
-        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative">
-          <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
-          <div className="p-4 relative z-10">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <h3 className="text-body-md font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
-              <div className="assured-orb h-5 w-5 rounded-full bg-[#7CB518]/20 flex items-center justify-center">
-                <Shield className="h-3 w-3 text-[#7CB518]" />
-              </div>
-            </div>
-            <div className="grid grid-cols-4 gap-3">
-              {[
-                { title: "7 Day\nReplacement", icon: Shield, color: "#E91E63" },
-                { title: "4 Hour\nResolution", icon: Clock, color: "#7CB518" },
-                { title: "100% Genuine\nGuarantee", icon: Shield, color: "#7CB518" },
-                { title: "Easy\nReturns", icon: Package, color: "#E91E63" },
-              ].map((f, i) => (
-                <div key={f.title} className="assured-item text-center group/item cursor-pointer">
-                  <div className="assured-orb h-10 w-10 rounded-full mx-auto mb-1.5 flex items-center justify-center group-hover/item:scale-125 transition-all duration-300"
-                    style={{ background: `${f.color}15`, border: `2px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
-                    <f.icon className="h-5 w-5" style={{ color: f.color }} />
-                  </div>
-                  <p className="text-micro font-bold text-white leading-tight line-clamp-2 min-h-[28px]">{f.title}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Reveal>
-
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
         <div className="mt-5">
