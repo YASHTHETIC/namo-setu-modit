@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowLeft, Bot, MessageCircle, Send, X } from "lucide-react";
 
 import {
@@ -13,6 +14,7 @@ import { useAuthReady } from "@/lib/use-auth";
 import { useCartStore } from "@/lib/cart-store";
 
 export function SupportChat() {
+  const pathname = usePathname();
   const loggedIn = useAuthReady();
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
   // Lift above the floating View-Cart bar whenever the cart is non-empty.
@@ -47,6 +49,9 @@ export function SupportChat() {
     setDraft("");
     postMsg.mutate({ conversationId: activeId, body: clean });
   };
+
+  // Buyer chat stays on the buyer platform — never inside ops surfaces.
+  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
 
   return (
     <>

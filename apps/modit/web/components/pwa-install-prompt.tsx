@@ -36,8 +36,9 @@ export function PwaInstallPrompt() {
   };
 
   if (!show || !canInstall) return null;
-  // Never interrupt checkout/payment.
+  // Never interrupt checkout/payment — or ops surfaces.
   if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
 
   return (
     <div className="fixed bottom-36 left-4 right-4 z-sheet max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">

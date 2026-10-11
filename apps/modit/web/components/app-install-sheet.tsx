@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Play, Apple, X, QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { usePwaInstall } from "@/lib/pwa";
@@ -20,6 +21,7 @@ export function openAppSheet() {
  * button or the homepage band via the OPEN_APP_SHEET_EVENT event.
  */
 export function AppInstallSheetHost() {
+  const pathname = usePathname();
   const { canInstall, install } = usePwaInstall();
   const [open, setOpen] = useState(false);
   const [installing, setInstalling] = useState(false);
@@ -39,6 +41,8 @@ export function AppInstallSheetHost() {
   };
 
   if (!open) return null;
+  // Buyer install sheet never opens inside ops surfaces.
+  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
 
   return (
     <div

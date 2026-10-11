@@ -24,6 +24,7 @@ import {
   Search,
   ShieldCheck,
   ShoppingCart,
+  Store,
   Truck,
   User,
   Wrench,
@@ -73,6 +74,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const isHome = pathname === "/";
   const isAuth = pathname.startsWith("/auth");
+  // Ops platforms (staff admin, supplier hub) render their own chrome —
+  // buyers never see buyer header/footer/nav there and vice versa.
+  const isOps = pathname.startsWith("/admin") || pathname.startsWith("/supplier");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -153,7 +157,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     router.push(`/products?search=${encodeURIComponent(query)}`);
   };
 
-  if (isHome || isAuth) {
+  if (isHome || isAuth || isOps) {
     return <>{children}</>;
   }
 
@@ -393,11 +397,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Desktop: Blinkit-style — supplier link, green cart button, account */}
+          {/* Desktop: Blinkit-style — green cart button + account (no ops entries in buyer chrome) */}
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <Link href="/supplier" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[#2D1B69] hover:text-[#2D1B69]">
-              Supplier Login
-            </Link>
             <Link href="/cart" className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               Cart
@@ -446,6 +447,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       </Link>
                       <Link href="/notifications" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
                         <Bell className="h-4 w-4" /> Notifications
+                      </Link>
+                      <div className="my-2 border-t border-[var(--border-subtle)]" />
+                      <Link href="/supplier" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
+                        <Store className="h-4 w-4" /> Supplier Hub
                       </Link>
                     </div>
                   </div>
@@ -547,6 +552,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                     <Link href="/dashboard" className="rounded-2xl bg-white px-3 py-2 text-sm font-medium text-[var(--text)]">Dashboard</Link>
                     <Link href="/orders" className="rounded-2xl bg-white px-3 py-2 text-sm font-medium text-[var(--text)]">Orders</Link>
                     <Link href="/notifications" className="rounded-2xl bg-white px-3 py-2 text-sm font-medium text-[var(--text)]">Notifications</Link>
+                    <Link href="/supplier" className="rounded-2xl bg-white px-3 py-2 text-sm font-medium text-[var(--text)]">Supplier Hub</Link>
                   </div>
                 </div>
               </div>
