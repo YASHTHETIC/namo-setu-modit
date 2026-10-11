@@ -400,15 +400,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Desktop: green cart button opens the quick drawer + account (no ops entries in buyer chrome) */}
+          {/* Desktop: cart button (gray when empty, green with total when filled) + account */}
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <button onClick={() => openDrawer()} className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Open cart">
+            <button onClick={() => openDrawer()} className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${cartCount > 0 ? "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25" : "bg-[#CCC0E0] shadow-purple-900/10"}`} aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />
-              Cart
-              {cartCount > 0 && (
-                <span className="flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-white px-1 text-tiny font-extrabold text-[#5A8010]">
-                  {cartCount > 99 ? "99+" : cartCount}
-                </span>
+              {cartCount > 0 ? (
+                <span className="tabular-nums">{cartCount} item{cartCount === 1 ? "" : "s"} · ₹{cartItems.reduce((s, i) => s + (i.unitPrice ?? i.product.price) * i.quantity, 0).toLocaleString("en-IN")}</span>
+              ) : (
+                "My Cart"
               )}
             </button>
             <div ref={userMenuRef} className="relative">

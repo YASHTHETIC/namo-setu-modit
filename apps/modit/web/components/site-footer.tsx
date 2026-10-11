@@ -20,7 +20,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     <>
       <footer className={`mt-6 border-t border-[#DDD6EE] bg-[#F0ECF9] ${className}`}>
         <div className="market-container py-10">
-          <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]">
+          <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">
                 <ModitLogo className="h-[42px] w-auto" />
@@ -63,6 +63,16 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <li><Link href="/rfq" className="transition-colors hover:text-[#2D1B69]">Bulk Quote (RFQ)</Link></li>
                 <li><Link href="/calculator" className="transition-colors hover:text-[#2D1B69]">Material Calculator</Link></li>
                 <li><Link href="/projects" className="transition-colors hover:text-[#2D1B69]">Projects</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-[#150726]">Categories <Link href="/products" className="ml-1 text-xs font-semibold text-[#5A8010] hover:underline">see all</Link></h4>
+              <ul className="mt-4 space-y-2 text-sm text-[#6B5B83]">
+                <li><Link href="/products?category=cement" className="transition-colors hover:text-[#2D1B69]">Cement</Link></li>
+                <li><Link href="/products?category=painting" className="transition-colors hover:text-[#2D1B69]">Paints</Link></li>
+                <li><Link href="/products?category=lighting" className="transition-colors hover:text-[#2D1B69]">Lighting</Link></li>
+                <li><Link href="/products?category=tiling" className="transition-colors hover:text-[#2D1B69]">Tiles</Link></li>
+                <li><Link href="/products?category=electrical" className="transition-colors hover:text-[#2D1B69]">Electricals</Link></li>
               </ul>
             </div>
             <div>
