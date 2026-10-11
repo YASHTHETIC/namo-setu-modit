@@ -344,6 +344,12 @@ img { display: block; max-width: 100%; }
 .sticky-cart-bar.bar-hidden {
   transform: translateY(calc(100% + 100px));
 }
+/* Blinkit desktop: no popup bar — the header cart button owns the cart */
+@media (min-width: 1024px) {
+  .sticky-cart-bar {
+    display: none;
+  }
+}
 .sticky-cart-bar::before {
   content: '';
   position: absolute;

@@ -30,7 +30,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#DDD6EE] shadow-[0_-4px_16px_rgba(45,27,105,0.08)]"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#DDD6EE] shadow-[0_-4px_16px_rgba(45,27,105,0.08)] lg:hidden"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
       <div className="grid grid-cols-4 gap-0 w-full">

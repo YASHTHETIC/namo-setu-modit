@@ -549,7 +549,7 @@ export default function ModitHomePage() {
       </button>
 
       {/* ═══ BOTTOM NAV ═══ */}
-      <SiteFooter className="pb-24" />
+      <SiteFooter className="pb-24 lg:pb-8" />
       <PushNotificationPrompt />
       <PwaInstallPrompt />
       <ComparisonBar />
