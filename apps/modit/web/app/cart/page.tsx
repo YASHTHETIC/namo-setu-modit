@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { ProductThumb } from "@/components/product-thumb";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -88,7 +88,7 @@ export default function CartPage() {
               <div className="space-y-3">
                 {savedItems.map((s) => (
                   <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <img src={s.product.images[0]} alt={s.product.name} width={64} height={64} loading="lazy" className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9]" />
+                      <ProductThumb src={s.product.images[0]} alt={s.product.name} className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
                       <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
@@ -153,7 +153,7 @@ export default function CartPage() {
                 <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={`/products/${item.product.id}`} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
-                    <Image src={item.product.images[0]} alt={item.product.name} fill sizes="112px" loading="lazy" draggable={false} className="object-contain" />
+                    <ProductThumb src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-contain" />
                   </Link>
 
                   {/* Info */}

@@ -15,6 +15,7 @@ import { formatINR2, onlyDigits } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { PaymentSection } from "@/components/payment-checkout";
+import { ProductThumb } from "@/components/product-thumb";
 import { useAuthReady } from "@/lib/use-auth";
 
 export default function CheckoutPage() {
@@ -497,7 +498,7 @@ export default function CheckoutPage() {
                         : 0;
                       return (
                         <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
-                          <img src={item.product.images[0]} alt={item.product.name} width={56} height={56} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                          <ProductThumb src={item.product.images[0]} alt={item.product.name} className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-micro font-semibold text-[#2D1B69]">{item.product.brand}</p>
                             <p className="text-caption font-semibold text-[#150726] truncate">{item.product.name}</p>
