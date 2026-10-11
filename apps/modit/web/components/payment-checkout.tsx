@@ -326,7 +326,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         <div className="rounded-xl bg-[#FFFBF5] border border-[#FF9800]/40 px-4 py-3 flex items-center gap-3">
           <span className="h-2.5 w-2.5 rounded-full bg-[#FF9800] animate-pulse shrink-0" />
           <p className="flex-1 text-caption font-semibold text-[#150726]">
-            Server se connect nahi ho raha. Order dabane se pehle connection check karo.
+            Cannot reach the server. Check your connection before placing the order.
           </p>
           <button
             onClick={pingServer}
