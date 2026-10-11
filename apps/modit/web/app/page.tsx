@@ -205,7 +205,7 @@ export default function ModitHomePage() {
     { name: "Wires &\nCables", slug: "electrical", img: "/products/lighting/download-Photoroom 1.png", count: 8, color: "#FF9800" },
     { name: "Plywood,\nMDF", slug: "plywood", img: "/products/painting/Asian Paints Tractor Emulsion Base White 20 L.png", count: 6, color: "#795548" },
     { name: "Fevicol", slug: "fevicol", img: "/products/tiling/Bostik.png", count: 5, color: "#E91E63" },
-    { name: "Hardware", slug: "hardware", img: "/products/tiling/Roff T1.png", count: 4, color: "#607D8B" },
+    { name: "Hardware", slug: "hardware-tools", img: "/products/hardware-tools/250g Wooden Handle Claw Hammer.png", count: 27, color: "#607D8B" },
   ];
 
   return (
