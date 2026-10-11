@@ -206,6 +206,20 @@ def test_razorpay_hmac():
     assert verify_razorpay_signature("order_1", "pay_1", sig, "") is False
 
 
+def test_buyer_cancel_rules():
+    from backend.app.api.v1.modit import buyer_may_cancel
+
+    assert buyer_may_cancel("placed", False) is True
+    assert buyer_may_cancel("confirmed", False) is True
+    assert buyer_may_cancel("packed", False) is False
+    assert buyer_may_cancel("dispatched", False) is False
+    assert buyer_may_cancel("delivered", False) is False
+    assert buyer_may_cancel(None, False) is False
+    # staff can cancel anything (fraud, dead stock)
+    assert buyer_may_cancel("delivered", True) is True
+    assert buyer_may_cancel(None, True) is True
+
+
 def test_order_status_requires_auth(client):
     response = client.patch("/api/v1/modit/orders/x/status", json={"status": "dispatched"})
     assert response.status_code == 401

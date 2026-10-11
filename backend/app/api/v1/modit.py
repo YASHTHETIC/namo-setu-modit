@@ -613,6 +613,42 @@ ORDER_STATUS_VALUES = frozenset({
     "processing", "dispatched", "in_transit", "delivered", "cancelled",
 })
 
+# Buyers may only cancel before fulfillment starts. Staff can cancel anything
+# (e.g. fraud, dead stock) — stock still goes back in both cases.
+BUYER_CANCELLABLE = frozenset({"placed", "confirmed"})
+
+
+def buyer_may_cancel(old_status: str | None, staff: bool) -> bool:
+    """Pure transition rule, unit tested."""
+    if staff:
+        return True
+    return (old_status or "") in BUYER_CANCELLABLE
+
+
+async def _restore_inventory_for_order(session: AsyncSession, order_id: str) -> None:
+    """Put reserved stock back when an order is cancelled."""
+    from backend.app.models.modit import Inventory, OrderItem
+
+    item_rows = (
+        (await session.execute(select(OrderItem).where(OrderItem.order_id == order_id)))
+        .scalars()
+        .all()
+    )
+    for item in item_rows:
+        inv_rows = (
+            (
+                await session.execute(
+                    select(Inventory).where(Inventory.product_id == item.product_id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        if not inv_rows:
+            continue
+        target = max(inv_rows, key=lambda r: r.quantity_on_hand)
+        target.quantity_on_hand = float(target.quantity_on_hand or 0) + float(item.quantity or 0)
+
 
 async def _own_org_ids(session: AsyncSession, user: User) -> list[str]:
     from backend.app.models.modit import OrganizationUser
@@ -644,6 +680,13 @@ async def update_order_status(
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only staff can change order status")
         if order.organization_id not in await _own_org_ids(db, user):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+        if not buyer_may_cancel(order.status, False):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Too late to cancel online — contact support@modit.in for help with this order.",
+            )
+    if payload.status == "cancelled" and order.status != "cancelled":
+        await _restore_inventory_for_order(db, order.id)
     order.status = payload.status
     await db.commit()
     await db.refresh(order)

@@ -2,14 +2,15 @@
 
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
-import { useOrder, useOrderDelivery } from "@/lib/modit-api";
+import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
 import { useAdminStore } from "@/lib/admin-store";
+import { useToast } from "@foundation/ui";
 import {
   ArrowLeft, ArrowRight, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
-  Star, Navigation, MessageSquare, RefreshCcw, Check
+  Star, Navigation, MessageSquare, RefreshCcw, Check, XCircle
 } from "lucide-react";
 
 interface OrderItem {
@@ -100,6 +101,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [rated, setRated] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
+  const [cancelArmed, setCancelArmed] = useState(false);
+  const updateStatus = useUpdateOrderStatus();
+  const toast = useToast();
   const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
   const adminOrderStatus = useAdminStore((s) => s.orderStatuses[id]?.status);
 
@@ -141,6 +145,29 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
   const formatDateTime = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+
+  // Buyer cancel: real server orders only, while still placed/confirmed.
+  // First tap arms, second tap confirms. Stock goes back automatically.
+  const handleCancel = () => {
+    if (!cancelArmed) {
+      setCancelArmed(true);
+      return;
+    }
+    updateStatus.mutate(
+      { orderId: id, status: "cancelled" },
+      {
+        onSuccess: () => {
+          toast.success("Order cancelled", "Stock released back to the warehouse.");
+          setCancelArmed(false);
+          refetchOrder();
+        },
+        onError: (e: unknown) => {
+          toast.error("Cancel failed", e instanceof Error ? e.message : "Try again or contact support.");
+          setCancelArmed(false);
+        },
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -486,6 +513,20 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           {order.status === "delivered" && !existingReturn && (
             <button onClick={() => setReturnOpen(true)} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE4EC] transition-all flex items-center justify-center gap-2">
               <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Return
+            </button>
+          )}
+          {Boolean(apiOrder) && (order.status === "placed" || order.status === "confirmed") && (
+            <button
+              onClick={handleCancel}
+              disabled={updateStatus.isPending}
+              className={`flex-1 h-12 rounded-xl border-2 text-body-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
+                cancelArmed
+                  ? "border-[#E91E63] bg-[#E91E63] text-white"
+                  : "border-[#DDD6EE] bg-white text-[#150726] hover:border-[#E91E63] hover:bg-[#FCE4EC]"
+              }`}
+            >
+              <XCircle className={`h-4 w-4 ${cancelArmed ? "text-white" : "text-[#E91E63]"}`} />
+              {cancelArmed ? "Confirm cancel?" : "Cancel order"}
             </button>
           )}
           <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
