@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartUi } from "@/lib/cart-ui";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 
 interface StickyCartBarProps {
   itemCount: number;
@@ -14,6 +15,8 @@ interface StickyCartBarProps {
 export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   const items = useCartStore((s) => s.items);
   const openDrawer = useCartUi((s) => s.openDrawer);
+  // Blinkit timing: bar slides away on scroll-down, comes back on scroll-up.
+  const barHidden = useHideOnScroll(200);
   // Dismiss hides the bar until the cart itself changes (add/remove/price).
   const [dismissedKey, setDismissedKey] = useState<string | null>(null);
   if (itemCount === 0) return null;
@@ -24,7 +27,7 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   if (dismissedKey === key) return null;
 
   return (
-    <div className="sticky-cart-bar group/cart">
+    <div className={`sticky-cart-bar group/cart ${barHidden ? "bar-hidden" : ""}`}>
       {/* Dismiss — top-left, clear of the chat bubble on the right */}
       <button
         onClick={() => setDismissedKey(key)}
