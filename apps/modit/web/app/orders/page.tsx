@@ -10,6 +10,7 @@ import { notifyOrderEvent } from "@/lib/order-notifications";
 import { useAdminStore } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
+import { useToast } from "@foundation/ui";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
@@ -30,6 +31,7 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
 
 export default function OrdersPage() {
   const router = useRouter();
+  const toast = useToast();
   const addItem = useCartStore((s) => s.addItem);
   const [reorderedId, setReorderedId] = useState<string | null>(null);
   const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
@@ -41,58 +43,27 @@ export default function OrdersPage() {
   const activeCount = orderList.filter(o => ["in_transit", "confirmed", "processing", "dispatched"].includes(o.status)).length;
 
   const handleReorder = (order: any) => {
+    // Only real catalog products — never invent a placeholder item (it would
+    // fail at server checkout with an unknown SKU).
     const items = (order as any).items as Array<{ productId: string; quantity: number }> | undefined;
     let addedCount = 0;
-    if (items && items.length > 0 && items.every((it) => getProductById(it.productId))) {
+    const wantedCount = items?.length ?? 0;
+    if (items && items.length > 0) {
       items.forEach((it) => {
         const p = getProductById(it.productId);
         if (p) { addItem(p, it.quantity); addedCount += 1; }
       });
-    } else {
-      const itemCount = (order as any).items_count || 1;
-      const total = (order as any).total || 1;
-      const fallbackProduct = {
-        id: `reorder-${order.id}`,
-        name: `${itemCount} items from ${order.order_number || order.id}`,
-        slug: "reorder",
-        sku: "",
-        description: "",
-        shortDescription: "",
-        brand: null,
-        brandSlug: null,
-        category: "",
-        categorySlug: "",
-        subCategory: null,
-        subCategorySlug: null,
-        unit: "unit",
-        unitCode: "unit",
-        unitSymbol: null,
-        price: Math.round(total / itemCount),
-        mrp: Math.round(total / itemCount),
-        discount: 0,
-        bulkPrice: null,
-        bulkMinQty: null,
-        bulkLabel: null,
-        gstRate: 18,
-        gstCode: "GST18",
-        rating: 4.5,
-        reviewCount: 100,
-        inStock: true,
-        stockLevel: 100,
-        moq: 1,
-        deliveryDays: 1,
-        freeDelivery: true,
-        seller: { name: "MODIT", rating: 5, isVerified: true },
-        images: ["/products/cement/Ambuja Cement.png"],
-        specifications: {},
-        features: [],
-        tags: ["reorder"],
-      };
-      addItem(fallbackProduct, 1);
+    }
+    if (addedCount === 0) {
+      toast.error("Reorder failed", "Those products are no longer available.");
+      return;
+    }
+    if (addedCount < wantedCount) {
+      toast.warning("Partial reorder", `${addedCount} of ${wantedCount} items were still available.`);
     }
     notifyOrderEvent({
       title: "Items reordered",
-      body: `${addedCount > 0 ? addedCount : (order as any).items_count || 1} item(s) from order ${order.order_number || order.id} added back to your cart.`,
+      body: `${addedCount} item(s) from order ${order.order_number || order.id} added back to your cart.`,
       type: "order",
       orderId: order.id,
     });

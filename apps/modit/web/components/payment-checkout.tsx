@@ -26,7 +26,21 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const toast = useToast();
-  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi" | "credit">("razorpay");
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi" | "credit">(() => {
+    try {
+      const saved = localStorage.getItem("modit_pay_method");
+      return saved === "cod" || saved === "upi" || saved === "credit" ? saved : "razorpay";
+    } catch {
+      return "razorpay";
+    }
+  });
+
+  const chooseMethod = (m: "razorpay" | "cod" | "upi" | "credit") => {
+    setPaymentMethod(m);
+    try {
+      localStorage.setItem("modit_pay_method", m);
+    } catch { /* ignore */ }
+  };
   const [processing, setProcessing] = useState(false);
   const [upiId, setUpiId] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -256,7 +270,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           ].map((method) => (
             <button
               key={method.id}
-              onClick={() => setPaymentMethod(method.id as any)}
+              onClick={() => chooseMethod(method.id as any)}
               className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
                 paymentMethod === method.id
                   ? "border-[#2D1B69] bg-[#F0ECF9]"

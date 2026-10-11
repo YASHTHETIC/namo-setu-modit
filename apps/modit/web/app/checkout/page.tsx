@@ -37,7 +37,10 @@ export default function CheckoutPage() {
   );
   const [serverTotal, setServerTotal] = useState<number | null>(null);
   const [newAddr, setNewAddr] = useState({ label: "", name: "", phone: "", line1: "", city: "", state: "", pincode: "", type: "site" as Address["type"] });
-  const [activeStep, setActiveStep] = useState(1);
+  // Returning buyers skip step 1 when an address is already selected.
+  const [activeStep, setActiveStep] = useState(() =>
+    useAddressStore.getState().addresses.length > 0 ? 2 : 1
+  );
   const [addressError, setAddressError] = useState("");
   const [gstin, setGstin] = useState("");
   // One idempotency key per checkout session: retries/replays after a
