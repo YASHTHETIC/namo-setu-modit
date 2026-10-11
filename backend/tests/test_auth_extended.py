@@ -127,3 +127,54 @@ def test_otp_endpoints_validate_phone(client):
 def test_otp_verify_wrong_code_is_401(client):
     response = client.post("/api/v1/auth/otp/verify", json={"phone": "9876543210", "code": "000000"})
     assert response.status_code == 401
+
+
+def test_staff_endpoints_require_auth(client):
+    assert client.get("/api/v1/auth/staff-status").status_code == 401
+    assert client.post("/api/v1/auth/claim-staff").status_code == 401
+
+
+def test_claim_first_staff_only_when_empty():
+    import asyncio
+    from types import SimpleNamespace
+
+    from backend.app.api.v1 import auth as auth_module
+
+    class Rows:
+        def __init__(self, rows):
+            self._rows = rows
+
+        def scalars(self):
+            return self
+
+        def first(self):
+            return self._rows[0] if self._rows else None
+
+        def scalar_one_or_none(self):
+            return self._rows[0] if self._rows else None
+
+    class EmptySession:
+        """No roles, no staff anywhere."""
+
+        async def execute(self, stmt):
+            return Rows([])
+
+        def add(self, obj):
+            pass
+
+        async def flush(self):
+            pass
+
+    class StaffedSession(EmptySession):
+        """Someone is already staff."""
+
+        async def execute(self, stmt):
+            return Rows([SimpleNamespace(id="u1")])
+
+    user = SimpleNamespace(email="boss@modit.in", roles=[])
+    assert asyncio.run(auth_module._claim_first_staff(EmptySession(), user)) is True
+    assert [r.name for r in user.roles] == ["super_admin"]
+
+    other = SimpleNamespace(email="next@modit.in", roles=[])
+    assert asyncio.run(auth_module._claim_first_staff(StaffedSession(), other)) is False
+    assert other.roles == []

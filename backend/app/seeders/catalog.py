@@ -22,6 +22,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.core.database import AsyncSessionLocal
+from backend.app.core.security import hash_password
 from backend.app.models.enums import InventoryStatus, OrganizationType
 from backend.app.models.modit import (
     Brand,
@@ -35,6 +36,7 @@ from backend.app.models.modit import (
     Warehouse,
 )
 from backend.app.models.shared import City, Country, State
+from backend.app.models.user import User
 
 RETAIL_ORG_NAME = "MODIT Retail"
 WAREHOUSE_CODE = "WH-NOIDA-01"
@@ -140,6 +142,13 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
     org, _ = await _get_or_create(
         session, Organization, {"name": RETAIL_ORG_NAME},
         {"organization_type": OrganizationType.RETAILER.value, "is_active": True},
+    )
+    # One-click testing login (plain buyer, no roles — claim staff separately).
+    # Credentials: demo@modit.in / Demo@1234
+    await _get_or_create(
+        session, User, {"email": "demo@modit.in"},
+        {"full_name": "Demo Buyer", "hashed_password": hash_password("Demo@1234"),
+         "is_active": True, "is_verified": True},
     )
     warehouse, _ = await _get_or_create(
         session, Warehouse,

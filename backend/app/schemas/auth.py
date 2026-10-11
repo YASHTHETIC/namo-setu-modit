@@ -40,3 +40,12 @@ class OtpVerifyRequest(BaseModel):
 
 class OtpRequestResponse(BaseModel):
     sent: bool
+
+
+class ClaimStaffResponse(BaseModel):
+    claimed: bool
+
+
+class StaffStatusResponse(BaseModel):
+    is_staff: bool
+    staff_exists: bool

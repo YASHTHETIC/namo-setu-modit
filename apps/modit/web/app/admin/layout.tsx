@@ -2,15 +2,137 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
   Lock, RotateCcw, LogOut, IndianRupee, FileText, Building2, Warehouse,
-  Users, ShieldCheck,
+  Users, ShieldCheck, KeyRound,
 } from "lucide-react";
 import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { onlyDigits } from "@/lib/utils";
+import { getAccessToken } from "@/lib/auth";
+import { env } from "@/lib/env";
+
+/** One-click staff setup: shows only while this login lacks staff rights. */
+function StaffBanner() {
+  const [state, setState] = useState<
+    | { kind: "checking" }
+    | { kind: "logged-out" }
+    | { kind: "staff" }
+    | { kind: "claimable" }
+    | { kind: "blocked" }
+    | { kind: "error"; message: string }
+  >({ kind: "checking" });
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    const token = getAccessToken();
+    if (!token) {
+      setState({ kind: "logged-out" });
+      return;
+    }
+    try {
+      const res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/staff-status`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(`Server ${res.status}`);
+      const data = (await res.json()) as { is_staff: boolean; staff_exists: boolean };
+      if (data.is_staff) setState({ kind: "staff" });
+      else if (!data.staff_exists) setState({ kind: "claimable" });
+      else setState({ kind: "blocked" });
+    } catch (e) {
+      setState({ kind: "error", message: e instanceof Error ? e.message : "Server unreachable" });
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const claim = async () => {
+    const token = getAccessToken();
+    if (!token) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/claim-staff`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { detail?: string } | null;
+        throw new Error(data?.detail || `Server ${res.status}`);
+      }
+      logAdminActivity("admin.unlock", "Staff access claimed (first staff)");
+      setState({ kind: "staff" });
+    } catch (e) {
+      setState({ kind: "error", message: e instanceof Error ? e.message : "Claim failed" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (state.kind === "checking" || state.kind === "staff") return null;
+
+  return (
+    <div className="mb-4 rounded-2xl border border-[#2D1B69]/20 bg-white p-4 flex items-center gap-3 flex-wrap">
+      <div className="h-10 w-10 rounded-xl bg-[#F0ECF9] flex items-center justify-center shrink-0">
+        <KeyRound className="h-5 w-5 text-[#2D1B69]" />
+      </div>
+      <div className="flex-1 min-w-[200px]">
+        {state.kind === "logged-out" && (
+          <>
+            <p className="text-body-sm font-bold text-[#150726]">Log in to unlock server actions</p>
+            <p className="text-micro text-[#6B5B83]">Seed, dispatch and stock edits need a staff login.</p>
+          </>
+        )}
+        {state.kind === "claimable" && (
+          <>
+            <p className="text-body-sm font-bold text-[#150726]">One tap to become staff</p>
+            <p className="text-micro text-[#6B5B83]">No staff exists yet — claim it now, works only once ever.</p>
+          </>
+        )}
+        {state.kind === "blocked" && (
+          <>
+            <p className="text-body-sm font-bold text-[#150726]">Staff already exists</p>
+            <p className="text-micro text-[#6B5B83]">Ask an administrator to grant your account a staff role.</p>
+          </>
+        )}
+        {state.kind === "error" && (
+          <>
+            <p className="text-body-sm font-bold text-[#150726]">Server check failed</p>
+            <p className="text-micro text-[#6B5B83]">{state.message}</p>
+          </>
+        )}
+      </div>
+      {state.kind === "logged-out" && (
+        <Link href="/auth" className="px-4 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]">
+          Log in
+        </Link>
+      )}
+      {state.kind === "claimable" && (
+        <button
+          onClick={claim}
+          disabled={busy}
+          className="btn-shine px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50"
+        >
+          {busy ? "Claiming…" : "Become staff"}
+        </button>
+      )}
+      {(state.kind === "blocked" || state.kind === "error") && (
+        <button
+          onClick={() => {
+            setState({ kind: "checking" });
+            load();
+          }}
+          className="px-4 py-2.5 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
+        >
+          Recheck
+        </button>
+      )}
+    </div>
+  );
+}
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -86,6 +208,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <LogOut className="h-3.5 w-3.5" /> Lock
           </button>
         </div>
+
+        <StaffBanner />
 
         <div className="flex flex-col gap-5 lg:flex-row">
           <aside className="lg:w-60 shrink-0">

@@ -25,6 +25,7 @@ from backend.app.core.security import (
 from backend.app.models.shared import UserProfile, UserSession
 from backend.app.models.user import Permission, RefreshToken, Role, User
 from backend.app.schemas.auth import (
+    ClaimStaffResponse,
     LoginRequest,
     LogoutRequest,
     OtpRequest,
@@ -32,6 +33,7 @@ from backend.app.schemas.auth import (
     OtpVerifyRequest,
     RefreshRequest,
     RegisterRequest,
+    StaffStatusResponse,
     TokenResponse,
 )
 from backend.app.services.otp_service import normalize_phone, request_login_otp, verify_login_otp
@@ -66,6 +68,32 @@ async def _ensure_bootstrap_admin(session: AsyncSession, user: User) -> None:
     if all(getattr(r, "name", None) != role.name for r in (user.roles or [])):
         user.roles.append(role)
         await session.flush()
+
+
+STAFF_ROLE_VALUES = frozenset({"super_admin", "admin", "support", "manager"})
+
+
+async def _any_staff_exists(session: AsyncSession) -> bool:
+    """True once any user holds any staff role (used by the claim flow)."""
+    stmt = (
+        select(User.id)
+        .join(User.roles)
+        .where(Role.name.in_(STAFF_ROLE_VALUES))
+        .limit(1)
+    )
+    return (await session.execute(stmt)).scalars().first() is not None
+
+
+async def _claim_first_staff(session: AsyncSession, user: User) -> bool:
+    """Grant super_admin to this user, but ONLY while zero staff exist.
+    Self-disabling: after the first claim every later call fails closed."""
+    if await _any_staff_exists(session):
+        return False
+    role = await _ensure_default_role(session, RoleName.SUPER_ADMIN.value)
+    if all(getattr(r, "name", None) != role.name for r in (user.roles or [])):
+        user.roles.append(role)
+        await session.flush()
+    return True
 
 
 async def _load_user_with_roles(session: AsyncSession, user_id: str) -> User | None:
@@ -257,6 +285,33 @@ async def otp_verify(
         access_token=access_token,
         refresh_token=refresh_token,
         user=_user_to_schema(user),
+    )
+
+
+@router.get("/staff-status", response_model=StaffStatusResponse)
+async def staff_status(
+    user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+) -> StaffStatusResponse:
+    """Am I staff? Does any staff exist? (Drives the admin claim banner.)"""
+    mine = {getattr(r, "name", None) for r in (user.roles or [])}
+    return StaffStatusResponse(
+        is_staff=bool(mine & STAFF_ROLE_VALUES),
+        staff_exists=await _any_staff_exists(db),
+    )
+
+
+@router.post("/claim-staff", response_model=ClaimStaffResponse)
+async def claim_staff(
+    user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+) -> ClaimStaffResponse:
+    """Become the first staff member. Works ONLY while zero staff exist —
+    afterwards it fails closed (ask an admin instead). No SSH needed."""
+    if await _claim_first_staff(db, user):
+        await db.commit()
+        return ClaimStaffResponse(claimed=True)
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Staff already exists — ask an administrator for access.",
     )
 
 
