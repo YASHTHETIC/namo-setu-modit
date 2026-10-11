@@ -393,23 +393,16 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="ml-auto hidden items-center gap-1 lg:flex">
-            <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]">
+          {/* Desktop: Blinkit-style — supplier link, green cart button, account */}
+          <div className="ml-auto hidden items-center gap-2 lg:flex">
+            <Link href="/admin" className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[#2D1B69] hover:text-[#2D1B69]">
               Supplier Login
             </Link>
-            <Link href="/notifications" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Notifications">
-              <Bell className="h-5 w-5" />
-            </Link>
-            <Link href="/wishlist" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Wishlist">
-              <Heart className="h-5 w-5" />
-            </Link>
-            <Link href="/products" className="rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Compare">
-              <GitCompare className="h-5 w-5" />
-            </Link>
-            <Link href="/cart" className="relative rounded-full p-3 text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-50)] hover:text-[var(--brand)]" aria-label="Cart">
+            <Link href="/cart" className="relative inline-flex items-center gap-2 rounded-xl bg-[#7CB518] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/25 transition-all hover:bg-[#6A9C14]" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
+              Cart
               {cartCount > 0 && (
-                <span className="absolute right-1 top-1 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white">
+                <span className="flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-white px-1 text-tiny font-extrabold text-[#5A8010]">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -444,6 +437,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       </Link>
                       <Link href="/orders" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
                         <Package className="h-4 w-4" /> Orders
+                      </Link>
+                      <Link href="/wishlist" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
+                        <Heart className="h-4 w-4" /> Wishlist
+                      </Link>
+                      <Link href="/compare" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
+                        <GitCompare className="h-4 w-4" /> Compare
                       </Link>
                       <Link href="/notifications" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
                         <Bell className="h-4 w-4" /> Notifications
