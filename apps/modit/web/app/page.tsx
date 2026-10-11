@@ -26,7 +26,6 @@ import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
-import { FxBackdrop } from "@/components/fx";
 import { Reveal } from "@/components/reveal";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
@@ -209,9 +208,6 @@ export default function ModitHomePage() {
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowSearch(true)}>
-              <Search className="h-5 w-5" />
-            </RippleButton>
             <Link href="/cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -283,14 +279,6 @@ export default function ModitHomePage() {
       {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          <FxBackdrop tone="dark" />
-          {/* Animated mesh gradient overlay (desktop only — saves mobile GPU) */}
-          <div className="absolute inset-0 opacity-30 hidden sm:block" style={{
-            background: "radial-gradient(circle at 20% 50%, rgba(124,181,24,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.2), transparent 50%)",
-            animation: "meshMove 8s ease-in-out infinite alternate",
-          }} />
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#7CB518]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-          <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-[#E91E63]/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <div className="relative z-10 p-4 flex items-center justify-between gap-3">
             <div>
               <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-tiny font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
@@ -323,12 +311,8 @@ export default function ModitHomePage() {
 
       {/* ═══ ASSURED STRIP ═══ */}
       <Reveal delay={100}>
-        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative group">
+        <div className="mt-4 rounded-2xl overflow-hidden bg-gradient-to-br from-[#150726] to-[#150726] border border-white/10 relative">
           <div className="strip-line absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7CB518] via-[#E91E63] to-[#00BCD4]" />
-          <div className="fx-orb fx-orb-a" style={{ width: 180, height: 180, top: -70, right: -40, background: "rgba(233,30,99,0.20)" }} />
-          <div className="fx-orb fx-orb-b" style={{ width: 200, height: 200, bottom: -90, left: -50, background: "rgba(124,181,24,0.20)" }} />
-          <div className="absolute -top-4 -right-2 w-20 h-32 bg-[#E91E63]/20 rotate-[25deg] rounded-full blur-xl group-hover:rotate-[35deg] transition-transform duration-500" />
-          <div className="absolute -bottom-4 -left-2 w-20 h-32 bg-[#7CB518]/20 rotate-[-25deg] rounded-full blur-xl group-hover:rotate-[-35deg] transition-transform duration-500" />
           <div className="p-4 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-3">
               <h3 className="text-body-md font-bold text-white">Modit <span className="text-[#7CB518]">Assured</span></h3>
@@ -891,12 +875,7 @@ export default function ModitHomePage() {
         </div>
       )}
 
-      {/* ═══ Mesh gradient animation ═══ */}
       <style jsx global>{`
-        @keyframes meshMove {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(20px, -10px) scale(1.1); }
-        }
         @keyframes slideInLeft {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
