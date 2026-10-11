@@ -160,7 +160,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell min-h-screen">
       {/* Announcement bar */}
-      <div className="announce-bar text-white text-center py-2 text-xs font-medium">
+      <div className="announce-bar text-[#150726] text-center py-2 text-xs font-bold">
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 

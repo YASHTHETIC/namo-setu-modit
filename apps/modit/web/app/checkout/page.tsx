@@ -365,10 +365,10 @@ export default function CheckoutPage() {
                       </div>
                       {couponError && <p className="text-micro text-red-500 mt-2">{couponError}</p>}
                       {bestCoupon && (
-                        <button onClick={() => { applyCoupon(bestCoupon.code, subtotal); toast.success("Coupon applied!", `Best offer ${bestCoupon.code} applied`); }} className="mt-2 w-full flex items-center gap-2 p-2 rounded-lg bg-[#E91E63]/5 border border-[#E91E63]/20 text-left hover:bg-[#E91E63]/10 transition-all">
-                          <Gift className="h-4 w-4 text-[#E91E63]" />
+                        <button onClick={() => { applyCoupon(bestCoupon.code, subtotal); toast.success("Coupon applied!", `Best offer ${bestCoupon.code} applied`); }} className="mt-2 w-full flex items-center gap-2 p-2 rounded-lg bg-[#F8CB46]/20 border border-[#F8CB46] text-left hover:bg-[#F8CB46]/30 transition-all">
+                          <Gift className="h-4 w-4 text-[#150726]" />
                           <div>
-                            <span className="text-micro font-bold text-[#E91E63]">Best offer: {bestCoupon.code}</span>
+                            <span className="text-micro font-bold text-[#150726]">Best offer: {bestCoupon.code}</span>
                             <p className="text-tiny text-[#9B8CB5]">{bestCoupon.description}</p>
                           </div>
                         </button>

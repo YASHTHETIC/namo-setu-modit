@@ -127,7 +127,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Badges — top area */}
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
           {discount > 0 && (
-            <span className="trust3d-overlay badge-pill badge-pink shadow-lg shadow-pink-500/20">
+            <span className="trust3d-overlay badge-pill badge-offer shadow-lg shadow-yellow-500/25">
               {discount}% OFF
             </span>
           )}

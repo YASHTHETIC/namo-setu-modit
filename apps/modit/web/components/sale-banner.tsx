@@ -31,9 +31,9 @@ export function SaleBanner() {
     const s = Math.floor((ms % 60000) / 1000);
     return (
       <Link href="/products" className="block">
-        <div className="relative overflow-hidden" style={{ background: "linear-gradient(90deg, #2D1B69 0%, #E91E63 55%, #FF9800 100%)" }}>
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(90deg, #150726 0%, #2D1B69 55%, #4A2D8A 100%)" }}>
           <div className="mx-auto max-w-[1400px] px-4 py-2.5 flex items-center justify-center gap-3 flex-nowrap overflow-x-auto scrollbar-hide whitespace-nowrap">
-            <span className="flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-tiny font-black text-white uppercase tracking-wider">
+            <span className="flex items-center gap-1.5 rounded-full bg-[#F8CB46] px-2.5 py-1 text-tiny font-black text-[#150726] uppercase tracking-wider">
               <Zap className="h-3 w-3" /> Sale live
             </span>
             <p className="text-body-sm font-extrabold text-white">{sale.bannerTitle}</p>

@@ -55,8 +55,8 @@ export function FlashDeals() {
         {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-[#E91E63]/20 flex items-center justify-center animate-pulse">
-              <Flame className="h-4 w-4 text-[#E91E63]" />
+            <div className="h-8 w-8 rounded-lg bg-[#F8CB46]/20 flex items-center justify-center animate-pulse">
+              <Flame className="h-4 w-4 text-[#F8CB46]" />
             </div>
             <div>
               <h2 className="text-body-md font-extrabold text-white flex items-center gap-2">
@@ -67,7 +67,7 @@ export function FlashDeals() {
             </div>
           </div>
           <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
-            <Clock className="h-3 w-3 text-[#E91E63]" />
+            <Clock className="h-3 w-3 text-[#F8CB46]" />
             <span className="text-caption font-bold text-white">
               <Countdown target={endTime.getTime()} />
             </span>
@@ -80,10 +80,10 @@ export function FlashDeals() {
             const inCart = items.some((i) => i.product.id === product.id);
             const optLabel = optionsLabel(product);
             return (
-              <div key={product.id} className="w-[160px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#E91E63]/40 transition-all group">
+              <div key={product.id} className="w-[160px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
                 <Link href={`/products/${product.id}`} className="block relative aspect-square bg-white/5 p-2">
                   <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 180px" loading="lazy" draggable={false} className="object-contain animate-fade-in group-hover:scale-105 transition-transform" />
-                  <span className="absolute top-1.5 left-1.5 bg-[#E91E63] text-white text-tiny font-bold px-1.5 py-0.5 rounded-full">
+                  <span className="absolute top-1.5 left-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-1.5 py-0.5 rounded-full">
                     {product.discount}% OFF
                   </span>
                 </Link>
@@ -102,7 +102,7 @@ export function FlashDeals() {
                       className={`w-full py-1.5 rounded-lg text-tiny font-bold transition-all ${
                         inCart
                           ? "bg-[#7CB518]/20 text-[#7CB518]"
-                          : "bg-[#E91E63] text-white hover:bg-[#C2185B]"
+                          : "bg-[#7CB518] text-white hover:bg-[#6A9C14]"
                       }`}
                     >
                       {inCart ? "IN CART" : "ADD"}
@@ -124,7 +124,7 @@ export function FlashDeals() {
 
         {/* Footer */}
         <div className="p-3 border-t border-white/10 text-center">
-          <Link href="/products?sort=discount" className="inline-flex items-center gap-1.5 text-micro font-bold text-[#E91E63] hover:text-white transition-colors">
+          <Link href="/products?sort=discount" className="inline-flex items-center gap-1.5 text-micro font-bold text-[#F8CB46] hover:text-white transition-colors">
             View all deals <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
