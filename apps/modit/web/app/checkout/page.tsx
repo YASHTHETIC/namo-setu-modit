@@ -39,11 +39,9 @@ export default function CheckoutPage() {
     () => useAddressStore.getState().addresses.length === 0
   );
   const [serverTotal, setServerTotal] = useState<number | null>(null);
-  // Returning buyers skip step 1 when an address is already selected.
-  const [activeStep, setActiveStep] = useState(() =>
-    useAddressStore.getState().addresses.length > 0 ? 2 : 1
-  );
-  const [addressError, setAddressError] = useState("");
+  // Blinkit-style single page: address, slot, items, coupon and payment are
+  // all visible at once — no wizard steps. Pay stays disabled until an
+  // address is selected.
   const [gstin, setGstin] = useState("");
   // One idempotency key per checkout session: retries/replays after a
   // network blip return the same server order instead of duplicating it.
@@ -182,39 +180,13 @@ export default function CheckoutPage() {
       </header>
 
       <div className="mx-auto max-w-[1200px] py-4 sm:px-6">
-        {/* Steps */}
-        <div className="mb-6 flex items-center gap-0 overflow-x-auto scrollbar-hide">
-          {[
-            { step: 1, label: "Address" },
-            { step: 2, label: "Delivery" },
-            { step: 3, label: "Payment" },
-          ].map((s, i) => (
-            <div key={s.step} className="flex items-center flex-shrink-0">
-              <button
-                key={s.step}
-                onClick={() => { if (s.step <= activeStep) setActiveStep(s.step); }}
-                disabled={s.step > activeStep}
-                aria-current={s.step === activeStep ? "step" : undefined}
-                className={`flex items-center gap-2 px-3 py-2 rounded-full text-caption font-semibold transition-all ${
-                  s.step === activeStep ? "bg-[#7CB518] text-white" : s.step < activeStep ? "bg-[#7CB518]/20 text-[#7CB518]" : "bg-white text-[#9B8CB5] border border-[#E8E0F7]"
-                } ${s.step > activeStep ? "cursor-not-allowed opacity-80" : ""}`}>
-                <span className={`h-5 w-5 rounded-full flex items-center justify-center text-tiny font-bold ${s.step < activeStep ? "bg-[#7CB518] text-white" : s.step === activeStep ? "bg-white/20" : "bg-[#F0ECF9]"}`}>
-                  {s.step < activeStep ? "✓" : s.step}
-                </span>
-                <span className="hidden sm:inline">{s.label}</span>
-              </button>
-              {i < 2 && <div className="w-6 h-px bg-[#E8E0F7] mx-1" />}
-            </div>
-          ))}
-        </div>
-
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-8 space-y-4">
-            {/* Address Section */}
-            {activeStep === 1 && (
+            {/* 1 · Address Section */}
               <Reveal>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                 <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
+                  <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">1</span>
                   <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
                 </h3>
                 <div className="space-y-2">
@@ -266,26 +238,14 @@ export default function CheckoutPage() {
                     </button>
                   )}
                 </div>
-                <button onClick={() => {
-                  if (!selectedAddr) {
-                    setAddressError("Please select or add a delivery address");
-                    return;
-                  }
-                  setAddressError("");
-                  setActiveStep(2);
-                }} className="mt-4 w-full py-2.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all">
-                  Continue to Delivery
-                </button>
-                {addressError && !showAddAddress && <p className="text-micro text-red-500 mt-2">{addressError}</p>}
               </div>
               </Reveal>
-            )}
 
-            {/* Delivery Slot Section */}
-            {activeStep === 2 && (
+            {/* 2 · Delivery Slot Section */}
               <Reveal>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                 <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
+                  <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">2</span>
                   <Clock className="h-4 w-4 text-[#2D1B69]" /> Delivery Time
                 </h3>
 
@@ -347,24 +307,15 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4">
-                  <button onClick={() => setActiveStep(1)} className="flex-1 py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
-                    Back
-                  </button>
-                  <button onClick={() => setActiveStep(3)} className="flex-1 py-2.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all">
-                    Continue to Payment
-                  </button>
-                </div>
               </div>
               </Reveal>
-            )}
 
-            {/* Payment Section */}
-            {activeStep === 3 && (
+            {/* 3 · Business + 4 · Coupon + 5 · Items (all visible, Blinkit-style) */}
               <Reveal>
                 {/* Business GSTIN */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
+                    <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">3</span>
                     <FileText className="h-4 w-4 text-[#2D1B69]" /> Business Details (optional)
                   </h3>
                   <p className="text-micro text-[#9B8CB5] -mt-1 mb-3">Provide your GSTIN to receive a proper GST invoice for input tax credit.</p>
@@ -395,6 +346,7 @@ export default function CheckoutPage() {
                 {/* Coupon */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
+                    <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">4</span>
                     <Tag className="h-4 w-4 text-[#E91E63]" /> Apply Coupon
                   </h3>
                   {appliedCoupon ? (
@@ -428,6 +380,7 @@ export default function CheckoutPage() {
                 {/* Order Items */}
                 <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                   <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
+                    <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">5</span>
                     <Package className="h-4 w-4 text-[#2D1B69]" /> Order Items ({items.length})
                   </h3>
                   <div className="space-y-3">
@@ -457,12 +410,7 @@ export default function CheckoutPage() {
                     })}
                   </div>
                 </div>
-
-                <button onClick={() => setActiveStep(2)} className="w-full py-2.5 rounded-xl border border-[#DDD6EE] text-body-sm font-bold text-[#9B8CB5] hover:border-[#2D1B69] transition-all">
-                  Back to Delivery
-                </button>
               </Reveal>
-            )}
           </div>
 
           {/* Right — Summary */}
@@ -519,7 +467,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-                {activeStep === 3 ? (
+                {/* 6 · Pay — always visible; PaymentSection disables itself until an address is picked */}
                 <PaymentSection
                   total={total}
                   onPaymentComplete={handlePlaceOrder}
@@ -528,22 +476,7 @@ export default function CheckoutPage() {
                   couponCode={appliedCoupon?.code}
                   clientReference={attemptKeyRef.current ?? undefined}
                 />
-              ) : (
-                <button onClick={() => {
-                  if (activeStep === 1 && !selectedAddr) {
-                    setShowAddAddress(true);
-                    return;
-                  }
-                  setActiveStep(Math.min(activeStep + 1, 3));
-                }} className={`w-full py-3 rounded-xl text-white text-body-md font-bold transition-all shadow-lg ${
-                  activeStep === 1 && !selectedAddr
-                    ? "bg-[#9B8CB5] cursor-not-allowed shadow-none"
-                    : "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25"
-                }`}>
-                  {activeStep === 1 ? "Continue to Delivery" : "Continue to Payment"}
-                </button>
-              )}
-              {activeStep === 1 && !selectedAddr && (
+              {!selectedAddr && (
                 <p className="mt-2 text-center text-micro font-semibold text-[#9B8CB5]">
                   Add a delivery address above to continue — it takes 20 seconds
                 </p>

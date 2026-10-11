@@ -250,7 +250,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           ? handleUPI
           : handleCredit;
   const placeDisabled =
-    processing || items.length === 0 || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")));
+    processing || items.length === 0 || !shippingAddress || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")));
   const placeLabel =
     paymentMethod === "upi" || paymentMethod === "razorpay"
       ? `Pay ${formatINR2(total)} securely`
