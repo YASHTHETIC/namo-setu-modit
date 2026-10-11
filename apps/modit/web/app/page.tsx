@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
-  MapPin, ChevronDown, Zap, Shield, Truck, Clock, TrendingUp, Lock,
+  MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
   BadgeCheck, Undo2, Receipt
 } from "lucide-react";
@@ -279,38 +279,61 @@ export default function ModitHomePage() {
         ))}
       </div>
 
-      {/* ═══ HERO BANNER — Animated gradient + truck ═══ */}
+      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          <div className="relative z-10 p-4 flex items-center justify-between gap-3">
-            <div>
-              <div className="inline-flex items-center gap-1.5 bg-[#E91E63] text-white text-tiny font-bold px-2.5 py-1 rounded-full mb-2 shadow-lg shadow-pink-500/20">
+          <div className="relative z-10 p-4 sm:p-5 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2.5 py-1 rounded-full mb-2">
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h2 className="text-white text-title-md font-bold leading-tight">Materials On Door</h2>
-              <p className="text-white/60 text-caption mt-1">Construction materials delivered to your site</p>
-              <div className="flex items-center gap-2 mt-2">
-                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-                  <span className="text-tiny font-semibold text-white/70">Live tracking</span>
-                </div>
-                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5">
-                  <Shield className="h-2.5 w-2.5 text-[#00BCD4]" />
-                  <span className="text-tiny font-semibold text-white/70">Assured</span>
-                </div>
-              </div>
-            </div>
-            <Link href="/products" className="flex flex-col items-center gap-1 flex-shrink-0">
-              <div className="btn-shine flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-4 py-2 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+              <h2 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h2>
+              <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
+              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
+              <div className="h-28 w-24 rounded-2xl bg-white p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500">
+                <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
               </div>
-              <span className="text-tiny text-white/40 font-medium">{products.length}+ products</span>
-            </Link>
+              <div className="h-28 w-24 rounded-2xl bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6">
+                <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+              </div>
+            </div>
           </div>
         </div>
       </Reveal>
+
+      {/* ═══ PROMO CARDS — Blinkit solid-color row, construction edition ═══ */}
+      <div className="mt-3 flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
+        {[
+          { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
+          { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
+          { title: "Site Lighting", sub: "Philips LEDs, panels & battens", img: "/products/lighting/Philip Ultra Glow LED Downlight Round.webp", alt: "LED lights", href: "/products?category=lighting", bg: "#00BCD4", dark: false, cta: "Order Now" },
+          { title: "Tiles & Fix-It Range", sub: "Adhesives, grouts & repair", img: "/products/tiling/Dr Fixit.png", alt: "Waterproofing and tile care", href: "/products?category=tiling", bg: "#F8CB46", dark: true, cta: "Order Now" },
+        ].map((p) => (
+          <Link
+            key={p.title}
+            href={p.href}
+            className="snap-start shrink-0 w-[270px] sm:w-[320px] rounded-2xl p-4 flex items-center gap-3 transition-transform hover:scale-[1.02] active:scale-[0.99]"
+            style={{ background: p.bg }}
+          >
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-body-md font-extrabold leading-tight ${p.dark ? "text-[#150726]" : "text-white"}`}>{p.title}</h3>
+              <p className={`text-micro mt-1 leading-snug ${p.dark ? "text-[#150726]/70" : "text-white/85"}`}>{p.sub}</p>
+              <span className={`mt-2.5 inline-block px-3.5 py-1.5 rounded-full text-caption font-bold ${p.dark ? "bg-[#150726] text-white" : "bg-white text-[#150726]"}`}>
+                {p.cta}
+              </span>
+            </div>
+            <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl bg-white/95 p-1.5 flex-shrink-0">
+              <Image src={p.img} alt={p.alt} width={112} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
