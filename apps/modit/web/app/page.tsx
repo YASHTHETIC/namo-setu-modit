@@ -437,7 +437,14 @@ export default function ModitHomePage() {
               Mobile scrolls horizontally, desktop shows the full grid. */}
           <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
             {visibleCategories.map((cat, i) => {
-              const art = TILE_IMAGES[cat.slug];
+              const manual = TILE_IMAGES[cat.slug];
+              // Blinkit wall: EVERY tile gets a real photo — curated art for
+              // headline categories, first catalog image for the rest.
+              const fallbackImg = !manual
+                ? products.find((p) => p.categorySlug === cat.slug)?.images?.[0]
+                : undefined;
+              const img = manual?.img ?? fallbackImg;
+              const tint = manual?.color ?? "#2D1B69";
               return (
                 <Link
                   key={cat.slug}
@@ -452,12 +459,12 @@ export default function ModitHomePage() {
                     style={{
                       animationDelay: `${Math.min(i, 12) * 50}ms`,
                     }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = art?.color ?? "#2D1B69"; }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = tint; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
                   >
-                    {art ? (
+                    {img ? (
                       <Image
-                        src={art.img}
+                        src={img}
                         alt={cat.name}
                         fill
                         sizes="72px"
