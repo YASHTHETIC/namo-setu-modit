@@ -187,6 +187,12 @@ function ProductsContent() {
       ? activeCategory.subCategories
       : (serverSubs as any[]).filter((s) => s.category_id === activeCategory?.id)
   ) as { name: string; slug: string }[];
+  // Only offer sub-filters that actually match live rows — the catalog may
+  // carry no sub-category assignments (then every pill would read 0 and
+  // clicking one would empty the grid).
+  const activeHasSubs = selectedCategory
+    ? countProducts.some((p) => p.categorySlug === selectedCategory && p.subCategorySlug)
+    : false;
 
   const handleExport = (kind: "html" | "csv") => {
     const rows = buildPricelistRows(filteredProducts.map((p) => ({
@@ -334,8 +340,9 @@ function ProductsContent() {
 
                 {/* Subcategories — clone ProductListPage left rail: the
                     active category's options, sticky with the sidebar.
-                    Mobile keeps the pills row instead. */}
-                {selectedCategory && subList.length > 0 && (
+                    Mobile keeps the pills row instead. Hidden while no
+                    live row carries a sub-category (see activeHasSubs). */}
+                {selectedCategory && activeHasSubs && subList.length > 0 && (
                   <div>
                     <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">
                       {categories.find((c) => c.slug === selectedCategory)?.name ?? "Subcategories"}
@@ -623,8 +630,9 @@ function ProductsContent() {
           </div>
           </Reveal>
 
-          {/* Subcategory pills — only for the active category */}
-          {selectedCategory && subList.length > 0 && (
+          {/* Subcategory pills — only for the active category, and only
+              when live rows actually carry sub-categories */}
+          {selectedCategory && activeHasSubs && subList.length > 0 && (
             <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-hide pb-1">
               <button
                 onClick={() => setSelectedSub("")}

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useProducts as useApiProducts, useProduct as useApiProduct, useCategories as useApiCategories } from "./modit-api";
+import { useProducts as useApiProducts, useProduct as useApiProduct, useCategories as useApiCategories, useBrands as useApiBrands, useUnits as useApiUnits } from "./modit-api";
 import { products as staticProducts, categories as staticCategories, getProductById, searchProducts, type Product, type Category } from "./product-data";
 
 const fastQueryOpts = { retry: false, staleTime: 30_000, gcTime: 60_000 } as const;
@@ -24,6 +24,61 @@ function parseSpecs(specJson: unknown): Record<string, string> {
   return {};
 }
 
+/** Imported catalog rows sometimes carry HTML entities — decode for display. */
+function cleanName(s: string): string {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export interface CatalogLookups {
+  categoriesById: Record<string, { name: string; slug: string }>;
+  brandsById: Record<string, { name: string; slug: string }>;
+  unitsById: Record<string, { name: string; code: string; symbol: string | null }>;
+}
+
+/**
+ * Flat `ProductRead` rows carry only `category_id` / `brand_id` / `unit_id`
+ * UUIDs. Resolve them through the catalog dictionaries so counts, filters
+ * and brand/unit labels work even when the list endpoint has not been
+ * upgraded to enriched rows yet. Enriched rows (nested objects) always win;
+ * lookups are a pure fallback. Query keys match the shared hooks, so
+ * react-query dedupes — no duplicate requests.
+ */
+export function useCatalogLookups(): CatalogLookups {
+  const { data: rawCategories } = useApiCategories();
+  const { data: rawBrands } = useApiBrands();
+  const { data: rawUnits } = useApiUnits();
+
+  return useMemo(() => {
+    const categoriesById: CatalogLookups["categoriesById"] = {};
+    if (isArray(rawCategories)) {
+      for (const c of rawCategories as any[]) {
+        if (c?.id && c?.slug) categoriesById[String(c.id)] = { name: String(c.name ?? c.slug), slug: String(c.slug) };
+      }
+    }
+    const brandsById: CatalogLookups["brandsById"] = {};
+    if (isArray(rawBrands)) {
+      for (const b of rawBrands as any[]) {
+        if (b?.id && b?.slug) brandsById[String(b.id)] = { name: String(b.name ?? b.slug), slug: String(b.slug) };
+      }
+    }
+    const unitsById: CatalogLookups["unitsById"] = {};
+    if (isArray(rawUnits)) {
+      for (const u of rawUnits as any[]) {
+        if (u?.id) unitsById[String(u.id)] = { name: String(u.name ?? ""), code: String(u.code ?? ""), symbol: (u.symbol as string | null) ?? null };
+      }
+    }
+    return { categoriesById, brandsById, unitsById };
+  }, [rawCategories, rawBrands, rawUnits]);
+}
+
 /**
  * Backend list rows are ProductDetailRead (enriched: brand/category/unit/
  * gst/images nested); older cached rows may be flat ProductRead (ids only).
@@ -32,7 +87,7 @@ function parseSpecs(specJson: unknown): Record<string, string> {
  * row through: `price===undefined` wipes the whole grid because the
  * price-range filter (`p.price >= 0`) is false for every row.
  */
-export function mapApiProductToFrontend(p: any): Product | null {
+export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Product | null {
   if (!p || typeof p !== "object" || !p.id || !p.name) return null;
   const priceRaw = p.list_price ?? p.price;
   const price = Number(priceRaw);
@@ -41,22 +96,28 @@ export function mapApiProductToFrontend(p: any): Product | null {
   const mrp = Number(mrpRaw);
   const safeMrp = Number.isFinite(mrp) ? mrp : price;
 
+  const lookupBrand = (p.brand_id != null && lookups?.brandsById[String(p.brand_id)]) || null;
+  const lookupCategory = (p.category_id != null && lookups?.categoriesById[String(p.category_id)]) || null;
+  const lookupUnit = (p.unit_id != null && lookups?.unitsById[String(p.unit_id)]) || null;
+
   const brandName: string | null =
-    p.brand?.name ?? (typeof p.brand === "string" ? p.brand : null) ?? null;
+    p.brand?.name ?? (typeof p.brand === "string" ? p.brand : null) ?? lookupBrand?.name ?? null;
   const brandSlug: string | null =
-    p.brand?.slug ?? (brandName ? slugify(brandName) : null);
+    p.brand?.slug ?? lookupBrand?.slug ?? (brandName ? slugify(brandName) : null);
   const categoryName: string =
-    p.category?.name ?? (typeof p.category === "string" ? p.category : "") ?? "";
+    p.category?.name ?? (typeof p.category === "string" ? p.category : null) ?? lookupCategory?.name ?? "";
   const categorySlug: string =
-    p.category?.slug ?? (categoryName ? slugify(categoryName) : "") ?? "";
+    p.category?.slug ?? lookupCategory?.slug ?? (categoryName ? slugify(categoryName) : "") ?? "";
   const subName: string | null =
     p.sub_category?.name ?? p.subCategory ?? (typeof p.sub_category === "string" ? p.sub_category : null) ?? null;
   const subSlug: string | null =
     p.sub_category?.slug ?? p.subCategorySlug ?? (subName ? slugify(subName) : null);
   const unitName: string =
-    p.unit?.name ?? (typeof p.unit === "string" ? p.unit : "") ?? "";
-  const unitCode: string = p.unit?.code ?? p.unitCode ?? "";
-  const unitSymbol: string | null = p.unit?.symbol ?? p.unitSymbol ?? null;
+    p.unit?.name ?? (typeof p.unit === "string" ? p.unit : null) ?? lookupUnit?.name ?? "";
+  const unitCode: string = p.unit?.code ?? lookupUnit?.code ?? p.unitCode ?? "";
+  const unitSymbol: string | null = p.unit?.symbol ?? lookupUnit?.symbol ?? p.unitSymbol ?? null;
+
+  const name = cleanName(String(p.name));
 
   let images: string[] = [];
   if (Array.isArray(p.images) && p.images.length > 0) {
@@ -79,16 +140,16 @@ export function mapApiProductToFrontend(p: any): Product | null {
     : [
         categorySlug,
         brandSlug,
-        ...(typeof p.name === "string" ? p.name.toLowerCase().split(/[^a-z0-9]+/).filter((t: string) => t.length > 2) : []),
+        ...name.toLowerCase().split(/[^a-z0-9]+/).filter((t: string) => t.length > 2),
       ].filter(Boolean) as string[];
 
   return {
     id: String(p.id),
-    name: String(p.name),
+    name,
     slug: String(p.slug ?? p.id),
     sku: String(p.sku ?? ""),
-    description: String(p.description ?? ""),
-    shortDescription: String(p.description ?? p.shortDescription ?? ""),
+    description: cleanName(String(p.description ?? "")),
+    shortDescription: cleanName(String(p.description ?? p.shortDescription ?? "")),
     brand: brandName,
     brandSlug,
     category: categoryName,
@@ -137,15 +198,18 @@ function mapApiCategoryToFrontend(c: any): any {
 
 export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; page?: number; page_size?: number }) {
   const apiQuery = useApiProducts(params);
+  const lookups = useCatalogLookups();
   const raw = apiQuery.data as Product[] | { items?: unknown[]; did_you_mean?: string | null } | undefined;
   const rawItems = isArray(raw) ? raw : (raw?.items ?? []);
   const didYouMean = isArray(raw) ? null : (raw?.did_you_mean ?? null);
   // Map + drop unusable rows (missing price/name). A non-empty but fully
   // unusable API page must NOT win over the static fallback — that is the
   // exact "0 results with a full DB" failure.
-  const apiProducts = rawItems
-    .map(mapApiProductToFrontend)
-    .filter((p): p is Product => p !== null);
+  const apiProducts = useMemo(
+    () => rawItems.map((p) => mapApiProductToFrontend(p, lookups)).filter((p): p is Product => p !== null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [apiQuery.data, lookups]
+  );
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "products", params],
@@ -187,8 +251,9 @@ export function useProducts(params?: { search?: string; category_id?: string; br
 
 export function useProduct(productId: string | undefined) {
   const apiQuery = useApiProduct(productId);
+  const lookups = useCatalogLookups();
   const rawProduct = apiQuery.data as unknown;
-  const apiProduct = (Array.isArray(rawProduct) ? null : mapApiProductToFrontend(rawProduct as any)) ?? undefined;
+  const apiProduct = (Array.isArray(rawProduct) ? null : mapApiProductToFrontend(rawProduct as any, lookups)) ?? undefined;
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "product", productId],
@@ -238,10 +303,11 @@ export function useSearchProducts(query: string) {
     return () => clearTimeout(t);
   }, [query]);
   const apiQuery = useApiProducts(debounced ? { search: debounced } : undefined);
+  const lookups = useCatalogLookups();
   const raw = apiQuery.data as unknown;
   const rawItems: unknown[] = isArray(raw) ? raw : (((raw as any)?.items ?? []) as unknown[]);
   const apiResults = rawItems
-    .map(mapApiProductToFrontend)
+    .map((p) => mapApiProductToFrontend(p, lookups))
     .filter((p): p is Product => p !== null);
 
   const fallbackResults = query.length >= 2 ? searchProducts(query) : [];
