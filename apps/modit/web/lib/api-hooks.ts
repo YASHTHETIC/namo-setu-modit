@@ -100,18 +100,40 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
   const lookupCategory = (p.category_id != null && lookups?.categoriesById[String(p.category_id)]) || null;
   const lookupUnit = (p.unit_id != null && lookups?.unitsById[String(p.unit_id)]) || null;
 
-  const brandName: string | null =
+  let brandName: string | null =
     p.brand?.name ?? (typeof p.brand === "string" ? p.brand : null) ?? lookupBrand?.name ?? null;
-  const brandSlug: string | null =
+  let brandSlug: string | null =
     p.brand?.slug ?? lookupBrand?.slug ?? (brandName ? slugify(brandName) : null);
-  const categoryName: string =
+  let categoryName: string =
     p.category?.name ?? (typeof p.category === "string" ? p.category : null) ?? lookupCategory?.name ?? "";
-  const categorySlug: string =
+  let categorySlug: string =
     p.category?.slug ?? lookupCategory?.slug ?? (categoryName ? slugify(categoryName) : "") ?? "";
-  const subName: string | null =
+  let subName: string | null =
     p.sub_category?.name ?? p.subCategory ?? (typeof p.sub_category === "string" ? p.sub_category : null) ?? null;
-  const subSlug: string | null =
+  let subSlug: string | null =
     p.sub_category?.slug ?? p.subCategorySlug ?? (subName ? slugify(subName) : null);
+  // Permanent fallback: static catalog shares SKUs with the server rows.
+  // If links/names are missing server-side, borrow the static taxonomy so
+  // counts and filters never silently go empty for real products.
+  if (!categorySlug || !subSlug) {
+    const staticMatch =
+      staticProducts.find((s) => p.sku && s.sku === p.sku) ??
+      staticProducts.find((s) => s.slug === p.slug);
+    if (staticMatch) {
+      if (!categorySlug) {
+        categorySlug = staticMatch.categorySlug;
+        categoryName = staticMatch.category;
+      }
+      if (!brandSlug && staticMatch.brandSlug) {
+        brandSlug = staticMatch.brandSlug;
+        brandName = staticMatch.brand ?? brandName;
+      }
+      if (!subSlug && staticMatch.subCategorySlug) {
+        subSlug = staticMatch.subCategorySlug;
+        subName = staticMatch.subCategory ?? subName;
+      }
+    }
+  }
   const unitName: string =
     p.unit?.name ?? (typeof p.unit === "string" ? p.unit : null) ?? lookupUnit?.name ?? "";
   const unitCode: string = p.unit?.code ?? lookupUnit?.code ?? p.unitCode ?? "";

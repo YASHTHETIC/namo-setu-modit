@@ -304,10 +304,18 @@ function ProductsContent() {
                       <span className="w-2 h-2 rounded-full mr-2" style={{ background: catColor?.accent || '#2D1B69' }} />
                       All Categories
                     </button>
-                    {categories.map((cat) => {
+                    {categories
+                      .map((cat) => ({
+                        cat,
+                        count: countProducts.filter((p) => p.categorySlug === cat.slug).length,
+                      }))
+                      // Hide dead categories (zero live products) so the
+                      // sidebar never offers empty aisles — except the one
+                      // currently selected, which stays for context.
+                      .filter(({ cat, count }) => count > 0 || selectedCategory === cat.slug)
+                      .map(({ cat, count }) => {
                       const cc = getCatColor(cat.slug);
                       const isActive = selectedCategory === cat.slug;
-                      const count = countProducts.filter((p) => p.categorySlug === cat.slug).length;
                       return (
                         <button
                           key={cat.slug}
