@@ -217,16 +217,18 @@ export async function placeOrder(orderData: {
       signal: AbortSignal.timeout(30000),
     });
   let res: Response;
+  const failureKind = (err: unknown) =>
+    err instanceof Error && err.message ? `${err.name}: ${err.message}` : "network error";
   try {
     res = await attempt();
-  } catch {
+  } catch (err) {
     // One automatic retry on network blips — safe because client_reference
     // makes replays idempotent (same order returned, never duplicated).
     await new Promise((r) => setTimeout(r, 1500));
     try {
       res = await attempt();
-    } catch {
-      return { success: false, error: "Couldn't reach the server. Check your connection and retry — nothing was charged." };
+    } catch (retryErr) {
+      return { success: false, error: `Couldn't reach the server (${failureKind(retryErr)}). Check your connection and retry — nothing was charged.` };
     }
   }
   try {
