@@ -330,6 +330,57 @@ function ProductsContent() {
                   </div>
                 </div>
 
+                {/* Subcategories — clone ProductListPage left rail: the
+                    active category's options, sticky with the sidebar.
+                    Mobile keeps the pills row instead. */}
+                {selectedCategory && subList.length > 0 && (
+                  <div>
+                    <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">
+                      {categories.find((c) => c.slug === selectedCategory)?.name ?? "Subcategories"}
+                    </h3>
+                    <div className="space-y-1 max-h-[280px] overflow-y-auto pr-1 thin-scroll">
+                      <button
+                        onClick={() => setSelectedSub("")}
+                        className="flex items-center w-full rounded-xl px-3 py-2 text-left text-xs transition-all"
+                        style={
+                          !selectedSub
+                            ? { background: "#2D1B69", color: "#FFFFFF", fontWeight: 700 }
+                            : { color: "var(--text-secondary)", fontWeight: 500 }
+                        }
+                      >
+                        <span className="flex-1">All {categories.find((c) => c.slug === selectedCategory)?.name}</span>
+                      </button>
+                      {subList.map((s) => {
+                        const active = selectedSub === s.slug;
+                        const subCount = countProducts.filter((p) => p.subCategorySlug === s.slug).length;
+                        return (
+                          <button
+                            key={s.slug}
+                            onClick={() => setSelectedSub(active ? "" : s.slug)}
+                            className="flex items-center w-full rounded-xl px-3 py-2 text-left text-xs transition-all"
+                            style={
+                              active
+                                ? { background: "#2D1B69", color: "#FFFFFF", fontWeight: 700 }
+                                : { color: "var(--text-secondary)", fontWeight: 500 }
+                            }
+                          >
+                            <span className="flex-1">{s.name}</span>
+                            <span
+                              className="rounded-full px-1.5 py-0.5 text-tiny font-bold"
+                              style={{
+                                background: active ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.04)",
+                                color: active ? "#FFFFFF" : "var(--text-muted)",
+                              }}
+                            >
+                              {subCount}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Price Range */}
                 <div>
                   <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Price Range</h3>
