@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@foundation/ui";
 import {
   ArrowLeft,
   Heart,
@@ -27,6 +28,7 @@ export default function WishlistPage() {
   const clearWishlist = useWishlistStore((s) => s.clearWishlist);
   const addItem = useCartStore((s) => s.addItem);
   const router = useRouter();
+  const toast = useToast();
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const handleAddToCart = (product: (typeof items)[0]) => {
@@ -81,6 +83,25 @@ export default function WishlistPage() {
           </button>
         )}
       </div>
+
+      {items.length > 0 && (
+        <button
+          onClick={() => {
+            const buyable = items.filter((p) => p.inStock);
+            buyable.forEach((p) => addItem(p));
+            toast.success(
+              "Added to cart",
+              buyable.length === items.length
+                ? `${buyable.length} item${buyable.length === 1 ? "" : "s"} moved to cart.`
+                : `${buyable.length} of ${items.length} in-stock items moved to cart.`
+            );
+            router.push("/cart");
+          }}
+          className="btn-shine mb-6 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25"
+        >
+          <ShoppingCart className="h-4 w-4" /> Add all to cart
+        </button>
+      )}
 
       <div className="product-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {items.map((product) => (

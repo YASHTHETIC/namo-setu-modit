@@ -76,7 +76,7 @@ export default function CalculatorPage() {
             </Link>
             <div>
               <h1 className="text-title-md font-extrabold text-white flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-[#7CB518]" /> Material Calculator
+                <Calculator className="h-5 w-5 text-[#7CB518]" /> Paint Calculator
               </h1>
               <p className="text-caption text-white/50">Estimate materials for your project</p>
             </div>

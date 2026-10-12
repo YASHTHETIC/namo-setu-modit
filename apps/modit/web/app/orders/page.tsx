@@ -34,6 +34,7 @@ export default function OrdersPage() {
   const toast = useToast();
   const addItem = useCartStore((s) => s.addItem);
   const [reorderedId, setReorderedId] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "delivered" | "cancelled">("all");
   const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
   const orderList = orders ?? fallbackOrders;
   const adminOrderStatuses = useAdminStore((s) => s.orderStatuses);
@@ -118,6 +119,30 @@ export default function OrdersPage() {
       </div>
 
       <div className="mx-auto max-w-[800px] py-4 sm:px-6">
+        {orderList.length > 0 && (
+          <div className="mb-3 flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-0 pb-1">
+            {(
+              [
+                { id: "all", label: "All" },
+                { id: "active", label: "Active" },
+                { id: "delivered", label: "Delivered" },
+                { id: "cancelled", label: "Cancelled" },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setStatusFilter(t.id)}
+                className={`shrink-0 rounded-full px-4 py-1.5 text-caption font-bold border transition-all ${
+                  statusFilter === t.id
+                    ? "bg-[#2D1B69] text-white border-[#2D1B69]"
+                    : "border-[#DDD6EE] bg-white text-[#6B5B83] hover:border-[#2D1B69]"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
         {isLoading ? (
           <div className="space-y-3 px-4 sm:px-0">
             {[1, 2, 3].map((i) => (
@@ -144,7 +169,15 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="space-y-3 px-4 sm:px-0">
-            {orderList.map((order, idx) => {
+            {orderList
+              .filter((order) => {
+                const s = (adminOrderStatuses[(order as any).id]?.status ?? (order as any).status) as string;
+                if (statusFilter === "all") return true;
+                if (statusFilter === "delivered") return s === "delivered";
+                if (statusFilter === "cancelled") return s === "cancelled";
+                return !["delivered", "cancelled"].includes(s);
+              })
+              .map((order, idx) => {
               const liveStatus = adminOrderStatuses[order.id]?.status ?? order.status;
               const st = statusConfig[liveStatus] || statusConfig.placed;
               const Icon = st.icon;

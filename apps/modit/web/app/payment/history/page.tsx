@@ -7,6 +7,7 @@ import {
   CreditCard,
   Search,
   Calendar,
+  Receipt,
 } from "lucide-react";
 import {
   Panel,
@@ -172,6 +173,7 @@ export default function ModitPaymentHistoryPage() {
                   <TableHeaderCell>Date</TableHeaderCell>
                   <TableHeaderCell>Status</TableHeaderCell>
                   <TableHeaderCell className="text-right">Amount</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Receipt</TableHeaderCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -201,6 +203,20 @@ export default function ModitPaymentHistoryPage() {
                     <TableCell className="text-right font-semibold">
                       {formatINR(payment.amount)}
                     </TableCell>
+                    <TableCell className="text-right">
+                      {payment.receipt_url ? (
+                        <a
+                          href={payment.receipt_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[var(--brand)] hover:underline"
+                        >
+                          <Receipt className="h-3.5 w-3.5" /> PDF
+                        </a>
+                      ) : (
+                        <span className="text-xs text-[var(--text-muted)]">—</span>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -221,6 +237,16 @@ export default function ModitPaymentHistoryPage() {
                     <Badge variant={statusVariant[payment.status] ?? "default"}>
                       {payment.status}
                     </Badge>
+                    {payment.receipt_url && (
+                      <a
+                        href={payment.receipt_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-[var(--brand)] hover:underline"
+                      >
+                        <Receipt className="h-3.5 w-3.5" /> Receipt
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

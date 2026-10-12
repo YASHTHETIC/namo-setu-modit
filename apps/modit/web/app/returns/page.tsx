@@ -36,6 +36,14 @@ export default function ReturnsPage() {
             <section>
               <h2 className="text-body-md font-bold text-[#150726] mb-1">4. Need help?</h2>
               <p>Write to support@modit.in with your order ID, or use the in-app support chat. Bulk and contractor orders get a dedicated manager callback.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link href="/orders" className="inline-flex items-center gap-2 rounded-xl bg-[#2D1B69] px-5 py-2.5 text-body-sm font-bold text-white hover:bg-[#1E1245] transition-all">
+                  Go to Orders
+                </Link>
+                <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl border-2 border-[#DDD6EE] bg-white px-5 py-2.5 text-body-sm font-bold text-[#150726] hover:border-[#2D1B69] transition-all">
+                  Contact support
+                </Link>
+              </div>
             </section>
           </div>
         </div>

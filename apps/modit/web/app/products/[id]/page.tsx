@@ -37,6 +37,7 @@ import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
+import { useCartStore } from "@/lib/cart-store";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -123,6 +124,20 @@ export default function ProductDetailPage({
     if (!tryAdd(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined)) return;
     window.location.href = "/checkout";
   }, [product, quantity, tryAdd, selectedVariant, selectedShade]);
+
+  // Blinkit stepper: current selection's cart qty, adjustable in place.
+  const cartLines = useCartStore((s) => s.items);
+  const stepDown = useCartStore((s) => s.stepDown);
+  const inCartQty = !product
+    ? 0
+    : cartLines
+        .filter(
+          (i) =>
+            i.product.id === product.id &&
+            (i.variantId ?? null) === (selectedVariant ?? null) &&
+            (i.shade ?? null) === (selectedShade ?? null)
+        )
+        .reduce((s, i) => s + i.quantity, 0);
 
   const handleShare = useCallback(async () => {
     if (!product) return;
@@ -619,6 +634,30 @@ export default function ProductDetailPage({
                 <MessageSquareQuote className="h-4 w-4" /> Request Quote for bulk order
               </Button>
             </div>
+
+            {/* In-cart stepper — adjust without leaving the page */}
+            {inCartQty > 0 && (
+              <div className="flex items-center justify-between rounded-xl border border-[#DDD6EE] bg-white px-4 py-2.5">
+                <span className="text-body-sm font-bold text-[#150726]">
+                  In cart: <span className="tabular-nums">{inCartQty}</span>
+                </span>
+                <div className="stepper">
+                  <button
+                    onClick={() => product && stepDown(product.id, selectedVariant ?? undefined)}
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span className="tabular-nums">{inCartQty}</span>
+                  <button
+                    onClick={() => product && tryAdd(product, 1, selectedVariant ?? undefined, selectedShade ?? undefined)}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
 
             {!product.inStock && (
               <div className="rounded-xl border border-[#FECACA] bg-red-50 p-4">

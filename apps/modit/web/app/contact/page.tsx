@@ -5,7 +5,7 @@ import { ArrowLeft, Headset, Mail, MapPin, Clock } from "lucide-react";
 
 const rows = [
   { icon: Mail, label: "Email us", value: "support@modit.in", href: "mailto:support@modit.in" },
-  { icon: Headset, label: "In-app support chat", value: "Available after login, 7 days a week", href: "/dashboard" },
+  { icon: Headset, label: "In-app support chat", value: "Tap the chat bubble, bottom-right on any page", href: null },
   { icon: Clock, label: "Support hours", value: "Mon–Sat, 9:00 AM – 7:00 PM IST", href: null },
   { icon: MapPin, label: "Warehouse", value: "MODIT Fulfilment Centre, Noida 201301, UP", href: null },
 ];

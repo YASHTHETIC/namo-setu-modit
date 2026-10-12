@@ -326,6 +326,16 @@ export default function CartPage() {
                 })()}
               </div>
 
+              {/* Savings pill — Blinkit bill header */}
+              {getCartDiscount() + getBulkSavings() > 0 && (
+                <div className="mb-3 flex items-center justify-between px-4 py-2.5 bg-[#FFF6DE] border border-[#F8CB46] rounded-full">
+                  <p className="text-caption font-bold text-[#150726]">Your total savings</p>
+                  <p className="text-caption font-extrabold text-[#150726] tabular-nums">
+                    ₹{(getCartDiscount() + getBulkSavings()).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </p>
+                </div>
+              )}
+
               {/* Price Details */}
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
                 <h4 className="text-body-md font-bold text-[#150726]">Price Details</h4>

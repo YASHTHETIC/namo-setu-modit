@@ -2,7 +2,10 @@
 
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
+import { useCartStore } from "@/lib/cart-store";
+import { getProductById } from "@/lib/product-data";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
@@ -104,6 +107,31 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [cancelArmed, setCancelArmed] = useState(false);
   const updateStatus = useUpdateOrderStatus();
   const toast = useToast();
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+
+  // One-tap reorder: real catalog products only (same honesty rule as the list).
+  const handleReorderAll = () => {
+    const lines = (order?.items ?? []) as Array<{ product_id?: string; quantity?: number }>;
+    let added = 0;
+    lines.forEach((line) => {
+      const p = line.product_id ? getProductById(line.product_id) : undefined;
+      if (p) {
+        addItem(p, line.quantity ?? 1);
+        added += 1;
+      }
+    });
+    if (added === 0) {
+      toast.error("Reorder failed", "Those products are no longer available.");
+      return;
+    }
+    if (added < lines.length) {
+      toast.warning("Partial reorder", `${added} of ${lines.length} items were still available.`);
+    } else {
+      toast.success("Added to cart", `${added} item${added === 1 ? "" : "s"} from this order.`);
+    }
+    setTimeout(() => router.push("/cart"), 600);
+  };
   const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
   const adminOrderStatus = useAdminStore((s) => s.orderStatuses[id]?.status);
 
@@ -506,6 +534,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         )}
 
         {/* Actions */}
+        <button onClick={handleReorderAll} className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/25 flex items-center justify-center gap-2">
+          <RotateCcw className="h-4 w-4" /> Reorder all items
+        </button>
         <div className="flex gap-3 pb-4">
           <button onClick={handleDownloadInvoice} className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all flex items-center justify-center gap-2">
             <Download className="h-4 w-4 text-[#2D1B69]" /> GST Invoice

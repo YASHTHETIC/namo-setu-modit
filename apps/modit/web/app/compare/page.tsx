@@ -63,6 +63,13 @@ export default function ComparePage() {
                   <span className="text-body-lg font-extrabold text-[#2D1B69]">₹{product.price.toLocaleString()}</span>
                   {product.mrp > product.price && <span className="text-micro text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>}
                 </div>
+                {product.mrp > product.price ? (
+                  <p className="text-micro font-bold text-[#7CB518] mt-0.5">
+                    Save ₹{(product.mrp - product.price).toLocaleString()} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}%)
+                  </p>
+                ) : (
+                  <p className="text-micro mt-0.5 invisible" aria-hidden="true">.</p>
+                )}
                 <button onClick={() => addItem(product)} className="mt-3 w-full py-2 rounded-lg bg-[#7CB518] text-white text-micro font-bold hover:bg-[#6A9C14] transition-all">
                   Add to Cart
                 </button>

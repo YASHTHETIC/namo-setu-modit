@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
-import { Bell, Check, CheckCheck, Filter, Trash2 } from "lucide-react";
+import { Bell, Check, CheckCheck, Filter, Trash2, Package, CreditCard, Truck, RotateCcw, FileText, Tag, Megaphone } from "lucide-react";
 import {
   Card, CardContent, Button, Badge, LoadingSpinner, EmptyState,
 } from "@/lib/modit-ui";
@@ -27,6 +28,29 @@ interface Notification {
   read: boolean;
   created_at: string;
   type?: string;
+  orderId?: string;
+}
+
+/** Icon per notification kind (Blinkit tabs, inline). */
+function typeIcon(type?: string) {
+  switch (type) {
+    case "order":
+      return Package;
+    case "payment":
+      return CreditCard;
+    case "delivery":
+      return Truck;
+    case "return":
+      return RotateCcw;
+    case "rfq":
+      return FileText;
+    case "promo":
+      return Tag;
+    case "alert":
+      return Megaphone;
+    default:
+      return Bell;
+  }
 }
 
 export default function NotificationsPage() {
@@ -54,6 +78,7 @@ export default function NotificationsPage() {
     read: e.read,
     created_at: new Date(e.createdAt).toISOString(),
     type: e.type,
+    orderId: e.orderId,
   }));
   const combined = [...localAsNotifications, ...(notifications ?? [])];
   const visible = filter === "unread" ? combined.filter((n) => !n.read) : combined;
@@ -151,7 +176,10 @@ export default function NotificationsPage() {
       ) : (
         <div className="space-y-2">
           <Stagger step={50} maxDelay={300}>
-          {visible.map((notification) => (
+          {visible.map((notification) => {
+            const Icon = typeIcon(notification.type);
+            const target = notification.orderId ? `/orders/${notification.orderId}` : null;
+            return (
             <Card
               key={notification.id}
               className={cn(
@@ -168,7 +196,7 @@ export default function NotificationsPage() {
                       : "bg-[var(--brand-bg)] text-[var(--brand)]"
                   )}
                 >
-                  <Bell className="h-5 w-5" />
+                  <Icon className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
@@ -191,13 +219,25 @@ export default function NotificationsPage() {
                   <p className="mt-1 text-sm text-[var(--text-muted)]">
                     {notification.body}
                   </p>
-                  <p className="mt-2 text-xs text-[var(--text-muted)]">
-                    {new Date(notification.created_at).toLocaleString()}
-                  </p>
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {new Date(notification.created_at).toLocaleString()}
+                    </p>
+                    {target && (
+                      <Link
+                        href={target}
+                        onClick={() => { if (!notification.read) handleMarkRead(notification.id); }}
+                        className="shrink-0 text-xs font-bold text-[var(--brand)] hover:underline"
+                      >
+                        View order →
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
           </Stagger>
         </div>
       )}
