@@ -59,9 +59,11 @@ function ProductsContent() {
   // Subcategory belongs to its category — reset on category switch.
   useEffect(() => { setSelectedSub(""); }, [selectedCategory]);
 
+  // The API filters by slug natively (`category_slug`); never send a slug
+  // as `category_id` (UUID column) — that yields silent 0-row results.
   const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
-    category_id: selectedCategory || undefined,
+    category_slug: selectedCategory || undefined,
     page_size: 1000,
   });
   // Typo tolerance: the API may have corrected the query ("brwn" -> "brown bread").
@@ -75,7 +77,7 @@ function ProductsContent() {
   // category shows 0 the moment one category is selected
   const { data: apiCountBase = [] } = useProducts({ search: search || undefined, page_size: 1000 });
   const countProducts = useDisplayProducts(apiCountBase as Product[]);
-  const categories = apiCategories as { name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
+  const categories = apiCategories as { id?: string; name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
   useEffect(() => {
     setSelectedCategory(searchParams.get("category") || "");
@@ -102,13 +104,13 @@ function ProductsContent() {
     let result = [...products];
 
     if (search) {
-      const q = effectiveSearch.toLowerCase();
+      const q = (effectiveSearch || "").toLowerCase();
       result = result.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.brand?.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.includes(q))
+          (p.name ?? "").toLowerCase().includes(q) ||
+          (p.brand ?? "").toLowerCase().includes(q) ||
+          (p.category ?? "").toLowerCase().includes(q) ||
+          (p.tags ?? []).some((t) => (t ?? "").toLowerCase().includes(q))
       );
     }
 
@@ -123,10 +125,10 @@ function ProductsContent() {
       result = result.filter((p) => selectedBrands.includes(p.brand || ""));
     }
 
-    result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+    result = result.filter((p) => (p.price ?? 0) >= priceRange[0] && (p.price ?? 0) <= priceRange[1]);
 
     if (minRating > 0) {
-      result = result.filter((p) => p.rating >= minRating);
+      result = result.filter((p) => (p.rating ?? 0) >= minRating);
     }
 
     if (inStockOnly) {
@@ -135,21 +137,21 @@ function ProductsContent() {
 
     switch (sort) {
       case "price-asc":
-        result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
         break;
       case "price-desc":
-        result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
         break;
       case "rating":
-        result.sort((a, b) => b.rating - a.rating);
+        result.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       case "discount":
-        result.sort((a, b) => b.discount - a.discount);
+        result.sort((a, b) => (b.discount ?? 0) - (a.discount ?? 0));
         break;
     }
 
     return result;
-  }, [search, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
+  }, [products, search, effectiveSearch, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
   // Pagination: render 24 at a time so thousand-product categories stay fast.
   const PAGE_SIZE = 24;

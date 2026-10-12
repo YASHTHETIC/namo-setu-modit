@@ -250,7 +250,9 @@ class ProductImageRead(ORMModel):
 
 
 class ProductSearchResponse(ModitListResponse):
-    items: list[ProductRead]
+    # Enriched rows (brand/category/unit/gst/images) so the storefront can
+    # render directly. See services.modit.search_products.
+    items: list[ProductDetailRead]
     filters: dict[str, list[str]]
     did_you_mean: str | None = None
 

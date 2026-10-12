@@ -193,6 +193,15 @@ export default function ModitHomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Only show categories that actually have products in the live catalog.
+  // While the catalog is still loading, fall back to the full static list.
+  const visibleCategories = useMemo(() => {
+    if (products.length === 0) return allCategories;
+    const counts = new Map<string, number>();
+    for (const p of products) counts.set(p.categorySlug, (counts.get(p.categorySlug) ?? 0) + 1);
+    return allCategories.filter((c) => (counts.get(c.slug) ?? 0) > 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
   const featureCountRef = useScrollReveal(0.3);
   const featureVisible = featureCountRef.visible;
   const lowestPriceCount = useCountUp(500, 1200, featureVisible);
@@ -377,7 +386,7 @@ export default function ModitHomePage() {
           {/* Blinkit Home pattern: EVERY category on the first page.
               Mobile scrolls horizontally, desktop shows the full grid. */}
           <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
-            {allCategories.map((cat, i) => {
+            {visibleCategories.map((cat, i) => {
               const art = TILE_IMAGES[cat.slug];
               return (
                 <Link

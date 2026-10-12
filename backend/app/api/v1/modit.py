@@ -203,20 +203,36 @@ async def list_products(
     search: str | None = None,
     category_id: str | None = None,
     brand_id: str | None = None,
+    category_slug: str | None = None,
+    brand_slug: str | None = None,
+    # Back-compat: older storefront sends the slug in `category`.
+    category: str | None = None,
     db: AsyncSession = Depends(get_db),
 ) -> ProductSearchResponse:
-    """List products with search and filters."""
+    """List products with search and filters.
+
+    Accepts category/brand as UUID *or* slug: `category_slug` (preferred),
+    `category` (legacy slug alias), or a slug inside `category_id`.
+    """
+    eff_category_slug = category_slug or category
     items, total, suggestions = await search_products(
-        db, query=search, category_id=category_id, brand_id=brand_id, page=page, page_size=page_size
+        db, query=search, category_id=category_id, brand_id=brand_id,
+        page=page, page_size=page_size,
+        category_slug=eff_category_slug, brand_slug=brand_slug,
     )
     did_you_mean: str | None = None
     if total == 0 and search:
         # Typo tolerance: retry once with the closest matching product name.
-        corrected = await suggest_correction(db, search, category_id=category_id, brand_id=brand_id)
+        corrected = await suggest_correction(
+            db, search, category_id=category_id, brand_id=brand_id,
+            category_slug=eff_category_slug, brand_slug=brand_slug,
+        )
         if corrected:
             did_you_mean = corrected
             items, total, suggestions = await search_products(
-                db, query=corrected, category_id=category_id, brand_id=brand_id, page=page, page_size=page_size
+                db, query=corrected, category_id=category_id, brand_id=brand_id,
+                page=page, page_size=page_size,
+                category_slug=eff_category_slug, brand_slug=brand_slug,
             )
     return ProductSearchResponse(
         items=items,

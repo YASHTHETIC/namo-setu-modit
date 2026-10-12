@@ -11,11 +11,141 @@ function isArray(a: unknown): a is unknown[] {
   return Array.isArray(a);
 }
 
-export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number; page_size?: number }) {
+function slugify(s: string): string {
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function parseSpecs(specJson: unknown): Record<string, string> {
+  if (!specJson || typeof specJson !== "string") return {};
+  try {
+    const v = JSON.parse(specJson);
+    if (v && typeof v === "object" && !Array.isArray(v)) return v as Record<string, string>;
+  } catch { /* free-text specs stay out of the table */ }
+  return {};
+}
+
+/**
+ * Backend list rows are ProductDetailRead (enriched: brand/category/unit/
+ * gst/images nested); older cached rows may be flat ProductRead (ids only).
+ * The storefront renders the static `Product` shape, so map here — the
+ * single place every listing page funnels through. Never let an unmapped
+ * row through: `price===undefined` wipes the whole grid because the
+ * price-range filter (`p.price >= 0`) is false for every row.
+ */
+export function mapApiProductToFrontend(p: any): Product | null {
+  if (!p || typeof p !== "object" || !p.id || !p.name) return null;
+  const priceRaw = p.list_price ?? p.price;
+  const price = Number(priceRaw);
+  if (!Number.isFinite(price)) return null;
+  const mrpRaw = p.mrp ?? priceRaw;
+  const mrp = Number(mrpRaw);
+  const safeMrp = Number.isFinite(mrp) ? mrp : price;
+
+  const brandName: string | null =
+    p.brand?.name ?? (typeof p.brand === "string" ? p.brand : null) ?? null;
+  const brandSlug: string | null =
+    p.brand?.slug ?? (brandName ? slugify(brandName) : null);
+  const categoryName: string =
+    p.category?.name ?? (typeof p.category === "string" ? p.category : "") ?? "";
+  const categorySlug: string =
+    p.category?.slug ?? (categoryName ? slugify(categoryName) : "") ?? "";
+  const subName: string | null =
+    p.sub_category?.name ?? p.subCategory ?? (typeof p.sub_category === "string" ? p.sub_category : null) ?? null;
+  const subSlug: string | null =
+    p.sub_category?.slug ?? p.subCategorySlug ?? (subName ? slugify(subName) : null);
+  const unitName: string =
+    p.unit?.name ?? (typeof p.unit === "string" ? p.unit : "") ?? "";
+  const unitCode: string = p.unit?.code ?? p.unitCode ?? "";
+  const unitSymbol: string | null = p.unit?.symbol ?? p.unitSymbol ?? null;
+
+  let images: string[] = [];
+  if (Array.isArray(p.images) && p.images.length > 0) {
+    if (typeof p.images[0] === "string") {
+      images = p.images as string[];
+    } else {
+      const sorted = [...p.images].sort(
+        (a: any, b: any) =>
+          Number(b?.is_primary ?? 0) - Number(a?.is_primary ?? 0) ||
+          Number(a?.sort_order ?? 0) - Number(b?.sort_order ?? 0)
+      );
+      images = sorted.map((img: any) => `/api/v1/media/${img.media_id}`).filter(Boolean);
+    }
+  }
+
+  // Backend has no tags column — derive search tokens so client-side
+  // search (`p.tags.some`) keeps working on API rows.
+  const derivedTags = Array.isArray(p.tags) && p.tags.length > 0
+    ? (p.tags as string[])
+    : [
+        categorySlug,
+        brandSlug,
+        ...(typeof p.name === "string" ? p.name.toLowerCase().split(/[^a-z0-9]+/).filter((t: string) => t.length > 2) : []),
+      ].filter(Boolean) as string[];
+
+  return {
+    id: String(p.id),
+    name: String(p.name),
+    slug: String(p.slug ?? p.id),
+    sku: String(p.sku ?? ""),
+    description: String(p.description ?? ""),
+    shortDescription: String(p.description ?? p.shortDescription ?? ""),
+    brand: brandName,
+    brandSlug,
+    category: categoryName,
+    categorySlug,
+    subCategory: subName,
+    subCategorySlug: subSlug,
+    unit: unitName,
+    unitCode: String(unitCode),
+    unitSymbol,
+    price,
+    mrp: safeMrp,
+    discount: safeMrp > price ? Math.round(((safeMrp - price) / safeMrp) * 100) : (Number(p.discount) || 0),
+    bulkPrice: p.bulkPrice ?? null,
+    bulkMinQty: p.bulkMinQty ?? null,
+    bulkLabel: p.bulkLabel ?? null,
+    gstRate: Number(p.gst?.rate_percent ?? p.gstRate ?? 18),
+    gstCode: String(p.gst?.code ?? p.gstCode ?? "GST 18%"),
+    rating: Number(p.rating ?? 4.5),
+    reviewCount: Number(p.reviewCount ?? 0),
+    inStock: p.is_active ?? p.inStock ?? true,
+    stockLevel: Number(p.stockLevel ?? 999),
+    moq: Number(p.moq ?? 1),
+    deliveryDays: Number(p.deliveryDays ?? 1),
+    freeDelivery: p.freeDelivery ?? true,
+    seller: p.seller ?? { name: "MODIT Verified", rating: 4.5, isVerified: true },
+    images,
+    specifications: p.specifications ?? parseSpecs(p.specification_json),
+    features: Array.isArray(p.features) ? p.features : [],
+    tags: derivedTags,
+  };
+}
+
+function mapApiCategoryToFrontend(c: any): any {
+  if (!c || typeof c !== "object" || !c.slug) return null;
+  const staticMatch = staticCategories.find((s) => s.slug === c.slug);
+  return {
+    id: c.id,
+    name: c.name ?? c.slug,
+    slug: c.slug,
+    description: c.description ?? staticMatch?.description ?? "",
+    icon: (c as any).icon ?? staticMatch?.icon ?? c.slug,
+    productCount: Number((c as any).productCount ?? 0),
+    subCategories: Array.isArray((c as any).subCategories) ? (c as any).subCategories : (staticMatch?.subCategories ?? []),
+  };
+}
+
+export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; page?: number; page_size?: number }) {
   const apiQuery = useApiProducts(params);
-  const raw = apiQuery.data as Product[] | { items?: Product[]; did_you_mean?: string | null } | undefined;
-  const apiProducts = isArray(raw) ? (raw as Product[]) : (raw?.items ?? []);
+  const raw = apiQuery.data as Product[] | { items?: unknown[]; did_you_mean?: string | null } | undefined;
+  const rawItems = isArray(raw) ? raw : (raw?.items ?? []);
   const didYouMean = isArray(raw) ? null : (raw?.did_you_mean ?? null);
+  // Map + drop unusable rows (missing price/name). A non-empty but fully
+  // unusable API page must NOT win over the static fallback — that is the
+  // exact "0 results with a full DB" failure.
+  const apiProducts = rawItems
+    .map(mapApiProductToFrontend)
+    .filter((p): p is Product => p !== null);
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "products", params],
@@ -30,12 +160,14 @@ export function useProducts(params?: { search?: string; category_id?: string; br
           p.tags.some((t) => t.toLowerCase().includes(q))
         );
       }
-      if (params?.category_id) {
-        const catId = params.category_id;
+      const catFilter = params?.category_slug || params?.category_id;
+      if (catFilter) {
+        const catId = catFilter;
         result = result.filter((p) => p.categorySlug === catId || p.category.toLowerCase() === catId.toLowerCase());
       }
-      if (params?.brand_id) {
-        const brandId = params.brand_id;
+      const brandFilter = params?.brand_slug || params?.brand_id;
+      if (brandFilter) {
+        const brandId = brandFilter;
         result = result.filter((p) => p.brandSlug === brandId);
       }
       return result;
@@ -55,7 +187,8 @@ export function useProducts(params?: { search?: string; category_id?: string; br
 
 export function useProduct(productId: string | undefined) {
   const apiQuery = useApiProduct(productId);
-  const apiProduct = apiQuery.data as Product | undefined;
+  const rawProduct = apiQuery.data as unknown;
+  const apiProduct = (Array.isArray(rawProduct) ? null : mapApiProductToFrontend(rawProduct as any)) ?? undefined;
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "product", productId],
@@ -75,7 +208,10 @@ export function useProduct(productId: string | undefined) {
 
 export function useCategories() {
   const apiQuery = useApiCategories();
-  const apiCategories = isArray(apiQuery.data) ? (apiQuery.data as unknown as Category[]) : [];
+  const rawCategories = isArray(apiQuery.data) ? (apiQuery.data as unknown[]) : [];
+  const apiCategories = rawCategories
+    .map(mapApiCategoryToFrontend)
+    .filter((c): c is Category => c !== null);
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "categories"],
@@ -102,7 +238,11 @@ export function useSearchProducts(query: string) {
     return () => clearTimeout(t);
   }, [query]);
   const apiQuery = useApiProducts(debounced ? { search: debounced } : undefined);
-  const apiResults = isArray(apiQuery.data) ? apiQuery.data as Product[] : [];
+  const raw = apiQuery.data as unknown;
+  const rawItems: unknown[] = isArray(raw) ? raw : (((raw as any)?.items ?? []) as unknown[]);
+  const apiResults = rawItems
+    .map(mapApiProductToFrontend)
+    .filter((p): p is Product => p !== null);
 
   const fallbackResults = query.length >= 2 ? searchProducts(query) : [];
 

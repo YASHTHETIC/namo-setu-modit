@@ -54,7 +54,7 @@ export interface ProductDetailRead extends ProductRead {
 }
 
 export interface ProductSearchResponse {
-  items: ProductRead[];
+  items: ProductDetailRead[];
   page: number;
   page_size: number;
   total: number;
@@ -588,13 +588,15 @@ export function createModitApi(client: ApiClient) {
 
   return {
     // Product Catalog
-    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string }, init?: RequestInit) {
+    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string }, init?: RequestInit) {
       const query = new URLSearchParams();
       if (params?.page) query.set("page", String(params.page));
       if (params?.page_size) query.set("page_size", String(params.page_size));
       if (params?.search) query.set("search", params.search);
       if (params?.category_id) query.set("category_id", params.category_id);
       if (params?.brand_id) query.set("brand_id", params.brand_id);
+      if (params?.category_slug) query.set("category_slug", params.category_slug);
+      if (params?.brand_slug) query.set("brand_slug", params.brand_slug);
       const qs = query.toString();
       return client.request<ProductSearchResponse>(`${base}/products${qs ? `?${qs}` : ""}`, init);
     },

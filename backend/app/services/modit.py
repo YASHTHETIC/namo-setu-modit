@@ -46,6 +46,7 @@ from backend.app.models.modit import (
     RFQ,
     RFQItem,
     Return,
+    GST,
     SubCategory,
     Supplier,
     Unit,
@@ -63,12 +64,17 @@ from backend.app.schemas.modit import (
     BOQReaderResponse,
     InventoryAnalytics,
     InventoryAlert,
+    BrandRead,
+    CategoryRead,
+    GSTRead,
     ModitAnalyticsSummary,
     ProductDetailRead,
     ProductRead,
     ProjectDetailRead,
     RFQDetailRead,
     SmartReorderResponse,
+    SubCategoryRead,
+    UnitRead,
     VoiceOrderResponse,
 )
 
@@ -85,30 +91,116 @@ async def product_to_read(session: AsyncSession, product: Product) -> ProductRea
 
 
 async def product_to_detail(session: AsyncSession, product: Product) -> ProductDetailRead:
-    """Convert Product model to ProductDetailRead with relationships."""
-    # Use eager-loaded relationships if available, fallback to refresh
-    if not hasattr(product, '_sa_instance_state') or not getattr(product, 'brand', None):
-        await session.refresh(product, ["brand", "category", "sub_category", "unit", "gst", "images"])
-    
+    """Convert Product model to ProductDetailRead with relationships.
+
+    Relationships are expected to be eager-loaded via selectinload by the
+    caller (see search_products / get_product_or_404). Never refresh here:
+    a refresh per row would turn a 1000-item listing into 1000 extra
+    queries and blow the <100ms list budget. Missing relations simply
+    surface as None / [] so the listing never 500s on partial data.
+    """
+    brand = getattr(product, "brand", None)
+    category = getattr(product, "category", None)
+    sub_category = getattr(product, "sub_category", None)
+    unit = getattr(product, "unit", None)
+    gst = getattr(product, "gst", None)
+    images = getattr(product, "images", None) or []
+
     images_data = []
-    for img in product.images:
+    for img in images:
         images_data.append({
-            "id": img.id,
-            "media_id": img.media_id,
-            "caption": img.caption,
-            "sort_order": img.sort_order,
-            "is_primary": img.is_primary,
+            "id": getattr(img, "id", ""),
+            "media_id": getattr(img, "media_id", ""),
+            "caption": getattr(img, "caption", None),
+            "sort_order": getattr(img, "sort_order", 0),
+            "is_primary": getattr(img, "is_primary", False),
         })
-    
+
+    base = ProductRead.model_validate(product).model_dump()
+    # category / unit are NOT NULL in the DB but be defensive: the detail
+    # schema requires them, so fall back to id-only stubs rather than 500.
+    if category is None:
+        category_data = {"id": product.category_id, "name": "", "slug": "",
+                         "description": None, "parent_category_id": None,
+                         "is_active": True, "created_at": product.created_at}
+    else:
+        category_data = CategoryRead.model_validate(category).model_dump()
+    if unit is None:
+        unit_data = {"id": product.unit_id, "name": "", "code": "",
+                     "symbol": None, "is_active": True, "created_at": product.created_at}
+    else:
+        unit_data = UnitRead.model_validate(unit).model_dump()
+
     return ProductDetailRead(
-        **ProductRead.model_validate(product).model_dump(),
-        brand=Brand.model_validate(product.brand) if product.brand else None,
-        category=Category.model_validate(product.category),
-        sub_category=SubCategory.model_validate(product.sub_category) if product.sub_category else None,
-        unit=Unit.model_validate(product.unit),
-        gst=None,  # GST relationship if needed
+        **base,
+        brand=BrandRead.model_validate(brand).model_dump() if brand else None,
+        category=category_data,
+        sub_category=SubCategoryRead.model_validate(sub_category).model_dump() if sub_category else None,
+        unit=unit_data,
+        gst=GSTRead.model_validate(gst).model_dump() if gst else None,
         images=images_data,
     )
+
+
+async def _resolve_category_id(session: AsyncSession, category_id: str | None, category_slug: str | None) -> str | None:
+    """Resolve a category filter to a category UUID.
+
+    The storefront sends human slugs ("cement"); the admin sends UUIDs.
+    A slug arriving in `category_id` (old frontend) is resolved too, so a
+    category click never yields a silent 0-row result.
+    """
+    slug = (category_slug or "").strip() or None
+    if not slug and category_id:
+        # UUIDs contain hyphens and are 36 chars; anything else is a slug.
+        candidate = category_id.strip()
+        is_uuid_like = len(candidate) == 36 and "-" in candidate
+        if not is_uuid_like:
+            slug = candidate
+        else:
+            return candidate
+    if slug:
+        row = (await session.execute(
+            select(Category.id).where(Category.slug == slug, Category.deleted_at.is_(None))
+        )).scalar_one_or_none()
+        if row is not None:
+            if isinstance(row, str):
+                return row
+            try:
+                return row[0]
+            except (TypeError, KeyError, IndexError):
+                candidate = getattr(row, "id", None)
+                return candidate if isinstance(candidate, str) else "__no_such_category__"
+        # Unknown slug: no product can match — return a sentinel that
+        # matches nothing instead of ignoring the filter (which would
+        # wrongly show the full catalog).
+        return "__no_such_category__"
+    return category_id
+
+
+async def _resolve_brand_id(session: AsyncSession, brand_id: str | None, brand_slug: str | None) -> str | None:
+    """Resolve a brand filter to a brand UUID (same slug-tolerance as categories)."""
+    slug = (brand_slug or "").strip() or None
+    if not slug and brand_id:
+        candidate = brand_id.strip()
+        is_uuid_like = len(candidate) == 36 and "-" in candidate
+        if not is_uuid_like:
+            slug = candidate
+        else:
+            return candidate
+    if slug:
+        row = (await session.execute(
+            select(Brand.id).where(Brand.slug == slug, Brand.deleted_at.is_(None))
+        )).scalar_one_or_none()
+        if row is not None:
+            if isinstance(row, str):
+                return row
+            try:
+                return row[0]
+            except (TypeError, KeyError, IndexError):
+                candidate = getattr(row, "id", None)
+                return candidate if isinstance(candidate, str) else "__no_such_brand__"
+        return "__no_such_brand__"
+    return brand_id
 
 
 async def search_products(
@@ -118,14 +210,30 @@ async def search_products(
     brand_id: str | None = None,
     page: int = 1,
     page_size: int = 20,
-) -> tuple[list[ProductRead], int, list[str]]:
-    """Search products with filters."""
+    category_slug: str | None = None,
+    brand_slug: str | None = None,
+) -> tuple[list[ProductDetailRead], int, list[str]]:
+    """Search products with filters.
+
+    Returns enriched ProductDetailRead (brand/category/unit/gst/images)
+    so the storefront can render without a second lookup per row.
+    """
+    resolved_category_id = await _resolve_category_id(session, category_id, category_slug)
+    resolved_brand_id = await _resolve_brand_id(session, brand_id, brand_slug)
+
     stmt = (
         select(Product)
-        .options(selectinload(Product.brand), selectinload(Product.category), selectinload(Product.images))
+        .options(
+            selectinload(Product.brand),
+            selectinload(Product.category),
+            selectinload(Product.sub_category),
+            selectinload(Product.unit),
+            selectinload(Product.gst),
+            selectinload(Product.images),
+        )
         .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
     )
-    
+
     if query:
         stmt = stmt.where(
             or_(
@@ -134,24 +242,24 @@ async def search_products(
                 Product.description.ilike(f"%{query}%"),
             )
         )
-    
-    if category_id:
-        stmt = stmt.where(Product.category_id == category_id)
-    
-    if brand_id:
-        stmt = stmt.where(Product.brand_id == brand_id)
-    
+
+    if resolved_category_id:
+        stmt = stmt.where(Product.category_id == resolved_category_id)
+
+    if resolved_brand_id:
+        stmt = stmt.where(Product.brand_id == resolved_brand_id)
+
     # Get total count
     count_stmt = select(func.count()).select_from(stmt.subquery())
     total_result = await session.execute(count_stmt)
     total = total_result.scalar() or 0
-    
+
     # Get paginated results
     stmt = stmt.offset((page - 1) * page_size).limit(page_size).order_by(Product.name.asc())
     result = await session.execute(stmt)
     products = result.scalars().all()
-    
-    items = [await product_to_read(session, p) for p in products]
+
+    items = [await product_to_detail(session, p) for p in products]
     
     # Generate suggestions
     suggestions = []
@@ -171,6 +279,8 @@ async def suggest_correction(
     category_id: str | None = None,
     brand_id: str | None = None,
     limit: int = 200,
+    category_slug: str | None = None,
+    brand_slug: str | None = None,
 ) -> str | None:
     """Return a corrected query when `query` looks mistyped, else None.
 
@@ -180,11 +290,13 @@ async def suggest_correction(
 
     if not query or len(query.strip()) < 3:
         return None
+    resolved_category_id = await _resolve_category_id(session, category_id, category_slug)
+    resolved_brand_id = await _resolve_brand_id(session, brand_id, brand_slug)
     stmt = select(Product.name).where(Product.is_active.is_(True), Product.deleted_at.is_(None))
-    if category_id:
-        stmt = stmt.where(Product.category_id == category_id)
-    if brand_id:
-        stmt = stmt.where(Product.brand_id == brand_id)
+    if resolved_category_id:
+        stmt = stmt.where(Product.category_id == resolved_category_id)
+    if resolved_brand_id:
+        stmt = stmt.where(Product.brand_id == resolved_brand_id)
     rows = (await session.execute(stmt.limit(limit))).all()
     names = [r if isinstance(r, str) else r[0] for r in rows if (r if isinstance(r, str) else r[0])]
     return correct_query(query, names)
@@ -199,6 +311,7 @@ async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
             selectinload(Product.category),
             selectinload(Product.sub_category),
             selectinload(Product.unit),
+            selectinload(Product.gst),
             selectinload(Product.images),
         )
         .where(Product.id == product_id)
