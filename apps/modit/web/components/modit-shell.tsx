@@ -25,7 +25,6 @@ import {
   ShieldCheck,
   ShoppingCart,
   Store,
-  Truck,
   User,
   Wrench,
   X,
@@ -97,7 +96,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
       return [];
     }
   });
-  const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -107,7 +105,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const categoriesList = (apiCategories.length > 0 ? apiCategories : categories) as typeof categories;
 
   const searchRef = useRef<HTMLDivElement>(null);
-  const megaMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const cartItems = useCartStore((state) => state.items);
@@ -135,7 +132,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     function handleClick(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) setShowSearch(false);
-      if (megaMenuRef.current && !megaMenuRef.current.contains(event.target as Node)) setShowMegaMenu(false);
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) setShowUserMenu(false);
     }
 
@@ -177,84 +173,6 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
           <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
             <ModitLogo className="h-[36px] sm:h-[42px] w-auto" />
           </Link>
-
-          <div ref={megaMenuRef} className="relative hidden xl:block">
-            <button
-              type="button"
-              onClick={() => setShowMegaMenu((value) => !value)}
-              className="inline-flex h-12 items-center gap-2 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
-            >
-              <Menu className="h-4 w-4" />
-              Mega Categories
-              <ChevronDown className="h-4 w-4" />
-            </button>
-
-            {showMegaMenu && (
-              <div className="absolute left-0 top-full z-50 mt-3 w-[760px] overflow-hidden rounded-[28px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down">
-                  <div className="grid grid-cols-[1.1fr_0.9fr]">
-                    <div className="border-r border-[var(--border-subtle)] p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">Shop categories</p>
-                          <p className="text-sm text-[var(--text-secondary)]">Browse the marketplace by trade</p>
-                        </div>
-                        <Link href="/products" className="text-xs font-semibold text-[var(--brand)] hover:text-[var(--brand-hover)]">
-                          View all
-                        </Link>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {megaMenuItems.map((category) => (
-                          <Link
-                            key={category.slug}
-                            href={`/products?category=${category.slug}`}
-                            onClick={() => setShowMegaMenu(false)}
-                            className="group flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-subtle)]/70 p-2.5 transition-all hover:-translate-y-0.5 hover:border-[var(--brand-200)] hover:bg-white"
-                          >
-                            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--bg-alt)]">
-                              <CategoryTileIcon slug={category.slug} className="h-6 w-6 text-[#2D1B69]" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="truncate text-sm font-semibold text-[var(--text)]">{category.name}</div>
-                              <div className="text-xs text-[var(--text-muted)]">{category.productCount.toLocaleString()} products</div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="grid gap-3 bg-[var(--bg-alt)] p-4">
-                      <div className="overflow-hidden rounded-[24px] bg-[var(--brand)] p-5 text-white shadow-[var(--shadow-brand-soft)]">
-                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
-                          <Truck className="h-4 w-4" /> Same day dispatch
-                        </div>
-                        <p className="mt-3 text-2xl font-black leading-tight">Bulk procurement with warehouse-grade reliability.</p>
-                        <p className="mt-2 text-sm text-white/82">Verified suppliers, negotiated tiers, and GST-ready checkout across the product graph.</p>
-                        <Link href="/rfq" className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[var(--brand)]">
-                          Start RFQ <ChevronRight className="h-4 w-4" />
-                        </Link>
-                      </div>
-                      <div className="rounded-[24px] border border-[var(--border-subtle)] bg-white p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">Popular searches</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {['cement', 'tmt bars', 'tiles', 'paint', 'electrical', 'hardware'].map((term) => (
-                            <button
-                              key={term}
-                              type="button"
-                              onClick={() => {
-                                setSearchQuery(term);
-                                router.push(`/products?search=${encodeURIComponent(term)}`);
-                              }}
-                              className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
-                            >
-                              {term}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-          </div>
 
           <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
             <LocationMenu />
