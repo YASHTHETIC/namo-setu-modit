@@ -5,7 +5,7 @@ import { useProducts, useOrders, useRFQs, useProjects, useSuppliers } from "@/li
 import { Package, Users, FileText, ShoppingCart, FolderOpen, ArrowRight, TrendingUp, TrendingDown, Zap, Truck, Building2 } from "lucide-react";
 
 export default function DashboardPage() {
-  const productsQuery = useProducts({ page: 1 });
+  const productsQuery = useProducts({ page: 1, page_size: 1000 });
   const ordersQuery = useOrders();
   const rfqsQuery = useRFQs();
   const projectsQuery = useProjects();

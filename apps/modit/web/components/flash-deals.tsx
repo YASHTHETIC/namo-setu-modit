@@ -35,7 +35,7 @@ function Countdown({ target }: { target: number }) {
 export function FlashDeals() {
   const tryAdd = useAddToCart();
   const items = useCartStore((s) => s.items);
-  const { data: allProducts = [] } = useProducts({});
+  const { data: allProducts = [] } = useProducts({ page_size: 1000 });
   const allProductsList = useDisplayProducts(allProducts as Product[]);
   const [optionsFor, setOptionsFor] = useState<(typeof allProductsList)[number] | null>(null);
 

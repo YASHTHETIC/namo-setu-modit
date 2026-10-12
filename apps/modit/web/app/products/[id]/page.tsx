@@ -93,7 +93,7 @@ export default function ProductDetailPage({
   const requireLogin = useRequireLogin();
   const areaBlocked = Boolean(deliveryPincode) && !areaServiceable;
 
-  const { data: allProducts = [] } = useProducts({});
+  const { data: allProducts = [] } = useProducts({ page_size: 1000 });
   const allProductsList = allProducts as Product[];
 
   const relatedProducts = useMemo(() => {

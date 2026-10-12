@@ -113,7 +113,7 @@ export default function ModitHomePage() {
     if (val.length === 6) setContextPincode(val);
   }, [setContextPincode]);
 
-  const { data: allProducts = [] } = useProducts({});
+  const { data: allProducts = [] } = useProducts({ page_size: 1000 });
   const products = allProducts as Product[];
   const { data: searchResults = [] } = useSearchProducts(searchQuery);
   const [mounted, setMounted] = useState(false);

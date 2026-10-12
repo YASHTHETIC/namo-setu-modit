@@ -57,7 +57,7 @@ export const moditKeys = {
 };
 
 // Product Catalog
-export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number }) {
+export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number; page_size?: number }) {
   return useQuery({
     queryKey: moditKeys.products(params),
     // react-query aborts the in-flight request on key change/unmount via signal.

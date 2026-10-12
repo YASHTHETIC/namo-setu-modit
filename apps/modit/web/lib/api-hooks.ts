@@ -11,7 +11,7 @@ function isArray(a: unknown): a is unknown[] {
   return Array.isArray(a);
 }
 
-export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number }) {
+export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; page?: number; page_size?: number }) {
   const apiQuery = useApiProducts(params);
   const raw = apiQuery.data as Product[] | { items?: Product[]; did_you_mean?: string | null } | undefined;
   const apiProducts = isArray(raw) ? (raw as Product[]) : (raw?.items ?? []);

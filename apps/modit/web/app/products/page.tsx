@@ -62,6 +62,7 @@ function ProductsContent() {
   const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
     category_id: selectedCategory || undefined,
+    page_size: 1000,
   });
   // Typo tolerance: the API may have corrected the query ("brwn" -> "brown bread").
   // Match client-side filters against the corrected terms so those items survive.
@@ -72,7 +73,7 @@ function ProductsContent() {
   const products = useDisplayProducts(rawProducts);
   // Counts must come from the unfiltered-by-category list, else every other
   // category shows 0 the moment one category is selected
-  const { data: apiCountBase = [] } = useProducts({ search: search || undefined });
+  const { data: apiCountBase = [] } = useProducts({ search: search || undefined, page_size: 1000 });
   const countProducts = useDisplayProducts(apiCountBase as Product[]);
   const categories = apiCategories as { name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
