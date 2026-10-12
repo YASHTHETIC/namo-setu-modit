@@ -55,7 +55,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const stars = Math.max(0, Math.min(5, Math.round(product.rating)));
 
   return (
-    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col">
+    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full">
       {/* Image */}
       <div className="relative bg-[#F7F4FC]">
         <Link href={`/products/${product.id}`} className="relative block aspect-square">

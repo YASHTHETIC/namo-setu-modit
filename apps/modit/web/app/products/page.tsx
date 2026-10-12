@@ -883,7 +883,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <div
-      className="group relative rounded-2xl bg-white transition-all duration-300 overflow-hidden"
+      className="group relative rounded-2xl bg-white transition-all duration-300 overflow-hidden h-full flex flex-col"
       style={{
         border: '1px solid #DDD6EE',
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
@@ -979,7 +979,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
       </div>
 
       {/* Info */}
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         {/* Category + Brand row */}
         <div className="flex items-center gap-2 mb-1.5">
           {product.brand && (
@@ -1005,7 +1005,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         </div>
 
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors cursor-pointer">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors cursor-pointer min-h-[35px]">
             {product.name}
           </h3>
         </Link>
@@ -1059,7 +1059,10 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           </div>
         )}
 
-        {/* Add to Cart */}
+        {/* spacer pins CTA to the bottom; button keeps its own margin */}
+        <div className="flex-1" />
+
+        {/* Add to Cart — pinned to card bottom so grid rows align */}
         <button
           onClick={handleAdd}
           disabled={blocked}

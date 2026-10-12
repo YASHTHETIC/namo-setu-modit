@@ -108,7 +108,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className={`product-card-mobile card-lift flex flex-col ${compact ? "w-[140px]" : "w-full"} group group/card`}
+      className={`product-card-mobile card-lift flex flex-col h-full ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
       {/* Image zone — uniform square, full product visible (Blinkit-style) */}
       <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
@@ -208,7 +208,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       </div>
 
       {/* Info zone */}
-      <div className="flex flex-col gap-1 p-3">
+      <div className="flex flex-col flex-1 gap-1 p-3">
         {/* Brand */}
         {product.brand && (
           <p className="text-tiny font-semibold text-[#7CB518] uppercase tracking-wide truncate">
@@ -268,8 +268,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price row — hero + strike wrap safely, save pill never clips */}
-        <div className="flex items-baseline gap-1.5 mt-1 flex-wrap">
+        {/* Price row — pinned to card bottom so rows align across the grid */}
+        <div className="flex items-baseline gap-1.5 mt-auto pt-1 flex-wrap">
           <span className="price-hero">₹{activePrice.toLocaleString()}</span>
           {discount > 0 && (
             <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
