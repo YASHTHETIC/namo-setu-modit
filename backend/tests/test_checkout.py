@@ -266,3 +266,63 @@ def test_catalog_parser_counts():
     acc = by_sku["CEM-ACC-50"]
     assert acc["price"] == 370.0 and acc["mrp"] == 400.0
     assert all(i["price"] > 0 and i["sku"] for i in items)
+
+
+def test_parse_order_totals():
+    from backend.app.api.v1.modit import _parse_order_address, _parse_order_totals
+
+    full = _parse_order_totals(
+        '{"subtotal": 2800.0, "discount_total": 100.0, "shipping_total": 250.0,'
+        ' "gst_total": 486.0, "grand_total": 3436.0}'
+    )
+    assert full == {
+        "subtotal": 2800.0,
+        "discount_total": 100.0,
+        "shipping_total": 250.0,
+        "gst_total": 486.0,
+        "grand_total": 3436.0,
+    }
+    # Missing/corrupt payloads degrade to zeros — the Orders list never crashes.
+    assert _parse_order_totals(None)["grand_total"] == 0.0
+    assert _parse_order_totals("not-json")["grand_total"] == 0.0
+    assert _parse_order_totals("[1,2]")["grand_total"] == 0.0
+    assert _parse_order_totals('{"grand_total": "3436.5"}')["grand_total"] == 3436.5
+
+    addr = _parse_order_address('{"name": "A", "pincode": "201301"}')
+    assert addr == {"name": "A", "pincode": "201301"}
+    assert _parse_order_address(None) is None
+    assert _parse_order_address("junk") is None
+    assert _parse_order_address("[1]") is None
+
+
+def test_order_serializers_carry_money():
+    from backend.app.schemas.modit import OrderDetailRead, OrderItemRead, OrderRead
+
+    row = OrderRead(
+        id="o1",
+        organization_id="org",
+        purchase_order_id=None,
+        order_number="ORD-1",
+        status="placed",
+        placed_at="2026-10-12T00:00:00Z",
+        notes=None,
+        created_at="2026-10-12T00:00:00Z",
+    )
+    assert row.total == 0.0 and row.items_count == 0
+    row.total = 3436.0
+    row.items_count = 2
+    detail = OrderDetailRead(**row.model_dump(), items=[], delivery_id=None)
+    assert detail.total == 3436.0 and detail.grand_total == 0.0
+    assert detail.payment_status == "pending" and detail.address is None
+    item = OrderItemRead(
+        id="i1",
+        order_id="o1",
+        purchase_order_id=None,
+        product_id="p1",
+        quantity=2,
+        unit_price=100.0,
+        gst_amount=36.0,
+        line_total=200.0,
+        created_at="2026-10-12T00:00:00Z",
+    )
+    assert item.sku is None and item.name is None

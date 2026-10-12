@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import pathlib
 from datetime import datetime, timezone
 
@@ -24,6 +25,7 @@ from backend.app.models.modit import (
     MaterialRequest,
     MaterialRequestItem,
     ModitNotification,
+    ModitPayment,
     Order,
     OrderItem,
     Organization,
@@ -96,6 +98,7 @@ from backend.app.schemas.modit import (
     OrderCreate,
     OrderDetailRead,
     OrderItemCreate,
+    OrderItemRead,
     OrderRead,
     OrderStatusUpdate,
     ProductCreate,
@@ -587,6 +590,39 @@ async def create_cart(payload: CartCreate, db: AsyncSession = Depends(get_db)) -
     return CartRead(items=items, subtotal=subtotal, gst_total=gst_total, grand_total=subtotal + gst_total)
 
 
+_ORDER_TOTAL_KEYS = ("subtotal", "discount_total", "shipping_total", "gst_total", "grand_total")
+
+
+def _parse_order_totals(totals_json: str | None) -> dict[str, float]:
+    """Stored server bill for an order. Missing/corrupt JSON = zeros (never crash the list)."""
+    out = {key: 0.0 for key in _ORDER_TOTAL_KEYS}
+    if not totals_json:
+        return out
+    try:
+        data = json.loads(totals_json)
+    except (TypeError, ValueError):
+        return out
+    if not isinstance(data, dict):
+        return out
+    for key in _ORDER_TOTAL_KEYS:
+        try:
+            out[key] = round(float(data.get(key, 0.0) or 0.0), 2)
+        except (TypeError, ValueError):
+            out[key] = 0.0
+    return out
+
+
+def _parse_order_address(address_json: str | None) -> dict | None:
+    """Buyer address snapshot saved at placement (name/phone/line1/city/state/pincode)."""
+    if not address_json:
+        return None
+    try:
+        data = json.loads(address_json)
+    except (TypeError, ValueError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
 @router.get("/orders", response_model=list[OrderRead])
 async def list_orders(
     organization_id: str | None = None,
@@ -616,7 +652,29 @@ async def list_orders(
             return []
         stmt = stmt.where(Order.organization_id.in_(org_ids))
     result = await db.execute(stmt.order_by(Order.created_at.desc()))
-    return [OrderRead.model_validate(item) for item in result.scalars().all()]
+    orders = list(result.scalars().all())
+    # One grouped count for every listed order (no N+1): the buyer Orders
+    # page reads items_count/total straight off this payload.
+    counts: dict[str, int] = {}
+    if orders:
+        count_rows = (
+            (
+                await db.execute(
+                    select(OrderItem.order_id, func.count(OrderItem.id))
+                    .where(OrderItem.order_id.in_([o.id for o in orders]))
+                    .group_by(OrderItem.order_id)
+                )
+            )
+            .all()
+        )
+        counts = {order_id: int(n) for order_id, n in count_rows}
+    out: list[OrderRead] = []
+    for item in orders:
+        row = OrderRead.model_validate(item)
+        row.total = _parse_order_totals(item.totals_json).get("grand_total", 0.0)
+        row.items_count = counts.get(item.id, 0)
+        out.append(row)
+    return out
 
 
 @router.post("/checkout", response_model=CheckoutResponse, status_code=status.HTTP_201_CREATED)
@@ -660,10 +718,44 @@ async def get_order(order_id: str, db: AsyncSession = Depends(get_db)) -> OrderD
         delivery_id = getattr(delivery, "id", None)
     except HTTPException:
         delivery_id = None
+    totals = _parse_order_totals(order.totals_json)
+    # Human labels for each line in one batched lookup (no N+1).
+    labels: dict[str, tuple[str | None, str | None]] = {}
+    product_ids = list({it.product_id for it in order.items if it.product_id})
+    if product_ids:
+        for pid, sku, name in (
+            await db.execute(select(Product.id, Product.sku, Product.name).where(Product.id.in_(product_ids)))
+        ).all():
+            labels[pid] = (sku, name)
+    item_reads = []
+    for it in order.items:
+        row = OrderItemRead.model_validate(it)
+        sku, name = labels.get(it.product_id, (None, None))
+        row.sku = sku
+        row.name = name
+        item_reads.append(row)
+    pay_status = "pending"
+    pay_row = (
+        (await db.execute(select(ModitPayment.payment_status).where(ModitPayment.order_id == order.id).limit(1)))
+        .scalars()
+        .first()
+    )
+    if pay_row:
+        pay_status = str(pay_row)
+    base = OrderRead.model_validate(order)
+    base.total = totals.get("grand_total", 0.0)
+    base.items_count = len(order.items)
     return OrderDetailRead(
-        **OrderRead.model_validate(order).model_dump(),
-        items=[OrderItemRead.model_validate(item) for item in order.items],
+        **base.model_dump(),
+        items=item_reads,
         delivery_id=delivery_id,
+        subtotal=totals.get("subtotal", 0.0),
+        discount_total=totals.get("discount_total", 0.0),
+        shipping_total=totals.get("shipping_total", 0.0),
+        gst_total=totals.get("gst_total", 0.0),
+        grand_total=totals.get("grand_total", 0.0),
+        payment_status=pay_status,
+        address=_parse_order_address(order.shipping_address_json),
     )
 
 

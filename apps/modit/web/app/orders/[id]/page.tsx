@@ -79,6 +79,7 @@ const demoOrders: Record<string, OrderDetail> = {
 };
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Package; dot: string }> = {
+  placed: { label: "Placed", color: "text-[#2D1B69]", bg: "bg-[#F0ECF9]", border: "border-[#2D1B69]/20", icon: FileText, dot: "bg-[#2D1B69]" },
   confirmed: { label: "Confirmed", color: "text-[#2D1B69]", bg: "bg-[#F0ECF9]", border: "border-[#2D1B69]/20", icon: CheckCircle2, dot: "bg-[#2D1B69]" },
   processing: { label: "Processing", color: "text-[#E91E63]", bg: "bg-[#FCE4EC]", border: "border-[#E91E63]/20", icon: Clock, dot: "bg-[#E91E63]" },
   dispatched: { label: "Dispatched", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Package, dot: "bg-[#00BCD4]" },
@@ -94,6 +95,59 @@ const timelineSteps = [
   { key: "in_transit", label: "In Transit", icon: Truck },
   { key: "delivered", label: "Delivered", icon: MapPin },
 ];
+
+/**
+ * Normalize a raw API order (OrderDetailRead: snake_case, ids only) into the
+ * OrderDetail shape this page renders. Prices/totals come from the server;
+ * only display labels (unit/brand) are enriched from the local catalog.
+ * Unknown/missing pieces degrade to blanks — never invented money.
+ */
+function toOrderDetail(api: any): OrderDetail | null {
+  if (!api || typeof api !== "object" || !api.id) return null;
+  const addr = (api.address ?? {}) as Record<string, any>;
+  const paid = String(api.payment_status ?? "pending").toLowerCase() === "paid";
+  const items = Array.isArray(api.items) ? api.items : [];
+  return {
+    id: String(api.order_number || api.id),
+    status: String(api.status || "placed"),
+    placedAt: String(api.placed_at || new Date().toISOString()),
+    expectedDelivery: "",
+    address: {
+      name: String(addr.name || "Customer"),
+      phone: String(addr.phone || ""),
+      line1: String(addr.line1 || addr.address || ""),
+      city: String(addr.city || ""),
+      state: String(addr.state || ""),
+      pincode: String(addr.pincode || ""),
+    },
+    payment: {
+      method: paid ? "Online payment" : "Pay on delivery",
+      status: paid ? "paid" : "pending",
+      transactionId: api.payment_reference ? String(api.payment_reference) : undefined,
+    },
+    items: items.map((it: any) => {
+      const p = it?.product_id ? getProductById(String(it.product_id)) : undefined;
+      const qty = Number(it?.quantity ?? 0);
+      const unitPrice = Number(it?.unit_price ?? 0);
+      return {
+        name: String(it?.name || p?.name || "Item"),
+        sku: String(it?.sku || p?.sku || ""),
+        quantity: qty,
+        unitPrice,
+        unitCode: String(p?.unitCode || ""),
+        gstRate: Number(p?.gstRate ?? 0),
+        brand: p?.brand ?? null,
+        total: Number(it?.line_total ?? unitPrice * qty),
+      };
+    }),
+    subtotal: Number(api.subtotal ?? 0),
+    gst: Number(api.gst_total ?? api.gst ?? 0),
+    shipping: Number(api.shipping_total ?? api.shipping ?? 0),
+    total: Number(api.grand_total ?? api.total ?? 0),
+    invoiceNumber: `${String(api.order_number || api.id)}-INV`,
+    specialInstructions: typeof api.notes === "string" && api.notes ? api.notes : undefined,
+  };
+}
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -136,7 +190,13 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const adminOrderStatus = useAdminStore((s) => s.orderStatuses[id]?.status);
 
   const order = useMemo(() => {
-    const base = apiOrder ? (apiOrder as unknown as OrderDetail) : (demoOrders[id] ?? null);
+    // Demo showcase ids keep their built-in data; every real server order
+    // goes through the normalizer (raw API shape cannot render directly).
+    if (demoOrders[id]) {
+      const base = demoOrders[id];
+      return adminOrderStatus ? { ...base, status: adminOrderStatus } : base;
+    }
+    const base = apiOrder ? toOrderDetail(apiOrder as unknown as Record<string, unknown>) : null;
     if (!base) return null;
     return adminOrderStatus ? { ...base, status: adminOrderStatus } : base;
   }, [apiOrder, id, adminOrderStatus]);

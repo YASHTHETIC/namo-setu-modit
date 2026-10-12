@@ -41,7 +41,7 @@ export default function OrdersPage() {
 
   const totalSpent = orderList.reduce((sum, o) => sum + ((o as any).total || 0), 0);
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
-  const activeCount = orderList.filter(o => ["in_transit", "confirmed", "processing", "dispatched"].includes(o.status)).length;
+  const activeCount = orderList.filter(o => ["placed", "in_transit", "confirmed", "processing", "dispatched"].includes(o.status)).length;
 
   const handleReorder = (order: any) => {
     // Only real catalog products — never invent a placeholder item (it would

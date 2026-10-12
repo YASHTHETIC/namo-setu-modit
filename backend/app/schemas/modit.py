@@ -520,6 +520,11 @@ class OrderRead(ORMModel):
     placed_at: datetime
     notes: str | None
     created_at: datetime
+    # List-view money/counts. The buyer Orders page reads these straight off
+    # the list payload (server totals_json is the source of truth — the
+    # Order row itself carries no amount column).
+    total: float = 0.0
+    items_count: int = 0
 
 
 class CartItemUpsert(BaseModel):
@@ -571,11 +576,25 @@ class OrderItemRead(ORMModel):
     gst_amount: float
     line_total: float
     created_at: datetime
+    # Human labels for the order detail/receipt views (joined from products).
+    sku: str | None = None
+    name: str | None = None
 
 
 class OrderDetailRead(OrderRead):
     items: list[OrderItemRead]
     delivery_id: str | None = None
+    # Bill breakdown from the stored server totals (same numbers checkout
+    # returned at placement). The detail page reads these directly.
+    subtotal: float = 0.0
+    discount_total: float = 0.0
+    shipping_total: float = 0.0
+    gst_total: float = 0.0
+    grand_total: float = 0.0
+    payment_status: str = "pending"
+    # Buyer address snapshot saved at placement (name/phone/line1/city/
+    # state/pincode keys) — powers the detail header + invoice.
+    address: dict | None = None
 
 
 class OrderStatusUpdate(BaseModel):
