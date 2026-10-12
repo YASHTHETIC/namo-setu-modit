@@ -194,17 +194,15 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
 
-        {/* Delivery badge — bottom-left */}
-        {!compact && (
-          <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
-            <span className="text-tiny font-bold text-[#00BCD4] flex items-center gap-0.5">
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-              60 Mins
-            </span>
-          </div>
-        )}
+        {/* Delivery badge — bottom-left, all sizes like Blinkit */}
+        <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
+          <span className="text-tiny font-bold text-[#00BCD4] flex items-center gap-0.5">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            60 Mins
+          </span>
+        </div>
       </div>
 
       {/* Info zone */}
