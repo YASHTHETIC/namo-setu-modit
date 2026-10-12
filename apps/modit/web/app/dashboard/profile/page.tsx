@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
+import Link from "next/link";
 import {
   User, Shield, Bell, Key, Eye, EyeOff, CheckCircle, Loader2, MapPin, Plus, Trash2,
+  Package, Heart, MessageCircle,
 } from "lucide-react";
 import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
@@ -88,6 +90,26 @@ function OverviewTab() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Quick tiles — Blinkit-app account shortcuts */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { label: "My Orders", href: "/orders", icon: Package, tint: "bg-[#F0ECF9] text-[#2D1B69]" },
+          { label: "Wishlist", href: "/wishlist", icon: Heart, tint: "bg-[#FCE4EC] text-[#E91E63]" },
+          { label: "Need help?", href: "/contact", icon: MessageCircle, tint: "bg-[#F0F9E8] text-[#5A8010]" },
+        ].map((t) => (
+          <Link
+            key={t.label}
+            href={t.href}
+            className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:border-[#2D1B69] transition-all"
+          >
+            <span className={`h-10 w-10 rounded-xl flex items-center justify-center ${t.tint}`}>
+              <t.icon className="h-5 w-5" />
+            </span>
+            <span className="text-caption font-bold text-[#150726] text-center leading-tight">{t.label}</span>
+          </Link>
+        ))}
       </div>
 
       {/* Info grid */}

@@ -8,8 +8,10 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt
+  BadgeCheck, Undo2, Receipt, Tag
 } from "lucide-react";
+import { useToast } from "@foundation/ui";
+import { useCouponStore } from "@/lib/coupon-store";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
@@ -31,6 +33,7 @@ import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { useCartUi } from "@/lib/cart-ui";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
+import { useNearestWarehouse } from "@/lib/modit-api";
 import { categories as allCategories } from "@/lib/product-data";
 import { CategoryTileIcon } from "@/components/modit-shell";
 
@@ -97,6 +100,7 @@ export default function ModitHomePage() {
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const router = useRouter();
+  const toast = useToast();
   const openDrawer = useCartUi((s) => s.openDrawer);
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -105,7 +109,8 @@ export default function ModitHomePage() {
   useModalBehavior(showSearch, () => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); });
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setPincode: setContextPincode } = usePincode();
+  const { setPincode: setContextPincode, coords } = usePincode();
+  const { data: nearest } = useNearestWarehouse(coords?.lat, coords?.lng);
   const searchHint = useRotatingText(SEARCH_HINTS);
   const [pincode, setPincodeLocal] = useState("201301");
   const setPincode = useCallback((val: string) => {
@@ -118,7 +123,6 @@ export default function ModitHomePage() {
   const { data: searchResults = [] } = useSearchProducts(searchQuery);
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [deliveryPulse, setDeliveryPulse] = useState(true);
   const [cartToast, setCartToast] = useState<{ name: string; price: number } | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
@@ -133,10 +137,6 @@ export default function ModitHomePage() {
     const onScroll = () => setShowBackToTop(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  useEffect(() => {
-    const t = setInterval(() => setDeliveryPulse((p) => !p), 2000);
-    return () => clearInterval(t);
   }, []);
   // Load recent searches from localStorage
   useEffect(() => {
@@ -262,29 +262,52 @@ export default function ModitHomePage() {
         </div>
       </header>
 
-      {/* ═══ DELIVERY BAR — Pulsing bolt ═══ */}
+      {/* ═══ CATEGORY SHORTCUTS — Blinkit-app icon strip under search ═══ */}
+      <div className="bg-[#150726] border-b border-white/5">
+        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4">
+          <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
+            <LayoutGrid className="h-5 w-5" />
+            <span className="text-tiny font-bold">All</span>
+          </Link>
+          {categories.slice(0, 7).map((c) => (
+            <Link
+              key={c.slug}
+              href={`/products?category=${c.slug}`}
+              className="flex flex-col items-center gap-1 px-3 py-2 text-white/60 hover:text-white flex-shrink-0 transition-colors"
+            >
+              <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
+              <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-[#7CB518]/15 border border-[#7CB518]/40 rounded-xl px-3 py-1.5 shadow-md shadow-green-500/20">
-            <div className="relative">
-              <Zap className="h-4 w-4 text-[#7CB518] transition-transform duration-300" style={{ transform: deliveryPulse ? "scale(1.2)" : "scale(1)" }} />
-              {deliveryPulse && (
-                <span className="absolute inset-0 rounded-full border border-[#7CB518]/40 animate-ping" />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-body-md font-extrabold text-white leading-tight">
+                Delivery in <span className="text-[#7CB518]">60 min</span>
+              </p>
+              {nearest && typeof nearest.distance_km === "number" && (
+                <span className="flex-shrink-0 rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums">
+                  {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
+                </span>
               )}
             </div>
-            <span className="text-body-lg font-black text-[#7CB518]">60</span>
-            <span className="text-tiny font-bold text-[#7CB518] uppercase leading-tight">Mins</span>
+            <button
+              onClick={() => setShowPincodeModal(true)}
+              className="mt-0.5 flex items-center gap-1 text-white/70 hover:text-white transition-colors group max-w-full"
+            >
+              <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#7CB518] transition-colors flex-shrink-0" />
+              <span className="text-caption font-semibold truncate">
+                {pincode ? `Deliver to ${pincode}` : "Set delivery location"}
+              </span>
+              <ChevronDown className="h-3 w-3 text-white/50 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
+            </button>
           </div>
-          <button
-            onClick={() => setShowPincodeModal(true)}
-            className="flex items-center gap-1.5 text-white hover:text-white/90 transition-colors group"
-          >
-            <MapPin className="h-3.5 w-3.5 text-white/50 group-hover:text-[#7CB518] transition-colors" />
-            <span className="text-caption font-semibold">Deliver To</span>
-            <ChevronDown className="h-3.5 w-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-300" />
-          </button>
-          <span className="text-body-sm font-bold text-[#7CB518]">{pincode}</span>
-          <div className="ml-auto flex items-center gap-1.5 text-white/40">
+          <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
             <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
             <span className="text-tiny font-medium">Live</span>
           </div>
@@ -372,6 +395,33 @@ export default function ModitHomePage() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* ═══ OFFERS STRIP — real coupon codes, tap to copy ═══ */}
+      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-3">
+        <p className="text-micro font-black uppercase tracking-wider text-[#2D1B69] px-1 mb-2">Payment offers</p>
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x">
+          {useCouponStore((s) => s.availableCoupons).filter((c) => c.active).map((c) => (
+            <button
+              key={c.code}
+              onClick={() => {
+                const done = () => toast.success("Code copied!", `${c.code} — apply it at checkout`);
+                try {
+                  const clip = navigator?.clipboard;
+                  if (clip) clip.writeText(c.code).then(done).catch(done);
+                  else done();
+                } catch { done(); }
+              }}
+              className="snap-start shrink-0 flex items-center gap-2 rounded-xl border-2 border-dashed border-[#7CB518]/50 bg-[#F0F9E8] px-3 py-2 text-left hover:border-[#7CB518] transition-colors"
+            >
+              <Tag className="h-4 w-4 text-[#5A8010] flex-shrink-0" />
+              <span>
+                <span className="block text-caption font-black text-[#150726] tracking-wide">{c.code}</span>
+                <span className="block text-tiny text-[#6B5B83] whitespace-nowrap">{c.description}</span>
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
+import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
@@ -43,6 +44,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const tryAdd = useAddToCart();
   const optLabel = optionsLabel(live);
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
 
   const selectedVariant = selectedVariantId
     ? live.variants?.find((v) => v.id === selectedVariantId) ?? null
@@ -101,6 +103,15 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             {discount}% OFF
           </span>
         )}
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className="absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm hover:scale-110 active:scale-95 transition-transform"
+        >
+          <svg viewBox="0 0 24 24" className={`h-3.5 w-3.5 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+          </svg>
+        </button>
       </div>
 
       {/* Info zone */}
@@ -115,7 +126,12 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <h3 className="text-body-sm font-medium text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px]">
           {product.name}
         </h3>
-        <p className="text-micro text-[#9B8CB5]">{product.unit}</p>
+        <p className="text-micro text-[#9B8CB5] truncate">
+          {product.unit}
+          {live.stockLevel > 0 && live.stockLevel <= 10 && (
+            <span className="font-bold text-[#E91E63]"> · Only {live.stockLevel} left</span>
+          )}
+        </p>
 
         {/* Bottom row — price block left, ADD/stepper right */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1.5">
