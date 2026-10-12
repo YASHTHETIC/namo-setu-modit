@@ -9,7 +9,6 @@ import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { usePincode } from "@/lib/pincode-context";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
-import { DoorBadge, ReplaceBadge } from "@/components/fx";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 
 /** Parse "50kg" / "5 kg" / "20 L" into { qty, label } for per-unit pricing. */
@@ -49,7 +48,6 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const qty = lines.reduce((s, i) => s + i.quantity, 0);
   const stepLine = lines.find((i) => !i.variantId) ?? lines[0];
 
-  const discountAmt = product.mrp > product.price ? Math.round(product.mrp - product.price) : 0;
   const discountPct = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
   const unitRate = perUnitText(product.price, product.unit, product.unitCode);
   const stars = Math.max(0, Math.min(5, Math.round(product.rating)));
@@ -72,7 +70,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           ) : null}
         </Link>
         {discountPct > 0 && (
-          <span className="absolute top-1.5 left-1.5 rounded-md bg-[#E91E63] px-1.5 py-0.5 text-tiny font-black text-white">
+          <span className="absolute top-0 left-0 rounded-br-lg bg-[#F8CB46] px-1.5 py-0.5 text-tiny font-black text-[#150726]">
             {discountPct}% OFF
           </span>
         )}
@@ -88,8 +86,6 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         >
           <Heart className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "text-[#9B8CB5]"}`} />
         </button>
-        <DoorBadge overlay />
-
         {/* Overlapping unit + ADD row */}
         <div className="absolute -bottom-4 left-2 right-2 flex items-end justify-between gap-1">
           <span className="rounded-md bg-white px-1.5 py-1 text-tiny font-bold text-[#150726] shadow-md border border-[#EDE7F6] whitespace-nowrap">
@@ -138,15 +134,14 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         {unitRate ? <p className="text-tiny text-[#6B5B83] min-h-[14px]">{unitRate}</p> : <p className="text-tiny min-h-[14px]" aria-hidden="true"> </p>}
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString()}</span>
-          {product.mrp > product.price && (
+        </div>
+        <div className="min-h-[14px]">
+          {product.mrp > product.price ? (
             <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>
+          ) : (
+            <span className="text-tiny invisible" aria-hidden="true">.</span>
           )}
         </div>
-        {discountAmt > 0 && (
-          <p className="text-tiny font-bold text-[#2D7B2D]">
-            ₹{discountAmt} OFF{discountPct > 0 ? ` (${discountPct}% OFF on MRP)` : ""}
-          </p>
-        )}
         <Link href={`/products/${product.id}`}>
           <p className="text-micro font-semibold text-[#150726] leading-tight line-clamp-2 mt-0.5 min-h-[28px]">{product.name}</p>
         </Link>
@@ -170,9 +165,6 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           {blocked && (
             <span className="text-tiny font-black text-[#E91E63]">Unavailable in your area</span>
           )}
-        </div>
-        <div className="mt-1.5">
-          <ReplaceBadge />
         </div>
       </div>
 

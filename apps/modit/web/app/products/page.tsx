@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { Reveal } from "@/components/reveal";
-import { DoorBadge, ReplaceBadge } from "@/components/fx";
+import { ReplaceBadge } from "@/components/fx";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
@@ -686,7 +686,7 @@ function ProductsContent() {
           ) : (
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
-              <div className="product-grid grid grid-cols-2 gap-2.5 sm:hidden">
+              <div className="product-grid grid grid-cols-2 gap-2 sm:hidden">
                 {visibleProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
@@ -694,7 +694,7 @@ function ProductsContent() {
               {/* Desktop / tablet: respects grid/list view mode */}
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
-                  <div className="product-grid grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                  <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
                     {visibleProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
@@ -844,7 +844,6 @@ function ProductsContent() {
   );
 }
 
-import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { MobileProductCard } from "@/components/mobile-product-card";
 import { useAddToCart } from "@/lib/use-add-to-cart";
@@ -861,7 +860,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const catColor = getCatColor(product.categorySlug);
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
   const optLabel = optionsLabel(product);
@@ -873,12 +871,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
     if (!tryAdd(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-  };
-
-  const handleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleWishlist();
   };
 
   return (
@@ -924,197 +916,59 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
 
-        {/* 3D Material-on-Door overlay */}
-        <div className="trust3d-overlay absolute bottom-3 right-3 z-20">
-          <DoorBadge />
-        </div>
-
-        {/* Wishlist */}
-        <button
-          onClick={handleWishlist}
-          className="absolute top-3 left-3 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200"
-          style={{
-            background: wishlisted ? '#FCE4EC' : 'rgba(255,255,255,0.92)',
-            boxShadow: wishlisted ? '0 2px 8px rgba(239,68,68,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
-          }}
-          title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-        >
-          <Heart className={`h-4 w-4 transition-all ${wishlisted ? "fill-red-500 text-red-500 scale-110" : "text-gray-400"}`} />
-        </button>
-
-        {/* Discount badge */}
-        {product.discount > 0 && (
-          <span
-            className="absolute top-3 right-3 z-20 flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg"
-            style={{
-              background: 'linear-gradient(135deg, #E91E63, #E91E63)',
-              boxShadow: '0 3px 12px rgba(220,38,38,0.35)',
-            }}
-          >
-            <TrendingDown className="h-3 w-3" />
+        {/* Discount ribbon — the single discount signal */}
+        {savingsPercent > 0 && (
+          <span className="absolute top-0 left-0 z-20 bg-[#F8CB46] text-[#150726] rounded-br-lg px-2 py-1 text-tiny font-black">
             {savingsPercent}% OFF
           </span>
         )}
 
-        {/* Sale badge */}
-        {"onSale" in product && (product as unknown as { onSale: boolean; saleName: string | null }).onSale && (
-          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 rounded-lg px-2.5 py-1 text-tiny font-black text-white shadow-lg bg-[#7CB518]">
-            {(product as unknown as { saleName: string | null }).saleName ?? "SALE"}
-          </span>
-        )}
-
-        {/* Verified badge */}
-        {product.seller.isVerified && (
-          <span
-            className="absolute bottom-3 left-3 z-20 flex items-center gap-1 rounded-lg px-2.5 py-1 text-tiny font-bold shadow-sm"
-            style={{
-              background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)',
-              color: '#059669',
-              border: '1px solid #A7F3D0',
-            }}
-          >
-            <Shield className="h-2.5 w-2.5" /> Verified Supplier
-          </span>
-        )}
+        {/* Delivery time pill — bottom-left */}
+        <div className="absolute bottom-3 left-3 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
+          <span className="text-tiny font-bold text-[#00BCD4]">60 MINS</span>
+        </div>
       </div>
 
-      {/* Info */}
+      {/* Info — Blinkit anatomy: name, unit, bottom price+ADD row */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Category + Brand row */}
-        <div className="flex items-center gap-2 mb-1.5">
-          {product.brand && (
-            <span
-              className="rounded-md px-2 py-0.5 text-tiny font-black uppercase tracking-wider"
-              style={{
-                background: catColor.bg,
-                color: catColor.text,
-              }}
-            >
-              {product.brand}
-            </span>
-          )}
-          <span
-            className="rounded-md px-2 py-0.5 text-tiny font-bold"
-            style={{
-              background: `${catColor.accent}0A`,
-              color: catColor.accent,
-            }}
-          >
-            {product.category}
-          </span>
-        </div>
-
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-tight hover:text-[var(--brand)] transition-colors cursor-pointer min-h-[35px]">
+          <h3 className="text-sm font-medium text-[#150726] line-clamp-2 leading-snug min-h-[38px] hover:text-[#2D1B69] transition-colors cursor-pointer">
             {product.name}
           </h3>
         </Link>
+        <p className="text-micro text-[#9B8CB5] mt-0.5">{product.unit}</p>
 
-        {/* Rating */}
-        <div className="mt-2 flex items-center gap-2">
-          <div
-            className="flex items-center gap-1 rounded-lg px-2 py-1 bg-[#F0ECF9] border border-[#DDD6EE]"
-          >
-            <span className="text-xs font-black text-[#7CB518]">{product.rating}</span>
-            <Star className="h-3 w-3" style={{ fill: '#7CB518', color: '#7CB518' }} />
-          </div>
-          <span className="text-tiny font-medium text-[var(--text-muted)]">({product.reviewCount.toLocaleString()} reviews)</span>
-        </div>
-
-        <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-          {!blocked && (
-            <DeliveryBadge
-              days={product.deliveryDays}
-              freeDelivery={product.freeDelivery}
-            />
-          )}
-          <ReplaceBadge />
-        </div>
-
-        {product.pincodeStock && (
-          <div className="mt-2">
-            <PincodeStockIndicator pincodeStock={product.pincodeStock} />
-          </div>
-        )}
-
-        {product.bulkLabel && (
-          <div className="mt-1.5 flex items-center gap-1.5">
-            <Tag className="h-3 w-3 text-emerald-600" />
-            <p className="text-tiny font-bold text-emerald-600">
-              {product.bulkLabel}
-            </p>
-          </div>
-        )}
-
-        {/* Price — fixed bottom block: everything variable sits above,
-            so prices align across the grid */}
-        <div className="mt-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-[var(--text-primary)]">
+        {/* Bottom row — price block left, ADD column right */}
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          <div className="min-w-0">
+            <p className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
               ₹{product.price.toLocaleString()}
-            </span>
+            </p>
             {product.mrp > product.price && (
-              <span className="text-xs text-[var(--text-muted)] line-through font-medium">
+              <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
                 ₹{product.mrp.toLocaleString()}
-              </span>
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            <button
+              onClick={handleAdd}
+              disabled={blocked}
+              title={blocked ? "Not serving your pincode yet" : undefined}
+              className={added ? "rounded-full bg-[#7CB518] text-white px-4 py-1.5 text-xs font-black transition-all disabled:opacity-50" : "btn-add"}
+            >
+              {added ? "Added ✓" : "ADD"}
+            </button>
+            {optLabel && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+                className="text-tiny font-semibold text-[#6B5B83] hover:text-[#2D1B69] transition-colors"
+              >
+                {optLabel}
+              </button>
             )}
           </div>
         </div>
-
-        {/* spacer pins CTA to the bottom; button keeps its own margin */}
-        <div className="flex-1" />
-
-        {/* Add to Cart — pinned to card bottom so grid rows align */}
-        <button
-          onClick={handleAdd}
-          disabled={blocked}
-          title={blocked ? "Not serving your pincode yet" : undefined}
-          className="btn-shine mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={
-            added
-              ? {
-                  background: 'linear-gradient(135deg, #059669, #059669)',
-                  color: 'white',
-                  boxShadow: '0 4px 16px rgba(16,185,129,0.35)',
-                }
-              : {
-                  background: 'linear-gradient(135deg, #7CB518, #6A9C14)',
-                  color: 'white',
-                  boxShadow: '0 3px 12px rgba(124,181,24,0.30)',
-                }
-          }
-          onMouseEnter={(e) => {
-            if (!added) e.currentTarget.style.boxShadow = '0 6px 24px rgba(124,181,24,0.40)';
-            if (!added) e.currentTarget.style.transform = 'translateY(-1px)';
-          }}
-          onMouseLeave={(e) => {
-            if (!added) e.currentTarget.style.boxShadow = '0 3px 12px rgba(124,181,24,0.30)';
-            if (!added) e.currentTarget.style.transform = 'translateY(0)';
-          }}
-        >
-          {added ? (
-            <>
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Added to Cart
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="h-4 w-4" /> Add to Cart
-            </>
-          )}
-        </button>
-
-        {/* Options (variants / shades) — HomeRun style */}
-        {optLabel && (
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-black bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7] transition-all"
-          >
-            {optLabel} <ChevronDown className="h-3.5 w-3.5" />
-          </button>
-        )}
       </div>
 
       <VariantOptionsModal

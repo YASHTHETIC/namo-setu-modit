@@ -1,19 +1,14 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, GitCompareArrows } from "lucide-react";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
-import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
-import { useComparisonStore } from "@/lib/comparison-store";
-import { PincodeStockIndicator } from "@/components/pincode-stock-indicator";
 import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
-import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 
 interface ProductCardProps {
@@ -21,14 +16,22 @@ interface ProductCardProps {
   compact?: boolean;
 }
 
+/**
+ * Blinkit-exact card anatomy (MODIT theme):
+ * image + single %OFF ribbon, time pill, 2-line name, unit,
+ * bottom row of price (+strike below) and ADD/stepper.
+ * No repeated discount pills, no overlay buttons — one path each.
+ * Variant/shade choice lives behind the "N options" link (modal).
+ */
 export function ProductCard({ product, compact = false }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
+  const stepDown = useCartStore((s) => s.stepDown);
   const items = useCartStore((s) => s.items);
   const adminOverrides = useAdminStore((s) => s.overrides);
   const adminSales = useAdminStore((s) => s.sales);
   const adminSuppliers = useSupplierStore((s) => s.suppliers);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const live = useMemo(() => resolveProduct(product), [product, adminOverrides, adminSales, adminSuppliers]);
+  const live = resolveProduct(product);
   if (live.hidden) return null;
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     product.variants?.[0]?.id ?? null
@@ -37,12 +40,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     (i) => i.product.id === product.id && (i.variantId ?? null) === selectedVariantId
   );
   const qty = existing?.quantity ?? 0;
-  const [flashing, setFlashing] = useState(false);
-  const [justAdded, setJustAdded] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const requireLogin = useRequireLogin();
   const tryAdd = useAddToCart();
-  const btnRef = useRef<HTMLButtonElement>(null);
   const optLabel = optionsLabel(live);
 
   const selectedVariant = selectedVariantId
@@ -50,9 +49,6 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     : null;
   const activePrice = selectedVariant?.price ?? live.price;
   const activeMrp = selectedVariant?.mrp ?? live.mrp;
-  const activeStock = selectedVariant?.stockLevel ?? live.stockLevel;
-
-  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
 
   const discount = activeMrp > activePrice
     ? Math.round(((activeMrp - activePrice) / activeMrp) * 100)
@@ -61,57 +57,34 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!tryAdd(live, 1, selectedVariantId ?? undefined)) return;
-    setFlashing(true);
-    setJustAdded(true);
-    setTimeout(() => setFlashing(false), 400);
-    setTimeout(() => setJustAdded(false), 1200);
+    tryAdd(live, 1, selectedVariantId ?? undefined);
   };
 
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!requireLogin()) return;
     addItem(live, 1, selectedVariantId ?? undefined);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const removeItem = useCartStore.getState().removeItem;
-    removeItem(product.id, selectedVariantId ?? undefined);
+    stepDown(product.id, selectedVariantId ?? undefined);
   };
 
-  const handleWishlist = (e: React.MouseEvent) => {
+  const openOptions = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist();
+    setOptionsOpen(true);
   };
-
-  const { addToCompare, removeFromCompare, isInCompare, canAdd } = useComparisonStore();
-  const inCompare = isInCompare(product.id);
-  const handleCompare = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (inCompare) {
-      removeFromCompare(product.id);
-    } else {
-      addToCompare(product);
-    }
-  };
-
-  const isBulk = live.bulkMinQty && live.bulkMinQty > 1;
-  const isBestseller = product.rating >= 4.5 && product.reviewCount > 50;
-  const hasVariants = product.variants && product.variants.length > 0;
-  const hasFreeDeliveryThreshold = product.freeDeliveryThreshold && !product.freeDelivery;
 
   return (
     <Link
       href={`/products/${product.id}`}
-      className={`product-card-mobile card-lift flex flex-col h-full ${compact ? "w-[140px]" : "w-full"} group group/card`}
+      className={`bg-white border border-[#EDE7F6] rounded-xl overflow-hidden flex flex-col h-full ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
-      {/* Image zone — uniform square, full product visible (Blinkit-style) */}
-      <div className="relative bg-[#F0ECF9] aspect-square overflow-hidden">
+      {/* Image zone — single %OFF ribbon, nothing else */}
+      <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden">
         {product.images?.[0] && (
           <Image
             src={product.images[0]}
@@ -119,216 +92,67 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
             loading="lazy"
-                draggable={false}
-                className="object-contain animate-fade-in card3d-img transition-transform duration-500 group-hover/card:scale-105"
-              />
+            draggable={false}
+            className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+          />
         )}
-
-        {/* Badges — top area */}
-        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
-          {discount > 0 && (
-            <span className="trust3d-overlay badge-pill badge-offer shadow-lg shadow-yellow-500/25">
-              {discount}% OFF
-            </span>
-          )}
-          {isBestseller && !compact && (
-            <span className="badge-bestseller">BESTSELLER</span>
-          )}
-          {isBulk && !compact && (
-            <span className="badge-bulk">BULK PRICE</span>
-          )}
-          {live.onSale && !compact && (
-            <span className="badge-pill bg-[#7CB518] text-white shadow-lg shadow-green-500/20">
-              {live.saleName ?? "SALE"}
-            </span>
-          )}
-        </div>
-
-        {/* Pincode stock indicator */}
-        {product.pincodeStock && !compact && (
-          <div className="absolute bottom-10 left-2 z-10">
-            <PincodeStockIndicator pincodeStock={product.pincodeStock} />
-          </div>
-        )}
-
-        {/* Wishlist button — top-right */}
-        <button
-          onClick={handleWishlist}
-          className={`wishlist-btn ${wishlisted ? "active" : ""}`}
-          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <Heart className={`h-4 w-4 ${wishlisted ? "fill-white" : ""}`} />
-        </button>
-
-        {/* Compare button — below wishlist */}
-        {!compact && (
-          <button
-            onClick={handleCompare}
-            className={`absolute top-10 right-2 z-10 h-7 w-7 rounded-full flex items-center justify-center transition-all ${
-              inCompare
-                ? "bg-[#2D1B69] text-white"
-                : "bg-white/90 text-[#9B8CB5] hover:bg-[#2D1B69] hover:text-white border border-[#DDD6EE]"
-            }`}
-            aria-label={inCompare ? "Remove from compare" : "Add to compare"}
-          >
-            <GitCompareArrows className="h-3 w-3" />
-          </button>
-        )}
-
-        {/* ADD button / Stepper — bottom-right overlapping image */}
-        <div className="absolute bottom-2 right-2 z-10">
-          {qty === 0 ? (
-            <button
-              ref={btnRef}
-              onClick={handleAdd}
-              className={`btn-add btn-shine transition-all duration-200 ${justAdded ? "scale-95" : "hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"}`}
-            >
-              ADD
-            </button>
-          ) : (
-            <div className={`stepper ${flashing ? "bolt-flash" : ""} shadow-lg shadow-green-500/25`}>
-              <button onClick={handleDecrement}>−</button>
-              <span className="tabular-nums">{qty}</span>
-              <button onClick={handleIncrement}>+</button>
-            </div>
-          )}
-        </div>
-
-        {/* Delivery badge — bottom-left, all sizes like Blinkit */}
-        <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
-          <span className="text-tiny font-bold text-[#00BCD4] flex items-center gap-0.5">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-            60 Mins
+        {discount > 0 && (
+          <span className="absolute top-0 left-0 z-10 bg-[#F8CB46] text-[#150726] rounded-br-lg px-2 py-1 text-tiny font-black">
+            {discount}% OFF
           </span>
-        </div>
+        )}
       </div>
 
       {/* Info zone */}
-      <div className="flex flex-col flex-1 gap-1 p-3">
-        {/* Brand */}
-        {product.brand && (
-          <p className="text-tiny font-semibold text-[#7CB518] uppercase tracking-wide truncate">
-            {product.brand}
-          </p>
-        )}
-
-        {/* Product name — 2-line clamp */}
-        <h3 className="text-body-sm font-semibold text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px] group-hover/card:text-[#2D1B69] transition-colors">
+      <div className="flex flex-col flex-1 gap-0.5 p-2.5">
+        <p className="flex items-center gap-1 text-tiny font-semibold text-[#9B8CB5]">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          60 MINS
+        </p>
+        <h3 className="text-body-sm font-medium text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px]">
           {product.name}
         </h3>
+        <p className="text-micro text-[#9B8CB5]">{product.unit}</p>
 
-        {/* Size options — inline for variant products */}
-        {hasVariants && !compact && (
-          <div className="flex flex-wrap gap-1 mt-1" onClick={(e) => e.preventDefault()}>
-            {product.variants!.map((v) => (
-              <button
-                key={v.id}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setSelectedVariantId(v.id);
-                }}
-                className={`px-2 py-0.5 rounded-full text-tiny font-bold border-2 transition-all ${
-                  selectedVariantId === v.id
-                    ? "border-[#2D1B69] bg-[#2D1B69] text-white"
-                    : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Pack size / Variants count */}
-        <p className="text-micro text-[#9B8CB5]">
-          {hasVariants
-            ? `${product.variants!.length} options · ${product.unit}`
-            : product.unit}
-        </p>
-
-        {/* Shade color dots */}
-        {product.hasShades && product.shades && product.shades.length > 0 && !compact && (
-          <div className="flex items-center gap-1 mt-1" onClick={(e) => e.preventDefault()}>
-            {product.shades.slice(0, 7).map((shade) => (
-              <button
-                key={shade.code}
-                title={shade.name}
-                className="h-4 w-4 rounded-full border-2 border-white shadow-sm hover:scale-125 transition-transform"
-                style={{ backgroundColor: shade.code }}
-              />
-            ))}
-            {product.shades.length > 7 && (
-              <span className="text-tiny font-bold text-[#9B8CB5]">+{product.shades.length - 7}</span>
+        {/* Bottom row — price block left, ADD/stepper right */}
+        <div className="mt-auto flex items-end justify-between gap-2 pt-1.5">
+          <div className="min-w-0">
+            <p className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
+              ₹{activePrice.toLocaleString()}
+            </p>
+            {activeMrp > activePrice && (
+              <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
+                ₹{activeMrp.toLocaleString()}
+              </p>
             )}
           </div>
-        )}
-
-        {/* Bulk pricing indicator */}
-        {isBulk && !compact && live.bulkPrice && (
-          <p className="text-tiny font-semibold text-[#FF9800]">
-            Bulk: ₹{live.bulkPrice.toLocaleString()}/unit (min {live.bulkMinQty})
-          </p>
-        )}
-
-        {/* Options (variants / shades) */}
-        {optLabel && !compact && (
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="mt-1 w-full py-1.5 rounded-lg text-tiny font-bold bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7] transition-all"
-          >
-            {optLabel} ▾
-          </button>
-        )}
-
-        {/* Genuine + Free delivery + Cashback row */}
-        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-          {product.seller?.isVerified && (
-            <span className="inline-flex items-center gap-0.5 text-tiny text-[#00BCD4] font-medium">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              Genuine
-            </span>
-          )}
-          {product.freeDelivery && (
-            <span className="inline-flex items-center gap-0.5 text-tiny font-bold text-[#7CB518] bg-[#7CB518]/8 px-1.5 py-0.5 rounded-full">
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-              FREE Delivery
-            </span>
-          )}
-          {hasFreeDeliveryThreshold && !compact && (
-            <span className="text-tiny text-[#9B8CB5]">
-              Free above ₹{product.freeDeliveryThreshold!.toLocaleString()}
-            </span>
-          )}
-          {product.cashbackPercent && product.cashbackPercent > 0 && !compact && (
-            <span className="inline-flex items-center gap-0.5 text-tiny font-bold text-[#E91E63] bg-[#E91E63]/8 px-1.5 py-0.5 rounded-full">
-              {product.cashbackPercent}% Cashback
-            </span>
-          )}
-        </div>
-
-        {/* Price row + save pill — the ONLY bottom block, fixed height for
-            every card so grid rows align pixel-perfect (info rows above
-            absorb all variance) */}
-        <div className="flex items-baseline gap-1.5 mt-auto pt-1 flex-wrap">
-          <span className="price-hero">₹{activePrice.toLocaleString()}</span>
-          {discount > 0 && (
-            <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
-          )}
-        </div>
-        <div className="mt-1 min-h-[22px]">
-          {discount > 0 ? (
-            <span className="price-save-pill">SAVE {discount}%</span>
-          ) : (
-            <span className="price-save-pill invisible" aria-hidden="true">SAVE</span>
-          )}
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            {qty === 0 ? (
+              <button
+                onClick={handleAdd}
+                className="btn-add"
+              >
+                ADD
+              </button>
+            ) : (
+              <div className="stepper shadow-md shadow-green-500/25">
+                <button onClick={handleDecrement} aria-label="Decrease quantity">−</button>
+                <span className="tabular-nums">{qty}</span>
+                <button onClick={handleIncrement} aria-label="Increase quantity">+</button>
+              </div>
+            )}
+            {optLabel && !compact && (
+              <button
+                onClick={openOptions}
+                className="text-tiny font-semibold text-[#6B5B83] hover:text-[#2D1B69] transition-colors"
+              >
+                {optLabel}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
