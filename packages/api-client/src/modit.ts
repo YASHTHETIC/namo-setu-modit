@@ -71,6 +71,7 @@ export interface CategoryRead {
   parent_category_id: string | null;
   is_active: boolean;
   created_at: string;
+  product_count: number;
 }
 
 export interface SubCategoryRead {

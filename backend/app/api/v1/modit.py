@@ -295,10 +295,24 @@ async def add_product_image(product_id: str, payload: ProductImageCreate, db: As
 
 # Categories
 @router.get("/categories", response_model=list[CategoryRead])
-async def list_categories(db: AsyncSession = Depends(get_db)) -> list[Category]:
-    """List all categories."""
+async def list_categories(db: AsyncSession = Depends(get_db)) -> list[dict]:
+    """List all categories with live product counts."""
+    counts = dict(
+        (
+            await db.execute(
+                select(Product.category_id, func.count())
+                .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
+                .group_by(Product.category_id)
+            )
+        ).all()
+    )
     result = await db.execute(select(Category).where(Category.is_active.is_(True), Category.deleted_at.is_(None)).order_by(Category.name.asc()))
-    return result.scalars().all()
+    out: list[dict] = []
+    for cat in result.scalars().all():
+        payload = CategoryRead.model_validate(cat).model_dump(mode="json")
+        payload["product_count"] = int(counts.get(cat.id, 0))
+        out.append(payload)
+    return out
 
 
 @router.post("/categories", response_model=CategoryRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])

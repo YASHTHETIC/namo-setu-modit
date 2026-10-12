@@ -78,6 +78,9 @@ class CategoryRead(ORMModel):
     parent_category_id: str | None
     is_active: bool
     created_at: datetime
+    # Live product count (active, non-deleted products). Defaults to 0 so
+    # older callers constructing CategoryRead from ORM rows keep working.
+    product_count: int = 0
 
 
 class SubCategoryBase(BaseModel):

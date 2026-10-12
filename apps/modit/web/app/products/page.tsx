@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { productLink } from "@/lib/utils";
 import { Suspense } from "react";
 import {
   Search,
@@ -958,7 +959,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
       {/* Image */}
       <div className="relative h-52 overflow-hidden" style={{ background: catColor.bg }}>
-          <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
+          <Link href={productLink(product)} className="absolute inset-0 z-10">
             {product.images[0] ? (
               <Image
                 src={product.images[0]}
@@ -1147,7 +1148,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
                 {product.category}
               </span>
             </div>
-            <Link href={`/products/${product.id}`}>
+            <Link href={productLink(product)}>
               <h3 className="text-sm font-bold text-[var(--text-primary)] hover:text-[var(--brand)] transition-colors cursor-pointer">
                 {product.name}
               </h3>

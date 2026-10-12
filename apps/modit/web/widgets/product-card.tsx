@@ -11,6 +11,7 @@ import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { useAddToCart } from "@/lib/use-add-to-cart";
+import { productLink } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -82,7 +83,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
   return (
     <Link
-      href={`/products/${product.id}`}
+      href={productLink(product)}
       className={`bg-white border border-[#EDE7F6] rounded-xl overflow-hidden flex flex-col h-full ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
       {/* Image zone — single %OFF ribbon, nothing else */}

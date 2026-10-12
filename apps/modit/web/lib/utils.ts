@@ -19,7 +19,7 @@ export function formatINR(value: number | null | undefined): string {
 /**
  * Paise-exact formatter for server totals (GST/grand can carry paise).
  * Same output as toLocaleString("en-IN", {minimumFractionDigits: 2,
- * maximumFractionDigits: 2}) — one name instead of the options object.
+ * maximumFractionDigits: 2}) - one name instead of the options object.
  */
 export function formatINR2(value: number | null | undefined): string {
   const n = Number(value);
@@ -34,4 +34,13 @@ export function formatINR2(value: number | null | undefined): string {
 export function onlyDigits(value: string | null | undefined, maxLength?: number): string {
   const digits = (value ?? "").replace(/\D/g, "");
   return typeof maxLength === "number" ? digits.slice(0, maxLength) : digits;
+}
+
+/**
+ * Canonical product URL: prefer the human slug (stable across the static
+ * catalog and the API, works even when the API detail endpoint is down),
+ * fall back to the id (API UUIDs).
+ */
+export function productLink(p: { slug?: string | null; id: string }): string {
+  return `/products/${p.slug || p.id}`;
 }

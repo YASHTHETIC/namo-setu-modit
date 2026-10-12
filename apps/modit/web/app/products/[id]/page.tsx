@@ -38,6 +38,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useCartStore } from "@/lib/cart-store";
+import { productLink } from "@/lib/utils";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -874,7 +875,7 @@ export default function ProductDetailPage({
           <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Frequently Bought Together</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
                   <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
                 </div>
@@ -899,7 +900,7 @@ export default function ProductDetailPage({
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
                   <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
                 </div>

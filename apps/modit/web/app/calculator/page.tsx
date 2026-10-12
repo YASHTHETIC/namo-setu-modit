@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, Calculator, Paintbrush, Layers, Grid3X3, Zap, Truck, ShoppingCart, CheckCircle2 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
+import { productLink } from "@/lib/utils";
 import { products } from "@/lib/product-data";
 
 type RoomType = "bedroom" | "living" | "kitchen" | "bathroom" | "hall";
@@ -200,7 +201,7 @@ export default function CalculatorPage() {
               {recommendations.map((item) => (
                 <Link
                   key={item.name}
-                  href={`/products/${item.product.id}`}
+                  href={productLink(item.product)}
                   className="flex items-center gap-3 p-3 rounded-xl bg-[#F8F6FC] hover:bg-[#F0ECF9] transition-colors"
                 >
                   <span className="text-xl">{item.icon}</span>

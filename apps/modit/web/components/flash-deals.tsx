@@ -8,6 +8,7 @@ import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useDisplayProducts } from "@/lib/pricing";
+import { productLink } from "@/lib/utils";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 
 function Countdown({ target }: { target: number }) {
@@ -81,7 +82,7 @@ export function FlashDeals() {
             const optLabel = optionsLabel(product);
             return (
               <div key={product.id} className="w-[160px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
-                <Link href={`/products/${product.id}`} className="block relative aspect-square bg-white/5 p-2">
+                <Link href={productLink(product)} className="block relative aspect-square bg-white/5 p-2">
                   {product.images[0] ? (
                     <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 180px" loading="lazy" draggable={false} className="object-contain animate-fade-in group-hover:scale-105 transition-transform" />
                   ) : (
@@ -95,7 +96,7 @@ export function FlashDeals() {
                 </Link>
                 <div className="p-2.5">
                   <p className="text-tiny font-bold text-[#7CB518] uppercase truncate">{product.brand}</p>
-                  <Link href={`/products/${product.id}`}>
+                  <Link href={productLink(product)}>
                     <p className="text-micro font-semibold text-white leading-tight line-clamp-2 min-h-[28px] mt-0.5 hover:text-[#7CB518] transition-colors">{product.name}</p>
                   </Link>
                   <div className="flex items-baseline gap-1.5 mt-1.5">

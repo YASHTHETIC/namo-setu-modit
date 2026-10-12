@@ -1,6 +1,8 @@
 """Tests for real B2C checkout + Razorpay verification."""
 from datetime import date
 
+import re
+
 import pytest
 from fastapi import HTTPException
 
@@ -260,8 +262,11 @@ def test_catalog_parser_counts():
     items = parse_catalog(
         open("apps/modit/web/lib/product-data.ts", encoding="utf-8").read()
     )
-    assert len(items) > 400
+    # Curated catalog only: synthetic bulk listings (ladder prices, "Item N"
+    # names, uniform discounts) were removed — see repo history.
+    assert len(items) == 73
     by_sku = {i["sku"]: i for i in items}
     acc = by_sku["CEM-ACC-50"]
     assert acc["price"] == 370.0 and acc["mrp"] == 400.0
     assert all(i["price"] > 0 and i["sku"] for i in items)
+    assert not any(re.search(r"Item \d+$", i["name"]) for i in items)

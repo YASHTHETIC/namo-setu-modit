@@ -22,7 +22,7 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
-import { onlyDigits } from "@/lib/utils";
+import { onlyDigits, productLink } from "@/lib/utils";
 import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
@@ -857,7 +857,7 @@ export default function ModitHomePage() {
                   {searchResults.map((p, idx) => (
                     <Link
                       key={p.id}
-                      href={`/products/${p.id}`}
+                      href={productLink(p)}
                       onClick={() => { handleSearchSubmit(searchQuery); }}
                       className={`flex items-center gap-3 px-4 py-3 transition-colors border-b border-white/5 last:border-0 ${
                         highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"

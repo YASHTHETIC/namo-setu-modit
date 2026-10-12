@@ -18,6 +18,7 @@ import {
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
+import { productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useState } from "react";
 
@@ -111,7 +112,7 @@ export default function WishlistPage() {
           >
             {/* Image */}
             <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#F0ECF9] via-[#E8E0F7] to-[#F0ECF9]">
-              <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
+              <Link href={productLink(product)} className="absolute inset-0 z-10">
                 {product.images[0] ? (
                   <Image
                     src={product.images[0]}
@@ -152,7 +153,7 @@ export default function WishlistPage() {
               {product.brand && (
                 <p className="text-tiny font-semibold uppercase tracking-wider text-[#2D1B69]">{product.brand}</p>
               )}
-              <Link href={`/products/${product.id}`}>
+              <Link href={productLink(product)}>
                 <h3 className="mt-1 text-sm font-bold text-[#150726] line-clamp-2 leading-tight hover:text-[#2D1B69] transition-colors">
                   {product.name}
                 </h3>

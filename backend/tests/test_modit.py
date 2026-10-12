@@ -18,6 +18,16 @@ def test_list_categories(client):
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
+    assert data and isinstance(data[0].get("product_count"), int)
+
+
+def test_get_product_detail_never_500s_on_partial_data(client):
+    """Detail must serialize even when relations are missing (no lazy-load trap)."""
+    response = client.get("/api/v1/modit/products/some-id")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"]
+    assert isinstance(data.get("images"), list)
 
 
 def test_list_suppliers(client):

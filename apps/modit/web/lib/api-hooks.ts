@@ -204,7 +204,7 @@ function mapApiCategoryToFrontend(c: any): any {
     slug: c.slug,
     description: c.description ?? staticMatch?.description ?? "",
     icon: (c as any).icon ?? staticMatch?.icon ?? c.slug,
-    productCount: Number((c as any).productCount ?? 0),
+    productCount: Number((c as any).product_count ?? (c as any).productCount ?? 0),
     subCategories: Array.isArray((c as any).subCategories) ? (c as any).subCategories : (staticMatch?.subCategories ?? []),
   };
 }
@@ -268,9 +268,11 @@ export function useProduct(productId: string | undefined) {
   const rawProduct = apiQuery.data as unknown;
   const apiProduct = (Array.isArray(rawProduct) ? null : mapApiProductToFrontend(rawProduct as any, lookups)) ?? undefined;
 
+  const findStatic = (id: string | undefined) =>
+    !id ? null : getProductById(id) ?? staticProducts.find((p) => p.slug === id) ?? null;
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "product", productId],
-    queryFn: () => productId ? getProductById(productId) ?? null : null,
+    queryFn: () => findStatic(productId),
     ...fastQueryOpts,
     enabled: apiQuery.isError || (apiQuery.isSuccess && !apiProduct),
   });
@@ -281,7 +283,7 @@ export function useProduct(productId: string | undefined) {
   if (fallbackQuery.isSuccess) {
     return { ...apiQuery, data: fallbackQuery.data, isFromApi: false, isSuccess: true, isPending: false };
   }
-  return { ...apiQuery, data: productId ? getProductById(productId) ?? null : null, isFromApi: false };
+  return { ...apiQuery, data: findStatic(productId), isFromApi: false };
 }
 
 export function useCategories() {

@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 
 import { useCartStore } from "@/lib/cart-store";
+import { productLink } from "@/lib/utils";
 import { categories, type Product } from "@/lib/product-data";
 import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
 import { useDisplayProducts } from "@/lib/pricing";
@@ -278,10 +279,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                     } else if (event.key === "Enter") {
                       event.preventDefault();
                       if (highlightIdx >= 0 && searchResults[highlightIdx]) {
-                        const p = searchResults[highlightIdx] as unknown as { id: string };
+                        const p = searchResults[highlightIdx] as unknown as { id: string; slug?: string };
                         setShowSearch(false);
                         setSearchFocused(false);
-                        router.push(`/products/${p.id}`);
+                        router.push(productLink(p));
                       } else {
                         submitSearch();
                       }

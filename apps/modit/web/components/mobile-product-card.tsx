@@ -10,6 +10,7 @@ import { usePincode } from "@/lib/pincode-context";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { useAddToCart } from "@/lib/use-add-to-cart";
+import { productLink } from "@/lib/utils";
 
 /** Parse "50kg" / "5 kg" / "20 L" into { qty, label } for per-unit pricing. */
 function parseUnit(unit: string, fallback: string): { qty: number; label: string } | null {
@@ -56,7 +57,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
     <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full">
       {/* Image */}
       <div className="relative bg-[#F7F4FC]">
-        <Link href={`/products/${product.id}`} className="relative block aspect-square">
+        <Link href={productLink(product)} className="relative block aspect-square">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
@@ -142,7 +143,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             <span className="text-tiny invisible" aria-hidden="true">.</span>
           )}
         </div>
-        <Link href={`/products/${product.id}`}>
+        <Link href={productLink(product)}>
           <p className="text-micro font-semibold text-[#150726] leading-tight line-clamp-2 mt-0.5 min-h-[28px]">{product.name}</p>
         </Link>
         <div className="flex items-center gap-0.5 mt-1">
