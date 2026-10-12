@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
                     <label className="block text-body-sm font-semibold text-[#150726]">Email</label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
-                      <input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-body-md text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all" />
+                      <input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-body-lg text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all" />
                     </div>
                   </div>
                   <button type="submit" disabled={forgotMutation.isPending} className="w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-lg font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed">

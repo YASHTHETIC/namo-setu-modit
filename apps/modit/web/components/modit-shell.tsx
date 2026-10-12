@@ -559,7 +559,7 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
               </div>
               <button onClick={() => { setShowSearch(false); setShowMobileSearch(false); setSearchQuery(""); }} className="text-white/60 hover:text-white text-body-md font-semibold">Cancel</button>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 pb-6">
+            <div className="flex-1 overflow-y-auto px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               {searchResults.length > 0 ? (
                 <div className="space-y-1">
                   {searchResults.map((product) => (

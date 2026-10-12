@@ -838,6 +838,24 @@ input:focus:not(:focus-visible) {
 }
 .animate-toast-in { animation: toast-in 0.2s ease-out both; }
 
+/* Shared bottom-sheet / side-sheet entrances (one source for every sheet:
+   pincode, menu, search, referral, variant, filters) */
+@keyframes slide-in-up {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-in-up { animation: slide-in-up 0.25s ease-out both; }
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-48px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-left { animation: slide-in-left 0.25s ease-out both; }
+
+/* Cross-platform tap behavior: no double-tap zoom delay (Android),
+   no gray flash on tap (Android/iOS webviews) */
+button { touch-action: manipulation; }
+* { -webkit-tap-highlight-color: transparent; }
+
 /* ═══════════════════════════════════════════════
    DARK NAV BAR
    ═══════════════════════════════════════════════ */

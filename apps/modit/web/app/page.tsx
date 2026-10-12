@@ -562,7 +562,7 @@ export default function ModitHomePage() {
       {showPincodeModal && (
         <div className="fixed inset-0 z-modal bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4" onClick={() => setShowPincodeModal(false)}>
           <div
-            className="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-6 animate-slide-in-up max-h-[85dvh] overflow-y-auto"
+            className="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-6 animate-slide-in-up max-h-[85dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -574,7 +574,7 @@ export default function ModitHomePage() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-stretch">
               <input
                 type="text"
                 value={pincode}
@@ -583,13 +583,13 @@ export default function ModitHomePage() {
                 onKeyDown={(e) => { if (e.key === "Escape") setShowPincodeModal(false); }}
                 onChange={(e) => setPincode(onlyDigits(e.target.value, 6))}
                 placeholder="Enter 6-digit pincode"
-                className="flex-1 border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-body-lg font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
+                className="flex-1 min-w-0 border-2 border-[#DDD6EE] rounded-xl px-4 h-12 text-body-lg font-semibold text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-4 focus:ring-[#7CB518]/10 transition-all tabular-nums tracking-widest"
                 maxLength={6}
               />
               <RippleButton
                 onClick={() => { if (pincode.length === 6) setShowPincodeModal(false); }}
                 disabled={pincode.length !== 6}
-                className="bg-[#7CB518] text-white text-body-sm font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 disabled:opacity-40 disabled:hover:scale-100"
+                className="bg-[#7CB518] text-white text-body-sm font-bold px-6 h-12 inline-flex items-center justify-center rounded-xl hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 disabled:opacity-40 disabled:hover:scale-100 flex-shrink-0"
               >
                 Check
               </RippleButton>
@@ -882,15 +882,6 @@ export default function ModitHomePage() {
         </div>
       )}
 
-      <style jsx global>{`
-        @keyframes slideInLeft {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(0); }
-        }
-        .animate-slide-in-left {
-          animation: slideInLeft 0.25s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 }

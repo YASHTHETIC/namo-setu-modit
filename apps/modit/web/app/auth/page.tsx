@@ -301,7 +301,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
   };
 
   const field =
-    "w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-body-md text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all";
+    "w-full border-2 border-[#E8E0F0] rounded-xl pl-11 pr-4 py-3 text-body-lg text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all";
 
   return (
     <div className="rounded-2xl border border-[#E8E0F0] bg-white p-6 shadow-sm">

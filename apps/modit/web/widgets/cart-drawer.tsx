@@ -262,7 +262,7 @@ export function CartDrawer() {
             </div>
 
             {/* Bottom proceed bar — solid green, Blinkit architecture */}
-            <div className="p-3 flex-shrink-0">
+            <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex-shrink-0">
               <Link
                 href={loggedIn ? "/checkout" : "/auth?next=%2Fcheckout"}
                 onClick={closeDrawer}

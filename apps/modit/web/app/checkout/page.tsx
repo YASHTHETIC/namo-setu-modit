@@ -359,9 +359,9 @@ export default function CheckoutPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex gap-2">
-                        <input value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" className="flex-1 px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg font-semibold uppercase tracking-wider focus:outline-none focus:border-[#2D1B69]" />
-                        <button onClick={handleApplyCoupon} className="px-4 py-2 rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all">Apply</button>
+                      <div className="flex gap-2 items-stretch">
+                        <input value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" className="flex-1 min-w-0 px-3 h-11 rounded-lg border border-[#DDD6EE] text-body-lg font-semibold uppercase tracking-wider focus:outline-none focus:border-[#2D1B69]" />
+                        <button onClick={handleApplyCoupon} className="px-4 h-11 inline-flex items-center justify-center rounded-lg bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all flex-shrink-0">Apply</button>
                       </div>
                       {couponError && <p className="text-micro text-red-500 mt-2">{couponError}</p>}
                       {bestCoupon && (

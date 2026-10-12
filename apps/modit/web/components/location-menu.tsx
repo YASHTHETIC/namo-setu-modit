@@ -89,15 +89,16 @@ export function LocationMenu() {
             <div className="h-px flex-1 bg-[#F0ECF9]" />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-stretch">
             <input
               value={manual}
               onChange={(e) => { setManual(onlyDigits(e.target.value, 6)); setError(""); }}
               inputMode="numeric"
               placeholder="Pincode"
-              className="flex-1 rounded-xl border border-[#DDD6EE] px-3 py-2 text-body-sm font-bold tabular-nums focus:outline-none focus:border-[#2D1B69]"
+              aria-label="Enter pincode manually"
+              className="flex-1 min-w-0 rounded-xl border border-[#DDD6EE] px-3 h-11 text-body-lg font-bold tabular-nums focus:outline-none focus:border-[#2D1B69]"
             />
-            <button onClick={handleManual} className="rounded-xl bg-[#F0ECF9] px-4 py-2 text-caption font-bold text-[#2D1B69] hover:bg-[#E8E0F7]">
+            <button onClick={handleManual} className="rounded-xl bg-[#F0ECF9] px-4 h-11 inline-flex items-center justify-center text-caption font-bold text-[#2D1B69] hover:bg-[#E8E0F7] flex-shrink-0">
               Set
             </button>
           </div>
