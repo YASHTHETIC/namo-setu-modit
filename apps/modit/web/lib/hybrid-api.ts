@@ -195,26 +195,41 @@ export async function placeOrder(orderData: {
   // Real checkout — the server validates SKUs, computes totals from the
   // synced catalog and creates Order + items + payment. NEVER invent an
   // order id here: failures must surface as errors, not fake success.
-  try {
-    const token = typeof window !== "undefined" ? localStorage.getItem("modit_access_token") : null;
-    if (!API_BASE) return { success: false, error: "Server not configured." };
-    const res = await fetch(`${API_BASE}/modit/checkout`, {
+  const token = typeof window !== "undefined" ? localStorage.getItem("modit_access_token") : null;
+  if (!API_BASE) return { success: false, error: "Server not configured." };
+  const body = JSON.stringify({
+    items: orderData.items,
+    payment_method: orderData.paymentMethod,
+    address_snapshot: orderData.addressSnapshot ?? null,
+    coupon_code: orderData.couponCode ?? null,
+    gstin: orderData.gstin ?? null,
+    notes: orderData.notes ?? null,
+    client_reference: orderData.clientReference ?? null,
+  });
+  const attempt = async () =>
+    fetch(`${API_BASE}/modit/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify({
-        items: orderData.items,
-        payment_method: orderData.paymentMethod,
-        address_snapshot: orderData.addressSnapshot ?? null,
-        coupon_code: orderData.couponCode ?? null,
-        gstin: orderData.gstin ?? null,
-        notes: orderData.notes ?? null,
-        client_reference: orderData.clientReference ?? null,
-      }),
-      signal: AbortSignal.timeout(20000),
+      body,
+      signal: AbortSignal.timeout(30000),
     });
+  let res: Response;
+  try {
+    res = await attempt();
+  } catch {
+    // One automatic retry on network blips — safe because client_reference
+    // makes replays idempotent (same order returned, never duplicated).
+    await new Promise((r) => setTimeout(r, 1500));
+    try {
+      res = await attempt();
+    } catch {
+      return { success: false, error: "Couldn't reach the server. Check your connection and retry — nothing was charged." };
+    }
+  }
+  try {
     if (res.status === 401) {
       return { success: false, error: "Please log in again to place your order." };
     }
@@ -230,7 +245,7 @@ export async function placeOrder(orderData: {
       total: data.grand_total,
     };
   } catch {
-    return { success: false, error: "Couldn't reach the server. Check your connection and retry — nothing was charged." };
+    return { success: false, error: "Couldn't read the server reply. Check Orders — the order may exist — nothing was charged twice." };
   }
 }
 
