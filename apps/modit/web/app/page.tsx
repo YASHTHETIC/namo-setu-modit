@@ -296,10 +296,10 @@ export default function ModitHomePage() {
               </Link>
             </div>
             <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-              <div className="h-28 w-24 rounded-2xl bg-white p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500">
+              <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
                 <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
               </div>
-              <div className="h-28 w-24 rounded-2xl bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6">
+              <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
                 <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
               </div>
             </div>
@@ -308,7 +308,13 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ PROMO CARDS — Blinkit solid-color row, construction edition ═══ */}
-      <div className="mt-3 flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
+      <div className="section-header !pb-1">
+        <h2>Site essentials, top deals</h2>
+        <Link href="/products?sort=discount" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+          See all <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
         {[
           { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
           { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
