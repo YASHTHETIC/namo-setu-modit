@@ -288,18 +288,18 @@ export default function ModitHomePage() {
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h2 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h2>
+              <h1 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
               <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
               <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-            <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-              <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
+            <div className="flex sm:items-center gap-2 flex-shrink-0">
+              <div className="h-20 w-16 sm:h-28 sm:w-24 rounded-[28px] bg-white p-1.5 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
                 <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
               </div>
-              <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
+              <div className="hidden sm:block h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
                 <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
               </div>
             </div>
@@ -389,6 +389,11 @@ export default function ModitHomePage() {
           </div>
         </div>
       </Reveal>
+
+      {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
+      <div className="market-container px-4 sm:px-6">
+        <RecentlyViewed />
+      </div>
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
@@ -486,11 +491,6 @@ export default function ModitHomePage() {
           </div>
         </div>
       </Reveal>
-
-      {/* ═══ RECENTLY VIEWED ═══ */}
-      <div className="market-container px-4 py-6 sm:px-6">
-        <RecentlyViewed />
-      </div>
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
