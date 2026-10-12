@@ -133,6 +133,19 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
     }
   }
 
+  // The DB seed carries no product_images rows, so API rows arrive
+  // imageless. The 73 curated products exist identically in the static
+  // catalog (same slug/sku) — borrow their images so cards/rails render.
+  // Enriched API rows with real images always win; this is pure fallback.
+  if (images.length === 0) {
+    const staticMatch =
+      staticProducts.find((s) => s.slug === p.slug) ??
+      staticProducts.find((s) => s.sku === p.sku);
+    if (staticMatch && Array.isArray(staticMatch.images) && staticMatch.images.length > 0) {
+      images = [...staticMatch.images];
+    }
+  }
+
   // Backend has no tags column — derive search tokens so client-side
   // search (`p.tags.some`) keeps working on API rows.
   const derivedTags = Array.isArray(p.tags) && p.tags.length > 0

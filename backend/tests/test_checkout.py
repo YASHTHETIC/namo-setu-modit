@@ -260,8 +260,7 @@ def test_catalog_parser_counts():
     items = parse_catalog(
         open("apps/modit/web/lib/product-data.ts", encoding="utf-8").read()
     )
-    # Curated catalog only (the 426-row bulk import was reverted).
-    assert len(items) > 70
+    assert len(items) > 400
     by_sku = {i["sku"]: i for i in items}
     acc = by_sku["CEM-ACC-50"]
     assert acc["price"] == 370.0 and acc["mrp"] == 400.0

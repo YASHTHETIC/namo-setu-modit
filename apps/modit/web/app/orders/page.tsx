@@ -14,7 +14,7 @@ import { useToast } from "@foundation/ui";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
 const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3, expected_delivery: "2026-08-02T14:00:00Z", items: [{ productId: "cement-acc", quantity: 200 }, { productId: "paint-asian-apex", quantity: 5 }, { productId: "cement-ultratech", quantity: 500 }] },
+  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3, expected_delivery: "2026-08-02T14:00:00Z", items: [{ productId: "cement-acc", quantity: 200 }, { productId: "paint-asian-apex", quantity: 5 }, { productId: "hardware-tools-stanley-94-248-65-piece-homeowner-s-22", quantity: 500 }] },
   { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2, expected_delivery: "2026-08-07T14:00:00Z", items: [{ productId: "cement-ultratech", quantity: 100 }, { productId: "tile-kajaria-1", quantity: 200 }] },
   { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1, expected_delivery: "2026-08-10T14:00:00Z", items: [{ productId: "tile-drfixit", quantity: 20 }] },
 ];
