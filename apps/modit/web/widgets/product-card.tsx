@@ -268,19 +268,6 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price row — pinned to card bottom so rows align across the grid */}
-        <div className="flex items-baseline gap-1.5 mt-auto pt-1 flex-wrap">
-          <span className="price-hero">₹{activePrice.toLocaleString()}</span>
-          {discount > 0 && (
-            <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
-          )}
-        </div>
-        {discount > 0 && (
-          <div className="mt-1">
-            <span className="price-save-pill">SAVE {discount}%</span>
-          </div>
-        )}
-
         {/* Bulk pricing indicator */}
         {isBulk && !compact && live.bulkPrice && (
           <p className="text-tiny font-semibold text-[#FF9800]">
@@ -326,6 +313,23 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             <span className="inline-flex items-center gap-0.5 text-tiny font-bold text-[#E91E63] bg-[#E91E63]/8 px-1.5 py-0.5 rounded-full">
               {product.cashbackPercent}% Cashback
             </span>
+          )}
+        </div>
+
+        {/* Price row + save pill — the ONLY bottom block, fixed height for
+            every card so grid rows align pixel-perfect (info rows above
+            absorb all variance) */}
+        <div className="flex items-baseline gap-1.5 mt-auto pt-1 flex-wrap">
+          <span className="price-hero">₹{activePrice.toLocaleString()}</span>
+          {discount > 0 && (
+            <span className="price-strike">₹{activeMrp.toLocaleString()}</span>
+          )}
+        </div>
+        <div className="mt-1 min-h-[22px]">
+          {discount > 0 ? (
+            <span className="price-save-pill">SAVE {discount}%</span>
+          ) : (
+            <span className="price-save-pill invisible" aria-hidden="true">SAVE</span>
           )}
         </div>
       </div>

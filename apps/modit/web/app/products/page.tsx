@@ -1021,28 +1021,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           <span className="text-tiny font-medium text-[var(--text-muted)]">({product.reviewCount.toLocaleString()} reviews)</span>
         </div>
 
-        {/* Price */}
-        <div className="mt-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-[var(--text-primary)]">
-              ₹{product.price.toLocaleString()}
-            </span>
-            {product.mrp > product.price && (
-              <span className="text-xs text-[var(--text-muted)] line-through font-medium">
-                ₹{product.mrp.toLocaleString()}
-              </span>
-            )}
-          </div>
-          {product.bulkLabel && (
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <Tag className="h-3 w-3 text-emerald-600" />
-              <p className="text-tiny font-bold text-emerald-600">
-                {product.bulkLabel}
-              </p>
-            </div>
-          )}
-        </div>
-
         <div className="mt-2.5 flex items-center gap-2 flex-wrap">
           {!blocked && (
             <DeliveryBadge
@@ -1058,6 +1036,30 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             <PincodeStockIndicator pincodeStock={product.pincodeStock} />
           </div>
         )}
+
+        {product.bulkLabel && (
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Tag className="h-3 w-3 text-emerald-600" />
+            <p className="text-tiny font-bold text-emerald-600">
+              {product.bulkLabel}
+            </p>
+          </div>
+        )}
+
+        {/* Price — fixed bottom block: everything variable sits above,
+            so prices align across the grid */}
+        <div className="mt-3">
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-[var(--text-primary)]">
+              ₹{product.price.toLocaleString()}
+            </span>
+            {product.mrp > product.price && (
+              <span className="text-xs text-[var(--text-muted)] line-through font-medium">
+                ₹{product.mrp.toLocaleString()}
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* spacer pins CTA to the bottom; button keeps its own margin */}
         <div className="flex-1" />

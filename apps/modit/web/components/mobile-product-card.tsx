@@ -76,6 +76,11 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             {discountPct}% OFF
           </span>
         )}
+        {product.onSale && product.saleName && (
+          <span className="absolute top-8 left-1.5 rounded-md bg-[#7CB518] px-1.5 py-0.5 text-tiny font-black text-white uppercase">
+            {product.saleName}
+          </span>
+        )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
@@ -130,7 +135,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
           </button>
         ) : <span className="h-[14px]" />}
-        {unitRate && <p className="text-tiny text-[#6B5B83]">{unitRate}</p>}
+        {unitRate ? <p className="text-tiny text-[#6B5B83] min-h-[14px]">{unitRate}</p> : <p className="text-tiny min-h-[14px]" aria-hidden="true"> </p>}
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString()}</span>
           {product.mrp > product.price && (
@@ -169,11 +174,6 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         <div className="mt-1.5">
           <ReplaceBadge />
         </div>
-        {product.onSale && product.saleName && (
-          <span className="mt-1 self-start rounded bg-[#7CB518] px-1.5 py-0.5 text-tiny font-black text-white uppercase">
-            {product.saleName}
-          </span>
-        )}
       </div>
 
       <VariantOptionsModal
