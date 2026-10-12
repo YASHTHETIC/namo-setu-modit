@@ -60,11 +60,13 @@ function ProductsContent() {
   // Subcategory belongs to its category — reset on category switch.
   useEffect(() => { setSelectedSub(""); }, [selectedCategory]);
 
-  // The API filters by slug natively (`category_slug`); never send a slug
-  // as `category_id` (UUID column) — that yields silent 0-row results.
+  // Single source of truth: ONE unfiltered catalog fetch. Category, brand,
+  // price, rating and stock all filter client-side below, so the sidebar
+  // counts and the grid can never disagree (two queries could resolve at
+  // different times / different data and show 0s next to live results).
+  // 499 rows ≈ 50KB — trivial for one cached query.
   const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
-    category_slug: selectedCategory || undefined,
     page_size: 1000,
   });
   // Typo tolerance: the API may have corrected the query ("brwn" -> "brown bread").
@@ -74,10 +76,8 @@ function ProductsContent() {
   const rawProducts = apiProducts as Product[];
   // Admin overrides + active sale applied; hidden products dropped
   const products = useDisplayProducts(rawProducts);
-  // Counts must come from the unfiltered-by-category list, else every other
-  // category shows 0 the moment one category is selected
-  const { data: apiCountBase = [] } = useProducts({ search: search || undefined, page_size: 1000 });
-  const countProducts = useDisplayProducts(apiCountBase as Product[]);
+  // Counts come from the SAME array the grid filters — impossible to diverge.
+  const countProducts = products;
   const categories = apiCategories as { id?: string; name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
   useEffect(() => {
