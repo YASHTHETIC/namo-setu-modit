@@ -31,6 +31,8 @@ import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { useCartUi } from "@/lib/cart-ui";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
+import { categories as allCategories } from "@/lib/product-data";
+import { CategoryTileIcon } from "@/components/modit-shell";
 
 /* ── Scroll-reveal hook ──────────────────────────────────────────── */
 function useScrollReveal(threshold = 0.15) {
@@ -178,6 +180,18 @@ export default function ModitHomePage() {
     () => products.filter((p) => p.inStock).sort((a, b) => (b.rating * b.reviewCount) - (a.rating * a.reviewCount)).slice(0, 10),
     []
   );
+  // Blinkit Home pattern: a rail per category. Curated rails above cover
+  // cement/lighting/tiling/painting — auto-fill the next three biggest.
+  const autoRails = useMemo(() => {
+    const covered = new Set(["cement", "lighting", "tiling", "painting"]);
+    return allCategories
+      .filter((c) => !covered.has(c.slug))
+      .map((c) => ({ cat: c, items: products.filter((p) => p.categorySlug === c.slug) }))
+      .filter((r) => r.items.length >= 4)
+      .sort((a, b) => b.items.length - a.items.length)
+      .slice(0, 3);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const featureCountRef = useScrollReveal(0.3);
   const featureVisible = featureCountRef.visible;
@@ -195,6 +209,11 @@ export default function ModitHomePage() {
     { name: "Fevicol", slug: "fevicol", img: "/products/tiling/Bostik.png", count: 5, color: "#E91E63" },
     { name: "Hardware", slug: "hardware-tools", img: "/products/hardware-tools/250g Wooden Handle Claw Hammer.png", count: 27, color: "#607D8B" },
   ];
+
+  /** Photo tiles for headline categories; the rest use brand icons. */
+  const TILE_IMAGES: Record<string, { img: string; color: string }> = Object.fromEntries(
+    categories.map((c) => [c.slug, { img: c.img, color: c.color }])
+  );
 
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
@@ -355,37 +374,46 @@ export default function ModitHomePage() {
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-3 sm:gap-4 lg:grid-cols-8">
-            {categories.map((cat, i) => (
-              <Link
-                key={cat.slug}
-                href={`/products?category=${cat.slug}`}
-                prefetch
-                className="flex flex-col items-center gap-1.5 group"
-              >
-                <div
-                  className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
-                    mounted ? "animate-fade-up" : "opacity-0"
-                  }`}
-                  style={{
-                    animationDelay: `${i * 50}ms`,
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = cat.color; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
+          {/* Blinkit Home pattern: EVERY category on the first page.
+              Mobile scrolls horizontally, desktop shows the full grid. */}
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
+            {allCategories.map((cat, i) => {
+              const art = TILE_IMAGES[cat.slug];
+              return (
+                <Link
+                  key={cat.slug}
+                  href={`/products?category=${cat.slug}`}
+                  prefetch
+                  className="flex flex-col items-center gap-1.5 group snap-start shrink-0 w-[76px] sm:w-auto"
                 >
-                  <Image
-                    src={cat.img}
-                    alt={cat.name}
-                    fill
-                    sizes="72px"
-                    loading="lazy"
-                    draggable={false}
-                    className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-                <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
-              </Link>
-            ))}
+                  <div
+                    className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                      mounted ? "animate-fade-up" : "opacity-0"
+                    }`}
+                    style={{
+                      animationDelay: `${Math.min(i, 12) * 50}ms`,
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = art?.color ?? "#2D1B69"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
+                  >
+                    {art ? (
+                      <Image
+                        src={art.img}
+                        alt={cat.name}
+                        fill
+                        sizes="72px"
+                        loading="lazy"
+                        draggable={false}
+                        className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <CategoryTileIcon slug={cat.slug} className="h-7 w-7 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
+                    )}
+                  </div>
+                  <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </Reveal>
@@ -445,6 +473,18 @@ export default function ModitHomePage() {
             accentColor="pink"
           />
         </Reveal>
+        {/* Auto per-category rails (clone Home pattern — every big
+            category gets its own rail with a see-all landing) */}
+        {autoRails.map((r, ri) => (
+          <Reveal key={r.cat.slug} delay={150}>
+            <ProductRail
+              title={r.cat.name}
+              products={r.items.slice(0, 10)}
+              seeAllHref={`/products?category=${r.cat.slug}`}
+              accentColor={(["cyan", "purple", "green"] as const)[ri % 3]}
+            />
+          </Reveal>
+        ))}
       </div>
 
       {/* ═══ FEATURE BAR — Animated counters ═══ */}

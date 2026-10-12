@@ -65,7 +65,7 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   electrical: Zap,
 };
 
-function CategoryTileIcon({ slug, className }: { slug: string; className?: string }) {
+export function CategoryTileIcon({ slug, className }: { slug: string; className?: string }) {
   const Icon = CATEGORY_ICONS[slug] ?? Package;
   return <Icon className={className} aria-hidden />;
 }
