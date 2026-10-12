@@ -83,7 +83,7 @@ export function FlashDeals() {
               <div key={product.id} className="w-[160px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
                 <Link href={`/products/${product.id}`} className="block relative aspect-square bg-white/5 p-2">
                   <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 180px" loading="lazy" draggable={false} className="object-contain animate-fade-in group-hover:scale-105 transition-transform" />
-                  <span className="absolute top-1.5 left-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-1.5 py-0.5 rounded-full">
+                  <span className="absolute top-1.5 left-1.5 bg-[#2D1B69] text-white text-tiny font-bold px-1.5 py-0.5 rounded-full">
                     {product.discount}% OFF
                   </span>
                 </Link>

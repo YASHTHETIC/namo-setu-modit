@@ -918,7 +918,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
         {/* Discount ribbon — the single discount signal */}
         {savingsPercent > 0 && (
-          <span className="absolute top-0 left-0 z-20 bg-[#F8CB46] text-[#150726] rounded-br-lg px-2 py-1 text-tiny font-black">
+          <span className="absolute top-0 left-0 z-20 bg-[#2D1B69] text-white rounded-br-lg px-2 py-1 text-tiny font-black">
             {savingsPercent}% OFF
           </span>
         )}
@@ -1057,11 +1057,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         </button>
         {product.discount > 0 && (
           <span
-            className="absolute top-2 right-2 z-20 flex items-center gap-1 rounded-lg px-2 py-1 text-tiny font-black text-white"
-            style={{
-              background: 'linear-gradient(135deg, #E91E63, #E91E63)',
-              boxShadow: '0 2px 8px rgba(220,38,38,0.3)',
-            }}
+            className="absolute top-2 right-2 z-20 flex items-center gap-1 rounded-lg bg-[#2D1B69] px-2 py-1 text-tiny font-black text-white shadow-lg"
           >
             <TrendingDown className="h-3 w-3" />
             {savingsPercent}% OFF

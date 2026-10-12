@@ -97,7 +97,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           />
         )}
         {discount > 0 && (
-          <span className="absolute top-0 left-0 z-10 bg-[#F8CB46] text-[#150726] rounded-br-lg px-2 py-1 text-tiny font-black">
+          <span className="absolute top-0 left-0 z-10 bg-[#2D1B69] text-white rounded-br-lg px-2 py-1 text-tiny font-black">
             {discount}% OFF
           </span>
         )}

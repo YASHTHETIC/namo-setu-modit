@@ -70,7 +70,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           ) : null}
         </Link>
         {discountPct > 0 && (
-          <span className="absolute top-0 left-0 rounded-br-lg bg-[#F8CB46] px-1.5 py-0.5 text-tiny font-black text-[#150726]">
+          <span className="absolute top-0 left-0 rounded-br-lg bg-[#2D1B69] px-1.5 py-0.5 text-tiny font-black text-white">
             {discountPct}% OFF
           </span>
         )}
