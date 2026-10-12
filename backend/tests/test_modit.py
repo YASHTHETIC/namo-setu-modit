@@ -131,6 +131,19 @@ def test_category_endpoints_require_staff(client):
     assert client.patch("/api/v1/modit/subcategories/x", json={"name": "Y"}).status_code == 401
 
 
+def test_product_mutations_are_staff_gated():
+    """Catalog deletes/patches must carry an auth dependency (no silent mass wipes)."""
+    from backend.app.main import app
+
+    hits = 0
+    for route in app.routes:
+        if getattr(route, "path", "") == "/api/v1/modit/products/{product_id}":
+            dependant = getattr(route, "dependant", None)
+            if getattr(dependant, "dependencies", None):
+                hits += 1
+    assert hits >= 2, "PATCH + DELETE /products/{id} must be staff-gated"
+
+
 def test_category_update_schema():
     from backend.app.schemas.modit import CategoryUpdate, SubCategoryUpdate
 

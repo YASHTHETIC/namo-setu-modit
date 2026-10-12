@@ -262,7 +262,7 @@ async def get_product(product_id: str, db: AsyncSession = Depends(get_db)) -> Pr
     return await product_to_detail(db, product)
 
 
-@router.patch("/products/{product_id}", response_model=ProductRead)
+@router.patch("/products/{product_id}", response_model=ProductRead, dependencies=[admin_dependency])
 async def update_product(product_id: str, payload: ProductUpdate, db: AsyncSession = Depends(get_db)) -> ProductRead:
     """Update product."""
     product = await get_product_or_404(db, product_id)
@@ -273,7 +273,7 @@ async def update_product(product_id: str, payload: ProductUpdate, db: AsyncSessi
     return await product_to_read(db, product)
 
 
-@router.delete("/products/{product_id}", response_model=StandardResponse[str])
+@router.delete("/products/{product_id}", response_model=StandardResponse[str], dependencies=[admin_dependency])
 async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
     """Delete product (soft delete)."""
     product = await get_product_or_404(db, product_id)
