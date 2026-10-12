@@ -21,5 +21,12 @@ export function isServiceablePin(pincode: string | null | undefined): boolean {
   if (!pincode) return false;
   const digits = pincode.replace(/\D/g, "");
   if (digits.length !== 6) return false;
+  // Explicit home-zone pins — always deliverable regardless of prefixes.
+  if (SERVICEABLE_EXACT.has(digits)) return true;
   return SERVICEABLE_PREFIXES.some((prefix) => digits.startsWith(prefix));
 }
+
+/** Exact pins pinned deliverable (home warehouse zone). */
+const SERVICEABLE_EXACT = new Set<string>([
+  "201301", // Noida home hub
+]);

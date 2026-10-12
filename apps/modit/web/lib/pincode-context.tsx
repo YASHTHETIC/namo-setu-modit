@@ -71,7 +71,7 @@ export function fetchLiveFix(timeoutMs = 10000): Promise<LiveFix | null> {
         try {
           const { latitude, longitude } = pos.coords;
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
             { headers: { Accept: "application/json" } }
           );
           if (!res.ok) {
@@ -79,7 +79,13 @@ export function fetchLiveFix(timeoutMs = 10000): Promise<LiveFix | null> {
             return;
           }
           const data = await res.json();
-          const pin = String(data?.address?.postcode ?? "").replace(/\D/g, "").slice(0, 6);
+          // Primary: structured postcode. Fallback: scan the display name —
+          // Indian sectors often carry the pin outside the postcode field.
+          let pin = String(data?.address?.postcode ?? "").replace(/\D/g, "").slice(0, 6);
+          if (pin.length !== 6 && typeof data?.display_name === "string") {
+            const m = data.display_name.match(/\b(\d{6})\b/);
+            if (m) pin = m[1];
+          }
           finish({ pin: pin.length === 6 ? pin : null, lat: latitude, lng: longitude });
         } catch {
           finish(null);
