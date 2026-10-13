@@ -577,7 +577,9 @@ export default function ModitHomePage() {
               See all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+          {/* Desktop: full 2-row grid (all 16 visible, nothing clipped);
+              mobile keeps the horizontal scroll */}
+          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-8 sm:overflow-visible sm:gap-x-3 sm:gap-y-5 sm:pb-1">
             {[
               { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
               { name: "ACC", img: "/products/cement/ACC Cement.png" },
@@ -596,7 +598,7 @@ export default function ModitHomePage() {
               { name: "Birla White", img: "/products/painting/Birla Putty.png" },
               { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
             ].map((brand) => (
-              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px] sm:w-[88px]">
+              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px] sm:w-auto">
                 <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center shadow-md shadow-purple-900/5 group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
                   <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
