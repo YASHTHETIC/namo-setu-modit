@@ -8,10 +8,9 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt, Tag
+  BadgeCheck, Undo2, Receipt
 } from "lucide-react";
 import { useToast } from "@foundation/ui";
-import { useCouponStore } from "@/lib/coupon-store";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
@@ -238,7 +237,8 @@ export default function ModitHomePage() {
               <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
-          <div className="flex items-center gap-1">
+          {/* Desktop cart — mobile uses the bottom-nav Cart tab (one cart entry, Blinkit-style) */}
+          <div className="hidden lg:flex items-center gap-1">
             <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -269,7 +269,8 @@ export default function ModitHomePage() {
             <LayoutGrid className="h-5 w-5" />
             <span className="text-tiny font-bold">All</span>
           </Link>
-          {categories.slice(0, 7).map((c) => (
+          {/* Every live category up top — nothing hidden behind "few" */}
+          {visibleCategories.map((c) => (
             <Link
               key={c.slug}
               href={`/products?category=${c.slug}`}
@@ -330,6 +331,9 @@ export default function ModitHomePage() {
         ))}
       </div>
 
+      {/* ═══ PAGE GUTTER — every section below breathes inside the same
+          centered margins; nothing touches the screen corners ═══ */}
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6">
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
@@ -397,33 +401,6 @@ export default function ModitHomePage() {
         ))}
       </div>
 
-      {/* ═══ OFFERS STRIP — real coupon codes, tap to copy ═══ */}
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-3">
-        <p className="text-micro font-black uppercase tracking-wider text-[#2D1B69] px-1 mb-2">Payment offers</p>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x">
-          {useCouponStore((s) => s.availableCoupons).filter((c) => c.active).map((c) => (
-            <button
-              key={c.code}
-              onClick={() => {
-                const done = () => toast.success("Code copied!", `${c.code} — apply it at checkout`);
-                try {
-                  const clip = navigator?.clipboard;
-                  if (clip) clip.writeText(c.code).then(done).catch(done);
-                  else done();
-                } catch { done(); }
-              }}
-              className="snap-start shrink-0 flex items-center gap-2 rounded-xl border-2 border-dashed border-[#7CB518]/50 bg-[#F0F9E8] px-3 py-2 text-left hover:border-[#7CB518] transition-colors"
-            >
-              <Tag className="h-4 w-4 text-[#5A8010] flex-shrink-0" />
-              <span>
-                <span className="block text-caption font-black text-[#150726] tracking-wide">{c.code}</span>
-                <span className="block text-tiny text-[#6B5B83] whitespace-nowrap">{c.description}</span>
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
         <div className="mt-5">
@@ -450,10 +427,10 @@ export default function ModitHomePage() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex flex-col items-center gap-1.5 group snap-start shrink-0 w-[76px] sm:w-auto"
+                  className="flex flex-col items-center gap-1 group snap-start shrink-0 w-[92px] sm:w-auto"
                 >
                   <div
-                    className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                    className={`relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{
@@ -467,16 +444,16 @@ export default function ModitHomePage() {
                         src={img}
                         alt={cat.name}
                         fill
-                        sizes="72px"
+                        sizes="96px"
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                        className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
                       />
                     ) : (
-                      <CategoryTileIcon slug={cat.slug} className="h-7 w-7 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
+                      <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
                     )}
                   </div>
-                  <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                  <p className="text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
                 </Link>
               );
             })}
@@ -485,15 +462,16 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
-      <div className="market-container px-4 sm:px-6">
+      <div className="market-container">
         <RecentlyViewed />
       </div>
+      </div>{/* ═══ /PAGE GUTTER ═══ */}
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
 
-      {/* ═══ PRODUCT RAILS ═══ */}
-      <div className="max-w-[1440px] mx-auto pb-8">
+      {/* ═══ PRODUCT RAILS + FEATURE BAR — same centered gutters ═══ */}
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -551,8 +529,6 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      </div>
-
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
         <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
@@ -579,6 +555,7 @@ export default function ModitHomePage() {
           ))}
         </div>
       </Reveal>
+      </div>{/* ═══ /rails+gutter ═══ */}
 
       {/* ═══ BRAND STRIP ═══ */}
       <Reveal>
@@ -587,11 +564,21 @@ export default function ModitHomePage() {
             <h2>Trusted Brands</h2>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-            {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
-              <Link key={brand} href={`/products?search=${encodeURIComponent(brand)}`} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
-                <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-micro font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
+            {[
+              { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
+              { name: "ACC", img: "/products/cement/ACC Cement.png" },
+              { name: "Ambuja", img: "/products/cement/Ambuja Cement.png" },
+              { name: "Asian Paints", img: "/products/painting/Asian Paint.png" },
+              { name: "Philips", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp" },
+              { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
+              { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
+              { name: "Roff", img: "/products/tiling/Roff T1.png" },
+            ].map((brand) => (
+              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px]">
+                <div className="h-20 w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+                  <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
+                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.name}</span>
               </Link>
             ))}
           </div>
