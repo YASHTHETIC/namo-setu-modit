@@ -528,13 +528,13 @@ export default function ModitHomePage() {
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
         <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
-          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
-          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
+          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(248,203,70,0.16)" }} />
+          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(124,181,24,0.16)" }} />
           {/* Animated gradient line */}
-          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]" />
+          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#7CB518] via-[#F8CB46] to-[#7CB518]" />
           {[
-            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#E91E63" },
-            { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#00BCD4" },
+            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#F8CB46" },
+            { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#7CB518" },
             { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
           ].map((f, i) => (
             <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
@@ -570,6 +570,14 @@ export default function ModitHomePage() {
               { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
               { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
               { name: "Roff", img: "/products/tiling/Roff T1.png" },
+              { name: "Hettich", img: "/products/hinges/Hettich Clamps for KA Channels.png" },
+              { name: "Crompton", img: "/products/lighting/crompton-led-star-slim-recess-panel-round-6k-1678368249930_SKU-0684_0-1756465491712-Photoroom.png" },
+              { name: "Jaquar", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp" },
+              { name: "Legrand", img: "/products/switches/1000023225_25325e44-5c03-4885-8994-7222219bde89_250x2502x 1.webp" },
+              { name: "Fevicol", img: "/products/hardware-tools/Fevicol Craft and General Adhesives 2 Fevistik 15gm 2.jpg" },
+              { name: "Havells", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg" },
+              { name: "Birla White", img: "/products/painting/Birla Putty.png" },
+              { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
             ].map((brand) => (
               <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px]">
                 <div className="h-20 w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
