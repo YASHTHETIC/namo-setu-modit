@@ -573,6 +573,14 @@ export default function ModitHomePage() {
               { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
               { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
               { name: "Roff", img: "/products/tiling/Roff T1.png" },
+              { name: "Hettich", img: "/products/hinges/Hettich Clamps for KA Channels.png" },
+              { name: "Crompton", img: "/products/lighting/crompton-led-star-slim-recess-panel-round-6k-1678368249930_SKU-0684_0-1756465491712-Photoroom.png" },
+              { name: "Jaquar", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp" },
+              { name: "Legrand", img: "/products/switches/1000023225_25325e44-5c03-4885-8994-7222219bde89_250x2502x 1.webp" },
+              { name: "Fevicol", img: "/products/hardware-tools/Fevicol Craft and General Adhesives 2 Fevistik 15gm 2.jpg" },
+              { name: "Havells", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg" },
+              { name: "Birla White", img: "/products/painting/Birla Putty.png" },
+              { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
             ].map((brand) => (
               <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px] sm:w-[88px]">
                 <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center shadow-md shadow-purple-900/5 group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
