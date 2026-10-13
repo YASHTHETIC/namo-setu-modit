@@ -529,29 +529,25 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      {/* ═══ FEATURE BAR — Animated counters ═══ */}
+      {/* ═══ FEATURE BAR — Blinkit-light assurance strip: clean white cards,
+          hairline dividers, tinted icon chips, dark numerals ═══ */}
       <Reveal>
-        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] via-[#2D1B69] to-[#150726] p-5 sm:p-6 grid grid-cols-3 gap-2 sm:gap-3 border border-white/15 relative overflow-hidden group shadow-2xl shadow-purple-900/40">
-          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
-          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
-          {/* Animated gradient line */}
-          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]" />
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00BCD4] via-[#7CB518] to-[#E91E63] opacity-60" />
+        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-white border border-[#E8E8E8] p-4 sm:p-5 grid grid-cols-3 gap-2 sm:gap-0 shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:divide-x sm:divide-[#EEEEEE]">
           {[
-            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#E91E63" },
-            { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#00BCD4" },
-            { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
+            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "Lowest Prices", sub: "Best quality at best prices", color: "#E91E63", tint: "#FCE4EC" },
+            { icon: Clock, value: deliveryCount, suffix: " min", title: "Fast Delivery", sub: "Superfast delivery at your site", color: "#00BCD4", tint: "#E0F7FA" },
+            { icon: Lock, value: secureCount, suffix: "%", title: "Secure Payments", sub: "100% safe & secure", color: "#54B226", tint: "#EDF7EE" },
           ].map((f, i) => (
-            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer rounded-xl px-1 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-white/5">
-              <div className="assured-orb h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
-                style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
+            <div key={f.title} className="flex flex-col items-center text-center relative z-10 group/feat cursor-pointer rounded-xl px-1 py-2 sm:px-4 transition-all duration-300 hover:-translate-y-1">
+              <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
+                style={{ background: f.tint }}>
                 <f.icon className="h-5 w-5" style={{ color: f.color }} />
               </div>
-              <p className="text-title-md font-black text-white leading-none tabular-nums">
+              <p className="text-title-md sm:text-title-lg font-black text-[#1F1F1F] leading-none tabular-nums tracking-tight">
                 {f.value}{f.suffix}
               </p>
-              <p className="text-tiny font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
-              <p className="text-tiny text-white/40 mt-0.5 leading-tight">{f.sub}</p>
+              <p className="text-caption sm:text-body-sm font-bold text-[#1F1F1F] leading-tight mt-1">{f.title}</p>
+              <p className="text-tiny text-[#666666] mt-0.5 leading-tight hidden sm:block">{f.sub}</p>
             </div>
           ))}
         </div>
