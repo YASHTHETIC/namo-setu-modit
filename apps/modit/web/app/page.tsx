@@ -333,7 +333,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6">
       <div className="trust-strip scrollbar-hide mt-3">
         {[
           { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
@@ -352,7 +352,7 @@ export default function ModitHomePage() {
 
       {/* ═══ PAGE GUTTER — every section below breathes inside the same
           centered margins; nothing touches the screen corners ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6">
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
@@ -476,7 +476,7 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
-      <div>
+      <div className="px-8 sm:px-0">
         <RecentlyViewed />
       </div>
       </div>{/* ═══ /PAGE GUTTER ═══ */}
@@ -485,7 +485,7 @@ export default function ModitHomePage() {
       <FlashDeals />
 
       {/* ═══ PRODUCT RAILS + FEATURE BAR — same centered gutters ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-8">
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6 pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -570,7 +570,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BRAND STRIP ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 mb-6 pb-2">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 mb-6 pb-2">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
             <Link href="/products?sort=rating" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
@@ -611,7 +611,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pt-2 pb-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 pt-2 pb-6">
           <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4 shadow-lg shadow-purple-900/5 hover:shadow-xl hover:shadow-purple-900/10 transition-shadow relative overflow-hidden group/calc">
             <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[#7CB518]/10 blur-2xl pointer-events-none" />
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
@@ -641,7 +641,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BULK / BUSINESS CTA ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 pb-6">
           <div className="rounded-2xl bg-[#150726] px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center gap-3 relative overflow-hidden border border-white/10 shadow-xl shadow-purple-900/30 group/rfq">
             <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(rgba(124,181,24,0.45) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />
             <div className="absolute -left-12 -bottom-16 h-44 w-44 rounded-full bg-[#2D1B69]/60 blur-3xl pointer-events-none" />
