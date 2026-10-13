@@ -8,10 +8,8 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt, Tag
+  BadgeCheck, Undo2, Receipt
 } from "lucide-react";
-import { useToast } from "@foundation/ui";
-import { useCouponStore } from "@/lib/coupon-store";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
@@ -100,7 +98,6 @@ export default function ModitHomePage() {
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const router = useRouter();
-  const toast = useToast();
   const openDrawer = useCartUi((s) => s.openDrawer);
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -396,33 +393,6 @@ export default function ModitHomePage() {
             </div>
           </Link>
         ))}
-      </div>
-
-      {/* ═══ OFFERS STRIP — real coupon codes, tap to copy ═══ */}
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-3">
-        <p className="text-micro font-black uppercase tracking-wider text-[#2D1B69] px-1 mb-2">Payment offers</p>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x">
-          {useCouponStore((s) => s.availableCoupons).filter((c) => c.active).map((c) => (
-            <button
-              key={c.code}
-              onClick={() => {
-                const done = () => toast.success("Code copied!", `${c.code} — apply it at checkout`);
-                try {
-                  const clip = navigator?.clipboard;
-                  if (clip) clip.writeText(c.code).then(done).catch(done);
-                  else done();
-                } catch { done(); }
-              }}
-              className="snap-start shrink-0 flex items-center gap-2 rounded-xl border-2 border-dashed border-[#7CB518]/50 bg-[#F0F9E8] px-3 py-2 text-left hover:border-[#7CB518] transition-colors"
-            >
-              <Tag className="h-4 w-4 text-[#5A8010] flex-shrink-0" />
-              <span>
-                <span className="block text-caption font-black text-[#150726] tracking-wide">{c.code}</span>
-                <span className="block text-tiny text-[#6B5B83] whitespace-nowrap">{c.description}</span>
-              </span>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
