@@ -266,7 +266,8 @@ export default function ModitHomePage() {
             <LayoutGrid className="h-5 w-5" />
             <span className="text-tiny font-bold">All</span>
           </Link>
-          {categories.slice(0, 7).map((c) => (
+          {/* Every live category up top — nothing hidden behind "few" */}
+          {visibleCategories.map((c) => (
             <Link
               key={c.slug}
               href={`/products?category=${c.slug}`}
@@ -560,11 +561,21 @@ export default function ModitHomePage() {
             <h2>Trusted Brands</h2>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-            {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
-              <Link key={brand} href={`/products?search=${encodeURIComponent(brand)}`} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
-                <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-micro font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
+            {[
+              { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
+              { name: "ACC", img: "/products/cement/ACC Cement.png" },
+              { name: "Ambuja", img: "/products/cement/Ambuja Cement.png" },
+              { name: "Asian Paints", img: "/products/painting/Asian Paint.png" },
+              { name: "Philips", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp" },
+              { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
+              { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
+              { name: "Roff", img: "/products/tiling/Roff T1.png" },
+            ].map((brand) => (
+              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px]">
+                <div className="h-20 w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+                  <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
+                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.name}</span>
               </Link>
             ))}
           </div>
