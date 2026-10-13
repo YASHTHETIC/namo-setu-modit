@@ -229,7 +229,7 @@ export default function ModitHomePage() {
 
       {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
-        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
@@ -250,7 +250,7 @@ export default function ModitHomePage() {
           </div>
         </div>
         {/* Search row — full width, opens the search sheet */}
-        <div className="px-4 pb-3">
+        <div className="px-4 sm:px-6 pb-3">
           <button
             onClick={() => setShowSearch(true)}
             className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
@@ -264,7 +264,7 @@ export default function ModitHomePage() {
 
       {/* ═══ CATEGORY SHORTCUTS — Blinkit-app icon strip under search ═══ */}
       <div className="bg-[#150726] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4">
+        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4 sm:px-6">
           <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
             <LayoutGrid className="h-5 w-5" />
             <span className="text-tiny font-bold">All</span>
@@ -283,7 +283,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
-      <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
+      <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -315,6 +315,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
       <div className="trust-strip scrollbar-hide mt-3">
         {[
           { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
@@ -485,15 +486,17 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
-      <div className="market-container px-4 sm:px-6">
+      <div>
         <RecentlyViewed />
       </div>
+      </div>{/* ═══ /shared edge A ═══ */}
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
 
-      {/* ═══ PRODUCT RAILS ═══ */}
-      <div className="max-w-[1440px] mx-auto pb-8">
+      {/* ═══ PRODUCT RAILS + FEATURE BAR — same shared edge ═══ */}
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
+      <div className="pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -551,8 +554,6 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      </div>
-
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
         <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
@@ -579,10 +580,12 @@ export default function ModitHomePage() {
           ))}
         </div>
       </Reveal>
+      </div>
+      </div>{/* ═══ /shared edge B (rails + feature) ═══ */}
 
       {/* ═══ BRAND STRIP ═══ */}
       <Reveal>
-        <div className="market-container mb-6 px-4 pb-2 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 mb-6 pb-2">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
           </div>
@@ -600,7 +603,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
-        <div className="market-container px-4 pt-2 pb-6 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pt-2 pb-6">
           <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -626,7 +629,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BULK / BUSINESS CTA ═══ */}
       <Reveal>
-        <div className="market-container px-4 pb-6 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-6">
           <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1">
               <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>

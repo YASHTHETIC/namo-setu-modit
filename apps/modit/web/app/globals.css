@@ -431,6 +431,13 @@ input:focus:not(:focus-visible) {
   color: var(--color-action);
 }
 
+/* Shared page edge (home): every section lines up left/right on web and
+   mobile. These three carry baked-in side padding (unlayered, so utilities
+   can't override it) — neutralize it inside the gutter. Page-scoped. */
+.page-gutter .section-header { padding-left: 0; padding-right: 0; }
+.page-gutter .scroll-rail { padding-left: 0; padding-right: 0; scroll-padding-left: 0; }
+.page-gutter .trust-strip { padding-left: 0; padding-right: 0; }
+
 /* ADD button — white pill, green border */
 .btn-add {
   display: inline-flex;
