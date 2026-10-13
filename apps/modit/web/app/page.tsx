@@ -531,17 +531,18 @@ export default function ModitHomePage() {
         ))}
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
-        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
+        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] via-[#2D1B69] to-[#150726] p-5 sm:p-6 grid grid-cols-3 gap-2 sm:gap-3 border border-white/15 relative overflow-hidden group shadow-2xl shadow-purple-900/40">
           <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
           <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
           {/* Animated gradient line */}
           <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]" />
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00BCD4] via-[#7CB518] to-[#E91E63] opacity-60" />
           {[
             { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#E91E63" },
             { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#00BCD4" },
             { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
           ].map((f, i) => (
-            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
+            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer rounded-xl px-1 py-2 transition-all duration-300 hover:-translate-y-1 hover:bg-white/5">
               <div className="assured-orb h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
                 style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
                 <f.icon className="h-5 w-5" style={{ color: f.color }} />
@@ -562,6 +563,9 @@ export default function ModitHomePage() {
         <div className="market-container mb-6 px-4 pb-2 sm:px-6">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
+            <Link href="/products?sort=rating" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+              See all <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
             {[
@@ -574,8 +578,8 @@ export default function ModitHomePage() {
               { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
               { name: "Roff", img: "/products/tiling/Roff T1.png" },
             ].map((brand) => (
-              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px]">
-                <div className="h-20 w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px] sm:w-[88px]">
+                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center shadow-md shadow-purple-900/5 group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
                   <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
                 <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.name}</span>
@@ -588,7 +592,8 @@ export default function ModitHomePage() {
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
         <div className="market-container px-4 pt-2 pb-6 sm:px-6">
-          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
+          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4 shadow-lg shadow-purple-900/5 hover:shadow-xl hover:shadow-purple-900/10 transition-shadow relative overflow-hidden group/calc">
+            <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[#7CB518]/10 blur-2xl pointer-events-none" />
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="4" y="2" width="16" height="20" rx="2"/>
@@ -597,15 +602,18 @@ export default function ModitHomePage() {
                 <line x1="8" y1="14" x2="12" y2="14"/>
               </svg>
             </div>
-            <div className="flex-1 text-center sm:text-left">
-              <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
-              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
+            <div className="flex-1 text-center sm:text-left relative">
+              <h3 className="text-body-md font-extrabold text-[#150726] flex items-center justify-center sm:justify-start gap-2">
+                Material Calculator
+                <span className="rounded-full bg-[#7CB518] px-2 py-0.5 text-tiny font-black text-white tracking-wide">FREE</span>
+              </h3>
+              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room — in under a minute</p>
             </div>
             <Link
               href="/calculator"
-              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
+              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20 group/calcbtn"
             >
-              Calculate <ArrowRight className="h-3.5 w-3.5" />
+              Calculate <ArrowRight className="h-3.5 w-3.5 group-hover/calcbtn:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -614,16 +622,21 @@ export default function ModitHomePage() {
       {/* ═══ BULK / BUSINESS CTA ═══ */}
       <Reveal>
         <div className="market-container px-4 pb-6 sm:px-6">
-          <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex-1">
+          <div className="rounded-2xl bg-[#150726] px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center gap-3 relative overflow-hidden border border-white/10 shadow-xl shadow-purple-900/30 group/rfq">
+            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(rgba(124,181,24,0.45) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />
+            <div className="absolute -left-12 -bottom-16 h-44 w-44 rounded-full bg-[#2D1B69]/60 blur-3xl pointer-events-none" />
+            <div className="flex-1 relative">
               <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
-              <p className="text-caption text-white/55 mt-0.5">Get negotiated quotes from verified suppliers with GST invoicing</p>
+              <p className="text-caption text-white/55 mt-0.5 flex items-center gap-1.5">
+                <BadgeCheck className="h-3.5 w-3.5 text-[#7CB518] flex-shrink-0" />
+                Get negotiated quotes from verified suppliers with GST invoicing
+              </p>
             </div>
             <Link
               href="/rfq"
-              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
+              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0F9E8] transition-all flex-shrink-0 relative group/rfqbtn"
             >
-              Start RFQ <ArrowRight className="h-4 w-4" />
+              Start RFQ <ArrowRight className="h-4 w-4 group-hover/rfqbtn:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
