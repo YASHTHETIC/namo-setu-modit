@@ -275,7 +275,7 @@ export default function ModitHomePage() {
         <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4 sm:px-6">
           <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
             <LayoutGrid className="h-5 w-5" />
-            <span className="text-tiny font-bold">All</span>
+            <span className="text-caption font-bold">All</span>
           </Link>
           {/* Every live category up top — nothing hidden behind "few" */}
           {visibleCategories.map((c) => {
@@ -293,7 +293,7 @@ export default function ModitHomePage() {
               ) : (
                 <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
               )}
-              <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
+              <span className="text-caption font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
             </Link>
             );
           })}

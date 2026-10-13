@@ -1589,10 +1589,11 @@ button { touch-action: manipulation; }
   border-radius: 10px;
   background: white;
   border: 1px solid #E8E0F7;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #5C4A7A;
   white-space: nowrap;
+  min-height: 40px;
 }
 
 /* Smooth scroll snap for horizontal sections */

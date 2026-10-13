@@ -62,8 +62,10 @@ export const viewport: Viewport = {
   themeColor: "#2D1B69",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Pinch zoom stays available (accessibility): inputs are 16px so the
+  // browser never force-zooms on focus; users can still enlarge text.
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
