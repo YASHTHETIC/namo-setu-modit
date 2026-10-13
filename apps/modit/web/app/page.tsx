@@ -421,10 +421,10 @@ export default function ModitHomePage() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex flex-col items-center gap-1.5 group snap-start shrink-0 w-[76px] sm:w-auto"
+                  className="flex flex-col items-center gap-1 group snap-start shrink-0 w-[92px] sm:w-auto"
                 >
                   <div
-                    className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                    className={`relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{
@@ -438,16 +438,16 @@ export default function ModitHomePage() {
                         src={img}
                         alt={cat.name}
                         fill
-                        sizes="72px"
+                        sizes="96px"
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                        className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
                       />
                     ) : (
-                      <CategoryTileIcon slug={cat.slug} className="h-7 w-7 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
+                      <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
                     )}
                   </div>
-                  <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                  <p className="text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
                 </Link>
               );
             })}
