@@ -224,32 +224,11 @@ export default function ModitHomePage() {
     categories.map((c) => [c.slug, { img: c.img, color: c.color }])
   );
 
-  /** One shared tile lookup: curated photo → first catalog image → icon fallback. */
-  const tileFor = (slug: string): { img?: string; tint: string } => {
-    const manual = TILE_IMAGES[slug];
-    if (manual) return { img: manual.img, tint: manual.color };
-    const found = products.find((p) => p.categorySlug === slug)?.images?.[0];
-    return { img: found, tint: "#2D1B69" };
-  };
-
-  /** Honest "Starting at" line: cheapest live price in the category. */
-  const minPriceFor = (slug: string): number | null => {
-    let min: number | null = null;
-    for (const p of products) {
-      if (p.categorySlug !== slug) continue;
-      const v = Number(p.price ?? 0);
-      if (v > 0 && (min === null || v < min)) min = v;
-    }
-    return min;
-  };
-
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
       {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
-        {/* Festive gold line — Blinkit warmth, MODIT colors */}
-        <div className="h-[3px] bg-gradient-to-r from-[#F8CB46] via-[#E91E63] to-[#7CB518]" />
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
@@ -270,35 +249,8 @@ export default function ModitHomePage() {
             </button>
           </div>
         </div>
-        {/* ETA-first title — Blinkit hierarchy: giant promise, address, search */}
-        <div className="px-4 pt-1 pb-2 max-w-[1440px] mx-auto">
-          <div className="flex items-center gap-2">
-            <p className="text-white font-extrabold leading-none tracking-tight text-[26px] sm:text-[32px]">
-              Delivery in <span className="text-[#F8CB46]">60 min</span>
-            </p>
-            {nearest && typeof nearest.distance_km === "number" && (
-              <span className="flex-shrink-0 rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums">
-                {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
-              </span>
-            )}
-            <span className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-              <span className="text-tiny font-medium">Live</span>
-            </span>
-          </div>
-          <button
-            onClick={() => setShowPincodeModal(true)}
-            className="mt-1 flex items-center gap-1 text-white/70 hover:text-white transition-colors group max-w-full"
-          >
-            <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#F8CB46] transition-colors flex-shrink-0" />
-            <span className="text-caption font-semibold truncate">
-              {pincode ? `Deliver to ${pincode}` : "Set delivery location"}
-            </span>
-            <ChevronDown className="h-3 w-3 text-white/50 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
-          </button>
-        </div>
         {/* Search row — full width, opens the search sheet */}
-        <div className="px-4 pb-3 max-w-[1440px] mx-auto">
+        <div className="px-4 pb-3">
           <button
             onClick={() => setShowSearch(true)}
             className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
@@ -317,25 +269,48 @@ export default function ModitHomePage() {
             <LayoutGrid className="h-5 w-5" />
             <span className="text-tiny font-bold">All</span>
           </Link>
-          {categories.slice(0, 7).map((c) => {
-            const t = tileFor(c.slug);
-            return (
+          {categories.slice(0, 7).map((c) => (
             <Link
               key={c.slug}
               href={`/products?category=${c.slug}`}
               className="flex flex-col items-center gap-1 px-3 py-2 text-white/60 hover:text-white flex-shrink-0 transition-colors"
             >
-              {t.img ? (
-                <span className="h-8 w-8 rounded-lg overflow-hidden bg-white/10 flex items-center justify-center flex-shrink-0">
-                  <Image src={t.img} alt="" width={32} height={32} loading="lazy" draggable={false} className="h-full w-full object-contain p-0.5" />
-                </span>
-              ) : (
-                <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
-              )}
+              <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
               <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
             </Link>
-            );
-          })}
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
+      <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
+        <div className="max-w-[1440px] mx-auto flex items-center gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-body-md font-extrabold text-white leading-tight">
+                Delivery in <span className="text-[#7CB518]">60 min</span>
+              </p>
+              {nearest && typeof nearest.distance_km === "number" && (
+                <span className="flex-shrink-0 rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums">
+                  {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
+                </span>
+              )}
+            </div>
+            <button
+              onClick={() => setShowPincodeModal(true)}
+              className="mt-0.5 flex items-center gap-1 text-white/70 hover:text-white transition-colors group max-w-full"
+            >
+              <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#7CB518] transition-colors flex-shrink-0" />
+              <span className="text-caption font-semibold truncate">
+                {pincode ? `Deliver to ${pincode}` : "Set delivery location"}
+              </span>
+              <ChevronDown className="h-3 w-3 text-white/50 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
+            </button>
+          </div>
+          <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+            <span className="text-tiny font-medium">Live</span>
+          </div>
         </div>
       </div>
 
@@ -358,8 +333,6 @@ export default function ModitHomePage() {
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#F8CB46]/20 blur-3xl pointer-events-none" />
-          <div className="absolute -left-10 -bottom-20 h-44 w-44 rounded-full bg-[#E91E63]/20 blur-3xl pointer-events-none" />
           <div className="relative z-10 p-4 sm:p-5 flex items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="inline-flex items-center gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2.5 py-1 rounded-full mb-2">
@@ -368,7 +341,7 @@ export default function ModitHomePage() {
               </div>
               <h1 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
               <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
-              <Link href="/products" className="btn-shine mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0F9E8] transition-all hover:scale-105 active:scale-95">
+              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -394,10 +367,10 @@ export default function ModitHomePage() {
       </div>
       <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
         {[
-          { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", slug: "cement", bg: "#7CB518", dark: false, cta: "Order Now" },
-          { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", slug: "painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
-          { title: "Site Lighting", sub: "Philips LEDs, panels & battens", tag: "NEW RANGE", img: "/products/lighting/Philip Ultra Glow LED Downlight Round.webp", alt: "LED lights", href: "/products?category=lighting", slug: "lighting", bg: "#00BCD4", dark: false, cta: "Order Now" },
-          { title: "Tiles & Fix-It Range", sub: "Adhesives, grouts & repair", tag: "PRO CHOICE", img: "/products/tiling/Dr Fixit.png", alt: "Waterproofing and tile care", href: "/products?category=tiling", slug: "tiling", bg: "#F8CB46", dark: true, cta: "Order Now" },
+          { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
+          { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
+          { title: "Site Lighting", sub: "Philips LEDs, panels & battens", tag: "NEW RANGE", img: "/products/lighting/Philip Ultra Glow LED Downlight Round.webp", alt: "LED lights", href: "/products?category=lighting", bg: "#00BCD4", dark: false, cta: "Order Now" },
+          { title: "Tiles & Fix-It Range", sub: "Adhesives, grouts & repair", tag: "PRO CHOICE", img: "/products/tiling/Dr Fixit.png", alt: "Waterproofing and tile care", href: "/products?category=tiling", bg: "#F8CB46", dark: true, cta: "Order Now" },
         ].map((p) => (
           <Link
             key={p.title}
@@ -408,11 +381,6 @@ export default function ModitHomePage() {
             <div className="flex-1 min-w-0">
               <h3 className={`text-body-md font-extrabold leading-tight ${p.dark ? "text-[#150726]" : "text-white"}`}>{p.title}</h3>
               <p className={`text-micro mt-1 leading-snug ${p.dark ? "text-[#150726]/70" : "text-white/85"}`}>{p.sub}</p>
-              {(minPriceFor(p.slug) ?? 0) > 0 && (
-                <p className={`text-caption font-black mt-1 tabular-nums ${p.dark ? "text-[#150726]" : "text-[#F8CB46]"}`}>
-                  Starting at ₹{(minPriceFor(p.slug) as number).toLocaleString("en-IN")}
-                </p>
-              )}
               <span className={`mt-2.5 inline-block px-3.5 py-1.5 rounded-full text-caption font-bold ${p.dark ? "bg-[#150726] text-white" : "bg-white text-[#150726]"}`}>
                 {p.cta}
               </span>
