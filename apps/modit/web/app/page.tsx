@@ -8,9 +8,10 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt
+  BadgeCheck, Undo2, Receipt, Tag
 } from "lucide-react";
 import { useToast } from "@foundation/ui";
+import { useCouponStore } from "@/lib/coupon-store";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
 import { BottomNav } from "@/components/bottom-nav";
@@ -223,20 +224,12 @@ export default function ModitHomePage() {
     categories.map((c) => [c.slug, { img: c.img, color: c.color }])
   );
 
-  /** One shared tile lookup: curated photo → first catalog image → icon fallback. */
-  const tileFor = (slug: string): { img?: string; tint: string } => {
-    const manual = TILE_IMAGES[slug];
-    if (manual) return { img: manual.img, tint: manual.color };
-    const found = products.find((p) => p.categorySlug === slug)?.images?.[0];
-    return { img: found, tint: "#2D1B69" };
-  };
-
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
       {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
-          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
+        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
@@ -245,8 +238,7 @@ export default function ModitHomePage() {
               <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
-          {/* Desktop cart — mobile uses the bottom-nav Cart tab (one cart entry, Blinkit-style) */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -258,7 +250,7 @@ export default function ModitHomePage() {
           </div>
         </div>
         {/* Search row — full width, opens the search sheet */}
-        <div className="px-4 sm:px-6 pb-3">
+        <div className="px-4 pb-3">
           <button
             onClick={() => setShowSearch(true)}
             className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
@@ -272,36 +264,26 @@ export default function ModitHomePage() {
 
       {/* ═══ CATEGORY SHORTCUTS — Blinkit-app icon strip under search ═══ */}
       <div className="bg-[#150726] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4 sm:px-6">
+        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4">
           <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
             <LayoutGrid className="h-5 w-5" />
-            <span className="text-caption font-bold">All</span>
+            <span className="text-tiny font-bold">All</span>
           </Link>
-          {/* Every live category up top — nothing hidden behind "few" */}
-          {visibleCategories.map((c) => {
-            const t = tileFor(c.slug);
-            return (
+          {categories.slice(0, 7).map((c) => (
             <Link
               key={c.slug}
               href={`/products?category=${c.slug}`}
               className="flex flex-col items-center gap-1 px-3 py-2 text-white/60 hover:text-white flex-shrink-0 transition-colors"
             >
-              {t.img ? (
-                <span className="h-8 w-8 rounded-lg overflow-hidden bg-white/10 flex items-center justify-center flex-shrink-0">
-                  <Image src={t.img} alt="" width={32} height={32} loading="lazy" draggable={false} className="h-full w-full object-contain p-0.5" />
-                </span>
-              ) : (
-                <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
-              )}
-              <span className="text-caption font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
+              <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
+              <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
             </Link>
-            );
-          })}
+          ))}
         </div>
       </div>
 
       {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
-      <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
+      <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -333,7 +315,6 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6">
       <div className="trust-strip scrollbar-hide mt-3">
         {[
           { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
@@ -342,17 +323,13 @@ export default function ModitHomePage() {
           { icon: Undo2, text: "7-Day Returns", color: "#E91E63" },
           { icon: Receipt, text: "GST Invoice", color: "#FF9800" },
         ].map((item) => (
-          <div key={item.text} className="trust-item transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-purple-900/10">
+          <div key={item.text} className="trust-item">
             <item.icon className="h-3.5 w-3.5 shrink-0" style={{ color: item.color }} />
             <span style={{ color: item.color }}>{item.text}</span>
           </div>
         ))}
       </div>
-      </div>{/* ═══ /trust gutter ═══ */}
 
-      {/* ═══ PAGE GUTTER — every section below breathes inside the same
-          centered margins; nothing touches the screen corners ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6">
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
@@ -364,7 +341,7 @@ export default function ModitHomePage() {
               </div>
               <h1 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
               <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
-              <Link href="/products" className="btn-shine mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0F9E8] transition-all hover:scale-105 active:scale-95">
+              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -420,6 +397,33 @@ export default function ModitHomePage() {
         ))}
       </div>
 
+      {/* ═══ OFFERS STRIP — real coupon codes, tap to copy ═══ */}
+      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-3">
+        <p className="text-micro font-black uppercase tracking-wider text-[#2D1B69] px-1 mb-2">Payment offers</p>
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x">
+          {useCouponStore((s) => s.availableCoupons).filter((c) => c.active).map((c) => (
+            <button
+              key={c.code}
+              onClick={() => {
+                const done = () => toast.success("Code copied!", `${c.code} — apply it at checkout`);
+                try {
+                  const clip = navigator?.clipboard;
+                  if (clip) clip.writeText(c.code).then(done).catch(done);
+                  else done();
+                } catch { done(); }
+              }}
+              className="snap-start shrink-0 flex items-center gap-2 rounded-xl border-2 border-dashed border-[#7CB518]/50 bg-[#F0F9E8] px-3 py-2 text-left hover:border-[#7CB518] transition-colors"
+            >
+              <Tag className="h-4 w-4 text-[#5A8010] flex-shrink-0" />
+              <span>
+                <span className="block text-caption font-black text-[#150726] tracking-wide">{c.code}</span>
+                <span className="block text-tiny text-[#6B5B83] whitespace-nowrap">{c.description}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
         <div className="mt-5">
@@ -433,18 +437,23 @@ export default function ModitHomePage() {
               Mobile scrolls horizontally, desktop shows the full grid. */}
           <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
             {visibleCategories.map((cat, i) => {
+              const manual = TILE_IMAGES[cat.slug];
               // Blinkit wall: EVERY tile gets a real photo — curated art for
               // headline categories, first catalog image for the rest.
-              const { img, tint } = tileFor(cat.slug);
+              const fallbackImg = !manual
+                ? products.find((p) => p.categorySlug === cat.slug)?.images?.[0]
+                : undefined;
+              const img = manual?.img ?? fallbackImg;
+              const tint = manual?.color ?? "#2D1B69";
               return (
                 <Link
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex flex-col items-center gap-1 group snap-start shrink-0 w-[92px] sm:w-auto"
+                  className="flex flex-col items-center gap-1.5 group snap-start shrink-0 w-[76px] sm:w-auto"
                 >
                   <div
-                    className={`relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                    className={`relative h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{
@@ -458,16 +467,16 @@ export default function ModitHomePage() {
                         src={img}
                         alt={cat.name}
                         fill
-                        sizes="96px"
+                        sizes="72px"
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                        className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover:scale-110"
                       />
                     ) : (
-                      <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
+                      <CategoryTileIcon slug={cat.slug} className="h-7 w-7 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
                     )}
                   </div>
-                  <p className="text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                  <p className="text-micro font-semibold text-[#150726] text-center leading-tight line-clamp-2 min-h-[28px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
                 </Link>
               );
             })}
@@ -476,16 +485,15 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
-      <div className="px-8 sm:px-0">
+      <div className="market-container px-4 sm:px-6">
         <RecentlyViewed />
       </div>
-      </div>{/* ═══ /PAGE GUTTER ═══ */}
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
 
-      {/* ═══ PRODUCT RAILS + FEATURE BAR — same centered gutters ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1440px] px-0 sm:px-6 pb-8">
+      {/* ═══ PRODUCT RAILS ═══ */}
+      <div className="max-w-[1440px] mx-auto pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -543,66 +551,47 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      {/* ═══ FEATURE BAR — Blinkit-light assurance strip: clean white cards,
-          hairline dividers, tinted icon chips, dark numerals ═══ */}
+      </div>
+
+      {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
-        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-white border border-[#E8E8E8] p-4 sm:p-5 grid grid-cols-3 gap-2 sm:gap-0 shadow-[0_2px_12px_rgba(0,0,0,0.06)] sm:divide-x sm:divide-[#EEEEEE]">
+        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
+          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(233,30,99,0.18)" }} />
+          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(0,188,212,0.16)" }} />
+          {/* Animated gradient line */}
+          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#E91E63] via-[#7CB518] to-[#00BCD4]" />
           {[
-            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "Lowest Prices", sub: "Best quality at best prices", color: "#E91E63", tint: "#FCE4EC" },
-            { icon: Clock, value: deliveryCount, suffix: " min", title: "Fast Delivery", sub: "Superfast delivery at your site", color: "#00BCD4", tint: "#E0F7FA" },
-            { icon: Lock, value: secureCount, suffix: "%", title: "Secure Payments", sub: "100% safe & secure", color: "#54B226", tint: "#EDF7EE" },
+            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#E91E63" },
+            { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#00BCD4" },
+            { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
           ].map((f, i) => (
-            <div key={f.title} className="flex flex-col items-center text-center relative z-10 group/feat cursor-pointer rounded-xl px-1 py-2 sm:px-4 transition-all duration-300 hover:-translate-y-1">
-              <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
-                style={{ background: f.tint }}>
+            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
+              <div className="assured-orb h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
+                style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
                 <f.icon className="h-5 w-5" style={{ color: f.color }} />
               </div>
-              <p className="text-title-md sm:text-title-lg font-black text-[#1F1F1F] leading-none tabular-nums tracking-tight">
+              <p className="text-title-md font-black text-white leading-none tabular-nums">
                 {f.value}{f.suffix}
               </p>
-              <p className="text-caption sm:text-body-sm font-bold text-[#1F1F1F] leading-tight mt-1">{f.title}</p>
-              <p className="text-tiny text-[#666666] mt-0.5 leading-tight hidden sm:block">{f.sub}</p>
+              <p className="text-tiny font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
+              <p className="text-tiny text-white/40 mt-0.5 leading-tight">{f.sub}</p>
             </div>
           ))}
         </div>
       </Reveal>
-      </div>{/* ═══ /rails+gutter ═══ */}
 
       {/* ═══ BRAND STRIP ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 mb-6 pb-2">
+        <div className="market-container mb-6 px-4 pb-2 sm:px-6">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
-            <Link href="/products?sort=rating" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-              See all <ArrowRight className="h-3 w-3" />
-            </Link>
           </div>
-          {/* Desktop: full 2-row grid (all 16 visible, nothing clipped);
-              mobile keeps the horizontal scroll */}
-          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-8 sm:overflow-visible sm:gap-x-3 sm:gap-y-5 sm:pb-1">
-            {[
-              { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
-              { name: "ACC", img: "/products/cement/ACC Cement.png" },
-              { name: "Ambuja", img: "/products/cement/Ambuja Cement.png" },
-              { name: "Asian Paints", img: "/products/painting/Asian Paint.png" },
-              { name: "Philips", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp" },
-              { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
-              { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
-              { name: "Roff", img: "/products/tiling/Roff T1.png" },
-              { name: "Hettich", img: "/products/hinges/Hettich Clamps for KA Channels.png" },
-              { name: "Crompton", img: "/products/lighting/crompton-led-star-slim-recess-panel-round-6k-1678368249930_SKU-0684_0-1756465491712-Photoroom.png" },
-              { name: "Jaquar", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp" },
-              { name: "Legrand", img: "/products/switches/1000023225_25325e44-5c03-4885-8994-7222219bde89_250x2502x 1.webp" },
-              { name: "Fevicol", img: "/products/hardware-tools/Fevicol Craft and General Adhesives 2 Fevistik 15gm 2.jpg" },
-              { name: "Havells", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg" },
-              { name: "Birla White", img: "/products/painting/Birla Putty.png" },
-              { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
-            ].map((brand) => (
-              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px] sm:w-auto">
-                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center shadow-md shadow-purple-900/5 group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
+          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+            {["UltraTech", "ACC", "Ambuja", "Asian Paints", "Philips", "Dr. Fixit", "Kajaria", "Roff"].map((brand) => (
+              <Link key={brand} href={`/products?search=${encodeURIComponent(brand)}`} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
+                <div className="h-16 w-16 rounded-2xl bg-white border-2 border-[#DDD6EE] flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+                  <span className="text-micro font-black text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand}</span>
                 </div>
-                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.name}</span>
               </Link>
             ))}
           </div>
@@ -611,9 +600,8 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 pt-2 pb-6">
-          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4 shadow-lg shadow-purple-900/5 hover:shadow-xl hover:shadow-purple-900/10 transition-shadow relative overflow-hidden group/calc">
-            <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[#7CB518]/10 blur-2xl pointer-events-none" />
+        <div className="market-container px-4 pt-2 pb-6 sm:px-6">
+          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="4" y="2" width="16" height="20" rx="2"/>
@@ -622,18 +610,15 @@ export default function ModitHomePage() {
                 <line x1="8" y1="14" x2="12" y2="14"/>
               </svg>
             </div>
-            <div className="flex-1 text-center sm:text-left relative">
-              <h3 className="text-body-md font-extrabold text-[#150726] flex items-center justify-center sm:justify-start gap-2">
-                Material Calculator
-                <span className="rounded-full bg-[#7CB518] px-2 py-0.5 text-tiny font-black text-white tracking-wide">FREE</span>
-              </h3>
-              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room — in under a minute</p>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
+              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
             </div>
             <Link
               href="/calculator"
-              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20 group/calcbtn"
+              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
             >
-              Calculate <ArrowRight className="h-3.5 w-3.5 group-hover/calcbtn:translate-x-1 transition-transform" />
+              Calculate <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
@@ -641,22 +626,17 @@ export default function ModitHomePage() {
 
       {/* ═══ BULK / BUSINESS CTA ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1440px] px-8 sm:px-6 pb-6">
-          <div className="rounded-2xl bg-[#150726] px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center gap-3 relative overflow-hidden border border-white/10 shadow-xl shadow-purple-900/30 group/rfq">
-            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(rgba(124,181,24,0.45) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />
-            <div className="absolute -left-12 -bottom-16 h-44 w-44 rounded-full bg-[#2D1B69]/60 blur-3xl pointer-events-none" />
-            <div className="flex-1 relative">
+        <div className="market-container px-4 pb-6 sm:px-6">
+          <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1">
               <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
-              <p className="text-caption text-white/55 mt-0.5 flex items-center gap-1.5">
-                <BadgeCheck className="h-3.5 w-3.5 text-[#7CB518] flex-shrink-0" />
-                Get negotiated quotes from verified suppliers with GST invoicing
-              </p>
+              <p className="text-caption text-white/55 mt-0.5">Get negotiated quotes from verified suppliers with GST invoicing</p>
             </div>
             <Link
               href="/rfq"
-              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0F9E8] transition-all flex-shrink-0 relative group/rfqbtn"
+              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
             >
-              Start RFQ <ArrowRight className="h-4 w-4 group-hover/rfqbtn:translate-x-1 transition-transform" />
+              Start RFQ <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

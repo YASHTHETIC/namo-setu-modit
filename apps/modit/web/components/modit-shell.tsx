@@ -379,7 +379,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Mobile: search + menu (cart lives in the bottom nav, Blinkit-style — one cart entry) */}
+          {/* Mobile: search + cart + menu */}
           <div className="flex items-center gap-1 lg:hidden ml-auto">
             <button
               type="button"
@@ -388,6 +388,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               aria-label="Search"
             >
               <Search className="h-5 w-5" />
+            </button>
+            <button onClick={() => openDrawer()} className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Open cart">
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white shadow-lg shadow-pink-500/30">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
             </button>
             <button
               type="button"

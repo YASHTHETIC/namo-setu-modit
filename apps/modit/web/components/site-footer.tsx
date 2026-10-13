@@ -19,9 +19,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
   return (
     <>
       <footer className={`mt-6 border-t border-[#DDD6EE] bg-[#F0ECF9] ${className}`}>
-        {/* Same 1440 edge as every home section — footer columns line up
-            with the content above instead of a narrower box */}
-        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 py-10">
+        <div className="market-container py-10">
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr_0.7fr]">
             <div>
               <div className="flex items-center gap-3">

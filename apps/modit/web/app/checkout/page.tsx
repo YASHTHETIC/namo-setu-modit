@@ -28,7 +28,7 @@ export default function CheckoutPage() {
 
   const { addresses, selectedAddressId, selectAddress, addAddress, deleteAddress, setDefault, getSelected } = useAddressStore();
   const { selectedSlotId, slots, selectSlot, getSelected: getSlot } = useDeliveryStore();
-  const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon, availableCoupons } = useCouponStore();
+  const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon } = useCouponStore();
   const toast = useToast();
 
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -373,26 +373,6 @@ export default function CheckoutPage() {
                           </div>
                         </button>
                       )}
-                      {/* All live offers — tap to apply straight onto this order */}
-                      <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide snap-x pb-1">
-                        {availableCoupons.filter((c) => c.active).map((c) => (
-                          <button
-                            key={c.code}
-                            onClick={() => {
-                              const res = applyCoupon(c.code, subtotal);
-                              if (res.success) toast.success("Coupon applied!", `${c.code} applied to your order`);
-                              else toast.error("Coupon not applicable", res.message);
-                            }}
-                            className="snap-start shrink-0 flex items-center gap-2 rounded-xl border-2 border-dashed border-[#7CB518]/50 bg-[#F0F9E8] px-3 py-2 text-left hover:border-[#7CB518] active:scale-95 transition-all"
-                          >
-                            <Tag className="h-4 w-4 text-[#5A8010] flex-shrink-0" />
-                            <span>
-                              <span className="block text-caption font-black text-[#150726] tracking-wide">{c.code}</span>
-                              <span className="block text-tiny text-[#6B5B83] whitespace-nowrap">{c.description}</span>
-                            </span>
-                          </button>
-                        ))}
-                      </div>
                     </>
                   )}
                 </div>

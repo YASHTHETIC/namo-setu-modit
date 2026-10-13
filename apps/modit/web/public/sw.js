@@ -1,4 +1,4 @@
-const CACHE_NAME = "modit-v4";
+const CACHE_NAME = "modit-v3";
 const STATIC_ASSETS = [
   "/",
   "/products",
@@ -28,15 +28,6 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
   if (request.url.includes("/api/")) return;
-
-  // Next.js App Router flight (RSC) payloads are version-sensitive: a stale
-  // cached payload mixes old and new UI on the same screen (e.g. an old
-  // header over a new page). Always network, never cache.
-  if (
-    request.headers.get("RSC") !== null ||
-    request.headers.get("Next-Router-State-Tree") !== null ||
-    request.headers.get("Next-Router-Prefetch") !== null
-  ) return;
 
   // Navigations: network first, fall back to cached home shell offline
   if (request.mode === "navigate") {

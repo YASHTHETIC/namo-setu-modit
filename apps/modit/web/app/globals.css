@@ -431,17 +431,6 @@ input:focus:not(:focus-visible) {
   color: var(--color-action);
 }
 
-/* Home page gutter (DESKTOP ONLY — mobile keeps its original full-bleed
-   rows and insets): every section shares ONE left/right edge.
-   .section-header / .scroll-rail / .trust-strip carry baked-in side
-   padding (unlayered, so utilities can't override it) — neutralize it
-   inside the gutter. Page-scoped: other pages are untouched. */
-@media (min-width: 640px) {
-  .page-gutter .section-header { padding-left: 0; padding-right: 0; }
-  .page-gutter .scroll-rail { padding-left: 0; padding-right: 0; scroll-padding-left: 0; }
-  .page-gutter .trust-strip { padding-left: 0; padding-right: 0; }
-}
-
 /* ADD button — white pill, green border */
 .btn-add {
   display: inline-flex;
@@ -1592,11 +1581,10 @@ button { touch-action: manipulation; }
   border-radius: 10px;
   background: white;
   border: 1px solid #E8E0F7;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #5C4A7A;
   white-space: nowrap;
-  min-height: 40px;
 }
 
 /* Smooth scroll snap for horizontal sections */
