@@ -223,12 +223,20 @@ export default function ModitHomePage() {
     categories.map((c) => [c.slug, { img: c.img, color: c.color }])
   );
 
+  /** One shared tile lookup: curated photo → first catalog image → icon fallback. */
+  const tileFor = (slug: string): { img?: string; tint: string } => {
+    const manual = TILE_IMAGES[slug];
+    if (manual) return { img: manual.img, tint: manual.color };
+    const found = products.find((p) => p.categorySlug === slug)?.images?.[0];
+    return { img: found, tint: "#2D1B69" };
+  };
+
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
       {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
-        <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
@@ -250,7 +258,7 @@ export default function ModitHomePage() {
           </div>
         </div>
         {/* Search row — full width, opens the search sheet */}
-        <div className="px-4 pb-3">
+        <div className="px-4 sm:px-6 pb-3">
           <button
             onClick={() => setShowSearch(true)}
             className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
@@ -264,27 +272,36 @@ export default function ModitHomePage() {
 
       {/* ═══ CATEGORY SHORTCUTS — Blinkit-app icon strip under search ═══ */}
       <div className="bg-[#150726] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4">
+        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4 sm:px-6">
           <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
             <LayoutGrid className="h-5 w-5" />
             <span className="text-tiny font-bold">All</span>
           </Link>
           {/* Every live category up top — nothing hidden behind "few" */}
-          {visibleCategories.map((c) => (
+          {visibleCategories.map((c) => {
+            const t = tileFor(c.slug);
+            return (
             <Link
               key={c.slug}
               href={`/products?category=${c.slug}`}
               className="flex flex-col items-center gap-1 px-3 py-2 text-white/60 hover:text-white flex-shrink-0 transition-colors"
             >
-              <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
+              {t.img ? (
+                <span className="h-8 w-8 rounded-lg overflow-hidden bg-white/10 flex items-center justify-center flex-shrink-0">
+                  <Image src={t.img} alt="" width={32} height={32} loading="lazy" draggable={false} className="h-full w-full object-contain p-0.5" />
+                </span>
+              ) : (
+                <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
+              )}
               <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
-      <div className="bg-[#150726] border-b border-white/5 px-4 py-2.5">
+      <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -316,6 +333,7 @@ export default function ModitHomePage() {
       </div>
 
       {/* ═══ TRUST STRIP ═══ */}
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
       <div className="trust-strip scrollbar-hide mt-3">
         {[
           { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
@@ -324,16 +342,17 @@ export default function ModitHomePage() {
           { icon: Undo2, text: "7-Day Returns", color: "#E91E63" },
           { icon: Receipt, text: "GST Invoice", color: "#FF9800" },
         ].map((item) => (
-          <div key={item.text} className="trust-item">
+          <div key={item.text} className="trust-item transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-purple-900/10">
             <item.icon className="h-3.5 w-3.5 shrink-0" style={{ color: item.color }} />
             <span style={{ color: item.color }}>{item.text}</span>
           </div>
         ))}
       </div>
+      </div>{/* ═══ /trust gutter ═══ */}
 
       {/* ═══ PAGE GUTTER — every section below breathes inside the same
           centered margins; nothing touches the screen corners ═══ */}
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6">
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
       <Reveal>
         <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
@@ -345,7 +364,7 @@ export default function ModitHomePage() {
               </div>
               <h1 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
               <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
-              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
+              <Link href="/products" className="btn-shine mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0F9E8] transition-all hover:scale-105 active:scale-95">
                 Shop Now
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -414,14 +433,9 @@ export default function ModitHomePage() {
               Mobile scrolls horizontally, desktop shows the full grid. */}
           <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
             {visibleCategories.map((cat, i) => {
-              const manual = TILE_IMAGES[cat.slug];
               // Blinkit wall: EVERY tile gets a real photo — curated art for
               // headline categories, first catalog image for the rest.
-              const fallbackImg = !manual
-                ? products.find((p) => p.categorySlug === cat.slug)?.images?.[0]
-                : undefined;
-              const img = manual?.img ?? fallbackImg;
-              const tint = manual?.color ?? "#2D1B69";
+              const { img, tint } = tileFor(cat.slug);
               return (
                 <Link
                   key={cat.slug}
@@ -462,7 +476,7 @@ export default function ModitHomePage() {
       </Reveal>
 
       {/* ═══ RECENTLY VIEWED — personal, right after categories ═══ */}
-      <div className="market-container">
+      <div>
         <RecentlyViewed />
       </div>
       </div>{/* ═══ /PAGE GUTTER ═══ */}
@@ -471,7 +485,7 @@ export default function ModitHomePage() {
       <FlashDeals />
 
       {/* ═══ PRODUCT RAILS + FEATURE BAR — same centered gutters ═══ */}
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-8">
+      <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -556,7 +570,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BRAND STRIP ═══ */}
       <Reveal>
-        <div className="market-container mb-6 px-4 pb-2 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 mb-6 pb-2">
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
             <Link href="/products?sort=rating" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
@@ -595,7 +609,7 @@ export default function ModitHomePage() {
 
       {/* ═══ MATERIAL CALCULATOR ═══ */}
       <Reveal>
-        <div className="market-container px-4 pt-2 pb-6 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pt-2 pb-6">
           <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4 shadow-lg shadow-purple-900/5 hover:shadow-xl hover:shadow-purple-900/10 transition-shadow relative overflow-hidden group/calc">
             <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[#7CB518]/10 blur-2xl pointer-events-none" />
             <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
@@ -625,7 +639,7 @@ export default function ModitHomePage() {
 
       {/* ═══ BULK / BUSINESS CTA ═══ */}
       <Reveal>
-        <div className="market-container px-4 pb-6 sm:px-6">
+        <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6 pb-6">
           <div className="rounded-2xl bg-[#150726] px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center gap-3 relative overflow-hidden border border-white/10 shadow-xl shadow-purple-900/30 group/rfq">
             <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(rgba(124,181,24,0.45) 1px, transparent 1px)", backgroundSize: "18px 18px" }} />
             <div className="absolute -left-12 -bottom-16 h-44 w-44 rounded-full bg-[#2D1B69]/60 blur-3xl pointer-events-none" />

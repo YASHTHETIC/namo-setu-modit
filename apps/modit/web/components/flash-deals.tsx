@@ -76,7 +76,7 @@ export function FlashDeals() {
         </div>
 
         {/* Products rail — snap scroll on all sizes */}
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x px-4 pb-4">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-4">
           {flashProducts.map((product) => {
             const inCart = items.some((i) => i.product.id === product.id);
             const optLabel = optionsLabel(product);
