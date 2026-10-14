@@ -231,6 +231,7 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
             inv.quantity_on_hand = max(inv.quantity_on_hand, qty)
 
     await _seed_demo_supplier(session, org)
+    await _seed_demo_personas(session)
 
     return stats
 
@@ -282,6 +283,47 @@ async def _seed_demo_supplier(session: AsyncSession, org: Organization) -> None:
     )
     for product in result.scalars().all():
         product.supplier_id = sup.id
+
+
+async def _seed_demo_personas(session: AsyncSession) -> None:
+    """Delivery-day logins for every persona: buyer, contractor, architect,
+    rider (all / Demo@1234).
+
+    Idempotent (get-or-create by email): existing accounts, passwords and
+    roles are never touched.
+    """
+    role = (
+        (await session.execute(select(Role).where(Role.name == "user")))
+        .scalars()
+        .first()
+    )
+    if role is None:
+        role = Role(name="user", description="Buyer account")
+        session.add(role)
+        await session.flush()
+    personas = [
+        ("demo@modit.in", "Demo Buyer"),
+        ("contractor@modit.in", "Demo Contractor"),
+        ("architect@modit.in", "Demo Architect"),
+        ("rider@modit.in", "Demo Delivery Partner"),
+    ]
+    for email, full_name in personas:
+        user, _ = await _get_or_create(
+            session, User, {"email": email},
+            {"full_name": full_name, "hashed_password": hash_password("Demo@1234"),
+             "is_active": True, "is_verified": True},
+        )
+        linked = (
+            await session.execute(
+                select(Role.id).join(user_roles, user_roles.c.role_id == Role.id).where(
+                    user_roles.c.user_id == user.id, Role.id == role.id
+                )
+            )
+        ).first()
+        if linked is None:
+            await session.execute(
+                user_roles.insert().values(user_id=user.id, role_id=role.id)
+            )
 
 
 async def main() -> None:
