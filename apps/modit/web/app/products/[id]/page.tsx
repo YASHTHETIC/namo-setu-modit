@@ -429,6 +429,12 @@ export default function ProductDetailPage({
               <StarRating rating={product.rating} count={product.reviewCount} size="md" />
               <span className="text-xs text-[var(--text-muted)]">SKU: {product.sku}</span>
             </div>
+            {product.seller?.name && (
+              <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+                Sold by <span className="font-semibold text-[var(--text-primary)]">{product.seller.name}</span>
+                {product.seller.isVerified ? " ✓" : ""} · Marketplace item, price set by seller
+              </p>
+            )}
           </div>
 
           {/* Price Block */}
