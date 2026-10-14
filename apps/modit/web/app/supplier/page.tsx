@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Package, ShoppingBag, IndianRupee, Wallet } from "lucide-react";
 
 import { formatINR2 } from "@/lib/utils";
-import { useSupplierSummary, useSupplierOrders } from "@/lib/supplier-api";
+import { useSupplierMe, useSupplierSummary, useSupplierOrders } from "@/lib/supplier-api";
 
 function Card({ label, value, icon: Icon, tint }: { label: string; value: string; icon: typeof Package; tint: string }) {
   return (
@@ -21,11 +21,37 @@ function Card({ label, value, icon: Icon, tint }: { label: string; value: string
 }
 
 export default function SupplierDashboard() {
-  const summary = useSupplierSummary();
-  const orders = useSupplierOrders();
+  const me = useSupplierMe();
+  const summary = useSupplierSummary(!me.data || me.data.is_verified);
+  const orders = useSupplierOrders(!me.data || me.data.is_verified);
 
+  if (me.isLoading) {
+    return <p className="text-body-sm font-bold text-[#9B8CB5]">Loading your business.</p>;
+  }
+  if (me.data && !me.data.is_verified) {
+    return (
+      <div className="rounded-2xl border border-[#FF9800]/40 bg-[#FFF8E1] p-6 text-center">
+        <p className="text-title-md font-extrabold text-[#150726]">Application under review</p>
+        <p className="text-caption text-[#6B5B83] mt-1">
+          Reference <span className="font-bold text-[#150726] tabular-nums">{me.data.supplier_code}</span> — we verify
+          every supplier within 2 working days. Your products, orders and payouts unlock here after approval.
+        </p>
+      </div>
+    );
+  }
+  if (me.isError) {
+    return (
+      <div className="rounded-2xl border border-[#DDD6EE] bg-white p-6 text-center">
+        <p className="text-title-md font-extrabold text-[#150726]">No supplier profile yet</p>
+        <p className="text-caption text-[#6B5B83] mt-1">Apply in 2 minutes with your GSTIN — approval within 2 working days.</p>
+        <Link href="/supplier/apply" className="btn-shine mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-caption font-bold px-6 py-3 rounded-xl hover:bg-[#6A9C14] transition-all">
+          Apply to Sell
+        </Link>
+      </div>
+    );
+  }
   if (summary.isLoading) {
-    return <p className="text-body-sm font-bold text-[#9B8CB5]">Loading your business…</p>;
+    return <p className="text-body-sm font-bold text-[#9B8CB5]">Loading your business.</p>;
   }
   if (summary.isError) {
     return (

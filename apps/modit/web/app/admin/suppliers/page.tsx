@@ -10,6 +10,8 @@ import {
   useSupplierStore, SUPPLIER_STATUS_LABEL, type ManagedSupplier, type SupplierStatus,
 } from "@/lib/supplier-store";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { useSupplierApplications, useDecideApplication } from "@/lib/supplier-api";
+import { useToast } from "@foundation/ui";
 
 type Filter = "all" | SupplierStatus;
 
@@ -61,6 +63,10 @@ export default function AdminSuppliersPage() {
   const [form, setForm] = useState({ code: "", name: "", brand: "", city: "" });
   const [formError, setFormError] = useState("");
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({});
+  const toast = useToast();
+  const applications = useSupplierApplications();
+  const decide = useDecideApplication();
+  const pendingApps = (applications.data ?? []).filter((a) => a.status === "pending");
 
   const stats = useMemo(() => {
     const verified = suppliers.filter((s) => s.status === "verified").length;
@@ -132,6 +138,52 @@ export default function AdminSuppliersPage() {
           <Plus className="h-4 w-4" /> Onboard supplier
         </button>
       </div>
+
+      {/* Real applications from the Sell-on-MODIT form (server, not demo data) */}
+      {pendingApps.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-[#FF9800]/40 bg-[#FFF8E1] p-4">
+          <h2 className="text-body-sm font-extrabold text-[#150726]">
+            New applications ({pendingApps.length}) - verify to give them a login that works
+          </h2>
+          <div className="mt-3 space-y-2">
+            {pendingApps.map((a) => (
+              <div key={a.supplier_id} className="rounded-xl bg-white border border-[#DDD6EE] p-3 flex flex-wrap items-center gap-3">
+                <div className="flex-1 min-w-[200px]">
+                  <p className="text-body-sm font-extrabold text-[#150726]">
+                    {a.business_name} <span className="font-mono font-bold text-[#9B8CB5]">{a.supplier_code}</span>
+                  </p>
+                  <p className="text-caption text-[#6B5B83]">
+                    {a.contact_name} · {a.email} · {a.phone} · {a.city} {a.pincode}
+                  </p>
+                  <p className="text-tiny text-[#9B8CB5]">
+                    GSTIN {a.gstin} · {a.categories.join(", ")}{a.brands.length > 0 ? ` · ${a.brands.join(", ")}` : ""}
+                  </p>
+                </div>
+                <button
+                  disabled={decide.isPending}
+                  onClick={() => decide.mutate({ supplierId: a.supplier_id, action: "approve" }, {
+                    onSuccess: () => { logAdminActivity("supplier.status", `Verified supplier ${a.business_name}`, a.supplier_code); toast.success("Supplier verified", `${a.business_name} can now use the hub.`); },
+                    onError: (e) => toast.error("Failed", e instanceof Error ? e.message : "Try again."),
+                  })}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7CB518] text-white text-micro font-bold hover:bg-[#6A9C14] disabled:opacity-50"
+                >
+                  <Check className="h-3.5 w-3.5" /> Verify & go live
+                </button>
+                <button
+                  disabled={decide.isPending}
+                  onClick={() => { if (confirm(`Reject ${a.business_name}?`)) decide.mutate({ supplierId: a.supplier_id, action: "reject" }, {
+                    onSuccess: () => { logAdminActivity("supplier.status", `Rejected supplier ${a.business_name}`, a.supplier_code); toast.success("Rejected", `${a.business_name} was rejected.`); },
+                    onError: (e) => toast.error("Failed", e instanceof Error ? e.message : "Try again."),
+                  }); }}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E91E63]/40 text-[#e91e63] text-micro font-bold hover:bg-[#E91E63]/15 disabled:opacity-50"
+                >
+                  <Ban className="h-3.5 w-3.5" /> Reject
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* KPI strip */}
       <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-5 rounded-2xl p-4" style={{ background: "linear-gradient(135deg,#150726 0%,#2D1B69 60%,#150726 100%)" }}>
@@ -281,7 +333,7 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
           {s.status === "verified" && <span className="flex items-center gap-1 text-[#7cb518] font-bold"><ShieldCheck className="h-3 w-3" /> BIS/ISI compliant</span>}
         </div>
 
-        {/* KPI strip */}
+      {/* KPI strip */}
         <div className="mt-3 grid grid-cols-3 gap-2">
           <div className="rounded-xl bg-white/5 border border-white/10 px-2.5 py-2 text-center">
             <p className="text-body-lg font-black text-white tabular-nums">{catalog.length}</p>

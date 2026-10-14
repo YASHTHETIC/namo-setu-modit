@@ -723,6 +723,37 @@ export function createModitApi(client: ApiClient) {
       );
     },
 
+    supplierApply(payload: {
+      business_name: string; contact_name: string; email: string; phone: string;
+      password: string; gstin: string; pan: string; city: string; pincode: string;
+      categories: string[]; brands: string[];
+    }) {
+      return client.request<{ supplier_id: string; supplier_code: string; status: string }>(
+        "/supplier/apply",
+        { method: "POST", body: JSON.stringify(payload) },
+      );
+    },
+
+    listSupplierApplications(status?: string) {
+      const qs = status ? `?status=${status}` : "";
+      return client.request<Array<{
+        supplier_id: string; supplier_code: string; business_name: string; contact_name: string;
+        email: string; phone: string; gstin: string; pan: string; city: string; pincode: string;
+        categories: string[]; brands: string[]; status: string;
+      }>>(
+        `/supplier/applications${qs}`,
+      );
+    },
+
+    decideSupplierApplication(supplierId: string, action: "approve" | "reject") {
+      return client.request<{
+        supplier_id: string; supplier_code: string; business_name: string; status: string;
+      }>(
+        `/supplier/applications/${supplierId}`,
+        { method: "PATCH", body: JSON.stringify({ action }) },
+      );
+    },
+
     // RFQ / Quotation
     listRFQs(organizationId?: string) {
       const qs = organizationId ? `?organization_id=${organizationId}` : "";

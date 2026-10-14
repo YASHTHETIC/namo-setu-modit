@@ -105,7 +105,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
               <Link href="/shipping" className="transition-colors hover:text-[#2D1B69]">Shipping</Link>
               <Link href="/returns" className="transition-colors hover:text-[#2D1B69]">Returns</Link>
               <Link href="/contact" className="transition-colors hover:text-[#2D1B69]">Contact</Link>
-              <Link href="/supplier" className="transition-colors hover:text-[#2D1B69]">Sell on MODIT</Link>
+              <Link href="/supplier/apply" className="transition-colors hover:text-[#2D1B69]">Sell on MODIT</Link>
             </div>
           </div>
         </div>

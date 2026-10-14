@@ -108,16 +108,24 @@ def test_supplier_endpoints_forbid_buyers(buyer_client):
 
 
 def test_all_supplier_routes_are_role_gated():
-    """Every supplier path exists and carries an auth dependency (no open route)."""
+    """Every supplier path exists; all but the public intake carry an auth dependency."""
     routes = {
         getattr(route, "path", ""): route
         for route in app.routes
         if getattr(route, "path", "").startswith(f"{BASE}/")
     }
-    assert set(routes) == {f"{BASE}{p}" for p in PATHS}
-    for route in routes.values():
+    assert set(routes) == {f"{BASE}{p}" for p in PATHS + ["/apply", "/applications", "/applications/{supplier_id}"]}
+    public = {f"{BASE}/apply"}  # deliberate: anyone may apply to sell
+    for path, route in routes.items():
+        if path in public:
+            continue
         dependant = getattr(route, "dependant", None)
         assert dependant is not None and getattr(dependant, "dependencies", None), route.path
+
+
+def test_apply_is_public_and_lists_are_staff_gated(client):
+    assert client.post(f"{BASE}/apply", json={}).status_code == 422  # validation, no auth needed
+    assert client.get(f"{BASE}/applications").status_code in (401, 403)
 
 
 def test_is_supplier_helper():

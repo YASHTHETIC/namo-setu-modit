@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createApiClient, createModitApi } from "@foundation/api-client";
 
 import { getAccessToken } from "./auth";
@@ -62,5 +62,31 @@ export function useSupplierPayouts(enabled = true) {
     queryFn: () => getSupplierApi().supplierPayouts(),
     enabled,
     ...opts,
+  });
+}
+
+export function supplierApply(payload: {
+  business_name: string; contact_name: string; email: string; phone: string;
+  password: string; gstin: string; pan: string; city: string; pincode: string;
+  categories: string[]; brands: string[];
+}) {
+  return getSupplierApi().supplierApply(payload);
+}
+
+export function useSupplierApplications(enabled = true) {
+  return useQuery({
+    queryKey: ["modit", "supplier", "applications"],
+    queryFn: () => getSupplierApi().listSupplierApplications(),
+    enabled,
+    ...opts,
+  });
+}
+
+export function useDecideApplication() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ supplierId, action }: { supplierId: string; action: "approve" | "reject" }) =>
+      getSupplierApi().decideSupplierApplication(supplierId, action),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["modit", "supplier", "applications"] }),
   });
 }
