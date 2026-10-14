@@ -265,3 +265,68 @@ def test_staff_application_unknown(staff_client):
 
 def test_supplier_cannot_list_applications(pending_client):
     assert pending_client.get(f"{BASE}/applications").status_code == 403
+
+
+def _product_row():
+    from datetime import datetime, timezone
+
+    return FakeORMObject(
+        id="prod-1", organization_id="org-1", supplier_id=None, brand_id=None,
+        category_id="cat-1", sub_category_id=None, unit_id="unit-1", gst_id=None,
+        sku="TST-1", name="Test Product", slug="test-product", description=None,
+        specification_json=None, mrp=100.0, list_price=90.0,
+        approval_status="approved", is_active=True,
+        created_at=datetime.now(timezone.utc),
+    )
+
+
+def _assign_client(client, product, supplier):
+    from backend.app.core.database import get_db as _get_db
+
+    prev_db = app.dependency_overrides.get(_get_db)
+    prev_user = app.dependency_overrides.get(get_current_user)
+
+    class AssignDB(FakeDatabaseSession):
+        async def get(self, model, ident):
+            name = getattr(model, "__name__", "")
+            if name == "Product":
+                return product
+            if name == "Supplier":
+                return supplier
+            return None
+
+    async def _db():
+        yield AssignDB()
+
+    app.dependency_overrides[_get_db] = _db
+    app.dependency_overrides[get_current_user] = _staff_user
+    yield client
+    if prev_db is not None:
+        app.dependency_overrides[_get_db] = prev_db
+    if prev_user is not None:
+        app.dependency_overrides[get_current_user] = prev_user
+    else:
+        app.dependency_overrides.pop(get_current_user, None)
+
+
+@pytest.fixture()
+def assign_client(client):
+    yield from _assign_client(client, _product_row(), FakeORMObject(id="sup-1"))
+
+
+@pytest.fixture()
+def assign_client_no_supplier(client):
+    yield from _assign_client(client, _product_row(), None)
+
+
+def test_admin_can_assign_product_to_supplier(assign_client):
+    r = assign_client.patch(
+        "/api/v1/modit/products/prod-1", json={"supplier_id": "sup-1"})
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["supplier_id"] == "sup-1"
+
+
+def test_admin_assign_unknown_supplier_404(assign_client_no_supplier):
+    r = assign_client_no_supplier.patch(
+        "/api/v1/modit/products/prod-1", json={"supplier_id": "nope"})
+    assert r.status_code == 404

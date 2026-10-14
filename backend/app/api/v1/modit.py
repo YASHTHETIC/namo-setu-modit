@@ -269,7 +269,11 @@ async def get_product(product_id: str, db: AsyncSession = Depends(get_db)) -> Pr
 async def update_product(product_id: str, payload: ProductUpdate, db: AsyncSession = Depends(get_db)) -> ProductRead:
     """Update product."""
     product = await get_product_or_404(db, product_id)
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+    if data.get("supplier_id") is not None:
+        if await db.get(Supplier, data["supplier_id"]) is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supplier not found")
+    for key, value in data.items():
         setattr(product, key, value)
     await db.commit()
     await db.refresh(product)

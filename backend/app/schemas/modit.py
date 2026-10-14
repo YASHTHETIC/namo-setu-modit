@@ -198,6 +198,7 @@ class ProductUpdate(BaseModel):
     list_price: float | None = None
     approval_status: str | None = None
     is_active: bool | None = None
+    supplier_id: str | None = None
 
 
 class ProductRead(ORMModel):

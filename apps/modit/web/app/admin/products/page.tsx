@@ -7,6 +7,7 @@ import { useAdminStore, type ProductOverride } from "@/lib/admin-store";
 import { resolveProduct } from "@/lib/pricing";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { getModitApi, useCategories, useBrands, useUnits, useWarehouses, useCreateProduct } from "@/lib/modit-api";
+import { useSupplierApplications } from "@/lib/supplier-api";
 import { useToast } from "@foundation/ui";
 
 export default function AdminProductsPage() {
@@ -20,7 +21,21 @@ export default function AdminProductsPage() {
   const clearOverride = useAdminStore((s) => s.clearOverride);
   const toast = useToast();
   const [syncMsg, setSyncMsg] = useState("");
+  const applications = useSupplierApplications();
 
+  // Assign a server product to a verified supplier (powers their hub catalog).
+  // Same SKU-match mechanism as price sync; null unlinks back to store-direct.
+  const syncSupplierToServer = async (sku: string, supplierId: string | null): Promise<boolean> => {
+    try {
+      const res = await getModitApi().listProducts({ search: sku });
+      const match = (res.items ?? []).find((it: any) => it.sku === sku);
+      if (!match) return false;
+      await getModitApi().updateProduct(match.id, { supplier_id: supplierId });
+      return true;
+    } catch {
+      return false;
+    }
+  };
   // Push price/MRP to the server catalog (source of truth for checkout).
   // Local override always applies instantly; server sync is best-effort.
   const syncPriceToServer = async (sku: string, price?: number, mrp?: number): Promise<boolean> => {
@@ -227,7 +242,16 @@ export default function AdminProductsPage() {
       {editing && (
         <EditProductModal
           product={editing}
+          suppliers={(applications.data ?? []).filter((a) => a.status === "approved")}
           onClose={() => setEditing(null)}
+          onAssignSupplier={(supplierId) => {
+            void syncSupplierToServer(editing.sku, supplierId).then((ok) => {
+              if (ok) {
+                logAdminActivity("product.update", `${editing.sku} assigned to supplier`, supplierId ?? "store-direct");
+                toast.success("Supplier assigned", supplierId ? "Product now shows in their hub." : "Product unlinked to store-direct.");
+              } else toast.error("Server sync failed", "Saved locally - retry later.");
+            });
+          }}
           onSave={(patch) => {
             setOverride(editing.id, patch);
             logAdminActivity(
@@ -298,7 +322,13 @@ export default function AdminProductsPage() {
   );
 }
 
-function EditProductModal({ product, onClose, onSave }: { product: Product; onClose: () => void; onSave: (p: ProductOverride) => void }) {
+function EditProductModal({ product, suppliers, onClose, onSave, onAssignSupplier }: {
+  product: Product;
+  suppliers: { supplier_id: string; supplier_code: string; business_name: string }[];
+  onClose: () => void;
+  onSave: (p: ProductOverride) => void;
+  onAssignSupplier: (supplierId: string | null) => void;
+}) {
   const existing = useAdminStore((s) => s.overrides[product.id]);
   const [price, setPrice] = useState(String(existing?.price ?? product.price));
   const [mrp, setMrp] = useState(String(existing?.mrp ?? product.mrp));
@@ -306,6 +336,8 @@ function EditProductModal({ product, onClose, onSave }: { product: Product; onCl
   const [bulkMinQty, setBulkMinQty] = useState(existing?.bulkMinQty != null ? String(existing.bulkMinQty) : product.bulkMinQty != null ? String(product.bulkMinQty) : "");
   const [stock, setStock] = useState(String(existing?.stockLevel ?? product.stockLevel));
   const [hidden, setHidden] = useState(existing?.hidden ?? false);
+  const [supplierId, setSupplierId] = useState("");
+  const [supplierTouched, setSupplierTouched] = useState(false);
 
   const num = (v: string) => {
     const n = Number(v);
@@ -315,6 +347,7 @@ function EditProductModal({ product, onClose, onSave }: { product: Product; onCl
   const handleSave = () => {
     const p = num(price) ?? product.price;
     const m = num(mrp) ?? product.mrp;
+    if (supplierTouched) onAssignSupplier(supplierId || null);
     onSave({
       price: Math.max(1, Math.min(p, m)),
       mrp: Math.max(1, m),
@@ -357,6 +390,18 @@ function EditProductModal({ product, onClose, onSave }: { product: Product; onCl
           <div className="col-span-2">
             <label className="block text-micro font-bold text-[#150726] mb-1.5">Stock level</label>
             <input value={stock} onChange={(e) => setStock(e.target.value)} inputMode="numeric" className={field} />
+          </div>
+          <div className="col-span-2">
+            <label className="block text-micro font-bold text-[#150726] mb-1.5">Supplier (hub catalog)</label>
+            <select value={supplierId} onChange={(e) => { setSupplierId(e.target.value); setSupplierTouched(true); }} className={field}>
+              <option value="">Store-direct (no supplier)</option>
+              {suppliers.map((s) => (
+                <option key={s.supplier_id} value={s.supplier_id}>
+                  {s.business_name} ({s.supplier_code})
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-tiny text-[#9B8CB5]">Assigning links this SKU to their hub on save. Only verified suppliers listed.</p>
           </div>
         </div>
 
