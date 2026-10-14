@@ -2,12 +2,17 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calculator, Paintbrush, Layers, Grid3X3, Zap, Truck, ShoppingCart, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calculator, Paintbrush, Layers, Grid3X3, Zap, Truck, ShoppingCart, CheckCircle2, Ruler, Box } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { productLink } from "@/lib/utils";
 import { products } from "@/lib/product-data";
+import {
+  estimatePaint, estimateTiles, estimateConcrete, estimateSteel,
+  type ConcreteGrade,
+} from "@/lib/material-math";
 
 type RoomType = "bedroom" | "living" | "kitchen" | "bathroom" | "hall";
+type CalcTab = "paint" | "tiles" | "concrete" | "steel";
 
 const roomPresets: Record<RoomType, { label: string; defaultArea: number; defaultHeight: number }> = {
   bedroom: { label: "Bedroom", defaultArea: 120, defaultHeight: 10 },
@@ -17,45 +22,91 @@ const roomPresets: Record<RoomType, { label: string; defaultArea: number; defaul
   hall: { label: "Hall / Office", defaultArea: 300, defaultHeight: 10 },
 };
 
+interface Reco {
+  name: string;
+  product: typeof products[0];
+  quantity: number;
+  icon: string;
+}
+
+const inputCls =
+  "mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10";
+const labelCls = "text-micro font-semibold text-[#9B8CB5] uppercase";
+const cardCls = "rounded-2xl border border-[#DDD6EE] bg-white p-5";
+const headCls = "text-body-sm font-bold text-[#150726] mb-3";
+
 export default function CalculatorPage() {
   const addItem = useCartStore((s) => s.addItem);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const [tab, setTab] = useState<CalcTab>("paint");
+  const [addedItems, setAddedItems] = useState<string[]>([]);
+
+  // ---- paint (unchanged legacy inputs) ----
   const [roomType, setRoomType] = useState<RoomType>("bedroom");
   const [area, setArea] = useState(120);
   const [height, setHeight] = useState(10);
   const [coats, setCoats] = useState(2);
   const [wallOnly, setWallOnly] = useState(true);
-  const [addedItems, setAddedItems] = useState<string[]>([]);
+  // ---- tiles ----
+  const [tileArea, setTileArea] = useState(100);
+  const [tileLen, setTileLen] = useState(24);
+  const [tileWid, setTileWid] = useState(24);
+  const [wastage, setWastage] = useState(10);
+  // ---- concrete ----
+  const [slabL, setSlabL] = useState(10);
+  const [slabW, setSlabW] = useState(10);
+  const [slabT, setSlabT] = useState(4);
+  const [grade, setGrade] = useState<ConcreteGrade>("M20");
+  // ---- steel ----
+  const [steelDia, setSteelDia] = useState(12);
+  const [steelLen, setSteelLen] = useState(48);
 
-  const estimate = useMemo(() => {
-    const wallArea = wallOnly ? area * 2 * height : area * 2 * height + area;
-    const coveragePerLitre = 120;
-    const paintLitres = Math.ceil((wallArea * coats) / coveragePerLitre);
-    const primerLitres = Math.ceil(wallArea / coveragePerLitre);
-    const puttyKg = Math.ceil(wallArea * 0.3);
-    const tapeMeters = Math.ceil((wallArea / 100) * 4);
-    const rollerCount = Math.max(1, Math.ceil(wallArea / 200));
+  const paint = useMemo(
+    () => estimatePaint(area, height, coats, wallOnly),
+    [area, height, coats, wallOnly],
+  );
+  const tiles = useMemo(
+    () => estimateTiles(tileArea, tileLen, tileWid, wastage),
+    [tileArea, tileLen, tileWid, wastage],
+  );
+  const concrete = useMemo(
+    () => estimateConcrete(slabL, slabW, slabT, grade),
+    [slabL, slabW, slabT, grade],
+  );
+  const steel = useMemo(() => estimateSteel(steelDia, steelLen), [steelDia, steelLen]);
 
-    return { wallArea, paintLitres, primerLitres, puttyKg, tapeMeters, rollerCount };
-  }, [area, height, coats, wallOnly]);
-
-  const recommendations = useMemo(() => {
-    const items: { name: string; product: typeof products[0]; quantity: number; icon: string }[] = [];
-
-    const primer = products.find((p) => p.id === "paint-asian-primer");
-    if (primer) items.push({ name: "Primer", product: primer, quantity: estimate.primerLitres, icon: "🎨" });
-
-    const putty = products.find((p) => p.id === "paint-asian-putty");
-    if (putty) items.push({ name: "Wall Putty", product: putty, quantity: Math.ceil(estimate.puttyKg / 20), icon: "🧱" });
-
-    const roller = products.find((p) => p.id === "paint-roller");
-    if (roller) items.push({ name: "Paint Roller", product: roller, quantity: estimate.rollerCount, icon: "🖌️" });
-
-    const tape = products.find((p) => p.id === "paint-masking-tape");
-    if (tape) items.push({ name: "Masking Tape", product: tape, quantity: estimate.tapeMeters, icon: "📎" });
-
-    return items;
-  }, [estimate]);
+  const recommendations: Reco[] = useMemo(() => {
+    if (tab === "paint") {
+      const items: Reco[] = [];
+      const primer = products.find((p) => p.id === "paint-asian-primer");
+      if (primer) items.push({ name: "Primer", product: primer, quantity: paint.primerLitres, icon: "🎨" });
+      const putty = products.find((p) => p.id === "paint-asian-putty");
+      if (putty) items.push({ name: "Wall Putty", product: putty, quantity: Math.ceil(paint.puttyKg / 20), icon: "🧱" });
+      const roller = products.find((p) => p.id === "paint-roller");
+      if (roller) items.push({ name: "Paint Roller", product: roller, quantity: paint.rollerCount, icon: "🖌️" });
+      const tape = products.find((p) => p.id === "paint-masking-tape");
+      if (tape) items.push({ name: "Masking Tape", product: tape, quantity: paint.tapeMeters, icon: "📎" });
+      return items;
+    }
+    if (tab === "tiles") {
+      const tiling = products.filter((p) => p.categorySlug === "tiling");
+      const items: Reco[] = [];
+      const adhesive = tiling.find((p) => /adhesive/i.test(p.name)) ?? tiling[0];
+      if (adhesive) items.push({ name: "Tile Adhesive (20 kg)", product: adhesive, quantity: tiles.adhesiveBags, icon: "🧱" });
+      const grout = tiling.find((p) => /grout/i.test(p.name) && p.id !== adhesive?.id)
+        ?? tiling.find((p) => p.id !== adhesive?.id);
+      if (grout) items.push({ name: "Tile Grout", product: grout, quantity: Math.max(1, tiles.groutKg), icon: "🪣" });
+      return items;
+    }
+    if (tab === "concrete") {
+      const cement = products
+        .filter((p) => p.categorySlug === "cement")
+        .sort((a, b) => a.price - b.price);
+      if (cement[0]) return [{ name: "Cement (50 kg)", product: cement[0], quantity: concrete.cementBags, icon: "🏗️" }];
+      return [];
+    }
+    return []; // steel: no TMT category yet — RFQ path instead
+  }, [tab, paint, tiles, concrete]);
 
   const handleAddAll = () => {
     recommendations.forEach((item) => {
@@ -64,6 +115,13 @@ export default function CalculatorPage() {
     setAddedItems(recommendations.map((r) => r.name));
     setTimeout(() => setAddedItems([]), 3000);
   };
+
+  const tabs: { id: CalcTab; label: string; icon: React.ReactNode }[] = [
+    { id: "paint", label: "Paint", icon: <Paintbrush className="h-4 w-4" /> },
+    { id: "tiles", label: "Tiles", icon: <Grid3X3 className="h-4 w-4" /> },
+    { id: "concrete", label: "Concrete", icon: <Box className="h-4 w-4" /> },
+    { id: "steel", label: "Steel", icon: <Ruler className="h-4 w-4" /> },
+  ];
 
   return (
     <div className="fx-page min-h-screen bg-[#F8F6FC]">
@@ -77,108 +135,305 @@ export default function CalculatorPage() {
             </Link>
             <div>
               <h1 className="text-title-md font-extrabold text-white flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-[#7CB518]" /> Paint Calculator
+                <Calculator className="h-5 w-5 text-[#7CB518]" /> Material Calculator
               </h1>
-              <p className="text-caption text-white/50">Estimate materials for your project</p>
+              <p className="text-caption text-white/50">Paint, tiles, concrete & steel estimates</p>
             </div>
+            {cartCount > 0 && (
+              <Link href="/cart" className="ml-auto relative rounded-xl bg-white/10 p-2.5 text-white hover:bg-white/15 transition-colors">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-[#7CB518] text-tiny font-bold text-white flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </Link>
+            )}
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => { setTab(t.id); setAddedItems([]); }}
+                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-caption font-bold border-2 transition-all flex-shrink-0 ${
+                  tab === t.id
+                    ? "border-[#7CB518] bg-[#7CB518] text-white"
+                    : "border-white/15 text-white/60 hover:border-white/30 hover:text-white"
+                }`}
+              >
+                {t.icon} {t.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-[800px] px-4 py-4 space-y-4 sm:px-6">
-        {/* Room Type */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Room Type</h3>
-          <div className="flex flex-wrap gap-2">
-            {(Object.keys(roomPresets) as RoomType[]).map((type) => (
-              <button
-                key={type}
-                onClick={() => { setRoomType(type); setArea(roomPresets[type].defaultArea); setHeight(roomPresets[type].defaultHeight); }}
-                className={`rounded-xl px-4 py-2 text-caption font-semibold border-2 transition-all ${
-                  roomType === type
-                    ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]"
-                    : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
-                }`}
-              >
-                {roomPresets[type].label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Dimensions */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Dimensions</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-micro font-semibold text-[#9B8CB5] uppercase">Floor Area (sq ft)</label>
-              <input
-                type="number"
-                value={area}
-                onChange={(e) => setArea(Math.max(1, parseInt(e.target.value) || 1))}
-                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
-              />
+        {tab === "paint" && (
+          <>
+            {/* Room Type */}
+            <div className={cardCls}>
+              <h3 className={headCls}>Room Type</h3>
+              <div className="flex flex-wrap gap-2">
+                {(Object.keys(roomPresets) as RoomType[]).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => { setRoomType(type); setArea(roomPresets[type].defaultArea); setHeight(roomPresets[type].defaultHeight); }}
+                    className={`rounded-xl px-4 py-2 text-caption font-semibold border-2 transition-all ${
+                      roomType === type
+                        ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]"
+                        : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    {roomPresets[type].label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div>
-              <label className="text-micro font-semibold text-[#9B8CB5] uppercase">Ceiling Height (ft)</label>
-              <input
-                type="number"
-                value={height}
-                onChange={(e) => setHeight(Math.max(1, parseInt(e.target.value) || 1))}
-                className="mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10"
-              />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={wallOnly} onChange={(e) => setWallOnly(e.target.checked)} className="h-4 w-4 rounded border-[#DDD6EE] text-[#2D1B69] focus:ring-[#2D1B69]" />
-              <span className="text-caption font-medium text-[#150726]">Wall only (skip ceiling)</span>
-            </label>
-          </div>
-        </div>
 
-        {/* Paint Coats */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-          <h3 className="text-body-sm font-bold text-[#150726] mb-3">Number of Coats</h3>
-          <div className="flex gap-2">
-            {[1, 2, 3].map((c) => (
-              <button
-                key={c}
-                onClick={() => setCoats(c)}
-                className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
-                  coats === c
-                    ? "border-[#2D1B69] bg-[#2D1B69] text-white"
-                    : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
-                }`}
-              >
-                {c} Coat{c > 1 ? "s" : ""}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results */}
-        <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-          <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: "Paintable Area", value: `${estimate.wallArea} sq ft`, icon: <Grid3X3 className="h-4 w-4 text-[#2D1B69]" /> },
-              { label: "Paint Needed", value: `${estimate.paintLitres}L`, icon: <Paintbrush className="h-4 w-4 text-[#E91E63]" /> },
-              { label: "Primer Needed", value: `${estimate.primerLitres}L`, icon: <Layers className="h-4 w-4 text-[#00BCD4]" /> },
-              { label: "Wall Putty", value: `${estimate.puttyKg} kg`, icon: <Layers className="h-4 w-4 text-[#FF9800]" /> },
-            ].map(({ label, value, icon }) => (
-              <div key={label} className="flex items-center gap-2 rounded-xl bg-white p-3 border border-[#7CB518]/10">
-                {icon}
+            {/* Dimensions */}
+            <div className={cardCls}>
+              <h3 className={headCls}>Dimensions</h3>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
-                  <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  <label className={labelCls}>Floor Area (sq ft)</label>
+                  <input
+                    type="number"
+                    value={area}
+                    onChange={(e) => setArea(Math.max(1, parseInt(e.target.value) || 1))}
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>Ceiling Height (ft)</label>
+                  <input
+                    type="number"
+                    value={height}
+                    onChange={(e) => setHeight(Math.max(1, parseInt(e.target.value) || 1))}
+                    className={inputCls}
+                  />
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="mt-4 flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={wallOnly} onChange={(e) => setWallOnly(e.target.checked)} className="h-4 w-4 rounded border-[#DDD6EE] text-[#2D1B69] focus:ring-[#2D1B69]" />
+                  <span className="text-caption font-medium text-[#150726]">Wall only (skip ceiling)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Paint Coats */}
+            <div className={cardCls}>
+              <h3 className={headCls}>Number of Coats</h3>
+              <div className="flex gap-2">
+                {[1, 2, 3].map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setCoats(c)}
+                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                      coats === c
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    {c} Coat{c > 1 ? "s" : ""}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Results */}
+            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
+              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Paintable Area", value: `${paint.wallArea} sq ft`, icon: <Grid3X3 className="h-4 w-4 text-[#2D1B69]" /> },
+                  { label: "Paint Needed", value: `${paint.paintLitres}L`, icon: <Paintbrush className="h-4 w-4 text-[#E91E63]" /> },
+                  { label: "Primer Needed", value: `${paint.primerLitres}L`, icon: <Layers className="h-4 w-4 text-[#00BCD4]" /> },
+                  { label: "Wall Putty", value: `${paint.puttyKg} kg`, icon: <Layers className="h-4 w-4 text-[#FF9800]" /> },
+                ].map(({ label, value, icon }) => (
+                  <div key={label} className="flex items-center gap-2 rounded-xl bg-white p-3 border border-[#7CB518]/10">
+                    {icon}
+                    <div>
+                      <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
+                      <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 120 sq ft coverage per litre per coat, 0.3 kg putty per sq ft.</p>
+            </div>
+          </>
+        )}
+
+        {tab === "tiles" && (
+          <>
+            <div className={cardCls}>
+              <h3 className={headCls}>Floor Area & Tile Size</h3>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className={labelCls}>Area (sq ft)</label>
+                  <input type="number" value={tileArea} onChange={(e) => setTileArea(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Tile L (inch)</label>
+                  <input type="number" value={tileLen} onChange={(e) => setTileLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Tile W (inch)</label>
+                  <input type="number" value={tileWid} onChange={(e) => setTileWid(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+              </div>
+              <h3 className={`${headCls} mt-4`}>Wastage (cuts & breakage)</h3>
+              <div className="flex gap-2">
+                {[5, 10, 15].map((w) => (
+                  <button
+                    key={w}
+                    onClick={() => setWastage(w)}
+                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                      wastage === w
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    {w}%
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
+              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+              </h3>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Tiles", value: `${tiles.tileCount}` },
+                  { label: "Adhesive", value: `${tiles.adhesiveBags} bags` },
+                  { label: "Grout", value: `${tiles.groutKg} kg` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10 text-center">
+                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
+                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 20 kg adhesive bag covers ~55 sq ft, 1 kg grout per ~100 sq ft.</p>
+            </div>
+          </>
+        )}
+
+        {tab === "concrete" && (
+          <>
+            <div className={cardCls}>
+              <h3 className={headCls}>Slab / Member Size</h3>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className={labelCls}>Length (ft)</label>
+                  <input type="number" value={slabL} onChange={(e) => setSlabL(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Width (ft)</label>
+                  <input type="number" value={slabW} onChange={(e) => setSlabW(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+                <div>
+                  <label className={labelCls}>Thick (inch)</label>
+                  <input type="number" value={slabT} onChange={(e) => setSlabT(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                </div>
+              </div>
+              <h3 className={`${headCls} mt-4`}>Grade (cement : sand : aggregate)</h3>
+              <div className="flex gap-2">
+                {(["M15", "M20", "M25"] as ConcreteGrade[]).map((g) => (
+                  <button
+                    key={g}
+                    onClick={() => setGrade(g)}
+                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                      grade === g
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
+              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Cement (50 kg)", value: `${concrete.cementBags} bags` },
+                  { label: "Sand", value: `${concrete.sandCuft} cu ft (${concrete.sandBrass} brass)` },
+                  { label: "Aggregate", value: `${concrete.aggCuft} cu ft (${concrete.aggBrass} brass)` },
+                  { label: "Wet Volume", value: `${concrete.wetVolumeCuft} cu ft` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10">
+                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
+                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes dry-volume factor 1.52, cement 1440 kg/m³, 1 brass = 100 cu ft. Sand/aggregate sold separately.</p>
+            </div>
+          </>
+        )}
+
+        {tab === "steel" && (
+          <>
+            <div className={cardCls}>
+              <h3 className={headCls}>Bar Diameter</h3>
+              <div className="flex flex-wrap gap-2">
+                {[8, 10, 12, 16, 20].map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setSteelDia(d)}
+                    className={`flex-1 min-w-[56px] h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                      steelDia === d
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
+                    }`}
+                  >
+                    {d} mm
+                  </button>
+                ))}
+              </div>
+              <h3 className={`${headCls} mt-4`}>Total Running Length (meters)</h3>
+              <input type="number" value={steelLen} onChange={(e) => setSteelLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+              <p className="mt-2 text-tiny text-[#9B8CB5]">Add up all bars, stirrups and laps in running meters.</p>
+            </div>
+
+            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
+              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+              </h3>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Per Meter", value: `${steel.kgPerMeter} kg` },
+                  { label: "Total Steel", value: `${steel.totalKg} kg` },
+                  { label: "12 m Bars", value: `${steel.bars12m}` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10 text-center">
+                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
+                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes d²/162.2 kg per meter (IS 456), standard 12 m bars.</p>
+            </div>
+
+            <div className="rounded-2xl border border-dashed border-[#2D1B69]/30 bg-[#F0ECF9] p-5 text-center">
+              <Zap className="h-6 w-6 text-[#2D1B69] mx-auto mb-2" />
+              <p className="text-body-sm font-bold text-[#150726]">TMT steel coming soon to MODIT</p>
+              <p className="text-caption text-[#9B8CB5] mt-1">Get contractor rates for {steel.totalKg} kg ({steelDia} mm) via quote</p>
+              <Link href="/rfq" className="btn-shine mt-3 inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all">
+                Request Quote <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </>
+        )}
 
         {/* Recommended Products */}
         {recommendations.length > 0 && (
