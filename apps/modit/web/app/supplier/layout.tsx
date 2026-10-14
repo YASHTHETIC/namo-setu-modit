@@ -20,6 +20,11 @@ const LINKS = [
  */
 export default function SupplierLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  // The application form is public: buyers, guests and future suppliers must
+  // reach it without passing the supplier-only gates below.
+  if (pathname === "/supplier/apply") {
+    return <>{children}</>;
+  }
   const { loggedIn, isSupplier, isStaff, isLoading } = useCurrentUser();
   const meQuery = useSupplierMe(loggedIn && (isSupplier || isStaff));
 
