@@ -76,26 +76,34 @@ export default function CalculatorPage() {
   const steel = useMemo(() => estimateSteel(steelDia, steelLen), [steelDia, steelLen]);
 
   const recommendations: Reco[] = useMemo(() => {
+    // Quantities are converted to purchasable packs: a 20 L primer requirement
+    // means 1 twenty-litre can, not 20 cans. Pack sizes come from each
+    // product's own unit; tape assumes a standard ~20 m roll.
+    const packsOf = (unit: string, amount: number, assumedPack = 1) => {
+      const m = /([\d.]+)/.exec(unit);
+      const pack = m ? parseFloat(m[1]) : assumedPack;
+      return Math.max(1, Math.ceil(amount / pack));
+    };
     if (tab === "paint") {
       const items: Reco[] = [];
-      const primer = products.find((p) => p.id === "paint-asian-primer");
-      if (primer) items.push({ name: "Primer", product: primer, quantity: paint.primerLitres, icon: "🎨" });
+      const primer = products.find((p) => p.id === "paint-asian-int-primer");
+      if (primer) items.push({ name: "Primer (20 L can)", product: primer, quantity: packsOf(primer.unit, paint.primerLitres), icon: "🎨" });
       const putty = products.find((p) => p.id === "paint-asian-putty");
-      if (putty) items.push({ name: "Wall Putty", product: putty, quantity: Math.ceil(paint.puttyKg / 20), icon: "🧱" });
-      const roller = products.find((p) => p.id === "paint-roller");
+      if (putty) items.push({ name: "Wall Putty (20 kg)", product: putty, quantity: packsOf(putty.unit, paint.puttyKg), icon: "🧱" });
+      const roller = products.find((p) => p.id === "paint-asian-roller");
       if (roller) items.push({ name: "Paint Roller", product: roller, quantity: paint.rollerCount, icon: "🖌️" });
-      const tape = products.find((p) => p.id === "paint-masking-tape");
-      if (tape) items.push({ name: "Masking Tape", product: tape, quantity: paint.tapeMeters, icon: "📎" });
+      const tape = products.find((p) => p.id === "paint-asian-masking-tape");
+      if (tape) items.push({ name: "Masking Tape (~20 m roll)", product: tape, quantity: packsOf(tape.unit, paint.tapeMeters, 20), icon: "📎" });
       return items;
     }
     if (tab === "tiles") {
       const tiling = products.filter((p) => p.categorySlug === "tiling");
       const items: Reco[] = [];
       const adhesive = tiling.find((p) => /adhesive/i.test(p.name)) ?? tiling[0];
-      if (adhesive) items.push({ name: "Tile Adhesive (20 kg)", product: adhesive, quantity: tiles.adhesiveBags, icon: "🧱" });
+      if (adhesive) items.push({ name: "Tile Adhesive (20 kg)", product: adhesive, quantity: packsOf(adhesive.unit, tiles.adhesiveBags * 20), icon: "🧱" });
       const grout = tiling.find((p) => /grout/i.test(p.name) && p.id !== adhesive?.id)
         ?? tiling.find((p) => p.id !== adhesive?.id);
-      if (grout) items.push({ name: "Tile Grout", product: grout, quantity: Math.max(1, tiles.groutKg), icon: "🪣" });
+      if (grout) items.push({ name: "Tile Grout", product: grout, quantity: packsOf(grout.unit, tiles.groutKg), icon: "🪣" });
       return items;
     }
     if (tab === "concrete") {
@@ -318,7 +326,7 @@ export default function CalculatorPage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 20 kg adhesive bag covers ~55 sq ft, 1 kg grout per ~100 sq ft.</p>
+              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 20 kg adhesive bag covers ~55 sq ft, 1 kg grout per ~100 sq ft, rounded up to whole packs.</p>
             </div>
           </>
         )}
