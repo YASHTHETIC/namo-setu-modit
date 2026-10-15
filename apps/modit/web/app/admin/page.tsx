@@ -49,7 +49,7 @@ export default function AdminDashboard() {
   const coupons = useCouponStore((s) => s.availableCoupons);
   const returns = useReturnStore((s) => s.returns);
   const activity = useAdminActivity((s) => s.entries);
-  const { data: apiOrders } = useOrders(undefined, fallbackOrders);
+  const { data: apiOrders, isError: ordersOffline } = useOrders(undefined, fallbackOrders);
   const { data: serverWarehouses = [] } = useWarehouses();
   const warehousesReady = serverWarehouses.length > 0;
   const [pushTitle, setPushTitle] = useState("");
@@ -215,7 +215,12 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-      <p className="text-micro text-[#6B5B83] mt-2">All numbers come from real orders, catalog and admin activity.</p>
+      <p className="text-micro text-[#6B5B83] mt-2">        All numbers come from real orders, catalog and admin activity.
+        {ordersOffline && (
+          <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#FF9800]/15 border border-[#FF9800]/30 px-2 py-0.5 text-tiny font-bold text-[#B26A00]">
+            Offline - showing demo data, check connection
+          </span>
+        )}</p>
 
       <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-3">
         <Stagger step={60} className="h-full">

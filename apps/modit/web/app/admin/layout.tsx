@@ -27,23 +27,46 @@ function StaffBanner() {
   >({ kind: "checking" });
   const [busy, setBusy] = useState(false);
 
-  const load = async () => {
+  const load = async (retried = false) => {
     const token = getAccessToken();
     if (!token) {
       setState({ kind: "logged-out" });
       return;
     }
     try {
-      const res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/staff-status`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 12000);
+      let res: Response;
+      try {
+        res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/staff-status`, {
+          headers: { Authorization: `Bearer ${token}` },
+          signal: ctrl.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+      if (res.status === 401) {
+        // Dead/expired session (tokens live 60 min, no silent refresh yet):
+        // drop it so the next login mints a fresh one instead of looping here.
+        try { localStorage.removeItem("modit_access_token"); } catch { /* ignore */ }
+        setState({ kind: "logged-out" });
+        return;
+      }
       if (!res.ok) throw new Error(`Server ${res.status}`);
       const data = (await res.json()) as { is_staff: boolean; staff_exists: boolean };
       if (data.is_staff) setState({ kind: "staff" });
       else if (!data.staff_exists) setState({ kind: "claimable" });
       else setState({ kind: "blocked" });
     } catch (e) {
-      setState({ kind: "error", message: e instanceof Error ? e.message : "Server unreachable" });
+      if (!retried && e instanceof Error && (e.name === "AbortError" || e.message === "Failed to fetch")) {
+        // One automatic retry: transient WiFi/VPN blips must not stick forever.
+        await new Promise((r) => setTimeout(r, 2000));
+        return load(true);
+      }
+      const hint = e instanceof Error && e.message === "Failed to fetch"
+        ? "Browser could not reach the API server - check connection, VPN or ad-blocker, then Recheck."
+        : e instanceof Error ? e.message : "Server unreachable";
+      setState({ kind: "error", message: hint });
     }
   };
 
