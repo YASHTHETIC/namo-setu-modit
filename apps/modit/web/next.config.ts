@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+// Same-origin /api/* forwarding to the backend. The frontend uses a relative
+// API base; on Vercel this rewrite connects the app to api.modit.in
+// (override with MODIT_API_ORIGIN at build time). On the VPS, nginx proxies
+// /api/ directly so this never triggers there.
+const API_ORIGIN = process.env.MODIT_API_ORIGIN || "https://api.modit.in";
+
 const nextConfig: NextConfig = {
   transpilePackages: ["@foundation/ui", "@foundation/utils", "@foundation/api-client"],
   poweredByHeader: false,
@@ -16,9 +22,17 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // Removed buyer pages — managed in admin only
+      // Removed buyer pages - managed in admin only
       { source: "/inventory", destination: "/admin/products", permanent: false },
       { source: "/suppliers", destination: "/admin/suppliers", permanent: false },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${API_ORIGIN}/api/:path*`,
+      },
     ];
   },
 };
