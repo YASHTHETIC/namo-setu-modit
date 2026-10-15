@@ -1,12 +1,21 @@
 import { z } from "zod";
 
-// Production-first default: any build without an explicit env (Vercel,
-// fresh checkouts) talks to the live API. Local dev keeps working because
-// apps/modit/web/.env.local overrides this with localhost.
-const PROD_API_BASE_URL = "https://api.modit.in/api/v1";
+// Same-origin default: the browser talks to <site>/api/*, which nginx
+// (VPS) or a Vercel rewrite forwards to the API. No CORS preflight, no
+// extra DNS, no subdomain to get blocked - the whole class of
+// "Failed to fetch" connectivity faults disappears.
+// Override with an absolute URL when the API lives elsewhere
+// (local dev uses http://127.0.0.1:8000 via .env.local).
+const PROD_API_BASE_URL = "/api/v1";
 
 const clientEnvSchema = z.object({
-  NEXT_PUBLIC_API_BASE_URL: z.string().url().default(PROD_API_BASE_URL),
+  NEXT_PUBLIC_API_BASE_URL: z
+    .string()
+    .min(1)
+    .refine((v) => v.startsWith("/") || /^https?:\/\//.test(v), {
+      message: "API base must be a /path or an http(s) URL",
+    })
+    .default(PROD_API_BASE_URL),
 });
 
 export const env = clientEnvSchema.parse({
