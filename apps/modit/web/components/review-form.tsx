@@ -35,7 +35,7 @@ export function ReviewForm({ targetType, targetId, onSubmitted }: ReviewFormProp
         baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
         accessToken: getAccessToken(),
       });
-      const data = await client.request<{ id: string }>("/api/v1/reviews", {
+      const data = await client.request<{ id: string }>("/reviews", {
         method: "POST",
         body: JSON.stringify(payload),
       });

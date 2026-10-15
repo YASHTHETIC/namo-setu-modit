@@ -30,7 +30,7 @@ export function useCurrentUser() {
         baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
         accessToken: getAccessToken(),
       });
-      return client.request<MeResponse>("/api/v1/auth/me");
+      return client.request<MeResponse>("/auth/me");
     },
     enabled: Boolean(token),
     retry: false,

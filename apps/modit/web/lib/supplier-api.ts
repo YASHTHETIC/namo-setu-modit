@@ -90,3 +90,35 @@ export function useDecideApplication() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["modit", "supplier", "applications"] }),
   });
 }
+
+export function useSupplierRfqs(enabled = true) {
+  return useQuery({
+    queryKey: ["modit", "supplier", "rfqs"],
+    queryFn: () => getSupplierApi().supplierRfqs(),
+    enabled,
+    ...opts,
+  });
+}
+
+export function useSupplierRfqDetail(rfqId: string | null, enabled = true) {
+  return useQuery({
+    queryKey: ["modit", "supplier", "rfq", rfqId],
+    queryFn: () => getSupplierApi().getRFQ(rfqId!),
+    enabled: Boolean(rfqId) && enabled,
+    ...opts,
+  });
+}
+
+export function useQuoteRFQ() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ rfqId, payload }: {
+      rfqId: string;
+      payload: {
+        lines: Array<{ product_id: string; quantity: number; unit_price: number }>;
+        valid_until?: string | null; terms_and_conditions?: string | null;
+      };
+    }) => getSupplierApi().quoteRFQ(rfqId, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["modit", "supplier", "rfqs"] }),
+  });
+}

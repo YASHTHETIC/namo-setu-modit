@@ -46,7 +46,7 @@ interface UserProfile {
 function OverviewTab() {
   const { data: user, isLoading } = useQuery<UserProfile>({
     queryKey: ["modit", "profile"],
-    queryFn: () => getClient().request<UserProfile>("/api/v1/auth/profile"),
+    queryFn: () => getClient().request<UserProfile>("/auth/profile"),
   });
 
   if (isLoading) {
@@ -234,7 +234,7 @@ function SessionsTab() {
   const { data: sessions, isLoading } = useQuery<SessionInfo[]>({
     queryKey: ["modit", "sessions"],
     queryFn: async () => {
-      const res = await getClient().request<{ sessions: SessionInfo[] }>("/api/v1/auth/sessions");
+      const res = await getClient().request<{ sessions: SessionInfo[] }>("/auth/sessions");
       return res.sessions ?? [];
     },
   });
@@ -299,7 +299,7 @@ function SecurityTab() {
       setPasswordErr("");
       if (newPassword !== confirmPassword) throw new Error("Passwords do not match");
       const client = getClient();
-      await client.request("/api/v1/auth/change-password", {
+      await client.request("/auth/change-password", {
         method: "POST",
         body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
       });
@@ -318,7 +318,7 @@ function SecurityTab() {
   const enable2faMutation = useMutation({
     mutationFn: async () => {
       const client = getClient();
-      return client.request("/api/v1/auth/2fa/enable", { method: "POST" });
+      return client.request("/auth/2fa/enable", { method: "POST" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "profile"] });
@@ -456,7 +456,7 @@ function NotificationsPreferencesTab() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const client = getClient();
-      await client.request("/api/v1/auth/profile", {
+      await client.request("/auth/profile", {
         method: "PUT",
         body: JSON.stringify({ notification_preferences: prefs }),
       });

@@ -61,7 +61,7 @@ export default function NotificationsPage() {
     queryKey: ["modit", "notifications", "all", filter],
     queryFn: async () => {
       const client = getClient();
-      const res = await client.request<{ items: Notification[] }>("/api/v1/notifications?page=1&page_size=100");
+      const res = await client.request<{ items: Notification[] }>("/notifications?page=1&page_size=100");
       const all = res.items ?? [];
       return filter === "unread" ? all.filter((n) => !n.read) : all;
     },
@@ -96,7 +96,7 @@ export default function NotificationsPage() {
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
       const client = getClient();
-      await client.request("/api/v1/notifications/read-all", { method: "POST" });
+      await client.request("/notifications/read-all", { method: "POST" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "notifications"] });

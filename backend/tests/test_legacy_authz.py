@@ -24,6 +24,9 @@ CASES = [
     ("POST", "/api/v1/modit/products/x/images"),
     ("PATCH", "/api/v1/modit/inventory/x"),
     ("PATCH", "/api/v1/modit/projects/x"),
+    ("POST", "/api/v1/modit/rfq/x/items"),
+    ("POST", "/api/v1/modit/rfq/x/award"),
+    ("GET", "/api/v1/supplier/rfqs"),
     # PII / financial reads
     ("GET", "/api/v1/modit/drivers"),
     ("GET", "/api/v1/modit/vehicles"),

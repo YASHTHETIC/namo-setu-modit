@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import pathlib
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
@@ -11,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.api.deps import get_current_user, get_optional_user, is_staff, require_permission
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
-from backend.app.models.enums import ProductCode
+from backend.app.models.enums import ProductCode, QuotationStatus, RFQStatus
 from backend.app.models.modit import (
     BOQ,
     BOQItem,
@@ -20,6 +21,7 @@ from backend.app.models.modit import (
     ConstructionSite,
     Delivery,
     Driver,
+    GST,
     Inventory,
     Invoice,
     MaterialRequest,
@@ -119,10 +121,15 @@ from backend.app.schemas.modit import (
     QuotationItemCreate,
     QuotationItemRead,
     QuotationRead,
+    RFQAwardRequest,
+    RFQAwardResponse,
     RFQCreate,
+    RFQCreateRequest,
     RFQDetailRead,
     RFQItemCreate,
     RFQItemRead,
+    RFQLineIn,
+    RFQQuoteRequest,
     RFQRead,
     ReturnCreate,
     ReturnRead,
@@ -181,7 +188,11 @@ from backend.app.services.modit import (
     track_analytics_event,
     voice_order_processing,
 )
-from backend.app.services.checkout import place_checkout_order
+from backend.app.services.checkout import (
+    DEFAULT_GST_RATE,
+    get_or_create_personal_org,
+    place_checkout_order,
+)
 
 router = APIRouter(prefix="/modit", tags=["modit"])
 admin_dependency = Depends(require_permission(PermissionName.CONFIG_READ))
@@ -509,15 +520,108 @@ async def list_rfqs(organization_id: str | None = None, db: AsyncSession = Depen
 
 @router.post("/rfq", response_model=RFQDetailRead, status_code=status.HTTP_201_CREATED)
 async def create_rfq_endpoint(
-    payload: dict, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
+    payload: RFQCreateRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
 ) -> RFQDetailRead:
-    """Create an RFQ with items."""
-    items = payload.pop("items", [])
-    org_id = payload.pop("organization_id", None)
-    rfq = await create_rfq(db, org_id, user.id, items, **payload)
+    """Create an RFQ with material lines. Buyers without an org get their
+    personal org (same as checkout) - never a null organization."""
+    org_id = payload.organization_id
+    if org_id:
+        if await db.get(Organization, org_id) is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    else:
+        org_id = (await get_or_create_personal_org(db, user)).id
+    items: list[dict] = []
+    for line in payload.items:
+        if await db.get(Product, line.product_id) is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Unknown product: {line.product_id}")
+        items.append({
+            "product_id": line.product_id,
+            "requested_quantity": float(line.requested_quantity),
+            "unit_price_hint": line.unit_price_hint,
+            "notes": line.notes,
+        })
+    rfq = await create_rfq(db, org_id, user.id, items, notes=payload.notes, due_date=payload.due_date)
     await db.commit()
     await db.refresh(rfq)
     return await rfq_to_detail(db, rfq)
+
+
+@router.post("/rfq/{rfq_id}/items", response_model=RFQDetailRead)
+async def add_rfq_items(
+    rfq_id: str, payload: list[RFQLineIn], db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> RFQDetailRead:
+    """Buyer adds material lines to their own RFQ (staff may edit any)."""
+    rfq = await db.get(RFQ, rfq_id)
+    if rfq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can add items.")
+    if (rfq.status or "") not in (RFQStatus.OPEN.value, RFQStatus.SENT.value):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"RFQ is {rfq.status} - items locked.")
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Add at least one line.")
+    for line in payload:
+        if await db.get(Product, line.product_id) is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Unknown product: {line.product_id}")
+        item = RFQItem(
+            id=str(uuid4()),
+            rfq_id=rfq.id,
+            product_id=line.product_id,
+            requested_quantity=float(line.requested_quantity),
+            unit_price_hint=line.unit_price_hint,
+            notes=line.notes,
+        )
+        db.add(item)
+        rfq.items.append(item)
+    await db.commit()
+    return await rfq_to_detail(db, rfq)
+
+
+@router.post("/rfq/{rfq_id}/award", response_model=RFQAwardResponse)
+async def award_rfq(
+    rfq_id: str, payload: RFQAwardRequest, db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> RFQAwardResponse:
+    """Award a quote: RFQ -> awarded, chosen quote accepted, rest rejected,
+    and a purchase order is created from the winning totals."""
+    from backend.app.services.modit import make_modit_reference
+
+    rfq = await db.get(RFQ, rfq_id)
+    if rfq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can award it.")
+    if (rfq.status or "") not in (RFQStatus.OPEN.value, RFQStatus.SENT.value, RFQStatus.QUOTED.value):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"RFQ is {rfq.status} - cannot award.")
+    quotation = await db.get(Quotation, payload.quotation_id)
+    if quotation is None or str(quotation.rfq_id) != str(rfq.id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Quotation not found on this RFQ.")
+    quotes = (await db.execute(select(Quotation).where(Quotation.rfq_id == rfq.id))).scalars().all()
+    for quote in quotes:
+        quote.status = (
+            QuotationStatus.ACCEPTED.value
+            if str(quote.id) == str(quotation.id)
+            else QuotationStatus.REJECTED.value
+        )
+    rfq.status = RFQStatus.AWARDED.value
+    po = PurchaseOrder(
+        id=str(uuid4()),
+        organization_id=rfq.organization_id,
+        order_number=make_modit_reference("PO"),
+        status="placed",
+        order_date=date.today(),
+        total_amount=float(quotation.grand_total or 0.0),
+    )
+    db.add(po)
+    await db.commit()
+    return RFQAwardResponse(
+        rfq_id=str(rfq.id),
+        quotation_id=str(quotation.id),
+        purchase_order_id=str(po.id),
+        order_number=po.order_number,
+        grand_total=float(quotation.grand_total or 0.0),
+    )
 
 
 @router.get("/rfq/{rfq_id}", response_model=RFQDetailRead)

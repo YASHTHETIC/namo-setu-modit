@@ -286,6 +286,30 @@ export function useCreateQuotation() {
   });
 }
 
+export function useAddRFQItems() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ rfqId, lines }: {
+      rfqId: string;
+      lines: Array<{ product_id: string; requested_quantity: number; unit_price_hint?: number | null; notes?: string | null }>;
+    }) => getModitApi().addRFQItems(rfqId, lines),
+    onSuccess: (_d, v) => queryClient.invalidateQueries({ queryKey: moditKeys.rfq(v.rfqId) }),
+  });
+}
+
+export function useAwardRFQ() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ rfqId, quotationId }: { rfqId: string; quotationId: string }) =>
+      getModitApi().awardRFQ(rfqId, quotationId),
+    onSuccess: (_d, v) => {
+      queryClient.invalidateQueries({ queryKey: moditKeys.rfq(v.rfqId) });
+      queryClient.invalidateQueries({ queryKey: moditKeys.rfqs() });
+      queryClient.invalidateQueries({ queryKey: moditKeys.quotations(v.rfqId) });
+    },
+  });
+}
+
 // Orders
 export function useCreateCart() {
   return useMutation({

@@ -20,9 +20,22 @@ from backend.app.api.deps import require_permission, require_supplier
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
 from backend.app.core.security import hash_password
-from backend.app.models.enums import OrderStatus
-from backend.app.models.modit import Order, OrderItem, Organization, Product, Supplier
+from backend.app.models.enums import OrderStatus, QuotationStatus, RFQStatus
+from backend.app.models.modit import (
+    GST,
+    Order,
+    OrderItem,
+    Organization,
+    Product,
+    Quotation,
+    QuotationItem,
+    RFQ,
+    RFQItem,
+    Supplier,
+)
 from backend.app.models.user import Role, User
+from backend.app.schemas.modit import RFQQuoteRequest, SupplierRFQRead
+from backend.app.services.checkout import DEFAULT_GST_RATE
 
 router = APIRouter(prefix="/supplier", tags=["supplier"])
 
@@ -485,3 +498,147 @@ async def supplier_payouts(
             )
         )
     return payouts
+
+
+QUOTABLE_RFQ_STATUSES = frozenset({
+    RFQStatus.OPEN.value, RFQStatus.SENT.value, RFQStatus.QUOTED.value,
+})
+
+
+@router.get("/rfqs", response_model=list[SupplierRFQRead])
+async def supplier_rfq_inbox(
+    supplier: Supplier = Depends(require_verified_supplier()),
+    db: AsyncSession = Depends(get_db),
+) -> list[SupplierRFQRead]:
+    """Open RFQs any verified supplier may quote (marketplace broadcast)."""
+    result = await db.execute(
+        select(RFQ).where(RFQ.status.in_(QUOTABLE_RFQ_STATUSES)).order_by(RFQ.created_at.desc())
+    )
+    out: list[SupplierRFQRead] = []
+    for rfq in result.scalars().all():
+        item_rows = (
+            (await db.execute(select(RFQItem).where(RFQItem.rfq_id == rfq.id))).scalars().all()
+        )
+        quote_rows = (
+            (await db.execute(select(Quotation).where(Quotation.rfq_id == rfq.id))).scalars().all()
+        )
+        out.append(SupplierRFQRead(
+            id=str(rfq.id),
+            rfq_number=rfq.rfq_number,
+            notes=rfq.notes,
+            due_date=rfq.due_date,
+            status=rfq.status,
+            items_count=len(list(item_rows)),
+            quotes_count=len(list(quote_rows)),
+            created_at=rfq.created_at,
+        ))
+    return out
+
+
+class SupplierQuoteResponse(BaseModel):
+    id: str
+    quotation_number: str
+    rfq_id: str
+    subtotal: float
+    gst_total: float
+    grand_total: float
+    status: str
+    lines: list[dict] = []
+
+
+@router.post("/rfq/{rfq_id}/quote", response_model=SupplierQuoteResponse, status_code=status.HTTP_201_CREATED)
+async def supplier_quote_rfq(
+    rfq_id: str,
+    payload: RFQQuoteRequest,
+    supplier: Supplier = Depends(require_verified_supplier()),
+    db: AsyncSession = Depends(get_db),
+) -> SupplierQuoteResponse:
+    """Quote every requested line at your prices. Server computes GST per
+    product (18% fallback) - totals are never client-trusted."""
+    from backend.app.services.modit import make_modit_reference
+
+    rfq = await db.get(RFQ, rfq_id)
+    if rfq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if (rfq.status or "") not in QUOTABLE_RFQ_STATUSES:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"RFQ is {rfq.status} - closed for quoting.",
+        )
+    wanted = {
+        str(item.product_id): float(item.requested_quantity)
+        for item in (
+            (await db.execute(select(RFQItem).where(RFQItem.rfq_id == rfq.id))).scalars().all()
+        )
+    }
+    if not wanted:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="RFQ has no items to quote.")
+    given = {line.product_id: float(line.quantity) for line in payload.lines}
+    if set(given) != set(wanted) or any(given[pid] != wanted[pid] for pid in wanted):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Quote must cover every requested line at the requested quantities.",
+        )
+    subtotal = 0.0
+    gst_total = 0.0
+    item_reads = []
+    for line in payload.lines:
+        product = await db.get(Product, line.product_id)
+        if product is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Unknown product: {line.product_id}")
+        rate = DEFAULT_GST_RATE
+        if getattr(product, "gst_id", None):
+            gst = await db.get(GST, product.gst_id)
+            if gst is not None:
+                try:
+                    rate = float(getattr(gst, "rate_percent", None) or DEFAULT_GST_RATE)
+                except (TypeError, ValueError):
+                    rate = DEFAULT_GST_RATE
+        line_total = round(float(line.unit_price) * float(line.quantity), 2)
+        gst_amount = round(line_total * rate / 100, 2)
+        subtotal += line_total
+        gst_total += gst_amount
+        item_reads.append({
+            "product_id": line.product_id,
+            "quantity": float(line.quantity),
+            "unit_price": round(float(line.unit_price), 2),
+            "gst_amount": gst_amount,
+            "line_total": line_total,
+        })
+    quotation = Quotation(
+        id=str(uuid4()),
+        rfq_id=rfq.id,
+        supplier_id=supplier.id,
+        quotation_number=make_modit_reference("QTN"),
+        status=QuotationStatus.SENT.value,
+        valid_until=payload.valid_until,
+        subtotal=round(subtotal, 2),
+        gst_total=round(gst_total, 2),
+        grand_total=round(subtotal + gst_total, 2),
+        terms_and_conditions=payload.terms_and_conditions,
+    )
+    db.add(quotation)
+    await db.flush()
+    for row in item_reads:
+        db.add(QuotationItem(
+            id=str(uuid4()),
+            quotation_id=quotation.id,
+            product_id=row["product_id"],
+            quantity=row["quantity"],
+            unit_price=row["unit_price"],
+            gst_amount=row["gst_amount"],
+            line_total=row["line_total"],
+        ))
+    if (rfq.status or "") == RFQStatus.OPEN.value:
+        rfq.status = RFQStatus.QUOTED.value
+    await db.commit()
+    return SupplierQuoteResponse(
+        id=str(quotation.id),
+        quotation_number=quotation.quotation_number,
+        rfq_id=str(rfq.id),
+        subtotal=quotation.subtotal,
+        gst_total=quotation.gst_total,
+        grand_total=quotation.grand_total,
+        status=quotation.status,
+        lines=item_reads,
+    )

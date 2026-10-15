@@ -723,6 +723,29 @@ export function createModitApi(client: ApiClient) {
       );
     },
 
+    supplierRfqs() {
+      return client.request<Array<{
+        id: string; rfq_number: string; notes: string | null; due_date: string | null;
+        status: string; items_count: number; quotes_count: number; created_at: string | null;
+      }>>(
+        "/supplier/rfqs",
+      );
+    },
+
+    quoteRFQ(rfqId: string, payload: {
+      lines: Array<{ product_id: string; quantity: number; unit_price: number }>;
+      valid_until?: string | null; terms_and_conditions?: string | null;
+    }) {
+      return client.request<{
+        id: string; quotation_number: string; rfq_id: string; subtotal: number;
+        gst_total: number; grand_total: number; status: string;
+        lines: Array<{ product_id: string; quantity: number; unit_price: number; gst_amount: number; line_total: number }>;
+      }>(
+        `/supplier/rfq/${rfqId}/quote`,
+        { method: "POST", body: JSON.stringify(payload) },
+      );
+    },
+
     supplierApply(payload: {
       business_name: string; contact_name: string; email: string; phone: string;
       password: string; gstin: string; pan: string; city: string; pincode: string;
@@ -766,6 +789,15 @@ export function createModitApi(client: ApiClient) {
 
     getRFQ(rfqId: string) {
       return client.request<RFQDetailRead>(`${base}/rfq/${rfqId}`);
+    },
+
+    addRFQItems(rfqId: string, lines: Array<{ product_id: string; requested_quantity: number; unit_price_hint?: number | null; notes?: string | null }>) {
+      return client.request<RFQDetailRead>(`${base}/rfq/${rfqId}/items`, { method: "POST", body: JSON.stringify(lines) });
+    },
+
+    awardRFQ(rfqId: string, quotationId: string) {
+      return client.request<{ rfq_id: string; quotation_id: string; purchase_order_id: string; order_number: string; grand_total: number; status: string }>(
+        `${base}/rfq/${rfqId}/award`, { method: "POST", body: JSON.stringify({ quotation_id: quotationId }) });
     },
 
     listRFQQuotations(rfqId: string) {

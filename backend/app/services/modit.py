@@ -72,6 +72,7 @@ from backend.app.schemas.modit import (
     ProductRead,
     ProjectDetailRead,
     RFQDetailRead,
+    RFQItemRead,
     SmartReorderResponse,
     SubCategoryRead,
     UnitRead,
@@ -422,8 +423,16 @@ async def rfq_to_detail(session: AsyncSession, rfq: RFQ) -> RFQDetailRead:
         })
     
     return RFQDetailRead(
-        **RFQ.model_validate(rfq).model_dump(),
-        items=[RFQItem.model_validate(item) for item in rfq.items],
+        id=str(rfq.id),
+        organization_id=str(rfq.organization_id),
+        project_id=getattr(rfq, "project_id", None),
+        rfq_number=rfq.rfq_number,
+        status=rfq.status,
+        requested_by_user_id=str(rfq.requested_by_user_id),
+        due_date=getattr(rfq, "due_date", None),
+        notes=getattr(rfq, "notes", None),
+        created_at=rfq.created_at,
+        items=[RFQItemRead.model_validate(item) for item in rfq.items],
         quotations=quotations_data,
     )
 
@@ -450,6 +459,9 @@ async def create_rfq(session: AsyncSession, organization_id: str, user_id: str, 
             notes=item_data.get("notes"),
         )
         session.add(rfq_item)
+        # Keep the in-memory graph consistent (the DB flush does this in
+        # production; without it fresh objects read back empty items).
+        rfq.items.append(rfq_item)
     
     return rfq
 

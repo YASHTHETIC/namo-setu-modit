@@ -114,7 +114,7 @@ def test_all_supplier_routes_are_role_gated():
         for route in app.routes
         if getattr(route, "path", "").startswith(f"{BASE}/")
     }
-    assert set(routes) == {f"{BASE}{p}" for p in PATHS + ["/apply", "/applications", "/applications/{supplier_id}"]}
+    assert set(routes) == {f"{BASE}{p}" for p in PATHS + ["/apply", "/applications", "/applications/{supplier_id}", "/rfqs", "/rfq/{rfq_id}/quote"]}
     public = {f"{BASE}/apply"}  # deliberate: anyone may apply to sell
     for path, route in routes.items():
         if path in public:

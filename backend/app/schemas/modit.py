@@ -447,6 +447,58 @@ class RFQDetailRead(RFQRead):
     quotations: list[dict]
 
 
+class RFQLineIn(BaseModel):
+    """One buyer-requested line when creating an RFQ or adding items."""
+
+    product_id: str
+    requested_quantity: float = Field(gt=0, le=99999)
+    unit_price_hint: float | None = None
+    notes: str | None = None
+
+
+class RFQCreateRequest(BaseModel):
+    notes: str | None = None
+    due_date: date | None = None
+    organization_id: str | None = None
+    items: list[RFQLineIn] = Field(default_factory=list, max_length=100)
+
+
+class RFQQuoteLine(BaseModel):
+    product_id: str
+    quantity: float = Field(gt=0, le=99999)
+    unit_price: float = Field(gt=0, le=99999999)
+
+
+class RFQQuoteRequest(BaseModel):
+    lines: list[RFQQuoteLine] = Field(min_length=1, max_length=100)
+    valid_until: date | None = None
+    terms_and_conditions: str | None = None
+
+
+class RFQAwardRequest(BaseModel):
+    quotation_id: str
+
+
+class RFQAwardResponse(BaseModel):
+    rfq_id: str
+    quotation_id: str
+    purchase_order_id: str
+    order_number: str
+    grand_total: float
+    status: str = "awarded"
+
+
+class SupplierRFQRead(BaseModel):
+    id: str
+    rfq_number: str
+    notes: str | None = None
+    due_date: date | None = None
+    status: str
+    items_count: int = 0
+    quotes_count: int = 0
+    created_at: datetime | None = None
+
+
 # Quotation
 class QuotationBase(BaseModel):
     rfq_id: str

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, Wallet, Store, Lock } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Wallet, Store, Lock, FileText } from "lucide-react";
 
 import { useCurrentUser } from "@/lib/use-current-user";
 import { useSupplierMe } from "@/lib/supplier-api";
@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/supplier", label: "Dashboard", icon: LayoutDashboard },
   { href: "/supplier/products", label: "My Products", icon: Package },
   { href: "/supplier/orders", label: "My Orders", icon: ShoppingBag },
+  { href: "/supplier/rfqs", label: "RFQ Inbox", icon: FileText },
   { href: "/supplier/payouts", label: "Payouts", icon: Wallet },
 ];
 

@@ -60,7 +60,7 @@ export default function AdminUsersPage() {
     queryKey: ["modit", "roles"],
     queryFn: async () => {
       const client = getClient();
-      return client.request<{ items: Role[] }>("/api/v1/admin/roles").then((r) => r.items ?? []);
+      return client.request<{ items: Role[] }>("/admin/roles").then((r) => r.items ?? []);
     },
   });
 
@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
     mutationFn: async () => {
       if (!assignRoleUser || !selectedRoleId) return;
       const client = getClient();
-      await client.request("/api/v1/admin/roles/assign", {
+      await client.request("/admin/roles/assign", {
         method: "POST",
         body: JSON.stringify({ user_id: assignRoleUser.id, role_id: selectedRoleId }),
       });
