@@ -67,7 +67,7 @@ function ProductsContent() {
   // 499 rows ≈ 50KB — trivial for one cached query.
   const { data: apiProducts = [], didYouMean } = useProducts({
     search: search || undefined,
-    page_size: 1000,
+    page_size: 2000,
   });
   // Typo tolerance: the API may have corrected the query ("brwn" -> "brown bread").
   // Match client-side filters against the corrected terms so those items survive.
