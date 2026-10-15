@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useProjects, useCreateProject } from "@/lib/modit-api";
+import { useRequireLogin } from "@/lib/use-auth";
 import { FolderOpen, Plus, X, Calendar, IndianRupee } from "lucide-react";
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
 
@@ -10,6 +11,7 @@ export default function ProjectsPage() {
   const [newProject, setNewProject] = useState({ name: "", notes: "", budget_amount: "" });
   const { data: projects, isLoading, isError } = useProjects();
   const createProject = useCreateProject();
+  const requireLogin = useRequireLogin();
   const fallbackProjects = [
     { id: "pr1", name: "Skyline Residency Phase 2", project_code: "SKY-2026-P2", status: "active", notes: "Premium 48-unit residential complex with modern amenities", budget_amount: 12000000, start_date: "2026-01-15" },
     { id: "pr2", name: "Greenfield IT Park", project_code: "GRF-2026-01", status: "active", notes: "12-storey commercial IT park with LEED Gold certification", budget_amount: 45000000, start_date: "2026-03-01" },
@@ -19,6 +21,7 @@ export default function ProjectsPage() {
 
   const handleCreateProject = async () => {
     if (!newProject.name) return;
+    if (!requireLogin()) return; // projects are account-bound; guests use login first
     try {
       await createProject.mutateAsync({ name: newProject.name, notes: newProject.notes, budget_amount: parseFloat(newProject.budget_amount) || null } as never);
       setShowCreateModal(false);

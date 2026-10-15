@@ -10,21 +10,6 @@ from backend.app.main import app
 
 BASE = "/api/v1/supplier"
 
-
-@pytest.fixture(autouse=True)
-def _reset_rate_limiter():
-    """Test isolation: the 120 req/min limiter counts every TestClient call
-    in-process (FakeRedis has no pipeline), so a full-suite run would 429
-    these tail tests. Clearing is test-only; prod counting is untouched."""
-    from backend.app.core.middleware import RateLimitMiddleware
-
-    node = app.middleware_stack
-    for _ in range(30):
-        if isinstance(node, RateLimitMiddleware):
-            node._local_counts.clear()
-            return
-        node = getattr(node, "app", None)
-
 GOOD = {
     "business_name": "Sharma Building Mart",
     "contact_name": "Ravi Sharma",

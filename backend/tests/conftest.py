@@ -14,6 +14,23 @@ NOW = datetime(2024, 1, 1, tzinfo=timezone.utc)
 TODAY = date(2024, 1, 1)
 
 
+@pytest.fixture(autouse=True)
+def _reset_rate_limiter():
+    """Test isolation: the 120 req/min limiter counts every TestClient call
+    in-process (the fake Redis has no pipeline, so counting falls back to
+    memory shared across the whole session). Without a reset, files running
+    late in the suite 429-flake. Test-only; production counting is untouched.
+    """
+    from backend.app.core.middleware import RateLimitMiddleware
+
+    node = app.middleware_stack
+    for _ in range(30):
+        if isinstance(node, RateLimitMiddleware):
+            node._local_counts.clear()
+            return
+        node = getattr(node, "app", None)
+
+
 class FakeORMObject:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

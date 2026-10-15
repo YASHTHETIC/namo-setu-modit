@@ -290,7 +290,7 @@ async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)) ->
 
 
 @router.post("/products/{product_id}/images", response_model=ProductImageRead, status_code=status.HTTP_201_CREATED)
-async def add_product_image(product_id: str, payload: ProductImageCreate, db: AsyncSession = Depends(get_db)) -> ProductImageRead:
+async def add_product_image(product_id: str, payload: ProductImageCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProductImageRead:
     """Add product image."""
     await get_product_or_404(db, product_id)
     image = ProductImage(product_id=product_id, **payload.model_dump())
@@ -430,7 +430,7 @@ async def list_suppliers(db: AsyncSession = Depends(get_db)) -> list[Supplier]:
 
 
 @router.post("/suppliers", response_model=SupplierRead, status_code=status.HTTP_201_CREATED)
-async def create_supplier(payload: SupplierCreate, db: AsyncSession = Depends(get_db)) -> Supplier:
+async def create_supplier(payload: SupplierCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Supplier:
     """Create a supplier."""
     supplier = Supplier(**payload.model_dump())
     db.add(supplier)
@@ -449,7 +449,7 @@ async def list_supplier_vendors(supplier_id: str, db: AsyncSession = Depends(get
 
 
 @router.post("/suppliers/{supplier_id}/vendors", response_model=VendorRead, status_code=status.HTTP_201_CREATED)
-async def create_vendor(supplier_id: str, payload: VendorCreate, db: AsyncSession = Depends(get_db)) -> Vendor:
+async def create_vendor(supplier_id: str, payload: VendorCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Vendor:
     """Create a vendor."""
     vendor = Vendor(supplier_id=supplier_id, **payload.model_dump())
     db.add(vendor)
@@ -469,7 +469,7 @@ async def list_warehouses(organization_id: str | None = None, db: AsyncSession =
 
 
 @router.post("/warehouses", response_model=WarehouseRead, status_code=status.HTTP_201_CREATED)
-async def create_warehouse(payload: WarehouseCreate, db: AsyncSession = Depends(get_db)) -> Warehouse:
+async def create_warehouse(payload: WarehouseCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Warehouse:
     """Create a warehouse."""
     warehouse = Warehouse(**payload.model_dump())
     db.add(warehouse)
@@ -530,14 +530,14 @@ async def get_rfq(rfq_id: str, db: AsyncSession = Depends(get_db)) -> RFQDetailR
 
 
 @router.get("/rfq/{rfq_id}/quotations", response_model=list[QuotationRead])
-async def list_rfq_quotations(rfq_id: str, db: AsyncSession = Depends(get_db)) -> list[QuotationRead]:
+async def list_rfq_quotations(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[QuotationRead]:
     """List quotations for an RFQ."""
     result = await db.execute(select(Quotation).where(Quotation.rfq_id == rfq_id, Quotation.deleted_at.is_(None)).order_by(Quotation.grand_total.asc()))
     return [QuotationRead.model_validate(item) for item in result.scalars().all()]
 
 
 @router.post("/quotations", response_model=QuotationDetailRead, status_code=status.HTTP_201_CREATED)
-async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(get_db)) -> QuotationDetailRead:
+async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> QuotationDetailRead:
     """Create a quotation."""
     quotation = Quotation(**payload.model_dump())
     db.add(quotation)
@@ -547,7 +547,7 @@ async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(
 
 
 @router.get("/quotations/{quotation_id}", response_model=QuotationDetailRead)
-async def get_quotation(quotation_id: str, db: AsyncSession = Depends(get_db)) -> QuotationDetailRead:
+async def get_quotation(quotation_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> QuotationDetailRead:
     """Get quotation details."""
     quotation = await db.get(Quotation, quotation_id)
     if quotation is None:
@@ -564,7 +564,7 @@ async def get_quotation(quotation_id: str, db: AsyncSession = Depends(get_db)) -
 # =====================================================
 
 @router.post("/cart", response_model=CartRead)
-async def create_cart(payload: CartCreate, db: AsyncSession = Depends(get_db)) -> CartRead:
+async def create_cart(payload: CartCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> CartRead:
     """Create a cart from items."""
     items = []
     subtotal = 0.0
@@ -855,7 +855,7 @@ async def update_order_status(
 
 
 @router.get("/purchase-orders", response_model=list[PurchaseOrderRead])
-async def list_purchase_orders(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[PurchaseOrder]:
+async def list_purchase_orders(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[PurchaseOrder]:
     """List purchase orders."""
     stmt = select(PurchaseOrder)
     if organization_id:
@@ -865,7 +865,7 @@ async def list_purchase_orders(organization_id: str | None = None, db: AsyncSess
 
 
 @router.post("/purchase-orders", response_model=PurchaseOrderRead, status_code=status.HTTP_201_CREATED)
-async def create_purchase_order(payload: PurchaseOrderCreate, db: AsyncSession = Depends(get_db)) -> PurchaseOrder:
+async def create_purchase_order(payload: PurchaseOrderCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> PurchaseOrder:
     """Create a purchase order."""
     from backend.app.services.modit import make_modit_reference
     
@@ -886,7 +886,7 @@ async def create_purchase_order(payload: PurchaseOrderCreate, db: AsyncSession =
 
 
 @router.get("/invoices", response_model=list[InvoiceRead])
-async def list_invoices(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Invoice]:
+async def list_invoices(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Invoice]:
     """List invoices."""
     stmt = select(Invoice)
     if organization_id:
@@ -896,7 +896,7 @@ async def list_invoices(organization_id: str | None = None, db: AsyncSession = D
 
 
 @router.post("/invoices", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
-async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_db)) -> Invoice:
+async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Invoice:
     """Create an invoice."""
     from backend.app.services.modit import make_modit_reference
     
@@ -918,7 +918,7 @@ async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_
 
 
 @router.post("/returns", response_model=ReturnRead, status_code=status.HTTP_201_CREATED)
-async def create_return(payload: ReturnCreate, db: AsyncSession = Depends(get_db)) -> Return:
+async def create_return(payload: ReturnCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Return:
     """Create a return request."""
     from backend.app.services.modit import make_modit_reference
     
@@ -1006,7 +1006,7 @@ async def list_inventory(
 
 
 @router.post("/inventory", response_model=InventoryRead, status_code=status.HTTP_201_CREATED)
-async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(get_db)) -> Inventory:
+async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Inventory:
     """Create inventory record."""
     inventory = Inventory(**payload.model_dump())
     db.add(inventory)
@@ -1016,7 +1016,7 @@ async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(
 
 
 @router.patch("/inventory/{inventory_id}", response_model=InventoryRead)
-async def update_inventory(inventory_id: str, payload: InventoryUpdate, db: AsyncSession = Depends(get_db)) -> Inventory:
+async def update_inventory(inventory_id: str, payload: InventoryUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Inventory:
     """Update inventory."""
     inventory = await db.get(Inventory, inventory_id)
     if inventory is None:
@@ -1055,7 +1055,7 @@ async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession
 
 
 @router.post("/deliveries", response_model=DeliveryRead, status_code=status.HTTP_201_CREATED)
-async def create_delivery(payload: DeliveryCreate, db: AsyncSession = Depends(get_db)) -> Delivery:
+async def create_delivery(payload: DeliveryCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Delivery:
     """Create a delivery."""
     from backend.app.services.modit import make_modit_reference
     
@@ -1095,7 +1095,7 @@ async def track_delivery(delivery_id: str, db: AsyncSession = Depends(get_db)) -
 
 
 @router.get("/drivers", response_model=list[DriverRead])
-async def list_drivers(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Driver]:
+async def list_drivers(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Driver]:
     """List drivers."""
     stmt = select(Driver).where(Driver.is_active.is_(True), Driver.deleted_at.is_(None))
     if organization_id:
@@ -1105,7 +1105,7 @@ async def list_drivers(organization_id: str | None = None, db: AsyncSession = De
 
 
 @router.post("/drivers", response_model=DriverRead, status_code=status.HTTP_201_CREATED)
-async def create_driver(payload: DriverCreate, db: AsyncSession = Depends(get_db)) -> Driver:
+async def create_driver(payload: DriverCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Driver:
     """Create a driver."""
     driver = Driver(**payload.model_dump())
     db.add(driver)
@@ -1115,7 +1115,7 @@ async def create_driver(payload: DriverCreate, db: AsyncSession = Depends(get_db
 
 
 @router.get("/vehicles", response_model=list[VehicleRead])
-async def list_vehicles(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Vehicle]:
+async def list_vehicles(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Vehicle]:
     """List vehicles."""
     stmt = select(Vehicle).where(Vehicle.is_active.is_(True), Vehicle.deleted_at.is_(None))
     if organization_id:
@@ -1125,7 +1125,7 @@ async def list_vehicles(organization_id: str | None = None, db: AsyncSession = D
 
 
 @router.post("/vehicles", response_model=VehicleRead, status_code=status.HTTP_201_CREATED)
-async def create_vehicle(payload: VehicleCreate, db: AsyncSession = Depends(get_db)) -> Vehicle:
+async def create_vehicle(payload: VehicleCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Vehicle:
     """Create a vehicle."""
     vehicle = Vehicle(**payload.model_dump())
     db.add(vehicle)
@@ -1149,7 +1149,7 @@ async def list_projects(organization_id: str | None = None, db: AsyncSession = D
 
 
 @router.post("/projects", response_model=ProjectDetailRead, status_code=status.HTTP_201_CREATED)
-async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Depends(get_db)) -> ProjectDetailRead:
+async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProjectDetailRead:
     """Create a project."""
     data = payload.model_dump()
     org_id = data.pop("organization_id", None)
@@ -1170,7 +1170,7 @@ async def get_project(project_id: str, db: AsyncSession = Depends(get_db)) -> Pr
 
 
 @router.patch("/projects/{project_id}", response_model=ProjectRead)
-async def update_project(project_id: str, payload: ProjectUpdate, db: AsyncSession = Depends(get_db)) -> Project:
+async def update_project(project_id: str, payload: ProjectUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Project:
     """Update project."""
     project = await db.get(Project, project_id)
     if project is None:
@@ -1183,7 +1183,7 @@ async def update_project(project_id: str, payload: ProjectUpdate, db: AsyncSessi
 
 
 @router.post("/projects/{project_id}/sites", response_model=ConstructionSiteRead, status_code=status.HTTP_201_CREATED)
-async def create_construction_site(project_id: str, payload: ConstructionSiteCreate, db: AsyncSession = Depends(get_db)) -> ConstructionSite:
+async def create_construction_site(project_id: str, payload: ConstructionSiteCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ConstructionSite:
     """Create a construction site."""
     from backend.app.services.modit import make_modit_reference
     
@@ -1227,7 +1227,7 @@ async def create_material_request(payload: MaterialRequestCreate, db: AsyncSessi
 
 
 @router.post("/boq", response_model=BOQRead, status_code=status.HTTP_201_CREATED)
-async def create_boq(payload: dict, db: AsyncSession = Depends(get_db)) -> BOQ:
+async def create_boq(payload: dict, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQ:
     """Create a BOQ."""
     boq = BOQ(**payload)
     db.add(boq)
@@ -1237,7 +1237,7 @@ async def create_boq(payload: dict, db: AsyncSession = Depends(get_db)) -> BOQ:
 
 
 @router.post("/boq/{boq_id}/items", response_model=BOQItemRead, status_code=status.HTTP_201_CREATED)
-async def create_boq_item(boq_id: str, payload: BOQItemCreate, db: AsyncSession = Depends(get_db)) -> BOQItem:
+async def create_boq_item(boq_id: str, payload: BOQItemCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQItem:
     """Add item to BOQ."""
     item = BOQItem(boq_id=boq_id, **payload.model_dump())
     db.add(item)
