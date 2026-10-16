@@ -16,9 +16,9 @@ const NAV_ITEMS = [
 ];
 
 /**
- * Bottom tab bar — Blinkit-style light tab architecture in MODIT colors:
- * white bar, muted icons, brand-purple active tab with a green top tick,
- * pink count badge on the cart. Hidden inside the staff panel.
+ * Bottom tab bar — AMOLED glass in MODIT colors: deep-black frosted bar,
+ * soft-white icons, white active tab with a green top tick, pink count
+ * badge on the cart. Hidden inside the staff panel.
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -30,7 +30,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#DDD6EE] shadow-[0_-4px_16px_rgba(45,27,105,0.08)] lg:hidden"
+      className="amoled-glass fixed bottom-0 left-0 right-0 z-50 border-x-0 border-b-0 lg:hidden"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
       <div className="grid grid-cols-4 gap-0 w-full">
@@ -43,10 +43,10 @@ export function BottomNav() {
               key={item.label}
               href={href}
               className="flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative"
-              style={{ color: highlighted ? "#2D1B69" : "#9B8CB5" }}
+              style={{ color: highlighted ? "#FFFFFF" : "rgba(255,255,255,0.55)" }}
             >
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#7CB518] rounded-full" />
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#7CB518] rounded-full shadow-[0_0_8px_rgba(124,181,24,0.8)]" />
               )}
               <div className="relative">
                 <item.icon className="h-5 w-5" fill={highlighted ? "currentColor" : "none"} strokeWidth={highlighted ? 0 : 2} />

@@ -164,14 +164,14 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell min-h-screen">
       {/* Announcement bar */}
-      <div className="announce-bar text-[#150726] text-center py-2 text-xs font-bold">
+      <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center py-2 text-xs font-bold tracking-wide">
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-purple-200/60 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, #F5F2FC 0%, #EDE8F5 30%, #F8F6FC 60%, #F5F2FC 100%)' }}>
+      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.35)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, rgba(11,3,24,0.92) 0%, rgba(21,7,38,0.88) 55%, rgba(30,18,69,0.9) 130%)' }}>
         <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
           <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
-            <ModitLogo className="h-[36px] sm:h-[42px] w-auto" />
+            <ModitLogo light className="h-[36px] sm:h-[42px] w-auto" />
           </Link>
 
           <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
@@ -180,7 +180,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           <div className="hidden flex-1 items-center xl:flex">
             <div ref={searchRef} className="relative w-full">
-              <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-sm)] transition-shadow focus-within:shadow-[var(--shadow-md)]">
+              <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[0_4px_16px_rgba(0,0,0,0.35)] ring-1 ring-white/10 transition-shadow focus-within:shadow-[var(--shadow-md)]">
                 <input
                   type="text"
                   value={searchQuery}
@@ -324,7 +324,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           {/* Desktop: cart button (gray when empty, green with total when filled) + account */}
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <button onClick={() => openDrawer()} className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${cartCount > 0 ? "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25" : "bg-[#CCC0E0] shadow-purple-900/10"}`} aria-label="Open cart">
+            <button onClick={() => openDrawer()} className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${cartCount > 0 ? "bg-[#7CB518] hover:bg-[#6A9C14] shadow-green-500/25" : "bg-white/10 hover:bg-white/15 ring-1 ring-white/15 shadow-black/30"}`} aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 ? (
                 <span className="tabular-nums">{cartCount} item{cartCount === 1 ? "" : "s"} · ₹{cartItems.reduce((s, i) => s + (i.unitPrice ?? i.product.price) * i.quantity, 0).toLocaleString("en-IN")}</span>
@@ -387,12 +387,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setShowMobileSearch(true)}
-              className="touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors"
+              className="touch-target rounded-full text-white/70 hover:bg-white/10 hover:text-white transition-colors"
               aria-label="Search"
             >
               <Search className="h-5 w-5" />
             </button>
-            <button onClick={() => openDrawer()} className="relative touch-target rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-50)] hover:text-[var(--brand)] transition-colors" aria-label="Open cart">
+            <button onClick={() => openDrawer()} className="relative touch-target rounded-full text-white/70 hover:bg-white/10 hover:text-white transition-colors" aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute right-0 top-0 flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#E91E63] px-1 text-tiny font-bold text-white shadow-lg shadow-pink-500/30">
@@ -403,7 +403,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setShowMobileMenu((value) => !value)}
-              className="touch-target rounded-full border border-[var(--border)] text-[var(--text-secondary)]"
+              className="touch-target rounded-full border border-white/15 text-white/70 hover:bg-white/10 hover:text-white transition-colors"
               aria-label="Toggle navigation"
             >
               {showMobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

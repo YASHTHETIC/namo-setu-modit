@@ -387,7 +387,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           while the inline button above is off-screen, so it can never
           cover the payment options or double the pay button. */}
       {!inlinePayVisible && (
-      <div className="lg:hidden fixed bottom-[76px] left-4 right-4 z-40 rounded-2xl border border-white/10 bg-[#150726]/95 backdrop-blur-md px-4 py-2.5 shadow-xl flex items-center gap-3">
+      <div className="amoled-glass lg:hidden fixed bottom-[76px] left-4 right-4 z-40 rounded-2xl px-4 py-2.5 flex items-center gap-3 border-x-0 border-b-0">
         <div className="flex-1 min-w-0">
           <p className="text-tiny text-white/50">Total payable</p>
           <p className="text-body-lg font-extrabold text-white tabular-nums">{formatINR2(total)}</p>

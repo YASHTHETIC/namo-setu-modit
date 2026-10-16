@@ -125,7 +125,9 @@ export default function AdminProductsPage() {
         patch.inStock = r.stock > 0;
       }
       if (Object.keys(patch).length > 0) {
-        setOverride(r.id, patch);
+        // Key overrides by SKU: it is the one identifier shared by static
+        // rows, live API rows and the server catalog.
+        setOverride(r.sku, patch);
         count += 1;
         if (await syncPriceToServer(r.sku, patch.price, patch.mrp)) synced += 1;
       }
@@ -193,7 +195,7 @@ export default function AdminProductsPage() {
             <tbody>
               {filtered.map((p) => {
                 const r = resolveProduct(p);
-                const edited = Boolean(overrides[p.id]);
+                const edited = Boolean(overrides[p.sku] ?? overrides[p.id]);
                 return (
                   <tr key={p.id} className="border-t border-[#F0ECF9] hover:bg-[#F7F4FC]">
                     <td className="px-4 py-3">
@@ -219,7 +221,7 @@ export default function AdminProductsPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex gap-1.5">
                         {edited && (
-                          <button onClick={() => { clearOverride(p.id); logAdminActivity("product.reset", `${p.name} reset to default`); }} title="Reset to default" className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
+                          <button onClick={() => { clearOverride(p.sku); clearOverride(p.id); logAdminActivity("product.reset", `${p.name} reset to default`); }} title="Reset to default" className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
                             <RotateCcw className="h-3.5 w-3.5" />
                           </button>
                         )}
@@ -253,7 +255,7 @@ export default function AdminProductsPage() {
             });
           }}
           onSave={(patch) => {
-            setOverride(editing.id, patch);
+            setOverride(editing.sku, patch);
             logAdminActivity(
               "product.update",
               `${editing.name} updated`,
@@ -329,7 +331,7 @@ function EditProductModal({ product, suppliers, onClose, onSave, onAssignSupplie
   onSave: (p: ProductOverride) => void;
   onAssignSupplier: (supplierId: string | null) => void;
 }) {
-  const existing = useAdminStore((s) => s.overrides[product.id]);
+  const existing = useAdminStore((s) => s.overrides[product.sku] ?? s.overrides[product.id]);
   const [price, setPrice] = useState(String(existing?.price ?? product.price));
   const [mrp, setMrp] = useState(String(existing?.mrp ?? product.mrp));
   const [bulkPrice, setBulkPrice] = useState(existing?.bulkPrice != null ? String(existing.bulkPrice) : product.bulkPrice != null ? String(product.bulkPrice) : "");

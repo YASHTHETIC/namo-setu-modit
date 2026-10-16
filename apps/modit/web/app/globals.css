@@ -481,7 +481,7 @@ img { display: block; max-width: 100%; }
   left: 12px;
   right: 12px;
   z-index: 40;
-  background: linear-gradient(135deg, #150726 0%, #1E1245 100%);
+  background: linear-gradient(135deg, #0b0318 0%, #150726 55%, #1e1245 130%);
   color: white;
   padding: 12px 12px 12px 16px;
   display: flex;
@@ -542,6 +542,26 @@ img { display: block; max-width: 100%; }
 
 
 
+/* AMOLED glass chrome — deep true-black purple, frosted blur, hairline
+   top-light. Applied to persistent chrome only (header, tab bar, sticky
+   bars, drawers); content surfaces stay light for Zomato-fresh contrast. */
+:root {
+  --amoled: #0b0318;
+  --glass-dark: rgba(11, 3, 24, 0.82);
+  --glass-hairline: rgba(255, 255, 255, 0.09);
+  --glass-light: rgba(255, 255, 255, 0.07);
+}
+
+.amoled-glass {
+  background: var(--glass-dark);
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  border: 1px solid var(--glass-hairline);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
 .sticky-cart-bar::before {
   content: '';
   position: absolute;
@@ -550,7 +570,7 @@ img { display: block; max-width: 100%; }
   right: 16px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-action), var(--color-urgency), var(--color-info));
+  background: linear-gradient(90deg, var(--color-action), #F8CB46);
 }
 
 

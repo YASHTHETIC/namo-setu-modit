@@ -22,7 +22,10 @@ export function saleAppliesTo(sale: Sale, product: Product): boolean {
 /** Merge admin price/stock overrides + the currently active sale into a product. */
 export function resolveProduct(product: Product, now: number = Date.now()): DisplayProduct {
   const { overrides, sales } = useAdminStore.getState();
-  const ov = overrides[product.id];
+  // Overrides are keyed by static id in the admin console, but live API rows
+  // carry server UUIDs — fall back to SKU so an admin price edit previews
+  // instantly no matter which row shape is on screen.
+  const ov = overrides[product.id] ?? (product.sku ? overrides[product.sku] : undefined);
 
   let price = ov?.price ?? product.price;
   const mrp = ov?.mrp ?? product.mrp;

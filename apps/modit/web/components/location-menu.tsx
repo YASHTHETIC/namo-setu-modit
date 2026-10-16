@@ -61,12 +61,12 @@ export function LocationMenu() {
         className="flex flex-col items-start leading-tight px-1 py-1 text-left"
         aria-label="Delivery location"
       >
-        <span className="text-body-sm font-extrabold text-[var(--text)]">Delivery in 60 min</span>
-        <span className="flex items-center gap-1 text-caption font-semibold text-[var(--text-secondary)]">
-          <span className={`h-1.5 w-1.5 rounded-full ${pincode ? (serviceable ? "bg-[#7CB518]" : "bg-[#E91E63]") : "bg-[var(--brand)]"}`} />
-          <MapPin className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+        <span className="text-body-sm font-extrabold text-white">Delivery in 60 min</span>
+        <span className="flex items-center gap-1 text-caption font-semibold text-white/60">
+          <span className={`h-1.5 w-1.5 rounded-full ${pincode ? (serviceable ? "bg-[#7CB518]" : "bg-[#E91E63]") : "bg-[#F8CB46]"}`} />
+          <MapPin className="h-3.5 w-3.5 text-white/50" />
           <span className="max-w-[180px] truncate tabular-nums">{pincode ?? "Set location"}</span>
-          <ChevronDown className={`h-3.5 w-3.5 text-[var(--text-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-3.5 w-3.5 text-white/50 transition-transform ${open ? "rotate-180" : ""}`} />
         </span>
       </button>
 

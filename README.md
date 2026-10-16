@@ -57,7 +57,7 @@ Two stages, two jobs — both idempotent, safe to re-run after every deploy:
 | Stage | Command | Loads |
 | ----- | ------- | ----- |
 | Foundation | `python -m seeds.runner` (from `backend/`) | Demo accounts, orgs, brands, categories, units, GST, suppliers, ~50 core SKUs |
-| Catalog | `python -m backend.app.seeders.catalog` | 1300+ SKU storefront catalog from `apps/modit/web/lib/product-data.ts` |
+| Catalog | `python -m backend.app.seeders.catalog` | 870+ SKU storefront catalog from `apps/modit/web/lib/product-data.ts` (73 curated + 800 Fixxly partner listings, all real prices) |
 
 ## Checks (run before every push — CI enforces the same)
 
