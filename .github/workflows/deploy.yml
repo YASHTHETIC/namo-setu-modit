@@ -1,0 +1,66 @@
+# MODIT CD — production deploy to the Hostinger VPS on every main push.
+#
+# PREREQUISITES (one-time, in GitHub repo Settings → Secrets → Actions):
+#   HOST         VPS address, e.g. 187.126.116.46
+#   HOST_USER    SSH user, e.g. root
+#   SSH_KEY      private key whose public half is in the VPS ~/.ssh/authorized_keys
+#   HOST_PORT    optional, defaults to 22
+# Without these secrets the job fails with a clear message instead of
+# half-deploying. Rollback = git revert the bad commit + push again.
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Hostinger VPS
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Check deploy secrets
+        run: |
+          test -n "${{ secrets.HOST }}" || (echo "::error::Missing secret HOST (VPS address)" && exit 1)
+          test -n "${{ secrets.HOST_USER }}" || (echo "::error::Missing secret HOST_USER" && exit 1)
+          test -n "${{ secrets.SSH_KEY }}" || (echo "::error::Missing secret SSH_KEY" && exit 1)
+      - name: Pull, migrate, seed, build, restart
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.HOST_PORT || 22 }}
+          command_timeout: 15m
+          script: |
+            set -e
+            cd /opt/modit
+            git pull --ff-only
+            npm install --legacy-peer-deps --no-audit --no-fund
+            npm run build --workspace=@modit/web
+            .venv/bin/python -m alembic -c backend/alembic.ini upgrade head
+            cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog
+            cd /opt/modit
+            pm2 restart modit-web modit-api
+            sleep 8
+      - name: Health gate (fail loudly, do not proceed silently)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.HOST_PORT || 22 }}
+          script: |
+            set -e
+            pm2 status
+            curl -fsSL --max-time 20 http://127.0.0.1:8000/api/v1/healthz
+            echo
+            curl -fsSL --max-time 20 https://modit.in/api/v1/healthz
+            echo
+            echo "DEPLOY OK"
