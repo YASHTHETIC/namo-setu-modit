@@ -314,15 +314,15 @@ export default function ModitHomePage() {
       <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
       <div className="trust-strip scrollbar-hide mt-3">
         {[
-          { icon: BadgeCheck, text: "100% Genuine Products", color: "#7CB518" },
-          { icon: Lock, text: "Secure Payments", color: "#2D1B69" },
-          { icon: Truck, text: "Free Delivery 5000+", color: "#00BCD4" },
-          { icon: Undo2, text: "7-Day Returns", color: "#E91E63" },
-          { icon: Receipt, text: "GST Invoice", color: "#FF9800" },
+          { icon: BadgeCheck, text: "100% Genuine Products" },
+          { icon: Lock, text: "Secure Payments" },
+          { icon: Truck, text: "Free Delivery 5000+" },
+          { icon: Undo2, text: "7-Day Returns" },
+          { icon: Receipt, text: "GST Invoice" },
         ].map((item) => (
           <div key={item.text} className="trust-item">
-            <item.icon className="h-3.5 w-3.5 shrink-0" style={{ color: item.color }} />
-            <span style={{ color: item.color }}>{item.text}</span>
+            <item.icon className="h-3.5 w-3.5 shrink-0 text-[#2D1B69]" />
+            <span className="text-[#5C4A7A]">{item.text}</span>
           </div>
         ))}
       </div>
