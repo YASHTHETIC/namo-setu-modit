@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X, Check } from "lucide-react";
@@ -47,7 +48,7 @@ export function PwaInstallPrompt() {
           <X className="h-4 w-4" />
         </button>
         <div className="flex items-start gap-3">
-          <img src="/icons/icon-192.png" alt="MODIT" width={40} height={40} className="h-10 w-10 rounded-xl flex-shrink-0" />
+          <Image src="/icons/icon-192.png" alt="MODIT" width={40} height={40} className="h-10 w-10 rounded-xl flex-shrink-0" />
           <div className="flex-1">
             {done ? (
               <p className="text-body-sm font-bold text-white flex items-center gap-1.5">

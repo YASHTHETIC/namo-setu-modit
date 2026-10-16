@@ -32,20 +32,19 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const adminOverrides = useAdminStore((s) => s.overrides);
   const adminSales = useAdminStore((s) => s.sales);
   const adminSuppliers = useSupplierStore((s) => s.suppliers);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const live = resolveProduct(product);
-  if (live.hidden) return null;
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     product.variants?.[0]?.id ?? null
   );
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const tryAdd = useAddToCart();
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
+  if (live.hidden) return null;
   const existing = items.find(
     (i) => i.product.id === product.id && (i.variantId ?? null) === selectedVariantId
   );
   const qty = existing?.quantity ?? 0;
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const tryAdd = useAddToCart();
   const optLabel = optionsLabel(live);
-  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
 
   const selectedVariant = selectedVariantId
     ? live.variants?.find((v) => v.id === selectedVariantId) ?? null

@@ -165,17 +165,17 @@ export default function ModitHomePage() {
     setHighlightIdx(-1);
   };
 
-  const cementProducts = useMemo(() => products.filter((p) => p.categorySlug === "cement"), []);
-  const paintingProducts = useMemo(() => products.filter((p) => p.categorySlug === "painting"), []);
-  const lightingProducts = useMemo(() => products.filter((p) => p.categorySlug === "lighting"), []);
-  const tilingProducts = useMemo(() => products.filter((p) => p.categorySlug === "tiling"), []);
+  const cementProducts = useMemo(() => products.filter((p) => p.categorySlug === "cement"), [products]);
+  const paintingProducts = useMemo(() => products.filter((p) => p.categorySlug === "painting"), [products]);
+  const lightingProducts = useMemo(() => products.filter((p) => p.categorySlug === "lighting"), [products]);
+  const tilingProducts = useMemo(() => products.filter((p) => p.categorySlug === "tiling"), [products]);
   const discountedProducts = useMemo(
     () => products.filter((p) => p.mrp > p.price).sort((a, b) => b.discount - a.discount).slice(0, 10),
-    []
+    [products]
   );
   const popularProducts = useMemo(
     () => products.filter((p) => p.inStock).sort((a, b) => (b.rating * b.reviewCount) - (a.rating * a.reviewCount)).slice(0, 10),
-    []
+    [products]
   );
   // Blinkit Home pattern: a rail per category. Curated rails above cover
   // cement/lighting/tiling/painting — auto-fill the next three biggest.
@@ -187,8 +187,7 @@ export default function ModitHomePage() {
       .filter((r) => r.items.length >= 4)
       .sort((a, b) => b.items.length - a.items.length)
       .slice(0, 3);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [products]);
 
   // Only show categories that actually have products in the live catalog.
   // While the catalog is still loading, fall back to the full static list.
@@ -197,7 +196,6 @@ export default function ModitHomePage() {
     const counts = new Map<string, number>();
     for (const p of products) counts.set(p.categorySlug, (counts.get(p.categorySlug) ?? 0) + 1);
     return allCategories.filter((c) => (counts.get(c.slug) ?? 0) > 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
   const featureCountRef = useScrollReveal(0.3);
   const featureVisible = featureCountRef.visible;
@@ -758,7 +756,7 @@ export default function ModitHomePage() {
                   className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"
                 >
                   <div className="h-6 w-6 rounded-md bg-white/5 flex items-center justify-center overflow-hidden">
-                    <img src={cat.img} alt={cat.name} width={24} height={24} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                    <Image src={cat.img} alt={cat.name} width={24} height={24} loading="lazy" className="h-full w-full object-contain" />
                   </div>
                   <span className="text-body-sm font-medium">{cat.name.split("\n")[0]}</span>
                 </Link>
@@ -855,7 +853,7 @@ export default function ModitHomePage() {
                         highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"
                       }`}
                     >
-                      <img src={p.images[0]} alt={p.name} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 rounded-lg object-cover bg-white/5" />
+                      <Image src={p.images[0]} alt={p.name} width={40} height={40} loading="lazy" className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
                         <p className="text-body-sm font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
                         <p className="text-micro text-white/50">{p.brand} · {p.unit}</p>

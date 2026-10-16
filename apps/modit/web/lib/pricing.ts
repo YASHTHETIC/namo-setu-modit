@@ -77,10 +77,6 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
   };
 }
 
-export function isHidden(product: Product): boolean {
-  return useAdminStore.getState().overrides[product.id]?.hidden === true;
-}
-
 /** Resolve a list, dropping hidden products. Reactive hook version for components. */
 export function useDisplayProducts(products: Product[]): DisplayProduct[] {
   const overrides = useAdminStore((s) => s.overrides);

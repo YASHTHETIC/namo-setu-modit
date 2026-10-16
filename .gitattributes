@@ -1,2 +1,4 @@
-# Shell scripts must stay LF in the repo — CRLF breaks bash on the server.
+# Keep one line-ending policy: checkout native, commit normalized.
+# Shell scripts are pinned to LF — CRLF breaks bash on the server.
+* text=auto
 *.sh text eol=lf

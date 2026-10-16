@@ -28,7 +28,11 @@ function VerifyEmailForm() {
     onError: (err: Error) => { setStatus("error"); setErrorMessage(err.message || "Verification failed. The link may have expired."); },
   });
 
-  useEffect(() => { if (token) verifyMutation.mutate(); }, [token]);
+  // useMutation's mutate is referentially stable — safe as an effect dep,
+  // and the token dep guarantees single-fire per link.
+  const { mutate: verifyEmail } = verifyMutation;
+
+  useEffect(() => { if (token) verifyEmail(); }, [token, verifyEmail]);
 
   return (
     <div className="fx-page min-h-screen flex">

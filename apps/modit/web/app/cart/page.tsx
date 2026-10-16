@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ProductThumb } from "@/components/product-thumb";
 import Link from "next/link";
 import {
@@ -266,7 +267,7 @@ export default function CartPage() {
                 <div className="space-y-2">
                   {savedItems.map((s) => (
                     <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <img src={s.product.images[0]} alt={s.product.name} width={56} height={56} loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
+                      <Image src={s.product.images[0]} alt={s.product.name} width={56} height={56} loading="lazy" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
                         <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>

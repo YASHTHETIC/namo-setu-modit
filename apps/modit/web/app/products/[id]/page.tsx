@@ -88,7 +88,7 @@ export default function ProductDetailPage({
 
   useEffect(() => {
     if (product) addRecentlyViewed(product);
-  }, [product?.id]);
+  }, [product, addRecentlyViewed]);
 
   const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   const { pincode: deliveryPincode, serviceable: areaServiceable } = usePincode();

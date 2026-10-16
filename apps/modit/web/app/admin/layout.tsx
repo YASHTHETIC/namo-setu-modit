@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
   Lock, RotateCcw, LogOut, IndianRupee, FileText, Building2, Warehouse,
@@ -27,7 +27,7 @@ function StaffBanner() {
   >({ kind: "checking" });
   const [busy, setBusy] = useState(false);
 
-  const load = async (retried = false) => {
+  const load = useCallback(async (retried = false) => {
     const token = getAccessToken();
     if (!token) {
       setState({ kind: "logged-out" });
@@ -68,11 +68,11 @@ function StaffBanner() {
         : e instanceof Error ? e.message : "Server unreachable";
       setState({ kind: "error", message: hint });
     }
-  };
+  }, []);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   const claim = async () => {
     const token = getAccessToken();

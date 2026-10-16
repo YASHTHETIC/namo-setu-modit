@@ -212,6 +212,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   placeholder={searchHint}
                   aria-label="Search products"
                   aria-expanded={showSearch}
+                  aria-controls="modit-search-listbox"
                   role="combobox"
                   aria-autocomplete="list"
                   className="h-full flex-1 border-0 bg-transparent px-5 text-body-lg text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
@@ -228,6 +229,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
               {(showSearch || (searchFocused && searchResults.length === 0)) && (
                 <div
+                  id="modit-search-listbox"
+                  role="listbox"
                   onMouseDown={(e) => e.preventDefault()}
                   className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down"
                 >

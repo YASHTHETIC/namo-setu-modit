@@ -1,0 +1,25 @@
+# Nightly prod smoke — read-only. Pages the deploy pipeline if the
+# live site stops serving a sane catalog or API health.
+name: Prod smoke
+
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Live health + catalog sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: API health
+        run: |
+          curl -fsSL --max-time 20 https://api.modit.in/api/v1/healthz
+          echo
+      - name: Catalog serves products
+        run: |
+          test "$(curl -fsSL --max-time 30 'https://api.modit.in/api/v1/products?page_size=1' | python3 -c 'import json,sys; print(json.load(sys.stdin).get("total", 0))')" -gt 0
+      - name: Storefront renders
+        run: |
+          curl -fsSL --max-time 30 -o /dev/null -w '%{http_code}\n' https://modit.in | grep -q 200

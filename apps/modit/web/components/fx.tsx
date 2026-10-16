@@ -8,7 +8,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { Truck, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 import { Reveal } from "@/components/reveal";
 
@@ -80,16 +80,6 @@ export function Stagger({
         </Reveal>
       ))}
     </>
-  );
-}
-
-/** 3D "Material on Door" overlay badge for product imagery. */
-export function DoorBadge({ overlay = false }: { overlay?: boolean }) {
-  return (
-    <span className={`trust3d trust3d-door text-tiny font-bold ${overlay ? "trust3d-overlay absolute bottom-2 left-2 z-20" : ""}`}>
-      <Truck className="truck h-3.5 w-3.5" />
-      Material on Door
-    </span>
   );
 }
 

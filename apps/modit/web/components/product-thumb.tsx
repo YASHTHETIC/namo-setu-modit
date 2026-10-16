@@ -31,6 +31,9 @@ export function ProductThumb({
   }
 
   return (
+    // Plain <img> is deliberate: callers size this via className, and the
+    // onError fallback must fire synchronously to avoid broken-image spill.
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt}

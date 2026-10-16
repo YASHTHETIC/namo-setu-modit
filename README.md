@@ -1,156 +1,91 @@
-# MODIT Monorepo
+# MODIT — construction-materials marketplace (modit.in)
 
-A B2B building material marketplace and procurement platform.
+B2B/B2C storefront for cement, paint, steel, tiles and electricals with
+pincode-based delivery. Buyers browse, estimate and order; suppliers apply,
+quote RFQs and fulfill; staff run catalog, orders and payouts from the admin
+console.
 
-## Architecture
+Live: **https://modit.in** · API: **https://api.modit.in**
 
-```
-apps/
-  modit/web/            Next.js 15 + React 19 (basePath: /modit)
-backend/
-  app/
-    api/v1/             FastAPI routers — 136 endpoints, 186 schemas
-    core/               Config, async DB, Redis, JWT auth, RBAC, logging
-    models/             SQLAlchemy async ORM — 76+ tables, UUID PKs, soft delete
-    schemas/            Pydantic v2 request/response models
-    services/           Business logic (no ORM in routes)
-packages/
-  api-client/           Typed fetch wrappers (createModitApi)
-  ui/                   Shared React components
-  utils/                Shared TypeScript utilities
-docker-compose.yml      PostgreSQL 16, Redis 7, backend, frontend
-```
+## Stack
 
-## Quick Start
+| Layer    | Choice                                                       |
+| -------- | ------------------------------------------------------------ |
+| Frontend | Next.js 15 + React 19 + Tailwind (`apps/modit/web`)         |
+| Backend  | FastAPI + SQLAlchemy (async) + asyncpg (`backend/`)         |
+| Data     | PostgreSQL 16, Redis (graceful degradation on cache failure) |
+| Hosting  | Single Hostinger VPS, nginx reverse proxy, PM2 (`modit-api`, `modit-web`) |
 
-### Prerequisites
-- Python 3.12+
-- Node.js 20+
-- PostgreSQL 16+ (or Docker)
-- Redis 7+ (or Docker)
+One VPS is a deliberate choice: solo team, low ops overhead. Two uvicorn
+workers x (10 pool + 20 overflow) stay under Postgres `max_connections`.
 
-### Run locally
+## Quickstart
 
 ```bash
-# 1. Start infrastructure
-docker-compose up -d postgres redis
+npm install --legacy-peer-deps          # workspaces: web + packages/*
+npm run dev --workspace=@modit/web      # http://localhost:3001
 
-# 2. Backend
-cd backend
-pip install -r ../requirements.txt
-PYTHONPATH=".." alembic upgrade head
-PYTHONPATH=".." python -m seeds.runner          # seed sample data
-PYTHONPATH=".." uvicorn app.main:app --reload --port 8000
-
-# 3. MODIT (separate terminal)
-cd apps/modit/web
-npm install && npm run dev                       # http://localhost:3001/modit
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python -m pytest backend/tests -q
 ```
 
-### Run everything with Docker
-```bash
-docker-compose up --build
+Local infra (optional): `docker-compose.yml` provides Postgres 16 + Redis 7.
+The backend test suite is fully hermetic (194 tests, no live Postgres or
+Redis required). The frontend builds against its bundled catalog, so it
+renders with zero backend running.
+
+API docs (local): `http://localhost:8000/docs` · ReDoc at `/redoc`
+(docs are disabled in production).
+
+## Repo map
+
+```
+apps/modit/web/        storefront, admin console (/admin), supplier hub (/supplier)
+packages/api-client/   typed API client shared by web
+packages/ui/ packages/utils/  shared primitives
+backend/app/           FastAPI routers, services, seeders
+backend/alembic/       migrations — every schema change lands here, no exceptions
+backend/seeds/         foundation data (users, orgs, brands, categories, GST… ~50 core SKUs)
+deploy/setup.sh        idempotent VPS provisioner (Postgres, Redis, nginx, PM2)
+.github/workflows/    CI gates + production deploy + nightly prod smoke
 ```
 
-## URLs
+## Seed data
 
-| Service | URL |
-|---------|-----|
-| MODIT | http://localhost:3001/modit |
-| Backend API | http://localhost:8000/api/v1 |
-| Swagger UI | http://localhost:8000/docs |
-| ReDoc | http://localhost:8000/redoc |
+Two stages, two jobs — both idempotent, safe to re-run after every deploy:
 
-## API — 136 Endpoints
+| Stage | Command | Loads |
+| ----- | ------- | ----- |
+| Foundation | `python -m seeds.runner` (from `backend/`) | Demo accounts, orgs, brands, categories, units, GST, suppliers, ~50 core SKUs |
+| Catalog | `python -m backend.app.seeders.catalog` | 1300+ SKU storefront catalog from `apps/modit/web/lib/product-data.ts` |
 
-### Auth
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | /auth/register | Create account |
-| POST | /auth/login | Get JWT tokens |
-| POST | /auth/refresh | Refresh access token |
-| GET | /auth/me | Current user profile |
-
-### MODIT
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | /modit/products | Product catalog (51 seeded) |
-| GET | /modit/categories | 12 categories |
-| GET | /modit/brands | 20 brands |
-| GET | /modit/suppliers | 5 suppliers |
-| GET | /modit/rfq | Request for quotations |
-| GET | /modit/orders | Purchase orders |
-| GET | /modit/inventory | 160 inventory items |
-| GET | /modit/projects | Construction projects |
-| POST | /modit/ai/material-recommendation | AI material suggestions |
-| POST | /modit/ai/boq-reader | Parse bill of quantities |
-| POST | /modit/ai/vendor-matching | Find best suppliers |
-| POST | /modit/ai/procurement-assistant | AI procurement helper |
-| POST | /modit/ai/voice-order | Voice-to-order |
-| POST | /modit/ai/smart-reorder | Auto-reorder suggestions |
-| GET | /modit/analytics/summary | Dashboard metrics |
-
-## Backend Highlights
-
-- **Async SQLAlchemy 2.0** with Alembic migrations
-- **JWT auth** with access/refresh tokens, MFA scaffolding
-- **RBAC**: 5 roles, 18 permissions, `require_permission` dependency
-- **AI services** query real database (not hardcoded stubs)
-- **Soft delete** filtering on all list endpoints
-- **19 passing tests** with dependency-overridden fake DB/Redis
-
-## Frontend Highlights
-
-- **Inter font** (single consistent typeface)
-- **CSS custom properties** — 20+ design tokens for colors, shadows, radii
-- **Framer Motion** stagger animations on all pages
-- **Empty states** with Lucide icons on every list page
-- **Error states** with retry buttons on all pages
-- **Skeleton loading** for progressive data loading
-- **focus-visible** rings for keyboard accessibility
-
-## Seed Data
-
-Loaded via `PYTHONPATH=".." python -m seeds.runner`:
-
-| Table | Count |
-|-------|-------|
-| Products | 51 |
-| Categories | 12 |
-| Brands | 20 |
-| Suppliers | 5 |
-| Inventory items | 160 |
-| Orders | 3 |
-
-## Testing
+## Checks (run before every push — CI enforces the same)
 
 ```bash
-cd backend
-python -m pytest tests/ -v       # 19/19 passing
+.venv/bin/python -m pytest backend/tests -q
+npm run test:unit --workspace=@modit/web
+npm run lint --workspace=@modit/web        # zero warnings tolerated
+npm run typecheck --workspace=@modit/web
+npm run check-images
+npm run build --workspace=@modit/web
+bash -n deploy/setup.sh
 ```
 
-## Environment Variables
+## Deploy
 
-| Variable | Required | Default |
-|----------|----------|---------|
-| DATABASE_URL | Yes | postgresql+asyncpg://... |
-| REDIS_URL | Yes | redis://localhost:6379 |
-| SECRET_KEY | Yes | (set in .env) |
-| OPENAI_API_KEY | No | (for AI features) |
+Push to `main` → CI gates → SSH deploy to the VPS (migrate, seed,
+build, restart, health-gate). Rollback is `git revert` + push.
+Server runbook: `DEPLOY.md`. Working agreements: `AGENTS.md`.
 
-## Tech Stack
+## Demo accounts
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic |
-| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| Database | PostgreSQL 16, Redis 7 |
-| Auth | JWT (PyJWT), bcrypt, MFA TOTP scaffold |
-| AI | OpenAI-compatible endpoints (works without API key via fallback) |
-| Testing | pytest, pytest-asyncio, pytest-cov |
-| Animation | Framer Motion |
-| Icons | Lucide React |
+| Role     | Email               | Password     |
+| -------- | ------------------- | ------------ |
+| Buyer    | demo@modit.in       | Demo@1234    |
+| Supplier | supplier@modit.in   | Supplier@1234 |
+
+Staff access is granted by an existing admin in `/admin` (Users tab).
 
 ## License
 
-Private — Hiring Assignment Submission
+Private — all rights reserved.

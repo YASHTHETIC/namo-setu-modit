@@ -1,4 +1,4 @@
-import { products as staticProducts, categories as staticCategories, searchProducts as staticSearch, getProductById as staticGetById } from "./product-data";
+import { searchProducts as staticSearch, getProductById as staticGetById } from "./product-data";
 import { env } from "./env";
 
 // Single source of truth for the API base (production-first default lives
@@ -117,56 +117,10 @@ function mapApiProduct(p: any): HybridProduct {
   };
 }
 
-export async function fetchProducts(params?: {
-  search?: string;
-  categorySlug?: string;
-  page?: number;
-}): Promise<{ items: HybridProduct[]; total: number }> {
-  const apiParams = new URLSearchParams();
-  if (params?.search) apiParams.set("search", params.search);
-  if (params?.categorySlug) apiParams.set("category", params.categorySlug);
-  if (params?.page) apiParams.set("page", String(params.page));
-
-  const apiData = await apiFetch<any>(`/products?${apiParams.toString()}`);
-  if (apiData?.items) {
-    return { items: apiData.items.map(mapApiProduct), total: apiData.total || 0 };
-  }
-
-  let filtered = [...staticProducts];
-  if (params?.search) {
-    const q = params.search.toLowerCase();
-    filtered = filtered.filter(
-      (p) => p.name.toLowerCase().includes(q) || p.brand?.toLowerCase().includes(q) || p.tags.some((t) => t.includes(q))
-    );
-  }
-  if (params?.categorySlug) {
-    filtered = filtered.filter((p) => p.categorySlug === params.categorySlug);
-  }
-  return { items: filtered, total: filtered.length };
-}
-
 export async function fetchProductById(id: string): Promise<HybridProduct | null> {
   const apiData = await apiFetch<any>(`/products/${id}`);
   if (apiData?.id) return mapApiProduct(apiData);
   return staticGetById(id) || null;
-}
-
-export async function fetchCategories(): Promise<Array<{ name: string; slug: string; description: string; productCount: number }>> {
-  const apiData = await apiFetch<any>("/categories");
-  if (Array.isArray(apiData)) {
-    return apiData.map((c: any) => ({
-      name: c.name,
-      slug: c.slug,
-      description: c.description || "",
-      productCount: 0,
-    }));
-  }
-  return staticCategories.map((c) => ({
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    productCount: c.productCount,
-  }));
 }
 
 export async function searchProducts(query: string): Promise<HybridProduct[]> {
@@ -294,13 +248,3 @@ export function verifyRazorpayPayment(input: {
   });
 }
 
-export async function fetchOrders(): Promise<any[]> {
-  const apiData = await apiFetch<any>("/orders");
-  if (Array.isArray(apiData)) return apiData;
-  if (apiData?.items) return apiData.items;
-  return [];
-}
-
-export async function fetchOrderById(id: string): Promise<any | null> {
-  return apiFetch<any>(`/orders/${id}`);
-}

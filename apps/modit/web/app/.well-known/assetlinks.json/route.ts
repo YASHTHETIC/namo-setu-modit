@@ -1,28 +1,33 @@
 /**
  * Digital Asset Links for Google Play (Trusted Web Activity).
  *
- * REPLACE the placeholder fingerprint below with the real SHA-256 of the
- * app-signing certificate BEFORE publishing. Get it from:
- *  - PWABuilder download page ("Signing key" section), or
- *  - Play Console → Setup → App integrity → App signing key certificate.
+ * Serves an empty statement list until the real app-signing SHA-256 is
+ * configured — an unverified fingerprint would fail Play verification
+ * anyway, so we assert nothing until then.
+ *
+ * When the app is published, set ANDROID_SHA256_FINGERPRINT
+ * (Play Console → Setup → App integrity → App signing key certificate)
+ * and this endpoint starts serving the verified statement.
  *
  * Verify after deploy: https://modit.in/.well-known/assetlinks.json
- * must return this file with Content-Type: application/json.
  */
-const STATEMENTS = [
-  {
-    relation: ["delegate_permission/common.handle_all_urls"],
-    target: {
-      namespace: "android_app",
-      // TODO: replace with real SHA-256 from Play Console → Setup → App integrity.
-      package_name: "in.modit.app",
-      sha256_cert_fingerprints: ["REPLACE_WITH_REAL_SHA256_FINGERPRINT"],
-    },
-  },
-];
+const FINGERPRINT = (process.env.ANDROID_SHA256_FINGERPRINT || "").trim();
 
 export async function GET() {
-  return Response.json(STATEMENTS, {
+  const statements =
+    FINGERPRINT.length > 0
+      ? [
+          {
+            relation: ["delegate_permission/common.handle_all_urls"],
+            target: {
+              namespace: "android_app",
+              package_name: "in.modit.app",
+              sha256_cert_fingerprints: [FINGERPRINT],
+            },
+          },
+        ]
+      : [];
+  return Response.json(statements, {
     headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=3600" },
   });
 }
