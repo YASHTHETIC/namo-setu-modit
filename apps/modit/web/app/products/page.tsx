@@ -49,6 +49,13 @@ function getCatColor(slug: string) {
   return CATEGORY_COLORS[slug] || CATEGORY_COLORS.cement;
 }
 
+// Slug-tolerant compare: server slugs occasionally differ in case or
+// padding ("Cement" vs "cement"). Normalize both sides so filters and
+// counts can never silently diverge on a data mismatch.
+function normSlug(s: string | null | undefined) {
+  return (s ?? "").trim().toLowerCase();
+}
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -115,11 +122,16 @@ function ProductsContent() {
       );
     }
 
+    // Slug-tolerant compare: server slugs occasionally differ in case or
+    // padding ("Cement" vs "cement"). Normalize both sides so the filter
+    // can never silently empty the grid on a data mismatch.
     if (selectedCategory) {
-      result = result.filter((p) => p.categorySlug === selectedCategory);
+      const want = normSlug(selectedCategory);
+      result = result.filter((p) => normSlug(p.categorySlug) === want);
     }
     if (selectedSub) {
-      result = result.filter((p) => p.subCategorySlug === selectedSub);
+      const wantSub = normSlug(selectedSub);
+      result = result.filter((p) => normSlug(p.subCategorySlug) === wantSub);
     }
 
     if (selectedBrands.length > 0) {
@@ -192,7 +204,7 @@ function ProductsContent() {
   // carry no sub-category assignments (then every pill would read 0 and
   // clicking one would empty the grid).
   const activeHasSubs = selectedCategory
-    ? countProducts.some((p) => p.categorySlug === selectedCategory && p.subCategorySlug)
+    ? countProducts.some((p) => normSlug(p.categorySlug) === normSlug(selectedCategory) && p.subCategorySlug)
     : false;
 
   const handleExport = (kind: "html" | "csv") => {
@@ -307,7 +319,7 @@ function ProductsContent() {
                     {categories
                       .map((cat) => ({
                         cat,
-                        count: countProducts.filter((p) => p.categorySlug === cat.slug).length,
+                        count: countProducts.filter((p) => normSlug(p.categorySlug) === normSlug(cat.slug)).length,
                       }))
                       // Hide dead categories (zero live products) so the
                       // sidebar never offers empty aisles — except the one
@@ -370,7 +382,7 @@ function ProductsContent() {
                       </button>
                       {subList.map((s) => {
                         const active = selectedSub === s.slug;
-                        const subCount = countProducts.filter((p) => p.subCategorySlug === s.slug).length;
+                        const subCount = countProducts.filter((p) => normSlug(p.subCategorySlug) === normSlug(s.slug)).length;
                         return (
                           <button
                             key={s.slug}
@@ -554,9 +566,9 @@ function ProductsContent() {
           <div
             className="mb-4 flex items-center justify-between rounded-2xl border px-5 py-3.5"
             style={{
-              borderColor: catColor?.border || '#DDD6EE',
+              borderColor: catColor?.border || '#E5DCF3',
               background: 'white',
-              boxShadow: '0 2px 12px rgba(26,10,51,0.04)',
+              boxShadow: '0 1px 2px rgba(26,10,51,0.04), 0 8px 24px -16px rgba(45,27,105,0.18)',
             }}
           >
             <div className="flex items-center gap-3">
@@ -657,10 +669,10 @@ function ProductsContent() {
                 <button
                   key={s.slug}
                   onClick={() => setSelectedSub(selectedSub === s.slug ? "" : s.slug)}
-                  className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-all whitespace-nowrap ${
+                  className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-all duration-200 active:scale-95 whitespace-nowrap ${
                     selectedSub === s.slug
-                      ? "bg-[#2D1B69] text-white border-[#2D1B69]"
-                      : "border-[#DDD6EE] bg-white text-[#6B5B83] hover:border-[#2D1B69]"
+                      ? "bg-[#2D1B69] text-white border-[#2D1B69] shadow-[0_2px_8px_-1px_rgba(45,27,105,0.45)]"
+                      : "border-[#E5DCF3] bg-white text-[#6B5B83] hover:border-[#2D1B69] hover:shadow-[0_2px_6px_-2px_rgba(45,27,105,0.25)]"
                   }`}
                 >
                   {s.name}

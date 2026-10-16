@@ -179,7 +179,7 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] py-4 sm:px-6">
+      <div className="mx-auto max-w-[1200px] pt-4 pb-28 sm:px-6 lg:pb-4">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-8 space-y-4">
             {/* 1 · Address Section */}
@@ -451,9 +451,9 @@ export default function CheckoutPage() {
               </div>
 
               {/* Price Summary */}
-              <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h4 className="text-body-md font-bold text-[#150726] mb-3">Price Summary</h4>
-                <div className="space-y-2">
+              <div className="rounded-2xl border border-[#E5DCF3] bg-white p-5 shadow-[0_1px_2px_rgba(26,10,51,0.04),0_8px_24px_-12px_rgba(45,27,105,0.12)]">
+                <h4 className="text-body-md font-bold tracking-tight text-[#150726] mb-3">Price Summary</h4>
+                <div className="space-y-2 tabular-nums">
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Subtotal</span>
                     <span className="text-[#150726]">₹{subtotal.toLocaleString()}</span>
@@ -480,9 +480,9 @@ export default function CheckoutPage() {
                       <span className="text-[#7CB518] font-semibold">-₹{couponDiscount.toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="border-t border-[#DDD6EE] pt-2 flex justify-between">
-                    <span className="text-body-lg font-bold text-[#150726]">Total</span>
-                    <span className="text-title-md font-extrabold text-[#2D1B69]">{formatINR2(total)}</span>
+                  <div className="border-t border-[#EDE7F6] pt-2.5 mt-1 flex justify-between items-baseline">
+                    <span className="text-body-lg font-bold tracking-tight text-[#150726]">Total</span>
+                    <span className="text-title-md font-extrabold tracking-tight text-[#2D1B69]">{formatINR2(total)}</span>
                   </div>
                 </div>
               </div>

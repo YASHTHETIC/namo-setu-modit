@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { placeOrder, checkServerUp, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
@@ -250,11 +250,27 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       ? `Pay ${formatINR2(total)} securely`
       : `Place Order • ${formatINR2(total)}`;
 
+  // Sticky-bar gating: the floating mobile bar exists so Pay is always one
+  // tap away — but it must never double the inline button or cover content.
+  // Show it only while the inline CTA is scrolled out of view.
+  const inlinePayRef = useRef<HTMLDivElement>(null);
+  const [inlinePayVisible, setInlinePayVisible] = useState(true);
+  useEffect(() => {
+    const el = inlinePayRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(([entry]) => setInlinePayVisible(entry.isIntersecting), {
+      threshold: 0.15,
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div className="space-y-4">
       {/* Payment Methods */}
-      <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-        <h4 className="text-body-md font-bold text-[#150726] mb-3">Payment Method</h4>
+      <div className="rounded-2xl border border-[#E5DCF3] bg-white p-5 shadow-[0_1px_2px_rgba(26,10,51,0.04),0_8px_24px_-12px_rgba(45,27,105,0.12)]">
+        <h4 className="text-body-md font-bold tracking-tight text-[#150726] mb-1">Payment Method</h4>
+        <p className="text-micro text-[#9B8CB5] mb-3">Secured · GST invoice on every order</p>
         <div className="space-y-2">
           {[
             { id: "razorpay", label: "UPI / Card / Netbanking", icon: CreditCard, desc: "Powered by Razorpay" },
@@ -265,24 +281,29 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
             <button
               key={method.id}
               onClick={() => chooseMethod(method.id as any)}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+              aria-pressed={paymentMethod === method.id}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 active:scale-[0.99] ${
                 paymentMethod === method.id
-                  ? "border-[#2D1B69] bg-[#F0ECF9]"
-                  : "border-[#DDD6EE] hover:border-[#C9B8E8]"
+                  ? "border-[#2D1B69] bg-[#F4EFFC] shadow-[0_2px_10px_-2px_rgba(45,27,105,0.18)]"
+                  : "border-[#E8E0F7] bg-white hover:border-[#C9B8E8] hover:shadow-[0_2px_8px_-2px_rgba(45,27,105,0.10)]"
               }`}
             >
-              <div className={`h-9 w-9 rounded-full flex items-center justify-center ${
+              <div className={`h-9 w-9 rounded-full flex items-center justify-center transition-colors ${
                 paymentMethod === method.id ? "bg-[#2D1B69] text-white" : "bg-[#F0ECF9] text-[#2D1B69]"
               }`}>
                 <method.icon className="h-4 w-4" />
               </div>
-              <div className="text-left flex-1">
-                <p className="text-body-sm font-semibold text-[#150726]">{method.label}</p>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-body-sm font-semibold tracking-tight text-[#150726]">{method.label}</p>
                 <p className="text-micro text-[#9B8CB5]">{method.desc}</p>
               </div>
-              {paymentMethod === method.id && (
-                <Check className="h-5 w-5 text-[#2D1B69]" />
-              )}
+              <span className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all ${
+                paymentMethod === method.id ? "border-[#2D1B69] bg-[#2D1B69]" : "border-[#D9CDEF]"
+              }`}>
+                {paymentMethod === method.id && (
+                  <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
+                )}
+              </span>
             </button>
           ))}
         </div>
@@ -338,6 +359,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       )}
 
       {/* Place Order Button */}
+      <div ref={inlinePayRef}>
       <button
         onClick={placeHandler}
         disabled={placeDisabled}
@@ -352,6 +374,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           placeLabel
         )}
       </button>
+      </div>
 
       {/* Trust Badges */}
       <div className="flex items-center justify-center gap-x-4 gap-y-1 flex-wrap text-tiny text-[#9B8CB5]">
@@ -360,7 +383,10 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         <span className="flex items-center gap-1 whitespace-nowrap"><Clock className="h-3 w-3" /> 7-day returns</span>
       </div>
 
-      {/* Sticky mobile order bar — button never buried at page bottom */}
+      {/* Sticky mobile order bar — one pay CTA at a time: visible only
+          while the inline button above is off-screen, so it can never
+          cover the payment options or double the pay button. */}
+      {!inlinePayVisible && (
       <div className="lg:hidden fixed bottom-[76px] left-4 right-4 z-40 rounded-2xl border border-white/10 bg-[#150726]/95 backdrop-blur-md px-4 py-2.5 shadow-xl flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-tiny text-white/50">Total payable</p>
@@ -374,6 +400,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           {processing ? "…" : paymentMethod === "cod" || paymentMethod === "credit" ? "Order" : "Pay"}
         </button>
       </div>
+      )}
     </div>
   );
 }

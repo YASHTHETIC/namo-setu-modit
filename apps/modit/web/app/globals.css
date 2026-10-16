@@ -787,6 +787,8 @@ input:focus:not(:focus-visible) {
 .section-header h2 {
   font: var(--text-section);
   color: var(--text);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 
@@ -803,6 +805,14 @@ input:focus:not(:focus-visible) {
 .section-header a {
   font: var(--text-see-all);
   color: var(--color-action);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.section-header a:hover {
+  gap: 6px;
 }
 
 

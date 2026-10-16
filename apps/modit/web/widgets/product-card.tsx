@@ -83,7 +83,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   return (
     <Link
       href={productLink(product)}
-      className={`bg-white border border-[#EDE7F6] rounded-xl overflow-hidden flex flex-col h-full ${compact ? "w-[140px]" : "w-full"} group group/card`}
+      className={`bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
       {/* Image zone — single %OFF ribbon, nothing else */}
       <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden">
@@ -136,7 +136,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Bottom row — price block left, ADD/stepper right */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1.5">
           <div className="min-w-0">
-            <p className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
+            <p className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
               ₹{activePrice.toLocaleString()}
             </p>
             {activeMrp > activePrice && (
