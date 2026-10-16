@@ -13,6 +13,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "pytest",
     "check-images": "node scripts/check-images.js",
+    "check-css-refs": "node scripts/check-css-refs.js",
     "check:ui": "node scripts/check-ui.js"
   },
   "dependencies": {
