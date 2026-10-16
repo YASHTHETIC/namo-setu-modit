@@ -19,7 +19,7 @@ jobs:
           echo
       - name: Catalog serves products
         run: |
-          test "$(curl -fsSL --max-time 30 'https://api.modit.in/api/v1/products?page_size=1' | python3 -c 'import json,sys; print(json.load(sys.stdin).get("total", 0))')" -gt 0
+          test "$(curl -fsSL --max-time 30 'https://api.modit.in/api/v1/modit/products?page_size=1' | python3 -c 'import json,sys; print(json.load(sys.stdin).get("total", 0))')" -gt 0
       - name: Storefront renders
         run: |
           curl -fsSL --max-time 30 -o /dev/null -w '%{http_code}\n' https://modit.in | grep -q 200
