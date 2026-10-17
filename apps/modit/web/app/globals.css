@@ -1115,7 +1115,7 @@ input:focus:not(:focus-visible) {
    ═══════════════════════════════════════════════ */
 
 .announce-bar {
-  background: linear-gradient(90deg, var(--color-offer-hover) 0%, var(--color-offer) 45%, var(--color-offer-light) 70%, var(--color-offer) 100%);
+  background: linear-gradient(90deg, #150726 0%, #1E1245 50%, #150726 100%);
   position: relative;
   overflow: hidden;
 }
@@ -1131,14 +1131,14 @@ input:focus:not(:focus-visible) {
 
 
 
-/* Slow elegant shine sweep (mostly static — no blinking) */
+/* Slow elegant gold shimmer on the dark bar (mostly static — no blinking) */
 .announce-bar::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   width: 30%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  background: linear-gradient(90deg, transparent, rgba(248, 203, 70, 0.14), transparent);
   transform: translateX(-160%) skewX(-20deg);
   animation: announceShine 7s ease-in-out infinite;
   pointer-events: none;
