@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { getProductById } from "@/lib/product-data";
+import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
@@ -17,6 +18,7 @@ import {
 } from "lucide-react";
 
 interface OrderItem {
+  productId?: string;
   name: string;
   sku: string;
   quantity: number;
@@ -130,6 +132,7 @@ function toOrderDetail(api: any): OrderDetail | null {
       const qty = Number(it?.quantity ?? 0);
       const unitPrice = Number(it?.unit_price ?? 0);
       return {
+        productId: it?.product_id ? String(it.product_id) : undefined,
         name: String(it?.name || p?.name || "Item"),
         sku: String(it?.sku || p?.sku || ""),
         quantity: qty,
@@ -165,13 +168,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const addItem = useCartStore((s) => s.addItem);
 
   // One-tap reorder: real catalog products only (same honesty rule as the list).
+  // Server lines carry a DB UUID in product_id that never matches static ids —
+  // resolveReorderProduct falls back to the shared SKU.
   const handleReorderAll = () => {
-    const lines = (order?.items ?? []) as Array<{ product_id?: string; quantity?: number }>;
+    const lines = (order?.items ?? []) as Array<{ productId?: string; sku?: string; quantity?: number }>;
     let added = 0;
     lines.forEach((line) => {
-      const p = line.product_id ? getProductById(line.product_id) : undefined;
+      const p = resolveReorderProduct(line);
       if (p) {
-        addItem(p, line.quantity ?? 1);
+        addItem(p, reorderQuantity(line));
         added += 1;
       }
     });

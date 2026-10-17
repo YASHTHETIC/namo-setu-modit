@@ -18,6 +18,13 @@ function getModitApi() {
   );
 }
 
+/** Plain (non-hook) fetch of one order's full detail — used by reorder from
+ * the orders list, which only has ids and totals (the list endpoint does
+ * not return line items). */
+export function fetchOrderDetail(orderId: string) {
+  return getModitApi().getOrder(orderId);
+}
+
 const fastQueryOpts = { retry: false, staleTime: 30_000, gcTime: 60_000 } as const;
 
 export const moditKeys = {

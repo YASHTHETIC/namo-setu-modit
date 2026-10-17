@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useOrders } from "@/lib/modit-api";
+import { useOrders, fetchOrderDetail } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
-import { getProductById } from "@/lib/product-data";
+import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { useAdminStore } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
@@ -43,18 +43,30 @@ export default function OrdersPage() {
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
   const activeCount = orderList.filter(o => ["placed", "in_transit", "confirmed", "processing", "dispatched"].includes(o.status)).length;
 
-  const handleReorder = (order: any) => {
+  const handleReorder = async (order: any) => {
     // Only real catalog products — never invent a placeholder item (it would
-    // fail at server checkout with an unknown SKU).
-    const items = (order as any).items as Array<{ productId: string; quantity: number }> | undefined;
-    let addedCount = 0;
-    const wantedCount = items?.length ?? 0;
-    if (items && items.length > 0) {
-      items.forEach((it) => {
-        const p = getProductById(it.productId);
-        if (p) { addItem(p, it.quantity); addedCount += 1; }
-      });
+    // fail at server checkout with an unknown SKU). The orders list endpoint
+    // returns ids and totals but no line items, so fetch full detail first
+    // when the row doesn't carry items (demo fallback rows do).
+    let lines = (order.items ?? []) as Array<any>;
+    if (lines.length === 0) {
+      try {
+        const detail: any = await fetchOrderDetail(order.id);
+        lines = Array.isArray(detail?.items) ? detail.items : [];
+      } catch {
+        toast.error("Reorder failed", "Could not load that order's items.");
+        return;
+      }
     }
+    let addedCount = 0;
+    const wantedCount = lines.length;
+    lines.forEach((line) => {
+      const p = resolveReorderProduct(line);
+      if (p) {
+        addItem(p, reorderQuantity(line));
+        addedCount += 1;
+      }
+    });
     if (addedCount === 0) {
       toast.error("Reorder failed", "Those products are no longer available.");
       return;

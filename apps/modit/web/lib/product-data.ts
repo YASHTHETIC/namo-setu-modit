@@ -23760,3 +23760,8 @@ export function searchProducts(query: string): Product[] {
 export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
 }
+
+export function getProductBySku(sku: string): Product | undefined {
+  if (!sku) return undefined;
+  return products.find((p) => p.sku === sku);
+}
