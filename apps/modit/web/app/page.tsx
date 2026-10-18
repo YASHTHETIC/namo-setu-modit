@@ -257,27 +257,6 @@ export default function ModitHomePage() {
         </div>
       </header>
 
-      {/* ═══ CATEGORY SHORTCUTS — Blinkit-app icon strip under search ═══ */}
-      <div className="bg-[#150726] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto flex gap-1 overflow-x-auto scrollbar-hide px-4 sm:px-6">
-          <Link href="/products" className="flex flex-col items-center gap-1 px-3 py-2 text-white flex-shrink-0 border-b-2 border-[#7CB518]">
-            <LayoutGrid className="h-5 w-5" />
-            <span className="text-tiny font-bold">All</span>
-          </Link>
-          {/* Every live category up top — nothing hidden behind "few" */}
-          {visibleCategories.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/products?category=${c.slug}`}
-              className="flex flex-col items-center gap-1 px-3 py-2 text-white/60 hover:text-white flex-shrink-0 transition-colors"
-            >
-              <CategoryTileIcon slug={c.slug} className="h-5 w-5" />
-              <span className="text-tiny font-semibold whitespace-nowrap">{c.name.replace("\n", " ")}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3">
