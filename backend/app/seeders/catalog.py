@@ -125,7 +125,7 @@ async def _get_or_create(session: AsyncSession, model, lookup: dict, defaults: d
 
 
 async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
-    stats = {"products_created": 0, "products_updated": 0, "skipped": 0}
+    stats = {"products_created": 0, "products_updated": 0, "products_deactivated": 0, "skipped": 0}
 
     country, _ = await _get_or_create(
         session, Country, {"iso2": "IN"},
@@ -229,6 +229,20 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
         )
         if not inv_created:
             inv.quantity_on_hand = max(inv.quantity_on_hand, qty)
+
+    # product-data.ts is the source of truth: deactivate MODIT-org products
+    # whose SKU was removed from the file (deleted duplicate/junk rows).
+    keep_skus = {i["sku"] for i in items}
+    stale = await session.execute(
+        select(Product).where(
+            Product.organization_id == org.id,
+            Product.is_active.is_(True),
+            Product.sku.notin_(keep_skus),
+        )
+    )
+    for product in stale.scalars():
+        product.is_active = False
+        stats["products_deactivated"] += 1
 
     await _seed_demo_supplier(session, org)
     await _seed_demo_personas(session)
