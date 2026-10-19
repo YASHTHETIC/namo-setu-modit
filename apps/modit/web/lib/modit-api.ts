@@ -324,11 +324,18 @@ export function useCreateCart() {
   });
 }
 
-export function useOrders(organizationId?: string, fallbackData?: any[]) {
+export function useOrders(
+  organizationId?: string,
+  fallbackData?: any[],
+  opts?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: moditKeys.orders(organizationId),
     queryFn: () => getModitApi().listOrders(organizationId),
     placeholderData: fallbackData,
+    // Guests never hit the orders endpoint (401 noise); callers pass
+    // { enabled: loggedIn } when the UI is auth-only.
+    enabled: opts?.enabled ?? true,
     // Keep the order list fresh while it is open
     refetchInterval: 60_000,
     ...fastQueryOpts,

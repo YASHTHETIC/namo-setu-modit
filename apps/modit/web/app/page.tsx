@@ -8,7 +8,7 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt
+  BadgeCheck, Undo2, Receipt, ShieldCheck
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
@@ -32,6 +32,7 @@ import { CartDrawer } from "@/widgets/cart-drawer";
 import { useCartUi } from "@/lib/cart-ui";
 import { useProducts, useSearchProducts, type Product } from "@/lib/api-hooks";
 import { useNearestWarehouse } from "@/lib/modit-api";
+import { ActiveOrderBanner } from "@/components/active-order-banner";
 import { categories as allCategories } from "@/lib/product-data";
 import { CategoryTileIcon } from "@/components/modit-shell";
 
@@ -106,10 +107,12 @@ export default function ModitHomePage() {
   useModalBehavior(showSearch, () => { setShowSearch(false); setSearchQuery(""); setHighlightIdx(-1); });
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setPincode: setContextPincode, coords } = usePincode();
+  const { pincode: ctxPincode, setPincode: setContextPincode, coords } = usePincode();
   const { data: nearest } = useNearestWarehouse(coords?.lat, coords?.lng);
   const searchHint = useRotatingText(SEARCH_HINTS);
-  const [pincode, setPincodeLocal] = useState("201301");
+  // Display value for the header/modal — seeded from the SAVED location
+  // (context loads it from localStorage after mount); never a hardcoded pin.
+  const [pincode, setPincodeLocal] = useState("");
   const setPincode = useCallback((val: string) => {
     setPincodeLocal(val);
     if (val.length === 6) setContextPincode(val);
@@ -126,7 +129,9 @@ export default function ModitHomePage() {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
-  useEffect(() => { setContextPincode("201301"); }, [setContextPincode]);
+  useEffect(() => {
+    setPincodeLocal(ctxPincode ?? "");
+  }, [ctxPincode]);
   useEffect(() => {
     if (showSearch) setTimeout(() => searchInputRef.current?.focus(), 100);
   }, [showSearch]);
@@ -289,21 +294,35 @@ export default function ModitHomePage() {
         </div>
       </div>
 
-      {/* ═══ TRUST STRIP ═══ */}
+      {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1440px] px-4 sm:px-6">
-      <div className="trust-strip scrollbar-hide mt-3">
-        {[
-          { icon: BadgeCheck, text: "100% Genuine Products" },
-          { icon: Lock, text: "Secure Payments" },
-          { icon: Truck, text: "Free Delivery 5000+" },
-          { icon: Undo2, text: "7-Day Returns" },
-          { icon: Receipt, text: "GST Invoice" },
-        ].map((item) => (
-          <div key={item.text} className="trust-item">
-            <item.icon className="h-3.5 w-3.5 shrink-0 text-[#2D1B69]" />
-            <span className="text-[#5C4A7A]">{item.text}</span>
-          </div>
-        ))}
+      <ActiveOrderBanner />
+      <div className="mt-3">
+        <div className="flex items-center justify-center gap-1.5 mb-2">
+          <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
+          <p className="text-caption font-extrabold text-[#150726] tracking-wide">MODIT Assured</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518", bg: "#F0F9E8" },
+            { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4", bg: "#E8F9FC" },
+            { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#2D1B69", bg: "#F0ECF9" },
+            { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#E91E63", bg: "#FCE4EC" },
+          ].map((t) => (
+            <div
+              key={t.title}
+              className="rounded-2xl border border-[#DDD6EE] bg-white p-3 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2"
+            >
+              <span className="h-9 w-9 flex-shrink-0 rounded-full flex items-center justify-center" style={{ background: t.bg }}>
+                <t.icon className="h-4 w-4" style={{ color: t.tint }} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-caption font-extrabold text-[#150726] leading-tight">{t.title}</span>
+                <span className="mt-0.5 block text-micro text-[#9B8CB5] leading-tight">{t.sub}</span>
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
@@ -383,8 +402,9 @@ export default function ModitHomePage() {
             </Link>
           </div>
           {/* Blinkit Home pattern: EVERY category on the first page.
-              Mobile scrolls horizontally, desktop shows the full grid. */}
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible lg:grid-cols-10 sm:gap-4">
+              Mobile: mock-style 4-col grid, first 12 tiles (3 rows) with the
+              header's See-all for the rest; sm+ shows the full wall. */}
+          <div className="grid grid-cols-4 gap-x-3 gap-y-4 pb-1 sm:grid-cols-6 sm:gap-4 lg:grid-cols-10 [&>*:nth-child(n+13)]:hidden sm:[&>*:nth-child(n+13)]:flex">
             {visibleCategories.map((cat, i) => {
               const manual = TILE_IMAGES[cat.slug];
               // Blinkit wall: EVERY tile gets a real photo — curated art for
@@ -399,10 +419,10 @@ export default function ModitHomePage() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex flex-col items-center gap-1 group snap-start shrink-0 w-[92px] sm:w-auto"
+                  className="flex flex-col items-center gap-1 group"
                 >
                   <div
-                    className={`relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                    className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{
@@ -416,7 +436,7 @@ export default function ModitHomePage() {
                         src={img}
                         alt={cat.name}
                         fill
-                        sizes="96px"
+                        sizes="(min-width: 1024px) 128px, (min-width: 640px) 96px, 84px"
                         loading="lazy"
                         draggable={false}
                         className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
