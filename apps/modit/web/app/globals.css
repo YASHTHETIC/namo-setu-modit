@@ -1900,6 +1900,15 @@ button { touch-action: manipulation; }
   margin-inline: auto;
 }
 
+/* Desktop side-space like Blinkit: content column = 84vw capped at 1600
+   (≈9vw gutters at any laptop width/scaling). Phones & tablets <1024 keep
+   the full-bleed 16px-gutter layout above. */
+@media (min-width: 1024px) {
+  .market-container {
+    width: min(1600px, 84vw);
+  }
+}
+
 
 
 

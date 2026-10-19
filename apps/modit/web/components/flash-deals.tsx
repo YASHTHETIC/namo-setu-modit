@@ -51,7 +51,7 @@ export function FlashDeals() {
   if (flashProducts.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-[1600px] px-4 pt-4 pb-3 sm:px-6">
+    <div className="mx-auto max-w-[1600px] lg:w-[84vw] px-4 pt-4 pb-3 sm:px-6">
       <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #150726 100%)" }}>
         {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-white/10">
