@@ -1896,7 +1896,7 @@ button { touch-action: manipulation; }
 
 
 .market-container {
-  width: min(1320px, calc(100vw - 2rem));
+  width: min(1600px, calc(100vw - 2rem));
   margin-inline: auto;
 }
 
