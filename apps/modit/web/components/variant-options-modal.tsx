@@ -58,7 +58,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10">
           <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
+          <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
             <X className="h-5 w-5 text-[#9B8CB5]" />
           </button>
         </div>

@@ -74,7 +74,7 @@ export default function SupplierApplyPage() {
       <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3">
-            <Link href="/supplier" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/supplier" aria-label="Back to supplier hub" className="text-white/60 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>

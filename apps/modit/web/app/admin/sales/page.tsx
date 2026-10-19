@@ -198,7 +198,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-body-lg font-bold text-[#150726]">{initial ? "Edit sale" : "New sale"}</h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
         </div>
 
         <label className="block text-micro font-bold text-[#150726] mb-1.5">Sale name</label>

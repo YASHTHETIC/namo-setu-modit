@@ -69,7 +69,7 @@ export function RFQModal({ open, onClose, productName, sku }: RFQModalProps) {
           <>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-body-lg font-bold text-[#150726]">Request Quote / Contact Seller</h2>
-              <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+              <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
             </div>
             {sku && (
               <div className="rounded-lg bg-[#F7F4FC] px-3 py-2 mb-4 text-micro text-[#9B8CB5]">

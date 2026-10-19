@@ -17,7 +17,7 @@ export default function ComparePage() {
       <div className="fx-page min-h-screen bg-[#F8F6FC]">
         <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-            <Link href="/products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
+            <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
             <h1 className="text-body-lg font-bold text-white">Compare Products</h1>
           </div>
         </header>
@@ -39,7 +39,7 @@ export default function ComparePage() {
     <div className="fx-page min-h-screen bg-[#F8F6FC]">
       <header className="sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-          <Link href="/products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
+          <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors"><ArrowLeft className="h-5 w-5" /></Link>
           <h1 className="text-body-lg font-bold text-white flex-1">Compare ({items.length})</h1>
           <button onClick={clearCompare} className="text-micro font-bold text-[#E91E63] hover:text-white transition-colors">Clear All</button>
         </div>

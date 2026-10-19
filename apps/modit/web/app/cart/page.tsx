@@ -65,7 +65,7 @@ export default function CartPage() {
         {/* Header */}
         <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-            <Link href="/" className="text-white/70 hover:text-white transition-colors">
+            <Link href="/" aria-label="Back to home" className="text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <h1 className="text-body-lg font-bold text-white">Shopping Cart</h1>
@@ -110,7 +110,7 @@ export default function CartPage() {
       {/* Header */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
-          <Link href="/products" className="text-white/70 hover:text-white transition-colors">
+          <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-body-lg font-bold text-white flex-1">Shopping Cart</h1>

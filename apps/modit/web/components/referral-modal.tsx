@@ -36,7 +36,7 @@ export function ReferralModal({ open, onClose }: ReferralModalProps) {
       <div className="w-full max-w-[360px] bg-white rounded-3xl overflow-hidden animate-slide-in-up" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="relative p-6 text-center" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #2d1b69 100%)" }}>
-          <button onClick={onClose} className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all">
+          <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all">
             <X className="h-4 w-4" />
           </button>
           <div className="h-14 w-14 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">

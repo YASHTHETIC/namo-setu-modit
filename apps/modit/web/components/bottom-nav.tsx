@@ -30,6 +30,7 @@ export function BottomNav() {
 
   return (
     <nav
+      aria-label="Primary"
       className="amoled-glass fixed bottom-0 left-0 right-0 z-50 border-x-0 border-b-0 lg:hidden"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
@@ -42,6 +43,7 @@ export function BottomNav() {
             <Link
               key={item.label}
               href={href}
+              aria-current={isActive ? "page" : undefined}
               className="flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative"
               style={{ color: highlighted ? "#FFFFFF" : "rgba(255,255,255,0.55)" }}
             >

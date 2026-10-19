@@ -131,7 +131,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
               <h2 className="text-body-lg font-bold text-[#150726] flex items-center gap-2">
                 <RotateCcw className="h-4 w-4 text-[#E91E63]" /> Request Return / Refund
               </h2>
-              <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+              <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
             </div>
             <p className="text-micro text-[#9B8CB5] mb-4">Order <span className="font-bold text-[#2D1B69]">{orderId}</span> — 7-day easy returns on delivered items.</p>
 

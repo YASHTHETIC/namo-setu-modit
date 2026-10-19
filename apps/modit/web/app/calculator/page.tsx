@@ -138,7 +138,7 @@ export default function CalculatorPage() {
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/products" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/products" aria-label="Back to products" className="text-white/60 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
@@ -202,8 +202,9 @@ export default function CalculatorPage() {
               <h3 className={headCls}>Dimensions</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelCls}>Floor Area (sq ft)</label>
+                  <label htmlFor="calc-paint-area" className={labelCls}>Floor Area (sq ft)</label>
                   <input
+                    id="calc-paint-area"
                     type="number"
                     value={area}
                     onChange={(e) => setArea(Math.max(1, parseInt(e.target.value) || 1))}
@@ -211,8 +212,9 @@ export default function CalculatorPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelCls}>Ceiling Height (ft)</label>
+                  <label htmlFor="calc-paint-height" className={labelCls}>Ceiling Height (ft)</label>
                   <input
+                    id="calc-paint-height"
                     type="number"
                     value={height}
                     onChange={(e) => setHeight(Math.max(1, parseInt(e.target.value) || 1))}
@@ -280,16 +282,16 @@ export default function CalculatorPage() {
               <h3 className={headCls}>Floor Area & Tile Size</h3>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className={labelCls}>Area (sq ft)</label>
-                  <input type="number" value={tileArea} onChange={(e) => setTileArea(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-tile-area" className={labelCls}>Area (sq ft)</label>
+                  <input id="calc-tile-area" type="number" value={tileArea} onChange={(e) => setTileArea(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Tile L (inch)</label>
-                  <input type="number" value={tileLen} onChange={(e) => setTileLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-tile-len" className={labelCls}>Tile L (inch)</label>
+                  <input id="calc-tile-len" type="number" value={tileLen} onChange={(e) => setTileLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Tile W (inch)</label>
-                  <input type="number" value={tileWid} onChange={(e) => setTileWid(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-tile-wid" className={labelCls}>Tile W (inch)</label>
+                  <input id="calc-tile-wid" type="number" value={tileWid} onChange={(e) => setTileWid(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
               </div>
               <h3 className={`${headCls} mt-4`}>Wastage (cuts & breakage)</h3>
@@ -337,16 +339,16 @@ export default function CalculatorPage() {
               <h3 className={headCls}>Slab / Member Size</h3>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className={labelCls}>Length (ft)</label>
-                  <input type="number" value={slabL} onChange={(e) => setSlabL(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-slab-len" className={labelCls}>Length (ft)</label>
+                  <input id="calc-slab-len" type="number" value={slabL} onChange={(e) => setSlabL(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Width (ft)</label>
-                  <input type="number" value={slabW} onChange={(e) => setSlabW(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-slab-wid" className={labelCls}>Width (ft)</label>
+                  <input id="calc-slab-wid" type="number" value={slabW} onChange={(e) => setSlabW(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Thick (inch)</label>
-                  <input type="number" value={slabT} onChange={(e) => setSlabT(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                  <label htmlFor="calc-slab-thick" className={labelCls}>Thick (inch)</label>
+                  <input id="calc-slab-thick" type="number" value={slabT} onChange={(e) => setSlabT(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
               </div>
               <h3 className={`${headCls} mt-4`}>Grade (cement : sand : aggregate)</h3>
@@ -408,8 +410,8 @@ export default function CalculatorPage() {
                   </button>
                 ))}
               </div>
-              <h3 className={`${headCls} mt-4`}>Total Running Length (meters)</h3>
-              <input type="number" value={steelLen} onChange={(e) => setSteelLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+              <h3 id="calc-steel-len-label" className={`${headCls} mt-4`}>Total Running Length (meters)</h3>
+              <input id="calc-steel-len" aria-labelledby="calc-steel-len-label" type="number" value={steelLen} onChange={(e) => setSteelLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
               <p className="mt-2 text-tiny text-[#9B8CB5]">Add up all bars, stirrups and laps in running meters.</p>
             </div>
 

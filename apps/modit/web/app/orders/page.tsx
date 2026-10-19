@@ -91,7 +91,7 @@ export default function OrdersPage() {
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/products" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/products" aria-label="Back to products" className="text-white/60 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <h1 className="text-title-md font-extrabold text-white">My Orders</h1>

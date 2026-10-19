@@ -319,7 +319,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,188,212,0.4), transparent 50%)" }} />
         <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/orders" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/orders" aria-label="Back to orders" className="text-white/60 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="flex-1">
@@ -391,10 +391,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <a href="tel:+919876543210" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
+                    <a href="tel:+919876543210" aria-label="Call support" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
                       <Phone className="h-4 w-4" />
                     </a>
-                    <button className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
+                    <button aria-label="Message support" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
                       <MessageSquare className="h-4 w-4" />
                     </button>
                   </div>

@@ -368,7 +368,7 @@ function EditProductModal({ product, suppliers, onClose, onSave, onAssignSupplie
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-body-lg font-bold text-[#150726]">Edit product</h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
         </div>
         <p className="text-caption text-[#9B8CB5] mb-4">{product.name} · {product.sku}</p>
 
@@ -508,7 +508,7 @@ function AddProductModal({ onClose }: { onClose: () => void }) {
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-body-lg font-bold text-[#150726]">Add product</h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
         </div>
         <p className="text-caption text-[#9B8CB5] mb-4">Goes straight into the server catalog — buyers see it on the next catalog sync.</p>
 
