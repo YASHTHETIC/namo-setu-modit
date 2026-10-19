@@ -7,13 +7,8 @@ const SITE_URL =
 
 const staticRoutes: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [  { path: "", changeFrequency: "daily", priority: 1 },
   { path: "/products", changeFrequency: "daily", priority: 0.9 },
-  { path: "/cart", changeFrequency: "monthly", priority: 0.3 },
-  { path: "/checkout", changeFrequency: "monthly", priority: 0.3 },
-  { path: "/orders", changeFrequency: "weekly", priority: 0.4 },
   { path: "/rfq", changeFrequency: "weekly", priority: 0.6 },
   { path: "/calculator", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/wishlist", changeFrequency: "monthly", priority: 0.3 },
-  { path: "/compare", changeFrequency: "monthly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
   { path: "/shipping", changeFrequency: "yearly", priority: 0.2 },
@@ -51,9 +46,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
   const productEntries: MetadataRoute.Sitemap = products
+    // Filter on the stable id (junk rules were verified against ids — full
+    // slugs contain real model numbers like 35783nkpm that trip the segment
+    // rule), but emit slug URLs to match internal productLink().
     .filter((p) => isIndexableProductId(p.id))
     .map((p) => ({
-      url: `${SITE_URL}/products/${p.id}`,
+      url: `${SITE_URL}/products/${p.slug || p.id}`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,

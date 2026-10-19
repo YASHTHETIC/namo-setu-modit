@@ -2466,7 +2466,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "pipes-ashirvad-flowguard-plus-cpvc-reduce-27", name: "Ashirvad Flowguard Plus CPVC Reducer Coupler", slug: "ashirvad-flowguard-plus-cpvc-reducer-coupler-62d502b9-d759-4-27", sku: "PIP-27-102",
+    id: "pipes-ashirvad-flowguard-plus-cpvc-reduce-27", name: "Ashirvad Flowguard Plus CPVC Reducer Coupler", slug: "ashirvad-flowguard-plus-cpvc-reducer-coupler-27", sku: "PIP-27-102",
     description: "Ashirvad Flowguard Plus CPVC Reducer Coupler - CPVC pipes, fittings, overhead tanks for construction and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
@@ -2484,7 +2484,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "pipes-ashirvad-flowguard-plus-cpvc-tee-92-28", name: "Ashirvad Flowguard Plus CPVC Tee", slug: "ashirvad-flowguard-plus-cpvc-tee-92e95243-97c9-40f5-84fd-2e8-28", sku: "PIP-28-103",
+    id: "pipes-ashirvad-flowguard-plus-cpvc-tee-92-28", name: "Ashirvad Flowguard Plus CPVC Tee", slug: "ashirvad-flowguard-plus-cpvc-tee-28", sku: "PIP-28-103",
     description: "Ashirvad Flowguard Plus CPVC Tee - CPVC pipes, fittings, overhead tanks for construction and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
@@ -5923,7 +5923,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
 
-{
+  {
     id: "fxy-0-72mm-off-white-liner-laminate-8x4-ft", name: "0.72mm Off White Liner Laminate 8x4 ft", slug: "0-72mm-off-white-liner-laminate-8x4-ft", sku: "WNL-LMT-00000094",
     description: "0.72mm Off White Liner Laminate 8x4 ft - Plywood, MDF & HDHMR for construction and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
@@ -8498,7 +8498,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "fxy-asian-paints-ace-base-white", name: "Asian Paints Ace Base White", slug: "asian-paints-ace-base-white", sku: "PNA-PPS-00000050",
+    id: "fxy-asian-paints-ace-base-white", name: "Asian Paints Ace Base White", slug: "asian-paints-ace-base-white-fixxly", sku: "PNA-PPS-00000050",
     description: "Ace Exterior Emulsion is a water-based exterior wall finish with special silicon additives suitable for dry to moderately humid climatic conditions. It offers superior resistance to cracking, flaking, weathering, and chalking compared to cement-based paint, with better anti-algal protection than standard cement paint. It requires no post-application curing, has a smooth matt finish, and is low VOC",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
@@ -8534,7 +8534,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "fxy-asian-paints-apex-base-white", name: "Asian Paints Apex Base White", slug: "asian-paints-apex-base-white", sku: "PNA-PPS-00000054",
+    id: "fxy-asian-paints-apex-base-white", name: "Asian Paints Apex Base White", slug: "asian-paints-apex-base-white-fixxly", sku: "PNA-PPS-00000054",
     description: "Asian Paints Apex Weatherproof Exterior Emulsion is a premium water-based, modified acrylic paint formulated with silicone additives to protect exterior walls against the extreme tropical conditions of high rainfall, humidity, and heat. It offers excellent resistance to alkali and UV degradation, keeping the shade vibrant, and superior anti-algal performance that resists the growth of algae and fu",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
@@ -8570,7 +8570,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "fxy-asian-paints-apex-ultima-base-white", name: "Asian Paints Apex Ultima Base White", slug: "asian-paints-apex-ultima-base-white", sku: "PNA-PPS-00000058",
+    id: "fxy-asian-paints-apex-ultima-base-white", name: "Asian Paints Apex Ultima Base White", slug: "asian-paints-apex-ultima-base-white-fixxly", sku: "PNA-PPS-00000058",
     description: "Asian Paints Apex Ultima is a high-performance weatherproof exterior emulsion engineered with advanced polymer technology for protection against monsoons, extreme heat, and coastal humidity. It provides resistance against rain, sun, UV rays, and humidity with a premium sheen finish, an anti-algal formula that prevents biological growth, and superior colour retention. It is low VOC and lead-free.",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
@@ -18074,7 +18074,7 @@ export const products: Product[] = [
     cashbackPercent: 1,
   },
   {
-    id: "fxy-philips-full-glow-led-surface-light", name: "Philips Full Glow LED Surface Light", slug: "philips-full-glow-led-surface-light", sku: "ELE-LNF-00000055",
+    id: "fxy-philips-full-glow-led-surface-light", name: "Philips Full Glow LED Surface Light", slug: "philips-full-glow-led-surface-light-fixxly", sku: "ELE-LNF-00000055",
     description: "Philips Full Glow LED Surface Light is a rimless, round LED surface downlighter for ceiling mounting in homes and halls, made of polycarbonate. It is available across multiple wattages and single colour temperatures (cool daylight, warm white, natural white).",
     shortDescription: "Lighting product",
     brand: "Philips", brandSlug: "philips", category: "Lighting", categorySlug: "lighting",

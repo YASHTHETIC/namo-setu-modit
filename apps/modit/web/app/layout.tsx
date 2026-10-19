@@ -20,10 +20,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://modit.in"),
-  title: "MODIT — Construction Materials Delivered",
+  title: {
+    default: "MODIT — Construction Materials Delivered",
+    template: "%s | MODIT",
+  },
   description: "Construction materials delivered to your site. Cement, paint, lighting, tiling — all at the lowest prices with 60-minute delivery.",
   keywords: ["MODIT", "modit.in", "construction materials", "cement online", "paint online", "building material delivery India"],
-  alternates: { canonical: "/" },
   openGraph: {
     title: "MODIT — Construction Materials Delivered",
     description: "Cement, paint, lighting, tiling — delivered to your site in 60 minutes.",
