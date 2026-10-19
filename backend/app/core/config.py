@@ -93,6 +93,16 @@ class Settings(BaseSettings):
                     data["backend_cors_origins"] = [raw] if raw else []
         return data
 
+    @model_validator(mode="after")
+    def _reject_default_jwt_secret_in_production(self) -> "Settings":
+        """Fail fast at startup: shipping the placeholder JWT secret to
+        production would let anyone forge tokens."""
+        if self.environment == "production" and self.jwt_secret_key.strip() in ("", "change-me"):
+            raise ValueError(
+                "jwt_secret_key must be set to a strong random secret when environment=production"
+            )
+        return self
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

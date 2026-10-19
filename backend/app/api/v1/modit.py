@@ -213,7 +213,7 @@ async def _count(session: AsyncSession, stmt) -> int:
 @router.get("/products", response_model=ProductSearchResponse)
 async def list_products(
     page: int = 1,
-    page_size: int = 20,
+    page_size: int = Query(20, ge=1, le=2000),
     search: str | None = None,
     category_id: str | None = None,
     brand_id: str | None = None,
@@ -434,8 +434,8 @@ async def create_unit(payload: dict, db: AsyncSession = Depends(get_db)) -> Unit
 # =====================================================
 
 @router.get("/suppliers", response_model=list[SupplierRead])
-async def list_suppliers(db: AsyncSession = Depends(get_db)) -> list[Supplier]:
-    """List all suppliers."""
+async def list_suppliers(db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Supplier]:
+    """List all suppliers (login required)."""
     result = await db.execute(select(Supplier).order_by(Supplier.supplier_code.asc()))
     return result.scalars().all()
 
@@ -451,8 +451,8 @@ async def create_supplier(payload: SupplierCreate, db: AsyncSession = Depends(ge
 
 
 @router.get("/suppliers/{supplier_id}/vendors", response_model=list[VendorRead])
-async def list_supplier_vendors(supplier_id: str, db: AsyncSession = Depends(get_db)) -> list[Vendor]:
-    """List vendors for a supplier."""
+async def list_supplier_vendors(supplier_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Vendor]:
+    """List vendors for a supplier (login required)."""
     result = await db.execute(
         select(Vendor).where(Vendor.supplier_id == supplier_id, Vendor.is_active.is_(True), Vendor.deleted_at.is_(None)).order_by(Vendor.name.asc())
     )
@@ -470,8 +470,8 @@ async def create_vendor(supplier_id: str, payload: VendorCreate, db: AsyncSessio
 
 
 @router.get("/warehouses", response_model=list[WarehouseRead])
-async def list_warehouses(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Warehouse]:
-    """List warehouses."""
+async def list_warehouses(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Warehouse]:
+    """List warehouses (login required; /warehouses/nearest stays public)."""
     stmt = select(Warehouse).where(Warehouse.is_active.is_(True), Warehouse.deleted_at.is_(None))
     if organization_id:
         stmt = stmt.where(Warehouse.organization_id == organization_id)
@@ -509,8 +509,8 @@ async def nearest_warehouse(
 # =====================================================
 
 @router.get("/rfq", response_model=list[RFQRead])
-async def list_rfqs(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[RFQRead]:
-    """List RFQs."""
+async def list_rfqs(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[RFQRead]:
+    """List RFQs (login required)."""
     stmt = select(RFQ)
     if organization_id:
         stmt = stmt.where(RFQ.organization_id == organization_id)
@@ -625,8 +625,8 @@ async def award_rfq(
 
 
 @router.get("/rfq/{rfq_id}", response_model=RFQDetailRead)
-async def get_rfq(rfq_id: str, db: AsyncSession = Depends(get_db)) -> RFQDetailRead:
-    """Get RFQ details."""
+async def get_rfq(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> RFQDetailRead:
+    """Get RFQ details (login required)."""
     rfq = await db.get(RFQ, rfq_id)
     if rfq is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
@@ -739,23 +739,13 @@ async def list_orders(
 ) -> list[OrderRead]:
     """List orders. Anonymous callers see nothing; customers see their own
     orgs; staff see everything when no org filter is given."""
-    from backend.app.models.modit import OrganizationUser
-
     stmt = select(Order)
     if organization_id:
         stmt = stmt.where(Order.organization_id == organization_id)
     elif not is_staff(user):
         if user is None:
             return []
-        org_ids = (
-            (
-                await db.execute(
-                    select(OrganizationUser.organization_id).where(OrganizationUser.user_id == user.id)
-                )
-            )
-            .scalars()
-            .all()
-        )
+        org_ids = await _own_org_ids(db, user)
         if not org_ids:
             return []
         stmt = stmt.where(Order.organization_id.in_(org_ids))
@@ -926,6 +916,26 @@ async def _own_org_ids(session: AsyncSession, user: User) -> list[str]:
     return [r for r in rows if isinstance(r, str)]
 
 
+async def _scope_org_stmt(
+    db: AsyncSession, user: User, stmt, model, organization_id: str | None
+):
+    """The list_orders authorization pattern (see list_orders): staff see
+    every org; users only their own; an explicit organization_id must belong
+    to the caller unless they are staff. Returns None when nothing may be seen."""
+    if is_staff(user):
+        if organization_id:
+            stmt = stmt.where(model.organization_id == organization_id)
+        return stmt
+    org_ids = await _own_org_ids(db, user)
+    if organization_id:
+        if organization_id not in org_ids:
+            return None
+        return stmt.where(model.organization_id == organization_id)
+    if not org_ids:
+        return None
+    return stmt.where(model.organization_id.in_(org_ids))
+
+
 @router.patch("/orders/{order_id}/status", response_model=OrderRead)
 async def update_order_status(
     order_id: str,
@@ -960,10 +970,10 @@ async def update_order_status(
 
 @router.get("/purchase-orders", response_model=list[PurchaseOrderRead])
 async def list_purchase_orders(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[PurchaseOrder]:
-    """List purchase orders."""
-    stmt = select(PurchaseOrder)
-    if organization_id:
-        stmt = stmt.where(PurchaseOrder.organization_id == organization_id)
+    """List purchase orders. Staff: all orgs. Users: their own orgs only."""
+    stmt = await _scope_org_stmt(db, user, select(PurchaseOrder), PurchaseOrder, organization_id)
+    if stmt is None:
+        return []
     result = await db.execute(stmt.order_by(PurchaseOrder.created_at.desc()))
     return result.scalars().all()
 
@@ -991,10 +1001,10 @@ async def create_purchase_order(payload: PurchaseOrderCreate, db: AsyncSession =
 
 @router.get("/invoices", response_model=list[InvoiceRead])
 async def list_invoices(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Invoice]:
-    """List invoices."""
-    stmt = select(Invoice)
-    if organization_id:
-        stmt = stmt.where(Invoice.organization_id == organization_id)
+    """List invoices. Staff: all orgs. Users: their own orgs only."""
+    stmt = await _scope_org_stmt(db, user, select(Invoice), Invoice, organization_id)
+    if stmt is None:
+        return []
     result = await db.execute(stmt.order_by(Invoice.created_at.desc()))
     return result.scalars().all()
 
@@ -1098,8 +1108,9 @@ async def list_inventory(
     warehouse_id: str | None = None,
     product_id: str | None = None,
     db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
 ) -> list[Inventory]:
-    """List inventory."""
+    """List inventory (login required)."""
     stmt = select(Inventory)
     if warehouse_id:
         stmt = stmt.where(Inventory.warehouse_id == warehouse_id)
@@ -1133,14 +1144,14 @@ async def update_inventory(inventory_id: str, payload: InventoryUpdate, db: Asyn
 
 
 @router.get("/inventory/alerts", response_model=list[InventoryAlert])
-async def get_low_stock_alerts(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[InventoryAlert]:
-    """Get low stock alerts."""
+async def get_low_stock_alerts(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[InventoryAlert]:
+    """Get low stock alerts (login required)."""
     return await get_inventory_alerts(db, organization_id)
 
 
 @router.get("/inventory/analytics", response_model=InventoryAnalytics)
-async def get_inventory_stats(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> InventoryAnalytics:
-    """Get inventory analytics."""
+async def get_inventory_stats(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> InventoryAnalytics:
+    """Get inventory analytics (login required)."""
     return await get_inventory_analytics(db, organization_id)
 
 
@@ -1149,8 +1160,8 @@ async def get_inventory_stats(organization_id: str | None = None, db: AsyncSessi
 # =====================================================
 
 @router.get("/deliveries", response_model=list[DeliveryRead])
-async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Delivery]:
-    """List deliveries."""
+async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Delivery]:
+    """List deliveries (login required; /deliveries/{id}/track stays public)."""
     stmt = select(Delivery)
     if purchase_order_id:
         stmt = stmt.where(Delivery.purchase_order_id == purchase_order_id)
@@ -1200,10 +1211,11 @@ async def track_delivery(delivery_id: str, db: AsyncSession = Depends(get_db)) -
 
 @router.get("/drivers", response_model=list[DriverRead])
 async def list_drivers(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Driver]:
-    """List drivers."""
+    """List drivers. Staff: all orgs. Users: their own orgs only."""
     stmt = select(Driver).where(Driver.is_active.is_(True), Driver.deleted_at.is_(None))
-    if organization_id:
-        stmt = stmt.where(Driver.organization_id == organization_id)
+    stmt = await _scope_org_stmt(db, user, stmt, Driver, organization_id)
+    if stmt is None:
+        return []
     result = await db.execute(stmt.order_by(Driver.full_name.asc()))
     return result.scalars().all()
 
@@ -1220,10 +1232,11 @@ async def create_driver(payload: DriverCreate, db: AsyncSession = Depends(get_db
 
 @router.get("/vehicles", response_model=list[VehicleRead])
 async def list_vehicles(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Vehicle]:
-    """List vehicles."""
+    """List vehicles. Staff: all orgs. Users: their own orgs only."""
     stmt = select(Vehicle).where(Vehicle.is_active.is_(True), Vehicle.deleted_at.is_(None))
-    if organization_id:
-        stmt = stmt.where(Vehicle.organization_id == organization_id)
+    stmt = await _scope_org_stmt(db, user, stmt, Vehicle, organization_id)
+    if stmt is None:
+        return []
     result = await db.execute(stmt.order_by(Vehicle.registration_number.asc()))
     return result.scalars().all()
 
@@ -1243,8 +1256,8 @@ async def create_vehicle(payload: VehicleCreate, db: AsyncSession = Depends(get_
 # =====================================================
 
 @router.get("/projects", response_model=list[ProjectRead])
-async def list_projects(organization_id: str | None = None, db: AsyncSession = Depends(get_db)) -> list[Project]:
-    """List projects."""
+async def list_projects(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Project]:
+    """List projects (login required)."""
     stmt = select(Project)
     if organization_id:
         stmt = stmt.where(Project.organization_id == organization_id)
@@ -1265,8 +1278,8 @@ async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Dep
 
 
 @router.get("/projects/{project_id}", response_model=ProjectDetailRead)
-async def get_project(project_id: str, db: AsyncSession = Depends(get_db)) -> ProjectDetailRead:
-    """Get project details."""
+async def get_project(project_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProjectDetailRead:
+    """Get project details (login required)."""
     project = await db.get(Project, project_id)
     if project is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
@@ -1303,8 +1316,8 @@ async def create_construction_site(project_id: str, payload: ConstructionSiteCre
 
 
 @router.get("/projects/{project_id}/material-requests", response_model=list[MaterialRequestRead])
-async def list_material_requests(project_id: str, db: AsyncSession = Depends(get_db)) -> list[MaterialRequest]:
-    """List material requests for a project."""
+async def list_material_requests(project_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[MaterialRequest]:
+    """List material requests for a project (login required)."""
     result = await db.execute(
         select(MaterialRequest).where(MaterialRequest.project_id == project_id, MaterialRequest.deleted_at.is_(None)).order_by(MaterialRequest.created_at.desc())
     )
@@ -1355,43 +1368,43 @@ async def create_boq_item(boq_id: str, payload: BOQItemCreate, db: AsyncSession 
 # =====================================================
 
 @router.post("/ai/material-recommendation", response_model=AIMaterialRecommendationResponse)
-async def ai_material_recommendation_endpoint(payload: AIMaterialRecommendationRequest, db: AsyncSession = Depends(get_db)) -> AIMaterialRecommendationResponse:
+async def ai_material_recommendation_endpoint(payload: AIMaterialRecommendationRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIMaterialRecommendationResponse:
     """AI-powered material recommendation."""
     return await ai_material_recommendation(db, payload.model_dump())
 
 
 @router.post("/ai/boq-reader", response_model=BOQReaderResponse)
-async def ai_boq_reader_endpoint(payload: BOQReaderRequest, db: AsyncSession = Depends(get_db)) -> BOQReaderResponse:
+async def ai_boq_reader_endpoint(payload: BOQReaderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQReaderResponse:
     """AI-powered BOQ document reader."""
     return await ai_boq_reader(db, payload.file_url, payload.project_id)
 
 
 @router.post("/ai/quote-comparison", response_model=AIQuoteComparisonResponse)
-async def ai_quote_comparison_endpoint(rfq_id: str, db: AsyncSession = Depends(get_db)) -> AIQuoteComparisonResponse:
+async def ai_quote_comparison_endpoint(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIQuoteComparisonResponse:
     """AI-powered quotation comparison."""
     return await ai_quote_comparison(db, rfq_id)
 
 
 @router.post("/ai/vendor-matching", response_model=AIVendorMatchingResponse)
-async def ai_vendor_matching_endpoint(payload: AIVendorMatchingRequest, db: AsyncSession = Depends(get_db)) -> AIVendorMatchingResponse:
+async def ai_vendor_matching_endpoint(payload: AIVendorMatchingRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIVendorMatchingResponse:
     """AI-powered vendor matching."""
     return await ai_vendor_matching(db, payload.model_dump())
 
 
 @router.post("/ai/procurement-assistant", response_model=AIProcurementAssistantResponse)
-async def ai_procurement_assistant_endpoint(payload: AIProcurementAssistantRequest, db: AsyncSession = Depends(get_db)) -> AIProcurementAssistantResponse:
+async def ai_procurement_assistant_endpoint(payload: AIProcurementAssistantRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIProcurementAssistantResponse:
     """AI-powered procurement assistant."""
     return await ai_procurement_assistant(db, payload.message, payload.context)
 
 
 @router.post("/ai/voice-order", response_model=VoiceOrderResponse)
-async def ai_voice_order_endpoint(payload: VoiceOrderRequest, db: AsyncSession = Depends(get_db)) -> VoiceOrderResponse:
+async def ai_voice_order_endpoint(payload: VoiceOrderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> VoiceOrderResponse:
     """AI-powered voice ordering."""
     return await voice_order_processing(db, payload.transcript, payload.organization_id)
 
 
 @router.post("/ai/smart-reorder", response_model=SmartReorderResponse)
-async def ai_smart_reorder_endpoint(payload: SmartReorderRequest, db: AsyncSession = Depends(get_db)) -> SmartReorderResponse:
+async def ai_smart_reorder_endpoint(payload: SmartReorderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> SmartReorderResponse:
     """AI-powered smart reorder suggestions."""
     return await smart_reorder_suggestions(db, payload.organization_id, payload.warehouse_id)
 

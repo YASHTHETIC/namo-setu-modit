@@ -31,19 +31,15 @@ def test_get_product_detail_never_500s_on_partial_data(client):
 
 
 def test_list_suppliers(client):
-    """Test listing suppliers."""
+    """Supplier directory is internal: login required."""
     response = client.get("/api/v1/modit/suppliers")
-    assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
+    assert response.status_code == 401
 
 
 def test_list_rfqs(client):
-    """Test listing RFQs."""
+    """RFQ list is internal: login required."""
     response = client.get("/api/v1/modit/rfq")
-    assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
+    assert response.status_code == 401
 
 
 def test_list_orders(client):
@@ -55,37 +51,27 @@ def test_list_orders(client):
 
 
 def test_list_projects(client):
-    """Test listing projects."""
+    """Project list is internal: login required."""
     response = client.get("/api/v1/modit/projects")
-    assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
+    assert response.status_code == 401
 
 
 def test_list_inventory(client):
-    """Test listing inventory."""
+    """Inventory list is internal: login required."""
     response = client.get("/api/v1/modit/inventory")
-    assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
+    assert response.status_code == 401
 
 
 def test_inventory_alerts(client):
-    """Test inventory alerts."""
+    """Inventory alerts are internal: login required."""
     response = client.get("/api/v1/modit/inventory/alerts")
-    assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
+    assert response.status_code == 401
 
 
 def test_inventory_analytics(client):
-    """Test inventory analytics."""
+    """Inventory analytics are internal: login required."""
     response = client.get("/api/v1/modit/inventory/analytics")
-    assert response.status_code == 200
-    data = response.json()
-    assert "total_products" in data
-    assert "low_stock_count" in data
-    assert "out_of_stock_count" in data
+    assert response.status_code == 401
 
 
 def test_analytics_summary(client):
@@ -100,10 +86,7 @@ def test_ai_material_recommendation(client):
         "/api/v1/modit/ai/material-recommendation",
         json={"project_type": "residential", "budget": 1000000, "requirements": "Cement and steel"},
     )
-    assert response.status_code == 200
-    data = response.json()
-    assert "recommendations" in data
-    assert "estimated_cost" in data
+    assert response.status_code == 401
 
 
 def test_ai_procurement_assistant(client):
@@ -112,10 +95,7 @@ def test_ai_procurement_assistant(client):
         "/api/v1/modit/ai/procurement-assistant",
         json={"message": "What materials do I need for a residential project?"},
     )
-    assert response.status_code == 200
-    data = response.json()
-    assert "answer" in data
-    assert "suggested_actions" in data
+    assert response.status_code == 401
 
 
 def test_seed_catalog_requires_staff(client):

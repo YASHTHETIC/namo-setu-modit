@@ -119,14 +119,11 @@ def create_app() -> FastAPI:
     async def readyz():
         return {"status": "ready"}
 
-    try:
-        from backend.app.api.v1.router import api_router
-        app.include_router(api_router, prefix=settings.api_v1_prefix)
-        print(f"[startup] Router loaded. Total routes: {len(app.routes)}", file=sys.stderr)
-    except Exception as e:
-        import traceback
-        print(f"[ERROR] Failed to load router: {e}", file=sys.stderr)
-        traceback.print_exc(file=sys.stderr)
+    # A broken import must crash startup (PM2 restarts) instead of silently
+    # serving an app with zero API routes.
+    from backend.app.api.v1.router import api_router
+    app.include_router(api_router, prefix=settings.api_v1_prefix)
+    print(f"[startup] Router loaded. Total routes: {len(app.routes)}", file=sys.stderr)
 
     return app
 
