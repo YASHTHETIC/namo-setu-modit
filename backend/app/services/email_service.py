@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -78,11 +79,16 @@ class EmailService:
         else:
             msg.attach(MIMEText(body, "plain", "utf-8"))
 
-        try:
-            with smtplib.SMTP(smtp_config["host"], smtp_config["port"]) as server:
+        def _smtp_send_blocking() -> None:
+            # Socket timeout on every phase, otherwise a dead SMTP relay
+            # pins the thread (never the event loop — this runs in a worker).
+            with smtplib.SMTP(smtp_config["host"], smtp_config["port"], timeout=20) as server:
                 server.starttls()
                 server.login(smtp_config["user"], smtp_config["password"])
                 server.sendmail(from_email, [to], msg.as_string())
+
+        try:
+            await asyncio.to_thread(_smtp_send_blocking)
             logger.info("Email sent to=%s subject=%s", to, subject)
             return True
         except Exception as exc:

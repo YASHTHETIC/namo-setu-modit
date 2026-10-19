@@ -19,12 +19,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.core.config import get_settings
 from backend.app.models.enums import PaymentStatus
-from backend.app.models.modit import ModitPayment, Order, OrderItem, Transaction
+from backend.app.models.modit import ModitPayment, Order, Transaction
 from backend.app.services.checkout import verify_razorpay_signature
 
 settings = get_settings()
 
 RAZORPAY_ORDERS_URL = "https://api.razorpay.com/v1/orders"
+RAZORPAY_PAYMENTS_URL = "https://api.razorpay.com/v1/payments/{payment_id}"
 
 
 def _require_keys() -> tuple[str, str]:
@@ -53,22 +54,7 @@ async def _get_owned_order(session: AsyncSession, user_id: str, order_id: str) -
     return order
 
 
-async def _order_total(session: AsyncSession, order_id: str) -> float:
-    rows = (
-        (await session.execute(select(OrderItem).where(OrderItem.order_id == order_id)))
-        .scalars()
-        .all()
-    )
-    return round(sum(float(r.line_total) for r in rows), 2)
-
-
-async def create_razorpay_order(session: AsyncSession, user_id: str, order_id: str) -> dict:
-    """Create a Razorpay order for an unpaid checkout order. Returns widget params."""
-    key_id, key_secret = _require_keys()
-    order = await _get_owned_order(session, user_id, order_id)
-    total = await _order_total(session, order_id)
-    if total <= 0:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order has no chargeable amount")
+async def _pending_payment(session: AsyncSession, order_id: str) -> ModitPayment:
     payment = (
         (
             await session.execute(
@@ -83,6 +69,22 @@ async def create_razorpay_order(session: AsyncSession, user_id: str, order_id: s
     )
     if payment is None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="No pending payment for this order")
+    return payment
+
+
+async def create_razorpay_order(session: AsyncSession, user_id: str, order_id: str) -> dict:
+    """Create a Razorpay order for an unpaid checkout order. Returns widget params.
+
+    Charge amount = the PENDING payment's stored server-computed grand total
+    (subtotal - discount + GST + shipping), NOT the sum of item line totals —
+    charging items alone would under-charge GST/shipping/coupon orders.
+    """
+    key_id, key_secret = _require_keys()
+    order = await _get_owned_order(session, user_id, order_id)
+    payment = await _pending_payment(session, order.id)
+    total = round(float(payment.amount), 2)
+    if total <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order has no chargeable amount")
     auth = base64.b64encode(f"{key_id}:{key_secret}".encode()).decode()
     async with httpx.AsyncClient(timeout=30) as client:
         resp = await client.post(
@@ -130,7 +132,13 @@ async def verify_razorpay_payment(
     razorpay_payment_id: str,
     razorpay_signature: str,
 ) -> dict:
-    """Verify the widget callback HMAC and mark the payment captured."""
+    """Verify the widget callback HMAC and mark the payment captured.
+
+    Hardening (launch): the caller-supplied razorpay_order_id must match the
+    Transaction we created for THIS order's pending payment (prevents paying a
+    cheap order and claiming an expensive one), the remote payment amount must
+    match what we asked Razorpay to charge, and repeats are idempotent.
+    """
     _, key_secret = _require_keys()
     order = await _get_owned_order(session, user_id, order_id)
     ok = verify_razorpay_signature(razorpay_order_id, razorpay_payment_id, razorpay_signature, key_secret)
@@ -138,14 +146,60 @@ async def verify_razorpay_payment(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payment verification failed")
     payment = (
         (
-            await session.execute(select(ModitPayment).where(ModitPayment.order_id == order_id))
+            await session.execute(select(ModitPayment).where(ModitPayment.order_id == order.id))
         )
         .scalars()
         .first()
     )
     if payment is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment record not found")
-    payment.payment_status = "captured"
+
+    # The RZP order id must be the one WE created for this payment — a
+    # signature from a different Razorpay order must never capture this order.
+    bound = (
+        (
+            await session.execute(
+                select(Transaction).where(
+                    Transaction.payment_id == payment.id,
+                    Transaction.provider_name == "razorpay",
+                    Transaction.external_id == razorpay_order_id,
+                )
+            )
+        )
+        .scalars()
+        .first()
+    )
+    if bound is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Payment does not belong to this order",
+        )
+
+    if payment.payment_status == PaymentStatus.CAPTURED.value:
+        # Idempotent repeat of a completed verification.
+        return {"verified": True, "payment_status": payment.payment_status, "order_id": order.id}
+
+    expected_paise = int(round(float(payment.amount) * 100))
+    key_id = settings.razorpay_key_id
+    auth = base64.b64encode(f"{key_id}:{key_secret}".encode()).decode()
+    paid_status, paid_amount = None, None
+    async with httpx.AsyncClient(timeout=30) as client:
+        resp = await client.get(
+            RAZORPAY_PAYMENTS_URL.format(payment_id=razorpay_payment_id),
+            headers={"Authorization": f"Basic {auth}"},
+        )
+    if resp.status_code == 200:
+        remote = resp.json()
+        paid_status = remote.get("status")
+        paid_amount = remote.get("amount")
+    if paid_status not in ("captured", "authorized") or paid_amount != expected_paise:
+        # Trust the gateway over the callback: wrong amount or unsettled
+        # payment never marks the order paid.
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Payment amount could not be verified"
+        )
+
+    payment.payment_status = PaymentStatus.CAPTURED.value
     payment.paid_at = datetime.now(timezone.utc)
     session.add(
         Transaction(

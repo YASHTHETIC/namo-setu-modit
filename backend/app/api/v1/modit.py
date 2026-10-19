@@ -213,7 +213,7 @@ async def _count(session: AsyncSession, stmt) -> int:
 @router.get("/products", response_model=ProductSearchResponse)
 async def list_products(
     page: int = 1,
-    page_size: int = Query(20, ge=1, le=2000),
+    page_size: int = Query(20, ge=1, le=200),
     search: str | None = None,
     category_id: str | None = None,
     brand_id: str | None = None,
@@ -259,7 +259,7 @@ async def list_products(
     )
 
 
-@router.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
+@router.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_product(payload: ProductCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProductRead:
     """Create a product."""
     product = Product(**payload.model_dump())
@@ -300,7 +300,7 @@ async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)) ->
     return StandardResponse(message="Product deleted", data=product_id)
 
 
-@router.post("/products/{product_id}/images", response_model=ProductImageRead, status_code=status.HTTP_201_CREATED)
+@router.post("/products/{product_id}/images", response_model=ProductImageRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def add_product_image(product_id: str, payload: ProductImageCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProductImageRead:
     """Add product image."""
     await get_product_or_404(db, product_id)
@@ -459,7 +459,7 @@ async def list_supplier_vendors(supplier_id: str, db: AsyncSession = Depends(get
     return result.scalars().all()
 
 
-@router.post("/suppliers/{supplier_id}/vendors", response_model=VendorRead, status_code=status.HTTP_201_CREATED)
+@router.post("/suppliers/{supplier_id}/vendors", response_model=VendorRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_vendor(supplier_id: str, payload: VendorCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Vendor:
     """Create a vendor."""
     vendor = Vendor(supplier_id=supplier_id, **payload.model_dump())
@@ -479,7 +479,7 @@ async def list_warehouses(organization_id: str | None = None, db: AsyncSession =
     return result.scalars().all()
 
 
-@router.post("/warehouses", response_model=WarehouseRead, status_code=status.HTTP_201_CREATED)
+@router.post("/warehouses", response_model=WarehouseRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_warehouse(payload: WarehouseCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Warehouse:
     """Create a warehouse."""
     warehouse = Warehouse(**payload.model_dump())
@@ -510,8 +510,13 @@ async def nearest_warehouse(
 
 @router.get("/rfq", response_model=list[RFQRead])
 async def list_rfqs(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[RFQRead]:
-    """List RFQs (login required)."""
+    """List RFQs. Staff: all orgs. Users: their own orgs only."""
     stmt = select(RFQ)
+    if not is_staff(user):
+        own = await _own_org_ids(db, user)
+        if not own:
+            return []
+        stmt = stmt.where(RFQ.organization_id.in_(own))
     if organization_id:
         stmt = stmt.where(RFQ.organization_id == organization_id)
     result = await db.execute(stmt.order_by(RFQ.created_at.desc()))
@@ -526,6 +531,8 @@ async def create_rfq_endpoint(
     personal org (same as checkout) - never a null organization."""
     org_id = payload.organization_id
     if org_id:
+        if not is_staff(user) and org_id not in await _own_org_ids(db, user):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
         if await db.get(Organization, org_id) is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
     else:
@@ -786,9 +793,19 @@ async def checkout(
 
 @router.post("/orders", response_model=OrderDetailRead, status_code=status.HTTP_201_CREATED)
 async def create_order(payload: OrderCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> OrderDetailRead:
-    """Create an order."""
+    """Create an order inside the caller's own org (staff: any org)."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    if not is_staff(user):
+        if payload.organization_id not in await _own_org_ids(db, user):
+            # Same 404 shape as the list endpoints: do not leak org existence.
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    if await db.get(Organization, payload.organization_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    if payload.purchase_order_id:
+        po = await db.get(PurchaseOrder, payload.purchase_order_id)
+        if po is None or po.organization_id != payload.organization_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Purchase order not found")
     order = Order(
         organization_id=payload.organization_id,
         purchase_order_id=payload.purchase_order_id,
@@ -980,9 +997,14 @@ async def list_purchase_orders(organization_id: str | None = None, db: AsyncSess
 
 @router.post("/purchase-orders", response_model=PurchaseOrderRead, status_code=status.HTTP_201_CREATED)
 async def create_purchase_order(payload: PurchaseOrderCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> PurchaseOrder:
-    """Create a purchase order."""
+    """Create a purchase order inside the caller's own org (staff: any org)."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    if not is_staff(user):
+        if payload.organization_id not in await _own_org_ids(db, user):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    if await db.get(Organization, payload.organization_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
     po = PurchaseOrder(
         organization_id=payload.organization_id,
         project_id=payload.project_id,
@@ -1120,7 +1142,7 @@ async def list_inventory(
     return result.scalars().all()
 
 
-@router.post("/inventory", response_model=InventoryRead, status_code=status.HTTP_201_CREATED)
+@router.post("/inventory", response_model=InventoryRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Inventory:
     """Create inventory record."""
     inventory = Inventory(**payload.model_dump())
@@ -1130,7 +1152,7 @@ async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(
     return InventoryRead.model_validate(inventory)
 
 
-@router.patch("/inventory/{inventory_id}", response_model=InventoryRead)
+@router.patch("/inventory/{inventory_id}", response_model=InventoryRead, dependencies=[admin_dependency])
 async def update_inventory(inventory_id: str, payload: InventoryUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Inventory:
     """Update inventory."""
     inventory = await db.get(Inventory, inventory_id)
@@ -1169,7 +1191,7 @@ async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession
     return result.scalars().all()
 
 
-@router.post("/deliveries", response_model=DeliveryRead, status_code=status.HTTP_201_CREATED)
+@router.post("/deliveries", response_model=DeliveryRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_delivery(payload: DeliveryCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Delivery:
     """Create a delivery."""
     from backend.app.services.modit import make_modit_reference
@@ -1220,7 +1242,7 @@ async def list_drivers(organization_id: str | None = None, db: AsyncSession = De
     return result.scalars().all()
 
 
-@router.post("/drivers", response_model=DriverRead, status_code=status.HTTP_201_CREATED)
+@router.post("/drivers", response_model=DriverRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_driver(payload: DriverCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Driver:
     """Create a driver."""
     driver = Driver(**payload.model_dump())
@@ -1241,7 +1263,7 @@ async def list_vehicles(organization_id: str | None = None, db: AsyncSession = D
     return result.scalars().all()
 
 
-@router.post("/vehicles", response_model=VehicleRead, status_code=status.HTTP_201_CREATED)
+@router.post("/vehicles", response_model=VehicleRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_vehicle(payload: VehicleCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Vehicle:
     """Create a vehicle."""
     vehicle = Vehicle(**payload.model_dump())
@@ -1257,8 +1279,13 @@ async def create_vehicle(payload: VehicleCreate, db: AsyncSession = Depends(get_
 
 @router.get("/projects", response_model=list[ProjectRead])
 async def list_projects(organization_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Project]:
-    """List projects (login required)."""
+    """List projects. Staff: all orgs. Users: their own orgs only."""
     stmt = select(Project)
+    if not is_staff(user):
+        org_ids = await _own_org_ids(db, user)
+        if not org_ids:
+            return []
+        stmt = stmt.where(Project.organization_id.in_(org_ids))
     if organization_id:
         stmt = stmt.where(Project.organization_id == organization_id)
     result = await db.execute(stmt.order_by(Project.created_at.desc()))
@@ -1267,9 +1294,14 @@ async def list_projects(organization_id: str | None = None, db: AsyncSession = D
 
 @router.post("/projects", response_model=ProjectDetailRead, status_code=status.HTTP_201_CREATED)
 async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProjectDetailRead:
-    """Create a project."""
+    """Create a project in one of the caller's own orgs (staff: any)."""
     data = payload.model_dump()
     org_id = data.pop("organization_id", None)
+    if not is_staff(user):
+        own = await _own_org_ids(db, user)
+        if org_id and org_id not in own:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
+        org_id = org_id or (own[0] if own else None)
     data.pop("project_code", None)
     project = await create_project(db, org_id, **data)
     await db.commit()
@@ -1400,12 +1432,18 @@ async def ai_procurement_assistant_endpoint(payload: AIProcurementAssistantReque
 @router.post("/ai/voice-order", response_model=VoiceOrderResponse)
 async def ai_voice_order_endpoint(payload: VoiceOrderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> VoiceOrderResponse:
     """AI-powered voice ordering."""
+    if payload.organization_id and not is_staff(user):
+        if payload.organization_id not in await _own_org_ids(db, user):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
     return await voice_order_processing(db, payload.transcript, payload.organization_id)
 
 
 @router.post("/ai/smart-reorder", response_model=SmartReorderResponse)
 async def ai_smart_reorder_endpoint(payload: SmartReorderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> SmartReorderResponse:
     """AI-powered smart reorder suggestions."""
+    if payload.organization_id and not is_staff(user):
+        if payload.organization_id not in await _own_org_ids(db, user):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
     return await smart_reorder_suggestions(db, payload.organization_id, payload.warehouse_id)
 
 
@@ -1440,7 +1478,9 @@ async def track_modit_event(
 async def list_modit_notifications(
     organization_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)
 ) -> list[ModitNotification]:
-    """List MODIT notifications."""
+    """List MODIT notifications for one org (own orgs unless staff)."""
+    if not is_staff(user) and organization_id not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
     result = await db.execute(
         select(ModitNotification)
         .where(ModitNotification.organization_id == organization_id, ModitNotification.deleted_at.is_(None))
@@ -1449,7 +1489,7 @@ async def list_modit_notifications(
     return result.scalars().all()
 
 
-@router.post("/notifications", response_model=ModitNotificationRead, status_code=status.HTTP_201_CREATED)
+@router.post("/notifications", response_model=ModitNotificationRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_modit_notification_endpoint(
     organization_id: str,
     title: str,

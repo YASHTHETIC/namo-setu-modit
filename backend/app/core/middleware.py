@@ -49,6 +49,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
 
     _SKIP_PATHS = frozenset(("/healthz", "/api/v1/healthz", "/readyz", "/api/v1/readyz"))
+    # Credential flows get their own tighter window so token spray attacks
+    # are throttled independently of normal browsing traffic.
+    _AUTH_PREFIX = "/api/v1/auth/"
+    _AUTH_PATHS = frozenset(("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"))
 
     def __init__(self, app, requests_per_minute: int = 120, burst: int = 30):
         super().__init__(app)
@@ -76,17 +80,21 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return
         self._last_cleanup = now
         cutoff = now - 60
-        self._local_counts = {
-            ip: [t for t in times if t > cutoff]
-            for ip, times in self._local_counts.items()
-            if any(t > cutoff for t in times)
-        }
+        for bucket in self._local_counts.values():
+            bucket.update(
+                {
+                    ip: [t for t in times if t > cutoff]
+                    for ip, times in list(bucket.items())
+                    if any(t > cutoff for t in times)
+                }
+            )
 
-    def _local_count(self, client_ip: str, now: float) -> int:
+    def _local_count(self, client_ip: str, now: float, bucket_key: str = "general") -> int:
+        bucket = self._local_counts.setdefault(bucket_key, {})
         self._cleanup_local()
-        times = [t for t in self._local_counts.get(client_ip, []) if now - t < 60]
+        times = [t for t in bucket.get(client_ip, []) if now - t < 60]
         times.append(now)
-        self._local_counts[client_ip] = times
+        bucket[client_ip] = times
         return len(times)
 
     async def dispatch(
@@ -103,19 +111,37 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         now = time.time()
         count: int | None = None
 
+        auth_path = (
+            request.url.path.startswith(self._AUTH_PREFIX)
+            and request.url.path.removeprefix(self._AUTH_PREFIX) in self._AUTH_PATHS
+            and request.method == "POST"
+        )
+        window_key = f"rl:auth:{client_ip}" if auth_path else f"rl:{client_ip}"
+        limit = 10 if auth_path else self.rpm
+
         # Circuit closed -> try Redis once; on failure the shared breaker
         # opens and every layer bypasses Redis for the cooldown.
         if not redis_circuit_open():
             try:
-                count = await self._redis_count(f"rl:{client_ip}", now)
+                count = await self._redis_count(window_key, now)
             except Exception as e:
                 note_redis_failure(e)
 
         if count is None:
-            count = self._local_count(client_ip, now)
+            count = (
+                self._local_count(client_ip, now, bucket_key="auth")
+                if auth_path
+                else self._local_count(client_ip, now)
+            )
 
-        if count > self.rpm:
-            logger.warning("Rate limit exceeded for %s: %s/%s", client_ip, count, self.rpm)
+        if count > limit:
+            logger.warning(
+                "Rate limit exceeded for %s: %s/%s (%s)",
+                client_ip,
+                count,
+                limit,
+                "auth" if auth_path else "general",
+            )
             return JSONResponse(
                 status_code=429,
                 content={

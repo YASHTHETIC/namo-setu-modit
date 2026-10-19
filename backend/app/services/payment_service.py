@@ -56,6 +56,16 @@ def _auth_headers() -> dict[str, str]:
     }
 
 
+def _require_stripe() -> None:
+    """Stripe is optional at launch — fail clearly instead of sending an empty
+    Bearer token to api.stripe.com (which turned into opaque 500s)."""
+    if not settings.stripe_secret_key:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Card payments are not enabled yet. Please use UPI/Cash on Delivery.",
+        )
+
+
 def _verify_webhook_signature(payload: bytes, sig_header: str, secret: str) -> dict[str, Any]:
     elements = {}
     for item in sig_header.split(","):
@@ -109,6 +119,7 @@ class PaymentService:
         success_url: str,
         cancel_url: str,
     ) -> dict[str, Any]:
+        _require_stripe()
         stripe_amount = amount_to_stripe(amount, currency)
 
         body = {
@@ -160,6 +171,7 @@ class PaymentService:
         currency: str,
         metadata: dict[str, str],
     ) -> dict[str, Any]:
+        _require_stripe()
         stripe_amount = amount_to_stripe(amount, currency)
 
         body = {
@@ -214,6 +226,7 @@ class PaymentService:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No external Stripe ID associated with this payment")
 
         resource = "checkout/sessions" if payment.external_id.startswith("cs_") else "payment_intents"
+        _require_stripe()
 
         async with httpx.AsyncClient(timeout=30) as client:
             resp = await client.get(f"{STRIPE_BASE_URL}/{resource}/{payment.external_id}", headers=_auth_headers())
@@ -258,6 +271,8 @@ class PaymentService:
 
         if payment.payment_status != PaymentStatus.CAPTURED.value:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payment has not been captured, cannot refund")
+
+        _require_stripe()
 
         if amount > float(payment.amount):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Refund amount exceeds payment amount")
@@ -311,7 +326,7 @@ class PaymentService:
     # ------------------------------------------------------------------
     async def handle_webhook(self, payload: bytes, sig_header: str) -> dict[str, Any]:
         if not settings.stripe_webhook_secret:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Stripe webhook secret not configured")
+            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Stripe webhooks are not configured")
 
         event_data = _verify_webhook_signature(payload, sig_header, settings.stripe_webhook_secret)
         event_type = event_data.get("type", "")

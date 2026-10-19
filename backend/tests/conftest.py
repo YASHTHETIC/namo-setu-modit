@@ -255,7 +255,12 @@ class FakeDatabaseSession:
         return UNIVERSAL_OBJECT
 
     async def refresh(self, instance, attribute_names=None):
-        pass
+        # POST endpoints often read back id/created_at for response models;
+        # fill them the way a real DB would after INSERT ... RETURNING.
+        if getattr(instance, "id", None) is None:
+            instance.id = "fake-id"
+        if getattr(instance, "created_at", None) is None:
+            instance.created_at = NOW
 
     async def flush(self):
         pass

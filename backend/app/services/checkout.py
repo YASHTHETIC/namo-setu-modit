@@ -15,6 +15,7 @@ import hmac
 import json
 import logging
 from datetime import date, datetime, timezone
+from decimal import ROUND_HALF_UP, Decimal
 from uuid import uuid4
 
 from fastapi import HTTPException, status
@@ -44,6 +45,13 @@ RETAIL_ORG_NAME = "MODIT Retail"
 FREE_SHIPPING_THRESHOLD = 5000.0
 FLAT_SHIPPING_FEE = 250.0
 DEFAULT_GST_RATE = 18.0
+
+
+def money(value: float) -> float:
+    """Ledger rounding — always half-up (₹ convention). Python's builtin
+    round() is banker's rounding, which can drift totals by a paisa against
+    the frontend and payment gateway amounts."""
+    return float(Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
 # Mirror of the storefront's built-in coupons (frontend defaultCoupons).
 # Custom admin-created codes are display-only until synced here.
@@ -81,9 +89,9 @@ def validate_coupon(
             detail=f"Coupon {coupon['code']} applies to {coupon['category']} products only",
         )
     if coupon["type"] == "flat":
-        return round(min(coupon["value"], subtotal), 2), False
+        return money(min(coupon["value"], subtotal)), False
     if coupon["type"] == "percent":
-        disc = round(subtotal * coupon["value"] / 100, 2)
+        disc = money(subtotal * coupon["value"] / 100)
         if coupon["max"] is not None:
             disc = min(disc, coupon["max"])
         return disc, False
@@ -192,7 +200,7 @@ async def compute_checkout_totals(
         if category_slug:
             category_slugs.add(category_slug)
         try:
-            unit_price = round(float(getattr(product, "list_price", 0) or 0), 2)
+            unit_price = money(float(getattr(product, "list_price", 0) or 0))
         except (TypeError, ValueError):
             unit_price = 0.0
         if unit_price <= 0:
@@ -200,8 +208,8 @@ async def compute_checkout_totals(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Product {item.sku} is not priced for sale",
             )
-        line_total = round(unit_price * float(item.quantity), 2)
-        gst_amount = round(line_total * rate / 100, 2)
+        line_total = money(unit_price * float(item.quantity))
+        gst_amount = money(line_total * rate / 100)
         subtotal += line_total
         gst_total += gst_amount
         lines.append(
@@ -215,11 +223,11 @@ async def compute_checkout_totals(
                 "line_total": line_total,
             }
         )
-    subtotal = round(subtotal, 2)
-    gst_total = round(gst_total, 2)
+    subtotal = money(subtotal)
+    gst_total = money(gst_total)
     discount, free_ship = validate_coupon(payload.coupon_code, subtotal, category_slugs)
     shipping = 0.0 if (free_ship or (subtotal - discount) >= FREE_SHIPPING_THRESHOLD) else FLAT_SHIPPING_FEE
-    grand = round(subtotal - discount + shipping + gst_total, 2)
+    grand = money(subtotal - discount + shipping + gst_total)
     return {
         "retail_org": org,
         "lines": lines,

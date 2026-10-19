@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from backend.app.schemas.common import ORMModel
 
@@ -181,8 +181,14 @@ class ProductBase(BaseModel):
     description: str | None = None
     specification_json: str | None = None
     mrp: float | None = None
-    list_price: float
+    list_price: float = Field(gt=0)
     approval_status: str = "pending"
+
+    @model_validator(mode="after")
+    def _price_sanity(self) -> ProductBase:
+        if self.mrp is not None and self.mrp < self.list_price:
+            raise ValueError("MRP cannot be below the selling price")
+        return self
 
 
 class ProductCreate(ProductBase):
@@ -194,11 +200,17 @@ class ProductUpdate(BaseModel):
     slug: str | None = None
     description: str | None = None
     specification_json: str | None = None
-    mrp: float | None = None
-    list_price: float | None = None
+    mrp: float | None = Field(default=None, ge=0)
+    list_price: float | None = Field(default=None, gt=0)
     approval_status: str | None = None
     is_active: bool | None = None
     supplier_id: str | None = None
+
+    @model_validator(mode="after")
+    def _price_sanity(self) -> ProductUpdate:
+        if self.mrp is not None and self.list_price is not None and self.mrp < self.list_price:
+            raise ValueError("MRP cannot be below the selling price")
+        return self
 
 
 class ProductRead(ORMModel):

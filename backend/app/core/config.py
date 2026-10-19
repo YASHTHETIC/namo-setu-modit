@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     email_verification_token_expire_minutes: int = 1440
     max_sessions_per_user: int = 5
     storage_root: str = "storage"
+    # Hard cap for any single uploaded file (product/customer media).
+    max_upload_bytes: int = 5 * 1024 * 1024
     # First-staff bootstrap: this login email auto-gets super_admin on
     # register/login. Unset = disabled. Set once on the server, then remove.
     bootstrap_admin_email: str | None = None

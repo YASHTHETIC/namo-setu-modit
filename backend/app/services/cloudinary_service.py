@@ -267,6 +267,8 @@ class CloudinaryService:
         file_bytes = await upload.read()
         if not file_bytes:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Empty file upload")
+        if len(file_bytes) > get_settings().max_upload_bytes:
+            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=f"File exceeds the {get_settings().max_upload_bytes // (1024 * 1024)} MB upload limit")
         return await self.upload_from_bytes(
             file_bytes,
             folder=folder,

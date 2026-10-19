@@ -45,9 +45,13 @@ class LocalStorageBackend:
         if os.path.sep in upload.filename or (os.path.altsep and os.path.altsep in upload.filename):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid filename")
 
+        settings = get_settings()
         raw = await upload.read()
         if not raw:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Empty file upload")
+        if len(raw) > settings.max_upload_bytes:
+            # Don't keep oversized payloads; they'd balloon memory + disk.
+            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=f"File exceeds the {settings.max_upload_bytes // (1024 * 1024)} MB upload limit")
 
         checksum = hashlib.sha256(raw).hexdigest()
         extension = Path(upload.filename).suffix.lower()

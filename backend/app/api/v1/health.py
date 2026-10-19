@@ -1,5 +1,7 @@
 import logging
-from fastapi import APIRouter
+
+from fastapi import APIRouter, status
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from backend.app.core.database import AsyncSessionLocal
@@ -11,17 +13,19 @@ router = APIRouter()
 
 @router.get("/healthz")
 async def healthz():
+    """K8s/PM2/cron self-heal probe.
+
+    Never leaks internal error text (a public endpoint must not hand over
+    driver strings/DSNs); PM2 self-heal acts on the status/HTTP code alone.
+    """
     db_status = True
     redis_status = True
-    db_error = None
-    redis_error = None
 
     try:
         async with AsyncSessionLocal() as session:
             await session.execute(text("SELECT 1"))
     except Exception as e:
         db_status = False
-        db_error = str(e)[:200]
         logger.error("DB health check failed: %s", e)
 
     try:
@@ -29,18 +33,22 @@ async def healthz():
         await redis_client.ping()
     except Exception as e:
         redis_status = False
-        redis_error = str(e)[:200]
         logger.error("Redis health check failed: %s", e)
 
     # Redis is an optimization (cache/rate-limit), not a hard dependency:
     # only the database gates overall health.
-    status_value = "ok" if db_status else "degraded"
+    if not db_status:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "status": "degraded",
+                "dependencies": {"database": False, "redis": redis_status},
+            },
+        )
     return {
-        "status": status_value,
+        "status": "ok",
         "dependencies": {
-            "database": db_status,
+            "database": True,
             "redis": redis_status,
         },
-        "db_error": db_error,
-        "redis_error": redis_error,
     }

@@ -131,7 +131,9 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(Exception)
     async def handle_unexpected_exception(request: Request, exc: Exception) -> JSONResponse:
-        error_id = f"ERR_{id(exc)}"
+        import uuid
+
+        error_id = f"ERR_{uuid.uuid4().hex[:12]}"
         logger.error(
             f"Unexpected error [{error_id}]: {str(exc)} - Path: {request.url.path}\n"
             f"Traceback: {traceback.format_exc()}"
