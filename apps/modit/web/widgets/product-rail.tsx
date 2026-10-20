@@ -64,7 +64,7 @@ export function ProductRail({
   };
 
   return (
-    <section className="mt-4 relative group/rail">
+    <section className="mt-3 sm:mt-4 relative group/rail">
       {/* Section header */}
       <div className="section-header">
         <h2>{title}</h2>

@@ -591,10 +591,10 @@ export default function ModitHomePage() {
             {/* Calculator */}
             <Link
               href="/calculator"
-              className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
+              className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
             >
-              <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="4" y="2" width="16" height="20" rx="2"/>
                   <line x1="8" y1="6" x2="16" y2="6"/>
                   <line x1="8" y1="10" x2="16" y2="10"/>
@@ -602,28 +602,30 @@ export default function ModitHomePage() {
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
+                <h3 className="text-caption sm:text-body-md font-extrabold text-[#150726] leading-tight">Material Calculator</h3>
                 <p className="text-caption text-[#9B8CB5] hidden sm:block">Estimate paint, putty, primer & more for your room</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0">
                 Calculate <ArrowRight className="h-3.5 w-3.5" />
               </span>
-              <ArrowRight className="h-4 w-4 text-[#2D1B69] sm:hidden" />
+              <span className="h-7 w-7 sm:hidden rounded-full bg-[#2D1B69]/10 flex items-center justify-center flex-shrink-0">
+                <ArrowRight className="h-3.5 w-3.5 text-[#2D1B69]" />
+              </span>
             </Link>
             {/* Bulk / business */}
             <Link
               href="/rfq"
-              className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
+              className="rounded-2xl bg-[#150726] px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
             >
               <div className="flex-1 min-w-0">
-                <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
+                <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Buying in bulk for a project?</h3>
                 <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Get negotiated quotes from verified suppliers with GST invoicing</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0">
                 Start RFQ <ArrowRight className="h-4 w-4" />
               </span>
-              <span className="h-8 w-8 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto">
-                <ArrowRight className="h-4 w-4 text-[#7CB518]" />
+              <span className="h-7 w-7 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto flex-shrink-0">
+                <ArrowRight className="h-3.5 w-3.5 text-[#7CB518]" />
               </span>
             </Link>
           </div>

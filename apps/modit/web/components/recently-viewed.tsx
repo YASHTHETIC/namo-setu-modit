@@ -18,11 +18,13 @@ export function RecentlyViewed() {
   if (items.length === 0) return null;
 
   return (
-    <div className="mt-4 sm:mt-6">
-      <h2 className="text-body-lg font-extrabold text-[#150726] mb-3">Recently Viewed</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="mt-3 sm:mt-6">
+      <h2 className="section-header px-0 !mb-1 text-[17px] font-extrabold text-[#150726] tracking-tight">Recently Viewed</h2>
+      <div className="scroll-rail">
         {items.map(({ product }) => (
-          <ProductCard key={product.id} product={product} compact />
+          <div key={product.id} className="w-[140px] sm:w-[168px] flex-shrink-0">
+            <ProductCard product={product} compact />
+          </div>
         ))}
       </div>
     </div>

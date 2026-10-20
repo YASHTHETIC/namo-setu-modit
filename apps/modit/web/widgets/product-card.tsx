@@ -96,23 +96,23 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
         />
         {discount > 0 && (
-          <span className="absolute top-0 left-0 z-10 bg-[#2D1B69] text-white rounded-br-lg px-2 py-1 text-tiny font-black">
+          <span className="absolute top-0 left-0 z-10 bg-[#2D1B69] text-white rounded-br-lg px-1.5 py-0.5 text-micro font-black">
             {discount}% OFF
           </span>
         )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-1 right-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm hover:scale-110 active:scale-95 transition-transform"
         >
-          <svg viewBox="0 0 24 24" className={`h-3.5 w-3.5 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
           </svg>
         </button>
       </div>
 
       {/* Info zone */}
-      <div className="flex flex-col flex-1 gap-0.5 p-2.5">
+      <div className="flex flex-col flex-1 gap-0.5 p-2 sm:p-2.5">
         <p className="flex items-center gap-1 text-tiny font-semibold text-[#9B8CB5]">
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -131,7 +131,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         </p>
 
         {/* Bottom row — price block left, ADD/stepper right */}
-        <div className="mt-auto flex items-end justify-between gap-2 pt-1.5">
+        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1">
           <div className="min-w-0">
             <p className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
               ₹{activePrice.toLocaleString("en-IN")}
