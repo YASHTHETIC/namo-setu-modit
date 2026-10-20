@@ -237,7 +237,7 @@ export default function ModitHomePage() {
            Deliver To + pincode, distance badge, Live pulse ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3">
-          <div className="hidden sm:flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
+          <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
             <span className="text-caption font-black text-white">60</span>
             <span className="text-tiny font-black text-white/80">Min</span>
           </div>
@@ -279,13 +279,13 @@ export default function ModitHomePage() {
           <span className="h-9 w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
             <Truck className="h-5 w-5 text-[#E91E63]" />
           </span>
-          <p className="text-white text-title-md font-black italic leading-none whitespace-nowrap" style={{ transform: "skewX(-6deg)" }}>FREE DELIVERY</p>
-          <span className="h-7 w-px bg-white/25 flex-shrink-0" />
-          <div className="min-w-0">
-            <p className="text-body-sm font-bold text-white leading-tight">On orders ₹5000+</p>
-            <p className="text-tiny text-white/70 leading-tight">Fast, tracked, doorstep</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-white font-black italic leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md" style={{ transform: "skewX(-6deg)" }}>FREE DELIVERY</p>
+            <p className="text-tiny sm:text-body-sm font-bold text-white/85 mt-1 leading-tight">On orders ₹5000+</p>
           </div>
-          <span className="ml-auto flex-shrink-0 rounded-lg bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
+          <span className="hidden sm:block h-7 w-px bg-white/25 flex-shrink-0" />
+          <p className="hidden sm:block text-tiny text-white/70 leading-tight flex-shrink-0">Fast, tracked, doorstep</p>
+          <span className="flex-shrink-0 rounded-lg bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
         </div>
       </div>
       <div className="mt-3">
@@ -304,12 +304,12 @@ export default function ModitHomePage() {
               { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
               { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
             ].map((t) => (
-              <div key={t.title} className="flex flex-col items-center gap-1.5 px-1 text-center">
+              <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 sm:gap-1.5 sm:px-1 text-center">
                 <span className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
                   <t.icon className="h-4 w-4" style={{ color: t.tint }} />
                 </span>
                 <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>{t.title}</span>
-                <span className="text-tiny text-white/45 leading-tight">{t.sub}</span>
+                <span className="text-tiny text-white/55 leading-tight">{t.sub}</span>
               </div>
             ))}
           </div>
@@ -534,13 +534,13 @@ export default function ModitHomePage() {
               <div className="relative z-10 flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="text-caption font-black leading-tight tracking-tight" style={{ color: f.color }}>{f.title}</p>
-                  <p className="text-tiny sm:text-caption text-[#9B8CB5] leading-tight mt-1">{f.sub}</p>
+                  <p className="hidden sm:block text-tiny sm:text-caption text-[#9B8CB5] leading-tight mt-1">{f.sub}</p>
                 </div>
                 <span
-                  className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover/feat:scale-110"
+                  className="h-7 w-7 sm:h-10 sm:w-10 flex-shrink-0 rounded-lg sm:rounded-xl flex items-center justify-center transition-transform duration-300 group-hover/feat:scale-110"
                   style={{ background: `${f.color}15`, border: `1.5px solid ${f.color}35` }}
                 >
-                  <f.icon className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: f.color }} />
+                  <f.icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" style={{ color: f.color }} />
                 </span>
               </div>
             </div>
@@ -641,7 +641,7 @@ export default function ModitHomePage() {
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
-        className={`fixed z-40 left-4 bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`fixed z-40 left-4 hidden sm:flex bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
           showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >

@@ -2539,6 +2539,13 @@ button { touch-action: manipulation; }
   left: 18px;
   background: linear-gradient(90deg, transparent 20%, rgba(124, 181, 24, 0.16) 50%, transparent 80%);
 }
+/* On phones the panels are narrow — stripes cross the text, so desktop-only. */
+@media (max-width: 639px) {
+  .assure-stripes::before,
+  .assure-stripes::after,
+  .assure-stripes-light::before,
+  .assure-stripes-light::after { display: none; }
+}
 
 
 

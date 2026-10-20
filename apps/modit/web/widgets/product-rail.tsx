@@ -111,7 +111,7 @@ export function ProductRail({
           <div
             key={product.id}
             className="w-[140px] sm:w-[168px] flex-shrink-0"
-            style={{ animationDelay: `${i * 50}ms` }}
+            style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}
           >
             <ProductCard product={product} compact />
           </div>
