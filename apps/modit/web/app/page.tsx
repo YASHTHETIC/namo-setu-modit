@@ -233,36 +233,31 @@ export default function ModitHomePage() {
         </div>
       </header>
 
-      {/* ═══ DELIVERY HEADER — ETA-first hierarchy: green "60 Min" chip,
-           Deliver To + pincode, distance badge, Live pulse ═══ */}
-      <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
-        <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3">
-          <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
+      {/* ═══ DELIVERY HEADER — one dense row on phones (Blinkit fit),
+           full two-line hierarchy on sm+ ═══ */}
+      <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2 sm:py-2.5">
+        <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-2.5 sm:gap-3">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg sm:rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
             <span className="text-caption font-black text-white">60</span>
             <span className="text-tiny font-black text-white/80">Min</span>
           </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <p className="text-body-md font-extrabold text-white leading-tight">
-                Deliver To <span className="text-[#7CB518]">{pincode ? pincode : "· set location"}</span> <ChevronDown className="inline h-3 w-3 text-white/50 align-[-1px]" />
-              </p>
-              {nearest && typeof nearest.distance_km === "number" && (
-                <span className="flex-shrink-0 rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums">
-                  {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
-                </span>
-              )}
-            </div>
-            <button
-              onClick={() => setShowPincodeModal(true)}
-              className="mt-0.5 flex items-center gap-1 text-white/70 hover:text-white transition-colors group max-w-full"
-            >
+          <button onClick={() => setShowPincodeModal(true)} className="min-w-0 flex-1 text-left group focus:outline-none">
+            <p className="flex items-center gap-2 text-body-md font-extrabold text-white leading-tight">
+              <span className="truncate">Deliver To <span className="text-[#7CB518]">{pincode ? pincode : "set location"}</span></span>
+              <ChevronDown className="h-3 w-3 text-white/50 flex-shrink-0 group-hover:rotate-180 transition-transform duration-300" />
+            </p>
+            <p className="hidden sm:flex items-center gap-1 mt-0.5 text-white/70">
               <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#7CB518] transition-colors flex-shrink-0" />
-              <p className="text-caption font-semibold truncate text-left">
-                <span className="text-white font-extrabold">Delivery in</span> <span className="text-[#7CB518] font-extrabold">60 min</span> — tap to change
-              </p>
-              <ChevronDown className="h-3 w-3 text-white/50 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
-            </button>
-          </div>
+              <span className="text-caption font-semibold truncate">
+                Delivery in <span className="text-[#7CB518] font-extrabold">60 min</span> — tap to change
+              </span>
+            </p>
+          </button>
+          {nearest && typeof nearest.distance_km === "number" && (
+            <span className="hidden sm:block rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums flex-shrink-0">
+              {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
+            </span>
+          )}
           <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
             <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
             <span className="text-tiny font-medium">Live</span>
@@ -274,10 +269,10 @@ export default function ModitHomePage() {
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
       {/* ═══ FREE DELIVERY PROMO STRIP — icon · slogan · divider · claim · Valid pill ═══ */}
-      <div className="assure-stripes mt-3 rounded-2xl overflow-hidden relative" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
-        <div className="relative z-10 flex items-center gap-3 px-4 py-3">
-          <span className="h-9 w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
-            <Truck className="h-5 w-5 text-[#E91E63]" />
+      <div className="assure-stripes mt-2.5 sm:mt-3 rounded-2xl overflow-hidden relative" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
+        <div className="relative z-10 flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3">
+          <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
+            <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-white font-black italic leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md" style={{ transform: "skewX(-6deg)" }}>FREE DELIVERY</p>
@@ -292,8 +287,8 @@ export default function ModitHomePage() {
         {/* Reference-style dark assurance panel: centered shield title,
             4 icon columns, diagonal corner stripes.
             Copy stays strictly to real policies (no invented claims). */}
-        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-3.5 sm:py-4">
-          <div className="flex items-center justify-center gap-1.5 mb-3">
+        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-2.5 sm:py-4">
+          <div className="flex items-center justify-center gap-1.5 mb-2 sm:mb-3">
             <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
             <p className="text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
           </div>
@@ -305,36 +300,38 @@ export default function ModitHomePage() {
               { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
             ].map((t) => (
               <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 sm:gap-1.5 sm:px-1 text-center">
-                <span className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
-                  <t.icon className="h-4 w-4" style={{ color: t.tint }} />
+                <span className="h-7 w-7 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
+                  <t.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: t.tint }} />
                 </span>
                 <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>{t.title}</span>
-                <span className="text-tiny text-white/55 leading-tight">{t.sub}</span>
+                <span className="hidden sm:block text-tiny text-white/55 leading-tight">{t.sub}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark ═══ */}
+      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark.
+           Phone: compact banner (heading + one-liner + small tile).
+           sm+: full-size with dual product tiles. ═══ */}
       <Reveal>
-        <div className="mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          <div className="relative z-10 p-4 sm:p-5 flex items-center justify-between gap-3">
+        <div className="mt-3 sm:mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
+          <div className="relative z-10 p-3 sm:p-5 flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2.5 py-1 rounded-full mb-2">
+              <div className="inline-flex items-center gap-1 sm:gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2">
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h1 className="text-white text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
-              <p className="text-white/70 text-body-sm mt-1">Cement, paints, lights & more — in 60 minutes</p>
-              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-body-sm font-bold px-5 py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
+              <h1 className="text-white text-title-md sm:text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
+              <p className="text-white/70 text-tiny sm:text-body-sm mt-0.5 sm:mt-1">Cement, paints, lights & more — in 60 minutes</p>
+              <Link href="/products" className="mt-2 sm:mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-bold px-4 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
             <div className="flex sm:items-center gap-2 flex-shrink-0 pr-0.5">
               <Parallax strength={12} className="flex-shrink-0">
-                <div className="h-20 w-16 sm:h-28 sm:w-24 rounded-[28px] bg-white p-1.5 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
+                <div className="h-16 w-12 sm:h-28 sm:w-24 rounded-xl sm:rounded-[28px] bg-white p-1 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-2 sm:ring-4 ring-white/40">
                   <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
                 </div>
               </Parallax>
@@ -357,7 +354,7 @@ export default function ModitHomePage() {
           See all <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
+      <div className="flex gap-2.5 sm:gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
         {[
           { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
           { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
@@ -367,22 +364,22 @@ export default function ModitHomePage() {
           <Link
             key={p.title}
             href={p.href}
-            className="snap-start shrink-0 w-[270px] sm:w-[320px] rounded-2xl p-4 flex items-center gap-3 transition-transform hover:scale-[1.02] active:scale-[0.99]"
+            className="snap-start shrink-0 w-[222px] sm:w-[320px] rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3 transition-transform hover:scale-[1.02] active:scale-[0.99]"
             style={{ background: p.bg }}
           >
             <div className="flex-1 min-w-0">
-              <h3 className={`text-body-md font-extrabold leading-tight ${p.dark ? "text-[#150726]" : "text-white"}`}>{p.title}</h3>
-              <p className={`text-micro mt-1 leading-snug ${p.dark ? "text-[#150726]/70" : "text-white/85"}`}>{p.sub}</p>
-              <span className={`mt-2.5 inline-block px-3.5 py-1.5 rounded-full text-caption font-bold ${p.dark ? "bg-[#150726] text-white" : "bg-white text-[#150726]"}`}>
+              <h3 className={`text-caption sm:text-body-md font-extrabold leading-tight ${p.dark ? "text-[#150726]" : "text-white"}`}>{p.title}</h3>
+              <p className={`hidden sm:block text-micro mt-1 leading-snug ${p.dark ? "text-[#150726]/70" : "text-white/85"}`}>{p.sub}</p>
+              <span className={`mt-1.5 sm:mt-2.5 inline-block px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-tiny sm:text-caption font-bold ${p.dark ? "bg-[#150726] text-white" : "bg-white text-[#150726]"}`}>
                 {p.cta}
               </span>
             </div>
             <Tilt3D max={9} className="flex-shrink-0">
               <div className="relative">
-                <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-[28px] bg-white p-2 shadow-xl ring-4 ring-white/40">
+                <div className="h-16 w-16 sm:h-32 sm:w-32 rounded-2xl sm:rounded-[28px] bg-white p-1 sm:p-2 shadow-xl ring-2 sm:ring-4 ring-white/40">
                   <Image src={p.img} alt={p.alt} width={128} height={128} loading="lazy" draggable={false} className="h-full w-full object-contain" />
                 </div>
-                <span className={`absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full text-tiny font-black tracking-wide shadow-md ${p.dark ? "bg-[#150726] text-[#F8CB46]" : "bg-[#150726] text-white"}`}>
+                <span className={`absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 sm:px-2 py-0.5 rounded-full text-micro sm:text-tiny font-black tracking-wide shadow-md ${p.dark ? "bg-[#150726] text-[#F8CB46]" : "bg-[#150726] text-white"}`}>
                   {p.tag}
                 </span>
               </div>
@@ -403,7 +400,7 @@ export default function ModitHomePage() {
           {/* Blinkit Home pattern: EVERY category on the first page.
               Mobile: mock-style 4-col grid, first 12 tiles (3 rows) with the
               header's See-all for the rest; sm+ shows the full wall. */}
-          <div className="grid grid-cols-4 gap-x-3 gap-y-4 pb-1 sm:grid-cols-6 sm:gap-4 lg:grid-cols-10 [&>*:nth-child(n+13)]:hidden sm:[&>*:nth-child(n+13)]:flex">
+          <div className="grid grid-cols-6 gap-x-2 gap-y-3 pb-1 sm:grid-cols-6 sm:gap-4 lg:grid-cols-10 [&>*:nth-child(n+13)]:hidden sm:[&>*:nth-child(n+13)]:flex">
             {visibleCategories.map((cat, i) => {
               const manual = TILE_IMAGES[cat.slug];
               // Blinkit wall: EVERY tile gets a real photo — curated art for
@@ -435,16 +432,16 @@ export default function ModitHomePage() {
                         src={img}
                         alt={cat.name}
                         fill
-                        sizes="(min-width: 1024px) 128px, (min-width: 640px) 96px, 84px"
+                        sizes="(min-width: 1024px) 128px, (min-width: 640px) 96px, 56px"
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
+                        className="object-contain p-1 sm:p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
                       />
                     ) : (
                       <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
                     )}
                   </div>
-                  <p className="text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                  <p className="text-micro sm:text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[26px] sm:min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
                 </Link>
               );
             })}
