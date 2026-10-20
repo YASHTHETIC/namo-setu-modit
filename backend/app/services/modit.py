@@ -112,6 +112,7 @@ async def product_to_detail(session: AsyncSession, product: Product) -> ProductD
         images_data.append({
             "id": getattr(img, "id", ""),
             "media_id": getattr(img, "media_id", ""),
+            "url": getattr(getattr(img, "media", None), "url", "") or "",
             "caption": getattr(img, "caption", None),
             "sort_order": getattr(img, "sort_order", 0),
             "is_primary": getattr(img, "is_primary", False),
@@ -230,7 +231,7 @@ async def search_products(
             selectinload(Product.sub_category),
             selectinload(Product.unit),
             selectinload(Product.gst),
-            selectinload(Product.images),
+            selectinload(Product.images).selectinload(ProductImage.media),
         )
         .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
     )
@@ -313,7 +314,7 @@ async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
             selectinload(Product.sub_category),
             selectinload(Product.unit),
             selectinload(Product.gst),
-            selectinload(Product.images),
+            selectinload(Product.images).selectinload(ProductImage.media),
         )
         .where(Product.id == product_id)
     )

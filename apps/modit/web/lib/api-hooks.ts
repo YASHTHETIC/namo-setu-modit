@@ -151,7 +151,11 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
           Number(b?.is_primary ?? 0) - Number(a?.is_primary ?? 0) ||
           Number(a?.sort_order ?? 0) - Number(b?.sort_order ?? 0)
       );
-      images = sorted.map((img: any) => `/api/v1/media/${img.media_id}`).filter(Boolean);
+      images = sorted
+        .map((img: any) =>
+          typeof img?.url === "string" && img.url ? img.url : `/api/v1/media/${img.media_id}`
+        )
+        .filter(Boolean);
     }
   }
 

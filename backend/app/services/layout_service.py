@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from backend.app.models.modit import Category, Product
+from backend.app.models.modit import Category, Product, ProductImage
 from backend.app.schemas.layout import (
     AssuredFeature,
     AssuredStripData,
@@ -172,7 +172,7 @@ async def build_home_layout(
     # ── 7. Product Carousel (Trending Now) ─────────────────────────
     result = await db.execute(
         select(Product)
-        .options(selectinload(Product.brand), selectinload(Product.images))
+        .options(selectinload(Product.brand), selectinload(Product.images).selectinload(ProductImage.media))
         .where(Product.is_active == True)  # noqa: E712
         .order_by(Product.rating.desc().nullslast())
         .limit(10)
@@ -198,7 +198,7 @@ async def build_home_layout(
     # ── 8. Product Grid (All Products) ─────────────────────────────
     result = await db.execute(
         select(Product)
-        .options(selectinload(Product.brand), selectinload(Product.images))
+        .options(selectinload(Product.brand), selectinload(Product.images).selectinload(ProductImage.media))
         .where(Product.is_active == True)  # noqa: E712
         .order_by(Product.created_at.desc())
         .limit(20)

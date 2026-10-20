@@ -15,6 +15,7 @@ Requires DATABASE_URL in the environment (reads /opt/modit/.env pattern).
 from __future__ import annotations
 
 import asyncio
+import mimetypes
 import pathlib
 import re
 
@@ -31,21 +32,33 @@ from backend.app.models.modit import (
     Inventory,
     Organization,
     Product,
+    ProductImage,
     SubCategory,
     Supplier,
     Unit,
     Warehouse,
 )
-from backend.app.models.shared import City, Country, State
+from backend.app.models.shared import City, Country, MediaAsset, State
 from backend.app.models.user import Role, User, user_roles
 
 RETAIL_ORG_NAME = "MODIT Retail"
 WAREHOUSE_CODE = "WH-NOIDA-01"
+# Local static images ship with the web workspace; the seeder runs from the
+# repo root on the server, so /products/... URLs can be stat'ed for real byte
+# sizes. Missing files still seed (0 bytes) — the URL stays the source of truth.
+WEB_PUBLIC_DIR = pathlib.Path(__file__).resolve().parents[3] / "apps" / "modit" / "web" / "public"
 
 
 def _str(block: str, key: str) -> str | None:
     m = re.search(rf"{re.escape(key)}:\s*\"((?:[^\"\\]|\\.)*)\"", block)
     return m.group(1) if m else None
+
+
+def _str_list(block: str, key: str) -> list[str]:
+    m = re.search(rf"{re.escape(key)}:\s*\[([^\]]*)\]", block, re.DOTALL)
+    if not m:
+        return []
+    return [s.strip() for s in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)) if s.strip()]
 
 
 def _num(block: str, key: str) -> float | None:
@@ -97,6 +110,7 @@ def parse_catalog(text: str) -> list[dict]:
                 "sub_category_slug": _str(block, "subCategorySlug"),
                 "unit": unit,
                 "unit_code": unit_code,
+                "images": _str_list(block, "images"),
                 "price": price,
                 "mrp": _num(block, "mrp") or price,
                 "gst_rate": _num(block, "gstRate") or 18.0,
@@ -107,6 +121,70 @@ def parse_catalog(text: str) -> list[dict]:
             }
         )
     return items
+
+
+def _image_mime(path: str) -> str:
+    mime = mimetypes.guess_type(path)[0]
+    return mime if mime else "image/png"
+
+
+def _image_size(path: str) -> int:
+    candidate = WEB_PUBLIC_DIR / path.lstrip("/")
+    try:
+        return candidate.stat().st_size
+    except OSError:
+        return 0
+
+
+async def _seed_primary_image(session: AsyncSession, product: Product, url: str) -> None:
+    """Attach the catalog's canonical image (media asset + primary row).
+
+    Idempotent: get-or-create on the unique storage_key, and the (product,
+    media) pair is deduped by lookup since product_images has no unique
+    constraint. A previously-primary row for another asset is demoted so
+    the storefront always renders the curated image.
+    """
+    media = (
+        await session.execute(select(MediaAsset).filter_by(storage_key=url))
+    ).scalars().first()
+    if media is None:
+        media = MediaAsset(
+            product_code="MODIT",
+            owner_user_id=None,
+            media_type="image",
+            storage_key=url,
+            url=url,
+            mime_type=_image_mime(url),
+            file_size_bytes=_image_size(url),
+        )
+        session.add(media)
+        await session.flush()
+
+    existing = (
+        await session.execute(
+            select(ProductImage).filter_by(product_id=product.id, media_id=media.id)
+        )
+    ).scalars().first()
+    if existing is None:
+        existing = ProductImage(
+            product_id=product.id, media_id=media.id,
+            sort_order=0, is_primary=True,
+        )
+        session.add(existing)
+        await session.flush()
+    else:
+        existing.is_primary = True
+        existing.sort_order = 0
+
+    stale = await session.execute(
+        select(ProductImage).where(
+            ProductImage.product_id == product.id,
+            ProductImage.id != existing.id,
+            ProductImage.is_primary.is_(True),
+        )
+    )
+    for row in stale.scalars():
+        row.is_primary = False
 
 
 async def _get_or_create(session: AsyncSession, model, lookup: dict, defaults: dict | None = None):
@@ -219,6 +297,14 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
             product.gst_id = gst.id
             product.is_active = True
             stats["products_updated"] += 1
+
+        if item["images"]:
+            existing_images = (
+                await session.execute(select(ProductImage).filter_by(product_id=product.id))
+            ).scalars().all()
+            if not existing_images:
+                await _seed_primary_image(session, product, item["images"][0])
+                stats["images_seeded"] = stats.get("images_seeded", 0) + 1
 
         qty = item["stock"] if item["in_stock"] else 0
         inv, inv_created = await _get_or_create(
