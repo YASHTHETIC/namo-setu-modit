@@ -16,6 +16,7 @@ import { useOrders, useWarehouses } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { getAccessToken } from "@/lib/auth";
 import { CountUp, Stagger, FxBackdrop } from "@/components/fx";
+import { Reveal } from "@/components/reveal";
 
 const STAGE_LABEL: Record<string, string> = {
   placed: "New",
@@ -249,7 +250,8 @@ export default function AdminDashboard() {
 
       {/* Launch checklist — hides once real orders flow */}
       {orders.length === 0 && (
-        <div className="mt-4 rounded-2xl border border-[#7CB518]/30 bg-white p-5">
+        <Reveal>
+          <div className="mt-4 rounded-2xl border border-[#7CB518]/30 bg-white p-5">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <Zap className="h-4 w-4 text-[#7CB518]" /> Get launch-ready
           </h2>
@@ -272,10 +274,12 @@ export default function AdminDashboard() {
             ))}
           </div>
         </div>
+        </Reveal>
       )}
 
       {/* Ops pipeline */}
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
+      <Reveal>
+        <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <ShoppingCart className="h-4 w-4 text-[#2D1B69]" /> Order pipeline
@@ -296,11 +300,13 @@ export default function AdminDashboard() {
             </Link>
           ))}
         </div>
-      </div>
+        </div>
+      </Reveal>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         {/* Revenue chart */}
-        <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+        <Reveal>
+          <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
           <h2 className="text-body-md font-bold text-[#150726]">Revenue — last 7 days</h2>
           <div className="mt-4 flex items-end gap-2 h-36">
             {revenue7d.map((d, i) => (
@@ -318,10 +324,12 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
+          </div>
+        </Reveal>
 
         {/* Needs attention */}
-        <div className="rounded-2xl border border-[#E91E63]/20 bg-white p-5">
+        <Reveal delay={100}>
+          <div className="rounded-2xl border border-[#E91E63]/20 bg-white p-5 h-full">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-[#E91E63]" /> Needs attention
           </h2>
@@ -357,11 +365,13 @@ export default function AdminDashboard() {
               <p className="text-caption text-[#7CB518] font-bold text-center py-4">All clear — nothing needs action 🎉</p>
             )}
           </div>
-        </div>
+          </div>
+        </Reveal>
       </div>
 
       {/* Sale engine status */}
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
+      <Reveal>
+        <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <Zap className="h-4 w-4 text-[#FF9800]" /> Sale engine
@@ -389,10 +399,12 @@ export default function AdminDashboard() {
             <Link href="/admin/sales" className="px-3 py-1.5 rounded-lg bg-[#E91E63] text-white text-micro font-bold hover:bg-[#C2185B]">Create sale</Link>
           </div>
         )}
-      </div>
+        </div>
+      </Reveal>
 
-{/* Push announcements */}
-      <div id="push" className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5 scroll-mt-24">
+      {/* Push announcements */}
+      <Reveal>
+        <div id="push" className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5 scroll-mt-24">
         <div className="flex items-center justify-between">
           <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
             <BellRing className="h-4 w-4 text-[#E91E63]" /> Push announcement
@@ -426,11 +438,13 @@ export default function AdminDashboard() {
           </button>
         </div>
         {pushStatus && <p className="mt-2 text-micro font-bold text-[#2D1B69]">{pushStatus}</p>}
-      </div>
+        </div>
+      </Reveal>
 
       {/* Recent activity */}
       {activity.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
+        <Reveal>
+          <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
               <Package className="h-4 w-4 text-[#00BCD4]" /> Recent staff activity
@@ -449,7 +463,8 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
+          </div>
+        </Reveal>
       )}
     </div>
   );

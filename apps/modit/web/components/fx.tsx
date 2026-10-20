@@ -142,3 +142,108 @@ export function CountUp({
     </span>
   );
 }
+
+/** Pointer-driven 3D tilt (desktop only — hover-capable, fine pointers). */
+export function Tilt3D({
+  children,
+  max = 7,
+  pop = 30,
+  className = "",
+}: {
+  children: ReactNode;
+  max?: number;
+  pop?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState<CSSProperties>({});
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const fine =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setEnabled(fine);
+  }, []);
+
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enabled || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    setTilt({
+      transform: `rotateY(${(px * max * 2).toFixed(2)}deg) rotateX(${(-py * max * 2).toFixed(2)}deg) translateZ(${pop}px)`,
+    });
+  };
+  const reset = () => enabled && setTilt({});
+
+  return (
+    <div className={`tilt-scene ${className}`}>
+      <div
+        ref={ref}
+        className="tilt-card"
+        style={tilt}
+        onPointerMove={onMove}
+        onPointerLeave={reset}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Scroll-linked depth: the block drifts at a slower rate than the page
+ * (parallax) while passing through the viewport — the "3D scroll" feel.
+ * rAF-throttled, transform-only, disabled for reduced motion.
+ */
+export function Parallax({
+  children,
+  strength = 24,
+  className = "",
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState(0);
+  const active = useRef(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(([e]) => { active.current = e.isIntersecting; }, { threshold: 0 });
+    io.observe(el);
+
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      if (!active.current || !ref.current) return;
+      const r = ref.current.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 → element enters at bottom, 1 → exits at top
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+      setOffset((p - 0.5) * strength * 2);
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(measure); };
+
+    measure();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [strength]);
+
+  return (
+    <div ref={ref} className={className} style={{ transform: `translateY(${offset.toFixed(1)}px)` }}>
+      {children}
+    </div>
+  );
+}

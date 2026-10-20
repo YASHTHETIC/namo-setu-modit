@@ -3044,6 +3044,22 @@ button { touch-action: manipulation; }
 .group:hover .card3d-img { transform: scale(1.07); }
 
 
+/* Pointer-driven 3D tilt scene (Tilt3D). Perspective lives on the scene,
+   so children keep their own transforms. Strictly hover-capable pointers;
+   reduced-motion users never see it (component gates enablement too). */
+.tilt-scene { perspective: 900px; }
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.3s var(--motion-spring);
+  will-change: transform;
+}
+.tilt-card > .tilt-pop { transform: translateZ(34px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card { transition: none; transform: none !important; }
+}
+
+
 
 
 

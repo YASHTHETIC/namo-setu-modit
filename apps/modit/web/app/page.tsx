@@ -28,6 +28,7 @@ import { HighlightedText } from "@/components/highlighted-text";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { Reveal } from "@/components/reveal";
+import { Tilt3D, Parallax } from "@/components/fx";
 import { StickyCartBar } from "@/widgets/sticky-cart-bar";
 import { CartDrawer } from "@/widgets/cart-drawer";
 import { useCartUi } from "@/lib/cart-ui";
@@ -303,7 +304,9 @@ export default function ModitHomePage() {
           <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
           <p className="text-caption font-extrabold text-[#150726] tracking-wide">MODIT Assured</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* Mobile: one thin snap row of chips (Blinkit assurance pattern).
+            sm+: the roomy 4-up grid with descriptions. */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-4 sm:gap-3 sm:pb-0">
           {[
             { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518", bg: "#F0F9E8" },
             { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4", bg: "#E8F9FC" },
@@ -312,14 +315,14 @@ export default function ModitHomePage() {
           ].map((t) => (
             <div
               key={t.title}
-              className="rounded-2xl border border-[#DDD6EE] bg-white p-3 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2"
+              className="rounded-2xl border border-[#DDD6EE] bg-white p-2.5 sm:p-3 flex flex-col items-center gap-1 text-center flex-shrink-0 w-[126px] snap-start sm:flex-row sm:items-start sm:gap-2.5 sm:w-auto sm:text-left"
             >
-              <span className="h-9 w-9 flex-shrink-0 rounded-full flex items-center justify-center" style={{ background: t.bg }}>
+              <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full flex items-center justify-center" style={{ background: t.bg }}>
                 <t.icon className="h-4 w-4" style={{ color: t.tint }} />
               </span>
               <span className="min-w-0">
                 <span className="block text-caption font-extrabold text-[#150726] leading-tight">{t.title}</span>
-                <span className="mt-0.5 block text-micro text-[#9B8CB5] leading-tight">{t.sub}</span>
+                <span className="hidden sm:mt-0.5 sm:block text-micro text-[#9B8CB5] leading-tight">{t.sub}</span>
               </span>
             </div>
           ))}
@@ -342,12 +345,18 @@ export default function ModitHomePage() {
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-            <div className="flex sm:items-center gap-2 flex-shrink-0">
-              <div className="h-20 w-16 sm:h-28 sm:w-24 rounded-[28px] bg-white p-1.5 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
-                <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
-              </div>
-              <div className="hidden sm:block h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
-                <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+            <div className="flex sm:items-center gap-2 flex-shrink-0 pr-0.5">
+              <Parallax strength={12} className="flex-shrink-0">
+                <div className="h-20 w-16 sm:h-28 sm:w-24 rounded-[28px] bg-white p-1.5 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-4 ring-white/40">
+                  <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+                </div>
+              </Parallax>
+              <div className="hidden sm:block flex-shrink-0">
+                <Parallax strength={26}>
+                  <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
+                    <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+                  </div>
+                </Parallax>
               </div>
             </div>
           </div>
@@ -381,21 +390,23 @@ export default function ModitHomePage() {
                 {p.cta}
               </span>
             </div>
-            <div className="relative flex-shrink-0">
-              <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-[28px] bg-white p-2 shadow-xl ring-4 ring-white/40">
-                <Image src={p.img} alt={p.alt} width={128} height={128} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+            <Tilt3D max={9} className="flex-shrink-0">
+              <div className="relative">
+                <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-[28px] bg-white p-2 shadow-xl ring-4 ring-white/40">
+                  <Image src={p.img} alt={p.alt} width={128} height={128} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+                </div>
+                <span className={`absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full text-tiny font-black tracking-wide shadow-md ${p.dark ? "bg-[#150726] text-[#F8CB46]" : "bg-[#150726] text-white"}`}>
+                  {p.tag}
+                </span>
               </div>
-              <span className={`absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full text-tiny font-black tracking-wide shadow-md ${p.dark ? "bg-[#150726] text-[#F8CB46]" : "bg-[#150726] text-white"}`}>
-                {p.tag}
-              </span>
-            </div>
+            </Tilt3D>
           </Link>
         ))}
       </div>
 
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <div className="section-header">
             <h2>Shop by Category</h2>
             <Link href="/products" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
@@ -465,7 +476,7 @@ export default function ModitHomePage() {
 
       {/* ═══ PRODUCT RAILS + FEATURE BAR — same shared edge ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
-      <div className="pb-8">
+      <div className="pb-4 sm:pb-8">
         <Reveal delay={100}>
           <ProductRail
             title="Deals of the Day"
@@ -525,7 +536,7 @@ export default function ModitHomePage() {
         ))}
       {/* ═══ FEATURE BAR — Animated counters ═══ */}
       <Reveal>
-        <div ref={featureCountRef.ref} className="mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
+        <div ref={featureCountRef.ref} className="mb-6 sm:mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-4 sm:p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
           <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(248,203,70,0.16)" }} />
           <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(124,181,24,0.16)" }} />
           {/* Animated gradient line */}
@@ -558,7 +569,7 @@ export default function ModitHomePage() {
           <div className="section-header px-0 mb-4">
             <h2>Trusted Brands</h2>
           </div>
-          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-4 sm:gap-5 overflow-x-auto pb-2 scrollbar-hide">
             {[
               { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
               { name: "ACC", img: "/products/cement/ACC Cement.png" },
@@ -577,56 +588,59 @@ export default function ModitHomePage() {
               { name: "Birla White", img: "/products/painting/Birla Putty.png" },
               { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
             ].map((brand) => (
-              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[76px]">
-                <div className="h-20 w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[62px] sm:w-[76px]">
+                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
                   <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
-                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight">{brand.name}</span>
+                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight line-clamp-1">{brand.name}</span>
               </Link>
             ))}
           </div>
         </div>
       </Reveal>
 
-      {/* ═══ MATERIAL CALCULATOR ═══ */}
+      {/* ═══ MATERIAL CALCULATOR + BULK CTA — one compact band (side-by-side
+           on mobile, stacked full-width rows on desktop) ═══ */}
       <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pt-2 pb-6">
-          <div className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-4">
-            <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2"/>
-                <line x1="8" y1="6" x2="16" y2="6"/>
-                <line x1="8" y1="10" x2="16" y2="10"/>
-                <line x1="8" y1="14" x2="12" y2="14"/>
-              </svg>
-            </div>
-            <div className="flex-1 text-center sm:text-left">
-              <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
-              <p className="text-caption text-[#9B8CB5]">Estimate paint, putty, primer & more for your room</p>
-            </div>
+        <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pt-2 pb-4 sm:pb-6">
+          <div className="grid grid-cols-2 gap-3 sm:block">
+            {/* Calculator */}
             <Link
               href="/calculator"
-              className="btn-shine flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-900/20"
+              className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
             >
-              Calculate <ArrowRight className="h-3.5 w-3.5" />
+              <div className="h-10 w-10 rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <line x1="8" y1="6" x2="16" y2="6"/>
+                  <line x1="8" y1="10" x2="16" y2="10"/>
+                  <line x1="8" y1="14" x2="12" y2="14"/>
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-body-md font-extrabold text-[#150726]">Material Calculator</h3>
+                <p className="text-caption text-[#9B8CB5] hidden sm:block">Estimate paint, putty, primer & more for your room</p>
+              </div>
+              <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0">
+                Calculate <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+              <ArrowRight className="h-4 w-4 text-[#2D1B69] sm:hidden" />
             </Link>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* ═══ BULK / BUSINESS CTA ═══ */}
-      <Reveal>
-        <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-6">
-          <div className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex-1">
-              <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
-              <p className="text-caption text-white/55 mt-0.5">Get negotiated quotes from verified suppliers with GST invoicing</p>
-            </div>
+            {/* Bulk / business */}
             <Link
               href="/rfq"
-              className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0"
+              className="rounded-2xl bg-[#150726] px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
             >
-              Start RFQ <ArrowRight className="h-4 w-4" />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-body-md font-extrabold text-white">Buying in bulk for a project?</h3>
+                <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Get negotiated quotes from verified suppliers with GST invoicing</p>
+              </div>
+              <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0">
+                Start RFQ <ArrowRight className="h-4 w-4" />
+              </span>
+              <span className="h-8 w-8 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto">
+                <ArrowRight className="h-4 w-4 text-[#7CB518]" />
+              </span>
             </Link>
           </div>
         </div>
