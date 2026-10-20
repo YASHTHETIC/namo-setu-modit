@@ -2507,6 +2507,39 @@ button { touch-action: manipulation; }
 
 .fx-orb-b { animation: fx-orb-b 18s ease-in-out infinite; }
 
+/* ═══ Reference-style diagonal corner stripes ═══
+   Slim skewed accent bars pinned to the left edge of dark promo panels
+   (.assure-stripes) and light chips (.assure-stripes-light).
+   Pure decoration — transform/opacity only, pointer-events none. */
+.assure-stripes::before,
+.assure-stripes::after,
+.assure-stripes-light::before,
+.assure-stripes-light::after {
+  content: "";
+  position: absolute;
+  width: 44px;
+  height: 150%;
+  top: -25%;
+  transform: skewX(-24deg);
+  pointer-events: none;
+}
+.assure-stripes::before {
+  left: -10px;
+  background: linear-gradient(90deg, transparent 20%, rgba(255, 255, 255, 0.10) 50%, transparent 80%);
+}
+.assure-stripes::after {
+  left: 18px;
+  background: linear-gradient(90deg, transparent 20%, rgba(124, 181, 24, 0.28) 50%, transparent 80%);
+}
+.assure-stripes-light::before {
+  left: -10px;
+  background: linear-gradient(90deg, transparent 20%, rgba(45, 27, 105, 0.06) 50%, transparent 80%);
+}
+.assure-stripes-light::after {
+  left: 18px;
+  background: linear-gradient(90deg, transparent 20%, rgba(124, 181, 24, 0.16) 50%, transparent 80%);
+}
+
 
 
 

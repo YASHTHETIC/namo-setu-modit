@@ -38,41 +38,6 @@ import { ActiveOrderBanner } from "@/components/active-order-banner";
 import { categories as allCategories } from "@/lib/product-data";
 import { CategoryTileIcon } from "@/components/modit-shell";
 
-/* ── Scroll-reveal hook ──────────────────────────────────────────── */
-function useScrollReveal(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
-
-/* ── Animated counter hook ───────────────────────────────────────── */
-function useCountUp(target: number, duration = 1200, start = false) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let raf: number;
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / duration, 1);
-      setVal(Math.round(p * target));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [start, target, duration]);
-  return val;
-}
-
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
@@ -204,11 +169,6 @@ export default function ModitHomePage() {
     for (const p of products) counts.set(p.categorySlug, (counts.get(p.categorySlug) ?? 0) + 1);
     return allCategories.filter((c) => (counts.get(c.slug) ?? 0) > 0);
   }, [products]);
-  const featureCountRef = useScrollReveal(0.3);
-  const featureVisible = featureCountRef.visible;
-  const lowestPriceCount = useCountUp(500, 1200, featureVisible);
-  const deliveryCount = useCountUp(60, 1000, featureVisible);
-  const secureCount = useCountUp(100, 800, featureVisible);
 
   const categories = [
     { name: "Cement", slug: "cement", img: "/products/cement/Ambuja Cement.png", count: 10, color: "#2D1B69" },
@@ -229,18 +189,26 @@ export default function ModitHomePage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
-      {/* ═══ HEADER — hides on scroll down, returns on scroll up ═══ */}
+      {/* ═══ HEADER — mobile: one row (menu · logo · search · cart).
+           sm+: menu + logo + cart with the full search row below. ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
           </RippleButton>
-          <div className="flex-1 flex justify-center">
+          <div className="flex-1 flex justify-center sm:justify-center">
             <Link href="/" className="transition-all hover:scale-105 active:scale-95">
               <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
           <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowSearch(true)}
+              aria-label="Search products"
+              className="p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5 sm:hidden"
+            >
+              <Search className="h-5 w-5" />
+            </button>
             <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
@@ -251,8 +219,9 @@ export default function ModitHomePage() {
             </button>
           </div>
         </div>
-        {/* Search row — full width, opens the search sheet */}
-        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3">
+        {/* Search row — full width, opens the search sheet (hidden on the
+            compact mobile row where the search icon opens the same sheet) */}
+        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block">
           <button
             onClick={() => setShowSearch(true)}
             className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
@@ -264,13 +233,18 @@ export default function ModitHomePage() {
         </div>
       </header>
 
-      {/* ═══ DELIVERY HEADER — Blinkit-app ETA-first hierarchy, MODIT dark ═══ */}
+      {/* ═══ DELIVERY HEADER — ETA-first hierarchy: green "60 Min" chip,
+           Deliver To + pincode, distance badge, Live pulse ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2.5">
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3">
+          <div className="hidden sm:flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
+            <span className="text-caption font-black text-white">60</span>
+            <span className="text-tiny font-black text-white/80">Min</span>
+          </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <p className="text-body-md font-extrabold text-white leading-tight">
-                Delivery in <span className="text-[#7CB518]">60 min</span>
+                Deliver To <span className="text-[#7CB518]">{pincode ? pincode : "· set location"}</span> <ChevronDown className="inline h-3 w-3 text-white/50 align-[-1px]" />
               </p>
               {nearest && typeof nearest.distance_km === "number" && (
                 <span className="flex-shrink-0 rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums">
@@ -283,9 +257,9 @@ export default function ModitHomePage() {
               className="mt-0.5 flex items-center gap-1 text-white/70 hover:text-white transition-colors group max-w-full"
             >
               <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#7CB518] transition-colors flex-shrink-0" />
-              <span className="text-caption font-semibold truncate">
-                {pincode ? `Deliver to ${pincode}` : "Set delivery location"}
-              </span>
+              <p className="text-caption font-semibold truncate text-left">
+                <span className="text-white font-extrabold">Delivery in</span> <span className="text-[#7CB518] font-extrabold">60 min</span> — tap to change
+              </p>
               <ChevronDown className="h-3 w-3 text-white/50 group-hover:rotate-180 transition-transform duration-300 flex-shrink-0" />
             </button>
           </div>
@@ -299,33 +273,46 @@ export default function ModitHomePage() {
       {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
-      <div className="mt-3">
-        <div className="flex items-center justify-center gap-1.5 mb-2">
-          <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
-          <p className="text-caption font-extrabold text-[#150726] tracking-wide">MODIT Assured</p>
+      {/* ═══ FREE DELIVERY PROMO STRIP — icon · slogan · divider · claim · Valid pill ═══ */}
+      <div className="assure-stripes mt-3 rounded-2xl overflow-hidden relative" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
+        <div className="relative z-10 flex items-center gap-3 px-4 py-3">
+          <span className="h-9 w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
+            <Truck className="h-5 w-5 text-[#E91E63]" />
+          </span>
+          <p className="text-white text-title-md font-black italic leading-none whitespace-nowrap" style={{ transform: "skewX(-6deg)" }}>FREE DELIVERY</p>
+          <span className="h-7 w-px bg-white/25 flex-shrink-0" />
+          <div className="min-w-0">
+            <p className="text-body-sm font-bold text-white leading-tight">On orders ₹5000+</p>
+            <p className="text-tiny text-white/70 leading-tight">Fast, tracked, doorstep</p>
+          </div>
+          <span className="ml-auto flex-shrink-0 rounded-lg bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
         </div>
-        {/* Mobile: one thin snap row of chips (Blinkit assurance pattern).
-            sm+: the roomy 4-up grid with descriptions. */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide snap-x pb-1 sm:grid sm:grid-cols-4 sm:gap-3 sm:pb-0">
-          {[
-            { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518", bg: "#F0F9E8" },
-            { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4", bg: "#E8F9FC" },
-            { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#2D1B69", bg: "#F0ECF9" },
-            { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#E91E63", bg: "#FCE4EC" },
-          ].map((t) => (
-            <div
-              key={t.title}
-              className="rounded-2xl border border-[#DDD6EE] bg-white p-2.5 sm:p-3 flex flex-col items-center gap-1 text-center flex-shrink-0 w-[126px] snap-start sm:flex-row sm:items-start sm:gap-2.5 sm:w-auto sm:text-left"
-            >
-              <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full flex items-center justify-center" style={{ background: t.bg }}>
-                <t.icon className="h-4 w-4" style={{ color: t.tint }} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-caption font-extrabold text-[#150726] leading-tight">{t.title}</span>
-                <span className="hidden sm:mt-0.5 sm:block text-micro text-[#9B8CB5] leading-tight">{t.sub}</span>
-              </span>
-            </div>
-          ))}
+      </div>
+      <div className="mt-3">
+        {/* Reference-style dark assurance panel: centered shield title,
+            4 icon columns, diagonal corner stripes.
+            Copy stays strictly to real policies (no invented claims). */}
+        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-3.5 sm:py-4">
+          <div className="flex items-center justify-center gap-1.5 mb-3">
+            <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
+            <p className="text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
+          </div>
+          <div className="grid grid-cols-4 divide-x divide-white/10">
+            {[
+              { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518" },
+              { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4" },
+              { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
+              { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
+            ].map((t) => (
+              <div key={t.title} className="flex flex-col items-center gap-1.5 px-1 text-center">
+                <span className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
+                  <t.icon className="h-4 w-4" style={{ color: t.tint }} />
+                </span>
+                <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>{t.title}</span>
+                <span className="text-tiny text-white/45 leading-tight">{t.sub}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -534,28 +521,28 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      {/* ═══ FEATURE BAR — Animated counters ═══ */}
+      {/* ═══ FEATURE CHIPS — light reference-style row: title left, icon right,
+          diagonal stripes. Replaces the dark counter band (no invented numbers). ═══ */}
       <Reveal>
-        <div ref={featureCountRef.ref} className="mb-6 sm:mb-8 rounded-2xl bg-gradient-to-r from-[#150726] to-[#2D1B69] p-4 sm:p-5 grid grid-cols-3 gap-3 border border-white/10 relative overflow-hidden group">
-          <div className="fx-orb fx-orb-a" style={{ width: 200, height: 200, top: -80, right: -50, background: "rgba(248,203,70,0.16)" }} />
-          <div className="fx-orb fx-orb-b" style={{ width: 220, height: 220, bottom: -100, left: -60, background: "rgba(124,181,24,0.16)" }} />
-          {/* Animated gradient line */}
-          <div className="strip-line absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#7CB518] via-[#F8CB46] to-[#7CB518]" />
+        <div className="mb-6 sm:mb-8 grid grid-cols-3 gap-2 sm:gap-3">
           {[
-            { icon: TrendingUp, value: lowestPriceCount, suffix: "+", title: "LOWEST\nPRICES", sub: "Best quality at best prices", color: "#F8CB46" },
-            { icon: Clock, value: deliveryCount, suffix: " min", title: "FAST\nDELIVERY", sub: "Superfast delivery at your site", color: "#7CB518" },
-            { icon: Lock, value: secureCount, suffix: "%", title: "SECURE\nPAYMENTS", sub: "100% safe & secure", color: "#7CB518" },
-          ].map((f, i) => (
-            <div key={f.title} className="assured-item flex flex-col items-center text-center relative z-10 group/feat cursor-pointer">
-              <div className="assured-orb h-11 w-11 rounded-xl flex items-center justify-center mb-2 group-hover/feat:scale-110 transition-all duration-300"
-                style={{ background: `${f.color}18`, border: `1.5px solid ${f.color}40`, animationDelay: `${i * 0.5}s` }}>
-                <f.icon className="h-5 w-5" style={{ color: f.color }} />
+            { icon: TrendingUp, title: "LOWEST PRICES", sub: "Best quality at best prices", color: "#E91E63" },
+            { icon: Clock, title: "60 MINS DELIVERY", sub: "Superfast, to your site", color: "#7CB518" },
+            { icon: Lock, title: "SECURE PAYMENTS", sub: "100% safe & secure", color: "#00BCD4" },
+          ].map((f) => (
+            <div key={f.title} className="assure-stripes-light relative overflow-hidden rounded-2xl bg-white border border-[#DDD6EE] p-3 sm:p-4 group/feat">
+              <div className="relative z-10 flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-caption font-black leading-tight tracking-tight" style={{ color: f.color }}>{f.title}</p>
+                  <p className="text-tiny sm:text-caption text-[#9B8CB5] leading-tight mt-1">{f.sub}</p>
+                </div>
+                <span
+                  className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover/feat:scale-110"
+                  style={{ background: `${f.color}15`, border: `1.5px solid ${f.color}35` }}
+                >
+                  <f.icon className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: f.color }} />
+                </span>
               </div>
-              <p className="text-title-md font-black text-white leading-none tabular-nums">
-                {f.value}{f.suffix}
-              </p>
-              <p className="text-tiny font-black text-white/70 leading-tight whitespace-pre-line mt-1">{f.title}</p>
-              <p className="text-tiny text-white/40 mt-0.5 leading-tight">{f.sub}</p>
             </div>
           ))}
         </div>
