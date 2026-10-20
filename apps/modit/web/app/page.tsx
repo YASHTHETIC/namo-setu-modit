@@ -265,12 +265,10 @@ export default function ModitHomePage() {
         </div>
       </div>
 
-      {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
-      <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
-      <ActiveOrderBanner />
-      {/* ═══ FREE DELIVERY PROMO STRIP — icon · slogan · divider · claim · Valid pill ═══ */}
-      <div className="assure-stripes mt-2.5 sm:mt-3 rounded-2xl overflow-hidden relative" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
-        <div className="relative z-10 flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3">
+      {/* ═══ FREE DELIVERY PROMO STRIP — full-bleed flat banner (Blinkit
+           pattern): no card, no radius, spans the whole viewport width ═══ */}
+      <div className="assure-stripes relative overflow-hidden" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
+        <div className="max-w-[1600px] lg:w-[84vw] mx-auto relative z-10 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3">
           <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
             <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
           </span>
@@ -280,15 +278,38 @@ export default function ModitHomePage() {
           </div>
           <span className="hidden sm:block h-7 w-px bg-white/25 flex-shrink-0" />
           <p className="hidden sm:block text-tiny text-white/70 leading-tight flex-shrink-0">Fast, tracked, doorstep</p>
-          <span className="flex-shrink-0 rounded-lg bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
+          <span className="flex-shrink-0 rounded-md bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
         </div>
       </div>
-      <div className="mt-3">
-        {/* Reference-style dark assurance panel: centered shield title,
-            4 icon columns, diagonal corner stripes.
-            Copy stays strictly to real policies (no invented claims). */}
-        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-2.5 sm:py-4">
-          <div className="flex items-center justify-center gap-1.5 mb-2 sm:mb-3">
+
+      {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
+      <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
+      <ActiveOrderBanner />
+      <div className="mt-3 sm:mt-4">
+        {/* Phone: FLAT — bare brand-colored icons on the page background,
+            no chips, no cards. sm+: the dark premium panel. */}
+        <div className="sm:hidden">
+          <div className="flex items-center justify-center gap-1.5 pb-2">
+            <ShieldCheck className="h-3.5 w-3.5 text-[#7CB518]" />
+            <p className="text-tiny font-extrabold tracking-[0.08em] text-[#150726]">MODIT ASSURED</p>
+          </div>
+          <div className="grid grid-cols-4 divide-x divide-[#E7DEF5]">
+            {[
+              { icon: Undo2, title: "7-Day Returns", tint: "#7CB518" },
+              { icon: Truck, title: "Free Delivery", tint: "#00BCD4" },
+              { icon: Receipt, title: "GST Invoice", tint: "#E91E63" },
+              { icon: BadgeCheck, title: "Genuine Products", tint: "#2D1B69" },
+            ].map((t) => (
+              <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 text-center">
+                <t.icon className="h-5 w-5" style={{ color: t.tint }} />
+                <span className="text-micro font-bold leading-tight" style={{ color: t.tint }}>{t.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* sm+: dark premium panel with icon chips */}
+        <div className="assure-stripes hidden sm:block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-4">
+          <div className="flex items-center justify-center gap-1.5 mb-3">
             <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
             <p className="text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
           </div>
@@ -299,12 +320,12 @@ export default function ModitHomePage() {
               { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
               { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
             ].map((t) => (
-              <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 sm:gap-1.5 sm:px-1 text-center">
-                <span className="h-7 w-7 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
-                  <t.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: t.tint }} />
+              <div key={t.title} className="flex flex-col items-center gap-1.5 px-1 text-center">
+                <span className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
+                  <t.icon className="h-4 w-4" style={{ color: t.tint }} />
                 </span>
                 <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>{t.title}</span>
-                <span className="hidden sm:block text-tiny text-white/55 leading-tight">{t.sub}</span>
+                <span className="text-tiny text-white/55 leading-tight">{t.sub}</span>
               </div>
             ))}
           </div>
@@ -518,30 +539,44 @@ export default function ModitHomePage() {
             />
           </Reveal>
         ))}
-      {/* ═══ FEATURE CHIPS — light reference-style row: title left, icon right,
-          diagonal stripes. Replaces the dark counter band (no invented numbers). ═══ */}
+      {/* ═══ FEATURE STRIP — flat divider row on phones (no chip cards);
+           sm+: the light chip cards with stripes ═══ */}
       <Reveal>
-        <div className="mb-6 sm:mb-8 grid grid-cols-3 gap-2 sm:gap-3">
-          {[
-            { icon: TrendingUp, title: "LOWEST PRICES", sub: "Best quality at best prices", color: "#E91E63" },
-            { icon: Clock, title: "60 MINS DELIVERY", sub: "Superfast, to your site", color: "#7CB518" },
-            { icon: Lock, title: "SECURE PAYMENTS", sub: "100% safe & secure", color: "#00BCD4" },
-          ].map((f) => (
-            <div key={f.title} className="assure-stripes-light relative overflow-hidden rounded-2xl bg-white border border-[#DDD6EE] p-3 sm:p-4 group/feat">
-              <div className="relative z-10 flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-caption font-black leading-tight tracking-tight" style={{ color: f.color }}>{f.title}</p>
-                  <p className="hidden sm:block text-tiny sm:text-caption text-[#9B8CB5] leading-tight mt-1">{f.sub}</p>
-                </div>
-                <span
-                  className="h-7 w-7 sm:h-10 sm:w-10 flex-shrink-0 rounded-lg sm:rounded-xl flex items-center justify-center transition-transform duration-300 group-hover/feat:scale-110"
-                  style={{ background: `${f.color}15`, border: `1.5px solid ${f.color}35` }}
-                >
-                  <f.icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" style={{ color: f.color }} />
-                </span>
+        <div className="mb-5 sm:mb-8">
+          <div className="sm:hidden flex items-stretch divide-x divide-[#E7DEF5] border-y border-[#E7DEF5]">
+            {[
+              { icon: TrendingUp, title: "LOWEST PRICES", color: "#E91E63" },
+              { icon: Clock, title: "60 MINS DELIVERY", color: "#7CB518" },
+              { icon: Lock, title: "SECURE PAYMENTS", color: "#00BCD4" },
+            ].map((f) => (
+              <div key={f.title} className="flex flex-1 items-center justify-center gap-1.5 px-1 py-2.5">
+                <f.icon className="h-4 w-4 flex-shrink-0" style={{ color: f.color }} />
+                <p className="text-micro font-black leading-tight" style={{ color: f.color }}>{f.title}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="hidden sm:grid grid-cols-3 gap-3">
+            {[
+              { icon: TrendingUp, title: "LOWEST PRICES", sub: "Best quality at best prices", color: "#E91E63" },
+              { icon: Clock, title: "60 MINS DELIVERY", sub: "Superfast, to your site", color: "#7CB518" },
+              { icon: Lock, title: "SECURE PAYMENTS", sub: "100% safe & secure", color: "#00BCD4" },
+            ].map((f) => (
+              <div key={f.title} className="assure-stripes-light relative overflow-hidden rounded-2xl bg-white border border-[#DDD6EE] p-4 group/feat">
+                <div className="relative z-10 flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-caption font-black leading-tight tracking-tight" style={{ color: f.color }}>{f.title}</p>
+                    <p className="text-caption text-[#9B8CB5] leading-tight mt-1">{f.sub}</p>
+                  </div>
+                  <span
+                    className="h-10 w-10 flex-shrink-0 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover/feat:scale-110"
+                    style={{ background: `${f.color}15`, border: `1.5px solid ${f.color}35` }}
+                  >
+                    <f.icon className="h-5 w-5" style={{ color: f.color }} />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </Reveal>
       </div>
@@ -573,7 +608,7 @@ export default function ModitHomePage() {
               { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
             ].map((brand) => (
               <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[62px] sm:w-[76px]">
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white border-2 border-[#DDD6EE] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
+                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-white border border-[#E7DEF5] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
                   <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
                 </div>
                 <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight line-clamp-1">{brand.name}</span>
@@ -591,7 +626,7 @@ export default function ModitHomePage() {
             {/* Calculator */}
             <Link
               href="/calculator"
-              className="rounded-2xl border-[1.5px] border-dashed border-[#2D1B69]/20 bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
+              className="rounded-xl bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
             >
               <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
