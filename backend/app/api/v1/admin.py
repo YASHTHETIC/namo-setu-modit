@@ -3,19 +3,18 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from backend.app.api.deps import get_current_user, require_permission
+from backend.app.api.deps import require_permission
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
 from backend.app.models.modit import Organization
-from backend.app.models.shared import AuditLog, Notification, UserSession
+from backend.app.models.shared import UserSession
 from backend.app.models.user import Permission, Role, User
 from backend.app.schemas.platform import (
     AdminDashboardResponse,
-    PermissionCreate,
     PermissionRead,
     PermissionUpdate,
-    RoleCreate,
     RolePermissionsUpdate,
     RoleRead,
     RoleUpdate,
@@ -38,15 +37,15 @@ async def dashboard(db: AsyncSession = Depends(get_db)) -> AdminDashboardRespons
     return AdminDashboardResponse(users=users, organizations=organizations, roles=roles, permissions=permissions, sessions=sessions)
 
 
-@router.get("/admin/users", response_model=list[UserRead], dependencies=[Depends(require_permission(PermissionName.USER_MANAGE))])
-async def admin_users(db: AsyncSession = Depends(get_db)) -> list[UserRead]:
-    result = await db.execute(select(User).order_by(User.created_at.desc()))
-    return [UserRead.model_validate(item) for item in result.scalars().all()]
-
-
 @router.patch("/admin/users/{user_id}", response_model=UserRead, dependencies=[Depends(require_permission(PermissionName.USER_MANAGE))])
 async def admin_update_user(user_id: str, payload: UserAdminUpdate, db: AsyncSession = Depends(get_db)) -> UserRead:
-    user = await db.get(User, user_id)
+    # selectinload: UserRead serializes roles; a db.get() lazy-load on the
+    # async session would raise inside response validation (the old 500).
+    user = (
+        await db.execute(
+            select(User).options(selectinload(User.roles)).where(User.id == user_id)
+        )
+    ).scalar_one_or_none()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     if payload.full_name is not None:
@@ -76,19 +75,11 @@ async def assign_roles(user_id: str, payload: UserRolesUpdate, db: AsyncSession 
     return StandardResponse(message="Roles assigned", data=user_id)
 
 
-@router.get("/admin/roles", response_model=list[RoleRead], dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
-async def list_roles(db: AsyncSession = Depends(get_db)) -> list[RoleRead]:
-    result = await db.execute(select(Role).order_by(Role.name.asc()))
-    return [RoleRead.model_validate(item) for item in result.scalars().all()]
-
-
-@router.post("/admin/roles", response_model=RoleRead, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
-async def create_role(payload: RoleCreate, db: AsyncSession = Depends(get_db)) -> RoleRead:
-    role = Role(name=payload.name, description=payload.description)
-    db.add(role)
-    await db.commit()
-    await db.refresh(role)
-    return RoleRead.model_validate(role)
+# GET/POST /admin/roles, GET/POST /admin/permissions, GET /admin/users and
+# the audit/health/metrics lists live ONLY in admin_extended.py (service-
+# backed, eager-loaded). Registering them twice made one raw duplicate
+# shadow the other (FastAPI serves the FIRST match) — exactly why role
+# creation silently ignored permission_ids and users listed without roles.
 
 
 @router.patch("/admin/roles/{role_id}", response_model=RoleRead, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
@@ -103,31 +94,6 @@ async def update_role(role_id: str, payload: RoleUpdate, db: AsyncSession = Depe
     await db.commit()
     await db.refresh(role)
     return RoleRead.model_validate(role)
-
-
-@router.delete("/admin/roles/{role_id}", response_model=StandardResponse[str], dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
-async def delete_role(role_id: str, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
-    role = await db.get(Role, role_id)
-    if role is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
-    await db.delete(role)
-    await db.commit()
-    return StandardResponse(message="Role deleted", data=role_id)
-
-
-@router.get("/admin/permissions", response_model=list[PermissionRead], dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
-async def list_permissions(db: AsyncSession = Depends(get_db)) -> list[PermissionRead]:
-    result = await db.execute(select(Permission).order_by(Permission.name.asc()))
-    return [PermissionRead.model_validate(item) for item in result.scalars().all()]
-
-
-@router.post("/admin/permissions", response_model=PermissionRead, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
-async def create_permission(payload: PermissionCreate, db: AsyncSession = Depends(get_db)) -> PermissionRead:
-    permission = Permission(name=payload.name, description=payload.description)
-    db.add(permission)
-    await db.commit()
-    await db.refresh(permission)
-    return PermissionRead.model_validate(permission)
 
 
 @router.patch("/admin/permissions/{permission_id}", response_model=PermissionRead, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
