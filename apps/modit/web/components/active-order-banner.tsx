@@ -49,7 +49,7 @@ export function ActiveOrderBanner() {
   return (
     <Link
       href={delivery ? `/track/${delivery.id}` : `/orders/${active.id}`}
-      className="mt-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#2D1B69] to-[#1E1245] px-4 py-3 transition-colors hover:border-[#7CB518]/40 group"
+      className="mt-3 mx-auto max-w-[1000px] flex items-center gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#2D1B69] to-[#1E1245] px-4 py-3 transition-colors hover:border-[#7CB518]/40 group"
     >
       <span className="h-9 w-9 flex-shrink-0 rounded-full border border-[#7CB518]/30 bg-[#7CB518]/15 flex items-center justify-center">
         <Icon className="h-4 w-4 text-[#7CB518]" />

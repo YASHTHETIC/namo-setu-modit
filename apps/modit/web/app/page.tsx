@@ -267,7 +267,7 @@ export default function ModitHomePage() {
 
       {/* ═══ FREE DELIVERY PROMO STRIP — full-bleed flat banner (Blinkit
            pattern): no card, no radius, spans the whole viewport width ═══ */}
-      <div className="assure-stripes relative overflow-hidden" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
+      <div className="no-stripes relative overflow-hidden" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto relative z-10 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3">
           <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
             <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
@@ -307,8 +307,8 @@ export default function ModitHomePage() {
             ))}
           </div>
         </div>
-        {/* sm+: dark premium panel with icon chips */}
-        <div className="assure-stripes hidden sm:block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-4">
+        {/* sm+: dark premium panel — centered banner width, never a full-width void */}
+        <div className="assure-stripes hidden sm:block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-4 max-w-[1000px] mx-auto">
           <div className="flex items-center justify-center gap-1.5 mb-3">
             <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
             <p className="text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>

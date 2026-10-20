@@ -2553,6 +2553,9 @@ button { touch-action: manipulation; }
   .assure-stripes-light::before,
   .assure-stripes-light::after { display: none; }
 }
+/* Full-bleed banners: stripes glitch at the open viewport edge — never show them. */
+.no-stripes::before,
+.no-stripes::after { display: none !important; }
 
 
 
