@@ -99,7 +99,7 @@ export default function AdminCouponsPage() {
             <div className="mt-3 grid grid-cols-4 gap-2 text-center">
               {[
                 { l: "Offer", v: c.discountType === "flat" ? `₹${c.discountValue}` : c.discountType === "percentage" ? `${c.discountValue}%` : "Free ship" },
-                { l: "Min order", v: `₹${c.minOrder.toLocaleString()}` },
+                { l: "Min order", v: `₹${c.minOrder.toLocaleString("en-IN")}` },
                 { l: "Used", v: `${c.usedCount}/${c.usageLimit}` },
                 { l: "Valid till", v: c.validTill },
               ].map((s) => (

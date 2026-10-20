@@ -14,13 +14,8 @@ import { useReturnStore } from "@/lib/return-store";
 import { useAdminActivity } from "@/lib/admin-activity";
 import { useOrders, useWarehouses } from "@/lib/modit-api";
 import { logAdminActivity } from "@/lib/admin-activity";
+import { getAccessToken } from "@/lib/auth";
 import { CountUp, Stagger, FxBackdrop } from "@/components/fx";
-
-const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
-  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2 },
-  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1 },
-];
 
 const STAGE_LABEL: Record<string, string> = {
   placed: "New",
@@ -49,7 +44,7 @@ export default function AdminDashboard() {
   const coupons = useCouponStore((s) => s.availableCoupons);
   const returns = useReturnStore((s) => s.returns);
   const activity = useAdminActivity((s) => s.entries);
-  const { data: apiOrders, isError: ordersOffline } = useOrders(undefined, fallbackOrders);
+  const { data: apiOrders, isError: ordersOffline } = useOrders(undefined);
   const { data: serverWarehouses = [] } = useWarehouses();
   const warehousesReady = serverWarehouses.length > 0;
   const [pushTitle, setPushTitle] = useState("");
@@ -65,7 +60,8 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/push/send")
+    // Staff-only endpoint — send the token or the count stays hidden.
+    fetch("/api/push/send", { headers: { Authorization: `Bearer ${getAccessToken() ?? ""}` } })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d && typeof d.subscribers === "number") setSubCount(d.subscribers);
@@ -83,7 +79,10 @@ export default function AdminDashboard() {
     try {
       const res = await fetch("/api/push/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getAccessToken() ?? ""}`,
+        },
         body: JSON.stringify({ title: pushTitle.trim(), body: pushBody.trim(), url: "/products" }),
       });
       const data = await res.json();
@@ -101,7 +100,7 @@ export default function AdminDashboard() {
   };
 
   const orders = useMemo(() => {
-    const list = (apiOrders ?? fallbackOrders) as any[];
+    const list = (apiOrders ?? []) as any[];
     return list.map((o) => ({ ...o, status: orderStatuses[o.id]?.status ?? o.status }));
   }, [apiOrders, orderStatuses]);
 

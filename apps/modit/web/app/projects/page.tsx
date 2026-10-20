@@ -55,7 +55,7 @@ export default function ProjectsPage() {
                 {project.notes && <p className="mb-3 text-sm text-[var(--text-secondary)] line-clamp-2">{project.notes}</p>}
                 {project.budget_amount != null && (
                   <div className="mb-3 flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
-                    <IndianRupee className="h-3.5 w-3.5" /> Budget: ₹{(project.budget_amount ?? 0).toLocaleString()}
+                    <IndianRupee className="h-3.5 w-3.5" /> Budget: ₹{(project.budget_amount ?? 0).toLocaleString("en-IN")}
                   </div>
                 )}
                 <div className="mt-auto flex items-center justify-between border-t border-[var(--border-subtle)] pt-3">

@@ -80,7 +80,7 @@ export default function AdminSalesPage() {
                       {s.type === "percent" ? `${s.value}% OFF` : `₹${s.value} OFF`} · {scopeText(s)}
                     </span>
                     <span className="rounded-full bg-[#F0F9E8] px-2 py-0.5 text-tiny font-bold text-[#5a8010]">
-                      {affected.toLocaleString()} products affected
+                      {affected.toLocaleString("en-IN")} products affected
                     </span>
                   </div>
                   <p className="text-micro text-[#9B8CB5] mt-1 flex items-center gap-1.5 flex-wrap">
@@ -245,7 +245,7 @@ function SaleForm({ initial, categories, onClose, onSave }: {
             <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Search products to include..." className={`${field} mb-2`} />
             {matchedProducts.map((p) => (
               <button key={p.id} onClick={() => { if (!productIds.includes(p.id)) setProductIds([...productIds, p.id]); setProductQuery(""); }} className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F7F4FC] text-caption font-semibold text-[#150726] border border-transparent hover:border-[#DDD6EE] mb-1">
-                + {p.name} <span className="text-[#9B8CB5] font-medium">· ₹{p.price.toLocaleString()}</span>
+                + {p.name} <span className="text-[#9B8CB5] font-medium">· ₹{p.price.toLocaleString("en-IN")}</span>
               </button>
             ))}
             {productIds.length > 0 && (

@@ -202,9 +202,9 @@ export default function AdminProductsPage() {
                       <p className="text-body-sm font-bold text-[#150726] max-w-[280px] truncate">{p.name}</p>
                       <p className="text-tiny text-[#9B8CB5]">{p.sku} · {p.brand}</p>
                     </td>
-                    <td className="px-4 py-3 text-body-sm text-[#6B5B83]">₹{r.mrp.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-body-sm text-[#6B5B83]">₹{r.mrp.toLocaleString("en-IN")}</td>
                     <td className="px-4 py-3 text-body-sm font-extrabold text-[#150726]">
-                      ₹{r.price.toLocaleString()}
+                      ₹{r.price.toLocaleString("en-IN")}
                       {r.onSale && <span className="ml-1.5 rounded bg-[#7CB518] px-1.5 py-0.5 text-tiny font-bold text-white">SALE</span>}
                     </td>
                     <td className="px-4 py-3 text-body-sm font-bold text-[#E91E63]">{r.discount}%</td>
@@ -259,7 +259,7 @@ export default function AdminProductsPage() {
             logAdminActivity(
               "product.update",
               `${editing.name} updated`,
-              `Price ₹${patch.price?.toLocaleString()} · MRP ₹${patch.mrp?.toLocaleString()} · Stock ${patch.stockLevel}${patch.hidden ? " · HIDDEN" : ""}`
+              `Price ₹${patch.price?.toLocaleString("en-IN")} · MRP ₹${patch.mrp?.toLocaleString("en-IN")} · Stock ${patch.stockLevel}${patch.hidden ? " · HIDDEN" : ""}`
             );
             setEditing(null);
             void syncPriceToServer(editing.sku, patch.price, patch.mrp).then((ok) => {

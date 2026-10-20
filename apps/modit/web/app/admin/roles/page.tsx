@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import {
@@ -21,34 +21,26 @@ function getClient() {
   });
 }
 
+interface PermissionRef {
+  id: string;
+  name: string;
+  description?: string | null;
+}
+
 interface Role {
   id: string;
   name: string;
-  description?: string;
-  permissions: string[];
+  description?: string | null;
+  permissions: PermissionRef[];
   user_count?: number;
-  created_at: string;
+  created_at?: string;
 }
 
 interface User {
   id: string;
-  name: string;
+  full_name?: string | null;
   email: string;
-  role?: string;
 }
-
-const AVAILABLE_PERMISSIONS = [
-  "products:read", "products:write", "products:delete",
-  "orders:read", "orders:write", "orders:delete",
-  "suppliers:read", "suppliers:write", "suppliers:delete",
-  "projects:read", "projects:write", "projects:delete",
-  "inventory:read", "inventory:write", "inventory:delete",
-  "analytics:read",
-  "users:read", "users:write", "users:delete",
-  "roles:read", "roles:write", "roles:delete",
-  "audit:read",
-  "settings:read", "settings:write",
-];
 
 export default function RolesPage() {
   const queryClient = useQueryClient();
@@ -61,11 +53,21 @@ export default function RolesPage() {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [error, setError] = useState("");
 
+  // Backend is the source of truth for both lists (paths match the API base,
+  // which is already /api/v1 — never double-prefix)
   const { data: roles, isLoading: rolesLoading } = useQuery({
     queryKey: ["modit", "roles"],
     queryFn: async () => {
       const client = getClient();
-      return client.request<{ items: Role[] }>("/admin/roles").then((r) => r.items ?? []);
+      return client.request<Role[]>("/admin/roles");
+    },
+  });
+
+  const { data: availablePermissions } = useQuery({
+    queryKey: ["modit", "permissions"],
+    queryFn: async () => {
+      const client = getClient();
+      return client.request<PermissionRef[]>("/admin/permissions");
     },
   });
 
@@ -73,7 +75,7 @@ export default function RolesPage() {
     queryKey: ["modit", "users"],
     queryFn: async () => {
       const client = getClient();
-      return client.request<{ items: User[] }>("/admin/users").then((r) => r.items ?? []);
+      return client.request<Array<User & { roles?: { id: string; name: string }[] }>>("/admin/users");
     },
   });
 
@@ -83,7 +85,7 @@ export default function RolesPage() {
       const client = getClient();
       await client.request("/admin/roles", {
         method: "POST",
-        body: JSON.stringify({ name: roleName, description: roleDesc, permissions: selectedPermissions }),
+        body: JSON.stringify({ name: roleName, description: roleDesc, permission_ids: selectedPermissions }),
       });
     },
     onSuccess: () => {
@@ -99,9 +101,9 @@ export default function RolesPage() {
       setError("");
       if (!editingRole) return;
       const client = getClient();
-      await client.request(`/api/v1/admin/roles/${editingRole.id}`, {
+      await client.request(`/admin/roles/${editingRole.id}`, {
         method: "PUT",
-        body: JSON.stringify({ name: roleName, description: roleDesc, permissions: selectedPermissions }),
+        body: JSON.stringify({ name: roleName, description: roleDesc, permission_ids: selectedPermissions }),
       });
     },
     onSuccess: () => {
@@ -115,7 +117,7 @@ export default function RolesPage() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const client = getClient();
-      await client.request(`/api/v1/admin/roles/${id}`, { method: "DELETE" });
+      await client.request(`/admin/roles/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "roles"] });
@@ -126,9 +128,10 @@ export default function RolesPage() {
     mutationFn: async () => {
       if (!assigningRole || !selectedUserId) return;
       const client = getClient();
+      // POST /admin/roles/assign keys the role by NAME on the backend.
       await client.request("/admin/roles/assign", {
         method: "POST",
-        body: JSON.stringify({ user_id: selectedUserId, role_id: assigningRole.id }),
+        body: JSON.stringify({ user_id: selectedUserId, role_name: assigningRole.name }),
       });
     },
     onSuccess: () => {
@@ -149,22 +152,25 @@ export default function RolesPage() {
     setEditingRole(role);
     setRoleName(role.name);
     setRoleDesc(role.description ?? "");
-    setSelectedPermissions(role.permissions ?? []);
+    setSelectedPermissions((role.permissions ?? []).map((p) => p.id));
     setShowCreate(false);
   }
 
-  function togglePermission(perm: string) {
+  function togglePermission(id: string) {
     setSelectedPermissions((prev) =>
-      prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
   }
 
-  const permissionGroups = AVAILABLE_PERMISSIONS.reduce((acc, perm) => {
-    const [resource] = perm.split(":");
-    if (!acc[resource]) acc[resource] = [];
-    acc[resource].push(perm);
-    return acc;
-  }, {} as Record<string, string[]>);
+  const permissionGroups = useMemo(() => {
+    const groups: Record<string, PermissionRef[]> = {};
+    (availablePermissions ?? []).forEach((perm) => {
+      const [resource] = perm.name.split(".");
+      if (!groups[resource]) groups[resource] = [];
+      groups[resource].push(perm);
+    });
+    return groups;
+  }, [availablePermissions]);
 
   return (
     <div>
@@ -226,9 +232,9 @@ export default function RolesPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {role.permissions?.slice(0, 3).map((p) => (
-                          <Badge key={p} variant="info" className="text-tiny">
-                            {p}
+                        {(role.permissions ?? []).slice(0, 3).map((p) => (
+                          <Badge key={p.id} variant="info" className="text-tiny">
+                            {p.name}
                           </Badge>
                         ))}
                         {(role.permissions?.length ?? 0) > 3 && (
@@ -340,12 +346,12 @@ export default function RolesPage() {
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {perms.map((perm) => {
-                          const active = selectedPermissions.includes(perm);
+                          const active = selectedPermissions.includes(perm.id);
                           return (
                             <button
-                              key={perm}
+                              key={perm.id}
                               type="button"
-                              onClick={() => togglePermission(perm)}
+                              onClick={() => togglePermission(perm.id)}
                               className={cn(
                                 "inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition-colors",
                                 active
@@ -354,7 +360,7 @@ export default function RolesPage() {
                               )}
                             >
                               {active && <Check className="h-3 w-3" />}
-                              {perm.split(":")[1]}
+                              {perm.name.split(".")[1] ?? perm.name}
                             </button>
                           );
                         })}
@@ -406,7 +412,7 @@ export default function RolesPage() {
                       <option value="">Choose a user...</option>
                       {users?.map((u) => (
                         <option key={u.id} value={u.id}>
-                          {u.name} ({u.email})
+                          {u.full_name || u.email.split("@")[0]} ({u.email})
                         </option>
                       ))}
                     </select>

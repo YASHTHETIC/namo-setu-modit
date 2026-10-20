@@ -100,8 +100,8 @@ export function FlashDeals() {
                     <p className="text-micro font-semibold text-white leading-tight line-clamp-2 min-h-[28px] mt-0.5 hover:text-[#7CB518] transition-colors">{product.name}</p>
                   </Link>
                   <div className="flex items-baseline gap-1.5 mt-1.5">
-                    <span className="text-body-md font-extrabold text-[#7CB518]">₹{product.price.toLocaleString()}</span>
-                    <span className="text-tiny text-white/30 line-through">₹{product.mrp.toLocaleString()}</span>
+                    <span className="text-body-md font-extrabold text-[#7CB518]">₹{product.price.toLocaleString("en-IN")}</span>
+                    <span className="text-tiny text-white/30 line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
                   </div>
                   <div className="mt-2 min-h-[70px]">
                     <button

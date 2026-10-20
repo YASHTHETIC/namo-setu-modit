@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, GitCompareArrows } from "lucide-react";
 import { useComparisonStore } from "@/lib/comparison-store";
+import { ImageGuard } from "@/components/product-thumb";
 
 const HIDDEN_ROUTES = ["/checkout", "/payment", "/orders", "/cart"];
 
@@ -22,7 +22,7 @@ export function ComparisonBar() {
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
             {items.map((product) => (
               <div key={product.id} className="relative flex-shrink-0">
-                <Image src={product.images[0]} alt="" width={40} height={40} loading="lazy" className="h-10 w-10 rounded-lg object-cover bg-white/10 border border-white/20" />
+                <ImageGuard src={product.images?.[0]} alt={product.name} width={40} height={40} className="h-10 w-10 rounded-lg object-cover bg-white/10 border border-white/20" />
                 <button
                   onClick={() => removeFromCompare(product.id)}
                   className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#E91E63] flex items-center justify-center"

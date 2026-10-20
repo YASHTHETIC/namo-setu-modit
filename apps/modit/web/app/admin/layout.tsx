@@ -5,27 +5,29 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import {
   LayoutDashboard, Package, Zap, ShoppingCart, Ticket, Store, ChevronRight,
-  Lock, RotateCcw, LogOut, IndianRupee, FileText, Building2, Warehouse,
+  Lock, RotateCcw, IndianRupee, FileText, Building2, Warehouse,
   Users, ShieldCheck, Tags, KeyRound,
 } from "lucide-react";
-import { useAdminAuth, getAdminPinHint } from "@/lib/admin-auth";
 import { logAdminActivity } from "@/lib/admin-activity";
-import { onlyDigits } from "@/lib/utils";
 import { getAccessToken } from "@/lib/auth";
 import { useCurrentUser } from "@/lib/use-current-user";
 import { env } from "@/lib/env";
 
-/** One-click staff setup: shows only while this login lacks staff rights. */
-function StaffBanner() {
-  const [state, setState] = useState<
-    | { kind: "checking" }
-    | { kind: "logged-out" }
-    | { kind: "staff" }
-    | { kind: "claimable" }
-    | { kind: "blocked" }
-    | { kind: "error"; message: string }
-  >({ kind: "checking" });
-  const [busy, setBusy] = useState(false);
+type StaffCheck =
+  | { kind: "checking" }
+  | { kind: "logged-out" }
+  | { kind: "staff" }
+  | { kind: "claimable" }
+  | { kind: "blocked" }
+  | { kind: "error"; message: string };
+
+/**
+ * Authoritative staff check against the backend. The API is the source of
+ * truth — every admin write is permission-gated server-side regardless of
+ * what this client gate renders.
+ */
+function useStaffStatus() {
+  const [state, setState] = useState<StaffCheck>({ kind: "checking" });
 
   const load = useCallback(async (retried = false) => {
     const token = getAccessToken();
@@ -70,14 +72,9 @@ function StaffBanner() {
     }
   }, []);
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const claim = async () => {
+  const claim = useCallback(async () => {
     const token = getAccessToken();
     if (!token) return;
-    setBusy(true);
     try {
       const res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/claim-staff`, {
         method: "POST",
@@ -90,12 +87,21 @@ function StaffBanner() {
       logAdminActivity("admin.unlock", "Staff access claimed (first staff)");
       setState({ kind: "staff" });
     } catch (e) {
-      setState({ kind: "error", message: e instanceof Error ? e.message : "Claim failed" });
-    } finally {
-      setBusy(false);
+      const msg = e instanceof Error ? e.message : "Claim failed";
+      setState({ kind: "error", message: msg });
+      throw e;
     }
-  };
+  }, []);
 
+  useEffect(() => { load(); }, [load]);
+
+  return { state, load, claim };
+}
+
+/** One-click staff setup: shows only while this login lacks staff rights. */
+function StaffBanner({ gate }: { gate: ReturnType<typeof useStaffStatus> }) {
+  const { state, load, claim } = gate;
+  const [busy, setBusy] = useState(false);
   if (state.kind === "checking" || state.kind === "staff") return null;
 
   return (
@@ -136,7 +142,10 @@ function StaffBanner() {
       )}
       {state.kind === "claimable" && (
         <button
-          onClick={claim}
+          onClick={async () => {
+            setBusy(true);
+            try { await claim(); } finally { setBusy(false); }
+          }}
           disabled={busy}
           className="btn-shine px-4 py-2.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] disabled:opacity-50"
         >
@@ -145,10 +154,7 @@ function StaffBanner() {
       )}
       {(state.kind === "blocked" || state.kind === "error") && (
         <button
-          onClick={() => {
-            setState({ kind: "checking" });
-            load();
-          }}
+          onClick={() => load()}
           className="px-4 py-2.5 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
         >
           Recheck
@@ -176,59 +182,21 @@ const links = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const unlocked = useAdminAuth((s) => s.unlocked);
-  const unlock = useAdminAuth((s) => s.unlock);
-  const lock = useAdminAuth((s) => s.lock);
-  const [pin, setPin] = useState("");
-  const [pinError, setPinError] = useState("");
-  // Real logins bypass the demo PIN wall: staff keep full access, supplier
-  // logins are redirected to their own hub below (never the staff surface).
-  const { loggedIn, isStaff, isSupplier } = useCurrentUser();
-  const authed = loggedIn && (isStaff || isSupplier);
-  const supplierOnly = authed && isSupplier && !isStaff;
   const router = useRouter();
+  // Server-side gate mirror: every admin action is a staff login + a backend
+  // permission check (products/inventory/deliveries/etc are permission-gated
+  // at the API). No PIN wall — a PIN string in public JS is not a gate.
+  const gate = useStaffStatus();
+  const { isSupplier } = useCurrentUser();
+  const { state, load } = gate;
+  // A logged-in non-staff whose server says "no": supplier logins go to their
+  // own hub, everyone else is a buyer and stays on the login wall below.
+  const supplierOnly = isSupplier && state.kind === "blocked";
+
   useEffect(() => {
     // Blinkit rule: a seller login never lands on the staff surface.
     if (supplierOnly) router.replace("/supplier");
   }, [supplierOnly, router]);
-
-  if (!unlocked && !authed) {
-    return (
-      <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4">
-        <div className="w-full max-w-sm rounded-2xl border border-[#DDD6EE] bg-white p-8 text-center shadow-lg">
-          <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center">
-            <Lock className="h-6 w-6 text-white" />
-          </div>
-          <h1 className="text-title-md font-extrabold text-[#150726]">Staff access only</h1>
-          <p className="text-caption text-[#9B8CB5] mt-1">This panel controls live prices, sales and orders.</p>
-          <input
-            value={pin}
-            onChange={(e) => { setPin(onlyDigits(e.target.value, 8)); setPinError(""); }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel");
-                else setPinError("Incorrect PIN. Try again.");
-              }
-            }}
-            inputMode="numeric"
-            type="password"
-            placeholder="Enter staff PIN"
-            autoFocus
-            className="mt-5 w-full rounded-xl border-2 border-[#DDD6EE] px-4 py-3 text-center text-body-lg font-extrabold tracking-[0.4em] focus:outline-none focus:border-[#2D1B69]"
-          />
-          {pinError && <p className="mt-2 text-micro font-bold text-red-500">{pinError}</p>}
-          <button
-            onClick={() => { if (unlock(pin)) logAdminActivity("admin.unlock", "Staff unlocked the admin panel"); else setPinError("Incorrect PIN. Try again."); }}
-            className="mt-3 w-full h-12 rounded-xl bg-[#2D1B69] text-white text-body-md font-bold hover:bg-[#1E1245]"
-          >
-            Unlock panel
-          </button>
-          <p className="mt-3 text-micro text-[#9B8CB5]">{getAdminPinHint()}</p>
-          <Link href="/" className="mt-4 inline-block text-caption font-bold text-[#2D1B69] hover:underline">← Back to store</Link>
-        </div>
-      </div>
-    );
-  }
 
   if (supplierOnly) {
     return (
@@ -237,6 +205,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     );
   }
+
+  if (state.kind === "checking") {
+    return (
+      <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4">
+        <p className="text-body-sm font-bold text-[#9B8CB5]">Checking staff access…</p>
+      </div>
+    );
+  }
+
+  // No session / wrong account (buyer or blocked supplier): hard login wall.
+  const locked = state.kind === "logged-out" || state.kind === "blocked";
+  if (locked) {
+    return (
+      <div className="min-h-screen bg-[#F8F6FC] flex items-center justify-center px-4">
+        <div className="w-full max-w-sm rounded-2xl border border-[#DDD6EE] bg-white p-8 text-center shadow-lg">
+          <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-[#2D1B69] flex items-center justify-center">
+            <Lock className="h-6 w-6 text-white" />
+          </div>
+          <h1 className="text-title-md font-extrabold text-[#150726]">Staff access only</h1>
+          <p className="text-caption text-[#9B8CB5] mt-1">
+            This panel controls live prices, stock and orders. Log in with a staff account — buyer logins won&apos;t pass.
+          </p>
+          <button
+            onClick={() => load()}
+            className="mt-4 w-full h-11 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
+          >
+            Recheck access
+          </button>
+          <Link
+            href="/auth?next=%2Fadmin"
+            className="mt-2 w-full h-12 rounded-xl bg-[#2D1B69] text-white text-body-md font-bold hover:bg-[#1E1245] flex items-center justify-center"
+          >
+            Log in as staff
+          </Link>
+          <Link href="/" className="mt-4 inline-block text-caption font-bold text-[#2D1B69] hover:underline">← Back to store</Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6">
@@ -247,12 +255,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <ChevronRight className="h-3 w-3" />
           <span className="font-bold text-[#150726]">Admin Panel</span>
           <span className="ml-1 rounded-full bg-[#E91E63]/10 px-2 py-0.5 text-tiny font-bold text-[#E91E63]">STAFF ONLY</span>
-          <button onClick={lock} title="Lock panel" className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:bg-[#FCE4EC]">
-            <LogOut className="h-3.5 w-3.5" /> Lock
-          </button>
         </div>
 
-        <StaffBanner />
+        <StaffBanner gate={gate} />
 
         <div className="flex flex-col gap-5 lg:flex-row">
           <aside className="lg:w-60 shrink-0">

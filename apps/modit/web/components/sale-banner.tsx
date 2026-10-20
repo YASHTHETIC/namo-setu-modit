@@ -20,6 +20,13 @@ function useNow(intervalMs = 1000) {
 }
 
 export function SaleBanner() {
+  // Per launch decision the client-side sale engine is display-only in the
+  // admin console — the storefront never advertises prices that are not
+  // charged, so no customer-facing sale banner until sales are server-driven.
+  return null;
+}
+
+export function SaleBannerPreview() {
   const sale = useActiveSale();
   const sales = useAdminStore((s) => s.sales);
   const now = useNow();

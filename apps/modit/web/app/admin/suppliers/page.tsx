@@ -329,7 +329,7 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
         </div>
         <div className="mt-2 flex items-center gap-4 text-tiny text-white/50">
           <span className="flex items-center gap-1"><Clock3 className="h-3 w-3" /> {s.scorecard.responseHrs}h response</span>
-          <span>{s.scorecard.reviews.toLocaleString()} reviews</span>
+          <span>{s.scorecard.reviews.toLocaleString("en-IN")} reviews</span>
           {s.status === "verified" && <span className="flex items-center gap-1 text-[#7cb518] font-bold"><ShieldCheck className="h-3 w-3" /> BIS/ISI compliant</span>}
         </div>
 
@@ -390,7 +390,7 @@ function SupplierCard({ s, expanded, onToggle, onAct, notesDraft, onNotesChange,
             {catalog.slice(0, 8).map((p) => (
               <div key={p.id} className="flex items-center justify-between gap-2 text-micro">
                 <span className="text-white/80 font-semibold truncate">{p.name}</span>
-                <span className="text-white/50 tabular-nums whitespace-nowrap">₹{p.price.toLocaleString()} · {p.stockLevel} pcs</span>
+                <span className="text-white/50 tabular-nums whitespace-nowrap">₹{p.price.toLocaleString("en-IN")} · {p.stockLevel} pcs</span>
               </div>
             ))}
             {catalog.length === 0 && <p className="text-micro text-white/40">No catalog products match brand “{s.brand}”.</p>}

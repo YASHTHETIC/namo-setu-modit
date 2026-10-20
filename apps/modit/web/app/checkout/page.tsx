@@ -6,7 +6,7 @@ import {
   ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
   Tag, Calendar, Zap, X, Trash2, Gift, FileText
 } from "lucide-react";
-import { useCartStore } from "@/lib/cart-store";
+import { useCartStore, getBulkUnitPrice } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
@@ -405,11 +405,13 @@ export default function CheckoutPage() {
                   </h3>
                   <div className="space-y-3">
                     {items.map((item) => {
-                      const itemPrice = item.unitPrice ?? item.product.price;
+                      // Live pricing (admin override/sale-aware) — never the
+                      // add-time snapshot, which can drift from what the
+                      // server charges.
+                      const unitPrice = getBulkUnitPrice(item);
                       const variant = item.variantId ? item.product.variants?.find((v) => v.id === item.variantId) : null;
-                      const discount = (variant?.mrp ?? item.product.mrp) > itemPrice
-                        ? Math.round((((variant?.mrp ?? item.product.mrp) - itemPrice) / (variant?.mrp ?? item.product.mrp)) * 100)
-                        : 0;
+                      const mrp = variant?.mrp ?? item.product.mrp;
+                      const discount = mrp > unitPrice ? Math.round(((mrp - unitPrice) / mrp) * 100) : 0;
                       return (
                         <div key={`${item.product.id}:${item.variantId || "default"}`} className="flex gap-3 p-3 rounded-xl bg-[#F8F6FC]">
                           <ProductThumb src={item.product.images[0]} alt={item.product.name} className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
@@ -419,12 +421,12 @@ export default function CheckoutPage() {
                             {variant && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69]">{variant.label}</span>}
                             {item.shade && <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69] ml-1">{item.shade}</span>}
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-caption font-bold text-[#150726]">₹{itemPrice.toLocaleString()}</span>
+                              <span className="text-caption font-bold text-[#150726]">{formatINR2(unitPrice)}</span>
                               {discount > 0 && <span className="text-tiny font-bold text-[#E91E63]">{discount}% OFF</span>}
                               <span className="text-tiny text-[#9B8CB5]">× {item.quantity}</span>
                             </div>
                           </div>
-                          <p className="text-body-sm font-bold text-[#150726] whitespace-nowrap">₹{(itemPrice * item.quantity).toLocaleString()}</p>
+                          <p className="text-body-sm font-bold text-[#150726] whitespace-nowrap">{formatINR2(unitPrice * item.quantity)}</p>
                         </div>
                       );
                     })}
@@ -456,7 +458,7 @@ export default function CheckoutPage() {
                 <div className="space-y-2 tabular-nums">
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Subtotal</span>
-                    <span className="text-[#150726]">₹{subtotal.toLocaleString()}</span>
+                    <span className="text-[#150726]">{formatINR2(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST</span>
@@ -465,7 +467,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Shipping</span>
                     <span className={effectiveShipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726]"}>
-                      {effectiveShipping === 0 ? "FREE" : `₹${effectiveShipping}`}
+                      {effectiveShipping === 0 ? "FREE" : formatINR2(effectiveShipping)}
                     </span>
                   </div>
                   <div className="flex justify-between text-body-sm">
@@ -477,7 +479,7 @@ export default function CheckoutPage() {
                   {couponDiscount > 0 && (
                     <div className="flex justify-between text-body-sm">
                       <span className="text-[#7CB518]">Coupon ({appliedCoupon?.code})</span>
-                      <span className="text-[#7CB518] font-semibold">-₹{couponDiscount.toLocaleString()}</span>
+                      <span className="text-[#7CB518] font-semibold">-{formatINR2(couponDiscount)}</span>
                     </div>
                   )}
                   <div className="border-t border-[#EDE7F6] pt-2.5 mt-1 flex justify-between items-baseline">

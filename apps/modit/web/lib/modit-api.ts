@@ -61,6 +61,7 @@ export const moditKeys = {
   analytics: () => ["modit", "analytics"] as const,
   notifications: (orgId: string) => ["modit", "notifications", orgId] as const,
   layout: (screen: string, pincode?: string) => ["modit", "layout", screen, pincode] as const,
+  auditLogs: (page?: number, pageSize?: number) => ["modit", "audit-logs", page, pageSize] as const,
 };
 
 // Product Catalog
@@ -230,6 +231,50 @@ export function useWarehouses(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.warehouses(organizationId),
     queryFn: () => getModitApi().listWarehouses(organizationId),
+    ...fastQueryOpts,
+  });
+}
+
+export interface AuditLogEntry {
+  id: string;
+  product_code: string;
+  actor_user_id: string | null;
+  action: string;
+  entity_type: string;
+  entity_id: string;
+  before_json: string | null;
+  after_json: string | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+export interface AuditLogPage {
+  logs: AuditLogEntry[];
+  total: number;
+}
+
+/** Server-side staff audit trail (GET /admin/audit-logs, AUDIT_READ). Why a
+ * raw client call: createModitApi() has no audit-logs method, and this list
+ * needs the logged-in staff token just like everything else here. */
+export async function listAuditLogs(page = 1, pageSize = 50, signal?: AbortSignal): Promise<AuditLogPage> {
+  const client = createApiClient({
+    baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
+    accessToken: getAccessToken(),
+    timeout: 8000,
+    maxRetries: 1,
+    retryDelay: 300,
+  });
+  return client.request<AuditLogPage>(
+    `/admin/audit-logs?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(pageSize)}`,
+    { signal }
+  );
+}
+
+export function useAuditLogs(page = 1, pageSize = 50) {
+  return useQuery({
+    queryKey: moditKeys.auditLogs(page, pageSize),
+    queryFn: ({ signal }) => listAuditLogs(page, pageSize, signal),
+    enabled: Boolean(getAccessToken()),
     ...fastQueryOpts,
   });
 }

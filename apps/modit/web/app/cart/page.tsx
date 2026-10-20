@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import { ProductThumb } from "@/components/product-thumb";
 import Link from "next/link";
 import {
@@ -89,10 +89,10 @@ export default function CartPage() {
               <div className="space-y-3">
                 {savedItems.map((s) => (
                   <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <ProductThumb src={s.product.images[0]} alt={s.product.name} className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                      <ProductThumb src={s.product.images?.[0]} alt={s.product.name} className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
-                      <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
+                      <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString("en-IN")}</p>
                     </div>
                     <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
                   </div>
@@ -154,7 +154,7 @@ export default function CartPage() {
                 <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
-                    <ProductThumb src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-contain" />
+                    <ProductThumb src={item.product.images?.[0]} alt={item.product.name} className="h-full w-full object-contain" />
                   </Link>
 
                   {/* Info */}
@@ -180,13 +180,13 @@ export default function CartPage() {
                         <p className="text-micro text-[#9B8CB5] mt-0.5">Seller: {item.product.seller.name}</p>
                       </div>
                       <p className="text-title-md font-extrabold text-[#150726] whitespace-nowrap">
-                        ₹{(itemPrice * item.quantity).toLocaleString()}
+                        ₹{(itemPrice * item.quantity).toLocaleString("en-IN")}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 mt-1.5">
                       {unitMrp > itemPrice && (
-                        <span className="text-caption text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString()}</span>
+                        <span className="text-caption text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString("en-IN")}</span>
                       )}
                       {discount > 0 && (
                         <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-tiny font-bold text-[#E91E63]">
@@ -201,10 +201,10 @@ export default function CartPage() {
                       {bulkApplied && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF9800]/10 text-tiny font-bold text-[#FF9800]">
                           <Tag className="h-2.5 w-2.5" />
-                          Bulk rate ₹{itemPrice.toLocaleString()}
+                          Bulk rate ₹{itemPrice.toLocaleString("en-IN")}
                         </span>
                       )}
-                      <span className="text-micro text-[#9B8CB5]">₹{itemPrice.toLocaleString()} each</span>
+                      <span className="text-micro text-[#9B8CB5]">₹{itemPrice.toLocaleString("en-IN")} each</span>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between">
@@ -267,10 +267,10 @@ export default function CartPage() {
                 <div className="space-y-2">
                   {savedItems.map((s) => (
                     <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <Image src={s.product.images[0]} alt={s.product.name} width={56} height={56} loading="lazy" className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
+                      <ImageGuard src={s.product.images?.[0]} alt={s.product.name} width={56} height={56} className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
-                        <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString()}</p>
+                        <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString("en-IN")}</p>
                       </div>
                       <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
                       <button onClick={() => removeSaved(s.product.id)} className="text-micro font-medium text-[#E91E63] hover:underline">Remove</button>
@@ -307,7 +307,7 @@ export default function CartPage() {
                 </div>
                 {couponApplied && appliedCoupon && (
                   <div className="mt-2 flex items-center justify-between gap-1.5 text-caption text-[#7CB518] font-semibold">
-                    <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! You save ₹{couponDiscount.toLocaleString()}</span>
+                    <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! You save ₹{couponDiscount.toLocaleString("en-IN")}</span>
                     <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-micro text-[#9B8CB5] hover:text-red-500 font-bold">Remove</button>
                   </div>
                 )}
@@ -332,7 +332,7 @@ export default function CartPage() {
                 <div className="mb-3 flex items-center justify-between px-4 py-2.5 bg-[#FFF6DE] border border-[#F8CB46] rounded-full">
                   <p className="text-caption font-bold text-[#150726]">Your total savings</p>
                   <p className="text-caption font-extrabold text-[#150726] tabular-nums">
-                    ₹{(getCartDiscount() + getBulkSavings()).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    ₹{(getCartDiscount() + getBulkSavings()).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                   </p>
                 </div>
               )}
@@ -343,16 +343,16 @@ export default function CartPage() {
                 <div className="mt-3 space-y-2.5">
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Price ({items.length} item{items.length !== 1 ? "s" : ""})</span>
-                    <span className="text-[#150726] font-medium">₹{getCartMRP().toLocaleString()}</span>
+                    <span className="text-[#150726] font-medium">₹{getCartMRP().toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#7CB518]">Discount</span>
-                    <span className="text-[#7CB518] font-medium">-₹{getCartDiscount().toLocaleString()}</span>
+                    <span className="text-[#7CB518] font-medium">-₹{getCartDiscount().toLocaleString("en-IN")}</span>
                   </div>
                   {getBulkSavings() > 0 && (
                     <div className="flex justify-between text-body-sm">
                       <span className="text-[#FF9800]">Bulk quantity savings</span>
-                      <span className="text-[#FF9800] font-medium">-₹{getBulkSavings().toLocaleString()}</span>
+                      <span className="text-[#FF9800] font-medium">-₹{getBulkSavings().toLocaleString("en-IN")}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-body-sm">
@@ -363,21 +363,21 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST (estimated)</span>
-                    <span className="text-[#150726] font-medium">₹{getCartGST().toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                    <span className="text-[#150726] font-medium">₹{getCartGST().toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
                   </div>
                   {couponApplied && (
                     <div className="flex justify-between text-body-sm">
                       <span className="text-[#7CB518]">Coupon Discount</span>
-                      <span className="text-[#7CB518] font-medium">-₹{couponDiscount.toLocaleString()}</span>
+                      <span className="text-[#7CB518] font-medium">-₹{couponDiscount.toLocaleString("en-IN")}</span>
                     </div>
                   )}
                   <div className="border-t border-[#DDD6EE] pt-3 flex justify-between items-center">
                     <span className="text-body-lg font-bold text-[#150726]">Total</span>
                     <div className="text-right">
-                      <span className="text-title-lg font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-title-lg font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
                       {getCartDiscount() > 0 && (
                         <p className="text-micro font-semibold text-[#7CB518] mt-0.5">
-                          You save ₹{getCartDiscount().toLocaleString(undefined, { maximumFractionDigits: 0 })} on this order
+                          You save ₹{getCartDiscount().toLocaleString("en-IN", { maximumFractionDigits: 0 })} on this order
                         </p>
                       )}
                     </div>

@@ -81,9 +81,9 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                   </p>
                   <p className="text-caption mt-0.5">
                     {v.mrp > v.price && (
-                      <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString()}</span>
+                      <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString("en-IN")}</span>
                     )}
-                    <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString()}</span>
+                    <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString("en-IN")}</span>
                     {discount > 0 && (
                       <span className="ml-1.5 text-tiny font-bold text-[#E91E63]">{discount}% off</span>
                     )}

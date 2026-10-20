@@ -151,7 +151,7 @@ export function ReturnModal({ open, onClose, orderId, purchaseOrderId, items, on
                       </button>
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-bold text-[#150726] truncate">{item.name}</p>
-                        <p className="text-tiny text-[#9B8CB5]">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
+                        <p className="text-tiny text-[#9B8CB5]">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString("en-IN")}</p>
                       </div>
                       {active && (
                         <div className="flex items-center gap-1.5">

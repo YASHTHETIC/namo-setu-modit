@@ -91,7 +91,7 @@ export function MetricTile({
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</p>
           <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-            {typeof value === "number" ? displayValue.toLocaleString() : value}
+            {typeof value === "number" ? displayValue.toLocaleString("en-IN") : value}
           </p>
           {delta !== undefined && (
             <div className="mt-2 flex items-center gap-1.5">
@@ -684,7 +684,7 @@ export function StarRating({
       </div>
       {showCount && count !== undefined && (
         <span className={cn("text-[var(--text-muted)]", size === "sm" ? "text-xs" : "text-sm")}>
-          ({count.toLocaleString()})
+          ({count.toLocaleString("en-IN")})
         </span>
       )}
     </div>

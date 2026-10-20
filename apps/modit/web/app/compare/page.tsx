@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import { ArrowLeft, X, Star, Truck, Shield, Package, Trash2 } from "lucide-react";
 import { useComparisonStore } from "@/lib/comparison-store";
@@ -55,17 +55,17 @@ export default function ComparePage() {
                   <X className="h-3.5 w-3.5" />
                 </button>
                 <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC]">
-            <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" loading="lazy" draggable={false} className="object-contain" />
+            <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" draggable={false} className="object-contain" />
           </div>
                 <p className="text-tiny font-bold text-[#7CB518] uppercase mt-2">{product.brand}</p>
                 <p className="text-caption font-semibold text-[#150726] line-clamp-2 mt-0.5">{product.name}</p>
                 <div className="flex items-baseline gap-2 mt-2">
-                  <span className="text-body-lg font-extrabold text-[#2D1B69]">₹{product.price.toLocaleString()}</span>
-                  {product.mrp > product.price && <span className="text-micro text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>}
+                  <span className="text-body-lg font-extrabold text-[#2D1B69]">₹{product.price.toLocaleString("en-IN")}</span>
+                  {product.mrp > product.price && <span className="text-micro text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString("en-IN")}</span>}
                 </div>
                 {product.mrp > product.price ? (
                   <p className="text-micro font-bold text-[#7CB518] mt-0.5">
-                    Save ₹{(product.mrp - product.price).toLocaleString()} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}%)
+                    Save ₹{(product.mrp - product.price).toLocaleString("en-IN")} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}%)
                   </p>
                 ) : (
                   <p className="text-micro mt-0.5 invisible" aria-hidden="true">.</p>
@@ -90,7 +90,7 @@ export default function ComparePage() {
                 <div key={p.id} className="px-4 py-3 flex items-center gap-1">
                   <Star className="h-3.5 w-3.5 fill-[#FF9800] text-[#FF9800]" />
                   <span className="text-caption font-bold text-[#150726]">{p.rating}</span>
-                  <span className="text-tiny text-[#9B8CB5]">({p.reviewCount.toLocaleString()})</span>
+                  <span className="text-tiny text-[#9B8CB5]">({p.reviewCount.toLocaleString("en-IN")})</span>
                 </div>
               ))}
             </div>
@@ -136,7 +136,7 @@ export default function ComparePage() {
               <div className="px-4 py-3 text-micro font-bold text-[#9B8CB5] uppercase flex items-center gap-1"><Package className="h-3 w-3" /> Bulk Price</div>
               {items.map((p) => (
                 <div key={p.id} className="px-4 py-3 text-caption">
-                  {p.bulkPrice ? <span className="font-bold text-[#FF9800]">₹{p.bulkPrice.toLocaleString()} ({p.bulkMinQty}+)</span> : <span className="text-[#9B8CB5]">—</span>}
+                  {p.bulkPrice ? <span className="font-bold text-[#FF9800]">₹{p.bulkPrice.toLocaleString("en-IN")} ({p.bulkMinQty}+)</span> : <span className="text-[#9B8CB5]">—</span>}
                 </div>
               ))}
             </div>

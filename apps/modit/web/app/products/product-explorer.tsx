@@ -1025,11 +1025,11 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div className="min-w-0">
             <p className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
-              ₹{product.price.toLocaleString()}
+              ₹{product.price.toLocaleString("en-IN")}
             </p>
             {product.mrp > product.price && (
               <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
-                ₹{product.mrp.toLocaleString()}
+                ₹{product.mrp.toLocaleString("en-IN")}
               </p>
             )}
           </div>
@@ -1187,9 +1187,9 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         <div className="mt-auto pt-3 flex items-center gap-6">
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-[var(--text-primary)]">₹{product.price.toLocaleString()}</span>
+              <span className="text-2xl font-black text-[var(--text-primary)]">₹{product.price.toLocaleString("en-IN")}</span>
               {product.mrp > product.price && (
-                <span className="text-xs text-[var(--text-muted)] line-through font-medium">₹{product.mrp.toLocaleString()}</span>
+                <span className="text-xs text-[var(--text-muted)] line-through font-medium">₹{product.mrp.toLocaleString("en-IN")}</span>
               )}
             </div>
             {product.bulkLabel && (

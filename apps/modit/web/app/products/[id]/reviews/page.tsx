@@ -138,7 +138,7 @@ export default function ProductReviewsPage({
                     ))}
                   </div>
                   <p className="mt-1 text-sm text-[var(--text-muted)]">
-                    Based on {stats.total_reviews.toLocaleString()} review
+                    Based on {stats.total_reviews.toLocaleString("en-IN")} review
                     {stats.total_reviews !== 1 ? "s" : ""}
                   </p>
                 </div>

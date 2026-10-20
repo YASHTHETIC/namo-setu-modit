@@ -57,7 +57,7 @@ export default function AnalyticsPage() {
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-[fadeIn_0.4s_ease-out]">
         <MetricTile label="Total Orders" value={d.total_orders} icon={<FileText className="h-5 w-5" />} delta={12} deltaLabel="vs last month" />
-        <MetricTile label="Total Revenue" value={`₹${d.total_revenue.toLocaleString()}`} icon={<TrendingUp className="h-5 w-5" />} delta={8} deltaLabel="vs last month" />
+        <MetricTile label="Total Revenue" value={`₹${d.total_revenue.toLocaleString("en-IN")}`} icon={<TrendingUp className="h-5 w-5" />} delta={8} deltaLabel="vs last month" />
         <MetricTile label="Suppliers" value={d.total_suppliers} icon={<Users className="h-5 w-5" />} delta={5} deltaLabel="verified" />
         <MetricTile label="Pending RFQs" value={d.pending_rfqs} icon={<FileText className="h-5 w-5" />} delta={-3} deltaLabel="vs last month" />
       </div>
@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between"><span className="text-[var(--text-muted)]">Organizations</span><span className="font-medium text-[var(--text-primary)]">{d.total_organizations}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Products Listed</span><span className="font-medium text-[var(--text-primary)]">{d.total_products.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Products Listed</span><span className="font-medium text-[var(--text-primary)]">{d.total_products.toLocaleString("en-IN")}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-muted)]">Active Suppliers</span><span className="font-medium text-[var(--text-primary)]">{d.total_suppliers}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-muted)]">Total Orders</span><span className="font-medium text-[var(--text-primary)]">{d.total_orders}</span></div>
             </div>
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
           <CardHeader><h2 className="text-h4 text-[var(--text-primary)]">Revenue & Projects</h2></CardHeader>
           <CardContent>
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Total Revenue</span><span className="font-bold text-[var(--brand)]">₹{d.total_revenue.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Total Revenue</span><span className="font-bold text-[var(--brand)]">₹{d.total_revenue.toLocaleString("en-IN")}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-muted)]">Active Projects</span><span className="font-medium text-[var(--text-primary)]">{d.active_projects}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-muted)]">Pending RFQs</span><span className="font-medium text-[var(--text-primary)]">{d.pending_rfqs}</span></div>
             </div>
@@ -140,8 +140,8 @@ export default function AnalyticsPage() {
                   <AlertTriangle className="h-3.5 w-3.5" /> {d.low_stock_items}
                 </span>
               </div>
-              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Products Catalog</span><span className="font-medium text-[var(--text-primary)]">{d.total_products.toLocaleString()}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Avg. Order Value</span><span className="font-medium text-[var(--text-primary)]">₹{d.total_orders > 0 ? Math.round(d.total_revenue / d.total_orders).toLocaleString() : 0}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Products Catalog</span><span className="font-medium text-[var(--text-primary)]">{d.total_products.toLocaleString("en-IN")}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-muted)]">Avg. Order Value</span><span className="font-medium text-[var(--text-primary)]">₹{d.total_orders > 0 ? Math.round(d.total_revenue / d.total_orders).toLocaleString("en-IN") : 0}</span></div>
             </div>
           </CardContent>
         </Card>

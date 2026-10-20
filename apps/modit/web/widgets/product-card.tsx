@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import type { Product } from "@/lib/product-data";
 import { useCartStore } from "@/lib/cart-store";
@@ -87,17 +87,14 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     >
       {/* Image zone — single %OFF ribbon, nothing else */}
       <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden">
-        {product.images?.[0] && (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
-            loading="lazy"
-            draggable={false}
-            className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
-          />
-        )}
+        <ImageGuard
+          src={product.images?.[0]}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
+          draggable={false}
+          className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+        />
         {discount > 0 && (
           <span className="absolute top-0 left-0 z-10 bg-[#2D1B69] text-white rounded-br-lg px-2 py-1 text-tiny font-black">
             {discount}% OFF
@@ -137,11 +134,11 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <div className="mt-auto flex items-end justify-between gap-2 pt-1.5">
           <div className="min-w-0">
             <p className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
-              ₹{activePrice.toLocaleString()}
+              ₹{activePrice.toLocaleString("en-IN")}
             </p>
             {activeMrp > activePrice && (
               <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
-                ₹{activeMrp.toLocaleString()}
+                ₹{activeMrp.toLocaleString("en-IN")}
               </p>
             )}
           </div>

@@ -10,19 +10,13 @@ import {
   TCS_PCT, settleOrder, type SettleRow,
 } from "@/lib/settlements";
 
-const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
-  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2 },
-  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1 },
-];
-
 export default function AdminPayoutsPage() {
-  const { data: apiOrders } = useOrders(undefined, fallbackOrders);
+  const { data: apiOrders, isError: ordersOffline, isLoading: ordersLoading } = useOrders(undefined);
   const orderStatuses = useAdminStore((s) => s.orderStatuses);
   const returns = useReturnStore((s) => s.returns);
 
   const rows: SettleRow[] = useMemo(() => {
-    const list = (apiOrders ?? fallbackOrders) as any[];
+    const list = (apiOrders ?? []) as any[];
     return list
       .filter((o) => o.status !== "cancelled" && (orderStatuses[o.id]?.status ?? o.status) !== "cancelled")
       .map((o) => settleOrder({ ...o, status: orderStatuses[o.id]?.status ?? o.status }));
@@ -111,6 +105,14 @@ export default function AdminPayoutsPage() {
               </tr>
             </thead>
             <tbody>
+              {rows.length === 0 && !ordersLoading && !ordersOffline && (
+                <tr>
+                  <td colSpan={8} className="px-4 py-14 text-center">
+                    <p className="text-body-sm font-bold text-[#150726]">Nothing to settle yet</p>
+                    <p className="mt-1 text-caption text-[#9B8CB5]">Settlement rows appear once real orders flow in.</p>
+                  </td>
+                </tr>
+              )}
               {rows.map((r) => (
                 <tr key={r.id} className="border-t border-[#F0ECF9]">
                   <td className="px-4 py-3 text-body-sm font-bold text-[#150726]">{r.id}</td>

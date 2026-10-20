@@ -476,7 +476,7 @@ export default function CalculatorPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-micro font-bold text-[#150726]">Qty: {item.quantity}</p>
-                    <p className="text-tiny text-[#9B8CB5]">₹{(item.product.price * item.quantity).toLocaleString()}</p>
+                    <p className="text-tiny text-[#9B8CB5]">₹{(item.product.price * item.quantity).toLocaleString("en-IN")}</p>
                   </div>
                 </Link>
               ))}
@@ -484,7 +484,7 @@ export default function CalculatorPage() {
             <div className="mt-3 pt-3 border-t border-[#DDD6EE] flex justify-between">
               <span className="text-caption font-semibold text-[#9B8CB5]">Estimated Total</span>
               <span className="text-body-lg font-extrabold text-[#2D1B69]">
-                ₹{recommendations.reduce((sum, r) => sum + r.product.price * r.quantity, 0).toLocaleString()}
+                ₹{recommendations.reduce((sum, r) => sum + r.product.price * r.quantity, 0).toLocaleString("en-IN")}
               </span>
             </div>
           </div>

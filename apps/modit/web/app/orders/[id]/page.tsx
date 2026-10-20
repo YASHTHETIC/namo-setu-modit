@@ -471,11 +471,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <div className="flex-1 min-w-0">
                   {item.brand && <p className="text-tiny font-bold text-[#7CB518] uppercase tracking-wide">{item.brand}</p>}
                   <p className="text-body-sm font-semibold text-[#150726] truncate">{item.name}</p>
-                  <p className="text-micro text-[#9B8CB5] mt-0.5">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString()}</p>
+                  <p className="text-micro text-[#9B8CB5] mt-0.5">{item.quantity} {item.unitCode} × ₹{item.unitPrice.toLocaleString("en-IN")}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-body-md font-extrabold text-[#150726]">₹{item.total.toLocaleString("en-IN")}</p>
-                  <p className="text-tiny text-[#9B8CB5] mt-0.5">incl. GST {item.gstRate}%</p>
+                  <p className="text-tiny text-[#9B8CB5] mt-0.5">+ {item.gstRate}% GST</p>
                 </div>
               </div>
             ))}
@@ -491,12 +491,12 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             </h3>
           </div>
           <div className="p-5 space-y-2.5">
-            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726] font-medium">₹{order.subtotal.toLocaleString()}</span></div>
-            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726] font-medium">₹{order.gst.toLocaleString()}</span></div>
+            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">Subtotal</span><span className="text-[#150726] font-medium">₹{order.subtotal.toLocaleString("en-IN")}</span></div>
+            <div className="flex justify-between text-caption"><span className="text-[#9B8CB5]">GST</span><span className="text-[#150726] font-medium">₹{order.gst.toLocaleString("en-IN")}</span></div>
             <div className="flex justify-between text-caption">
               <span className="text-[#9B8CB5]">Delivery</span>
               <span className={order.shipping === 0 ? "text-[#7CB518] font-bold" : "text-[#150726] font-medium"}>
-                {order.shipping === 0 ? "FREE" : `₹${order.shipping.toLocaleString()}`}
+                {order.shipping === 0 ? "FREE" : `₹${order.shipping.toLocaleString("en-IN")}`}
               </span>
             </div>
             <div className="border-t border-[#DDD6EE] pt-2.5 flex justify-between">

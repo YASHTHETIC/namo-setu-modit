@@ -48,8 +48,8 @@ function MiniProductCard({ p }: { p: ProductSummary }) {
           <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-tiny font-bold px-1 py-0.5 rounded">{p.rating} <Star className="h-1.5 w-1.5 fill-white" /></span>
         </div>
         <div className="flex items-baseline gap-1 mt-1">
-          <span className="text-body-md font-extrabold text-[var(--text)]">₹{live.price.toLocaleString()}</span>
-          {live.mrp > live.price && <span className="text-tiny text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString()}</span>}
+          <span className="text-body-md font-extrabold text-[var(--text)]">₹{live.price.toLocaleString("en-IN")}</span>
+          {live.mrp > live.price && <span className="text-tiny text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString("en-IN")}</span>}
         </div>
         <p className="text-tiny text-[var(--green)] font-semibold mt-0.5 flex items-center gap-0.5">
           <Truck className="h-2.5 w-2.5" /> {p.delivery_text}

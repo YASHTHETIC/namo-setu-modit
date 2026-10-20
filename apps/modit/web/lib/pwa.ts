@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { getAccessToken } from "@/lib/auth";
+
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
@@ -107,12 +109,15 @@ export async function subscribeForServerPush(): Promise<{ ok: boolean; reason?: 
   }
 }
 
-/** Fire-and-forget broadcast to all push subscribers via our API. */
+/** Fire-and-forget broadcast to all push subscribers via our API. Staff-only endpoint. */
 export function broadcastPush(title: string, body: string, url = "/"): void {
   try {
     void fetch("/api/push/send", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAccessToken() ?? ""}`,
+      },
       body: JSON.stringify({ title, body, url }),
     });
   } catch {

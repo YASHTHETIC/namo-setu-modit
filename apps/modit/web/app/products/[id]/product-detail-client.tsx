@@ -2,6 +2,7 @@
 
 import { use, useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -71,6 +72,12 @@ export default function ProductDetailPage({
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  // Clamp the gallery index: navigating between products can reuse this
+  // component with a smaller images array (index 3 of 4 → index 3 of 1).
+  const safeImageIndex = Math.max(0, Math.min(selectedImage, Math.max(0, (product?.images.length ?? 1) - 1)));
+  useEffect(() => {
+    setSelectedImage(0);
+  }, [product?.id]);
   const touchStartX = useRef<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -263,9 +270,9 @@ export default function ProductDetailPage({
                 setSelectedImage((i) => (i + (dx < 0 ? 1 : product.images.length - 1)) % product.images.length);
               }}
               onClick={() => setLightboxOpen(true)}
-            >  {product.images[selectedImage] ? (
+            >  {product.images[safeImageIndex] ? (
                 <Image
-                  src={product.images[selectedImage]}
+                  src={product.images[safeImageIndex]}
                   alt={product.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 560px"
@@ -310,7 +317,7 @@ export default function ProductDetailPage({
               {/* Image counter */}
               {product.images.length > 1 && (
                 <span className="absolute bottom-3 right-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-micro font-semibold text-white">
-                  {selectedImage + 1} / {product.images.length}
+                  {safeImageIndex + 1} / {product.images.length}
                 </span>
               )}
             </div>
@@ -344,7 +351,7 @@ export default function ProductDetailPage({
         >
           <div className="flex items-center justify-between px-4 py-3">
             <span className="text-body-sm font-semibold text-white/70 tabular-nums">
-              {selectedImage + 1} / {product.images.length}
+              {safeImageIndex + 1} / {product.images.length}
             </span>
             <button
               onClick={() => setLightboxOpen(false)}
@@ -367,7 +374,7 @@ export default function ProductDetailPage({
             }}
           >
             <Image
-              src={product.images[selectedImage]}
+              src={product.images[safeImageIndex]}
               alt={product.name}
               fill
               sizes="100vw"
@@ -480,7 +487,7 @@ export default function ProductDetailPage({
               mrp={displayMrp}
               discount={displayDiscount}
               bulkPrice={activeVariant?.bulkPrice ?? product.bulkPrice}
-              bulkLabel={activeVariant ? `Bulk: ₹${activeVariant.bulkPrice?.toLocaleString()} at ${activeVariant.bulkMinQty}+` : product.bulkLabel}
+              bulkLabel={activeVariant ? `Bulk: ₹${activeVariant.bulkPrice?.toLocaleString("en-IN")} at ${activeVariant.bulkMinQty}+` : product.bulkLabel}
               unit={displayUnit}
               size="lg"
             />
@@ -491,14 +498,14 @@ export default function ProductDetailPage({
               >
                 <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                 <span className="font-bold text-[var(--text-primary)]">{product.rating.toFixed(1)}</span>
-                <span>· {product.reviewCount.toLocaleString()} reviews</span>
+                <span>· {product.reviewCount.toLocaleString("en-IN")} reviews</span>
                 <ChevronRight className="h-3 w-3" />
               </Link>
             )}
             <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-muted)] flex-wrap">
               <span className="flex items-center gap-1">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                Inclusive of {product.gstCode}
+                + {product.gstCode} collected at checkout
               </span>
               <span>·</span>
               <span>MOQ: {product.moq} {activeVariant?.unitCode ?? product.unitCode}</span>
@@ -538,7 +545,7 @@ export default function ProductDetailPage({
                         {variant.label}
                       </span>
                       <span className="text-micro text-[var(--text-muted)] mt-0.5">
-                        ₹{variant.price.toLocaleString()}
+                        ₹{variant.price.toLocaleString("en-IN")}
                         {variantDiscount > 0 && (
                           <span className="ml-1 rounded-full bg-[#E91E63] px-1.5 py-px text-tiny font-bold text-white">
                             -{variantDiscount}%
@@ -768,7 +775,7 @@ export default function ProductDetailPage({
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--border)] px-4 py-3 flex items-center gap-3 lg:hidden" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
         <div className="flex-1">
           <p className="text-micro text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
-          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString()}</p>
+          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>
         </div>
         <button
           onClick={handleAddToCart}
@@ -883,10 +890,10 @@ export default function ProductDetailPage({
             {frequentlyBought.map((p) => (
               <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
+                  <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
                 </div>
                 <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
-                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>
+                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
               </Link>
             ))}
           </div>
@@ -908,7 +915,7 @@ export default function ProductDetailPage({
             {relatedProducts.map((p) => (
               <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <Image src={p.images[0]} alt={p.name} fill sizes="300px" loading="lazy" draggable={false} className="object-contain" />
+                  <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
                 </div>
                 <p className="mt-2 text-tiny font-semibold text-[var(--brand)] truncate">{p.brand}</p>
                 <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
@@ -916,7 +923,7 @@ export default function ProductDetailPage({
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
                   <span className="text-tiny font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
-                <p className="text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString()}</p>
+                <p className="text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
               </Link>
             ))}
           </div>

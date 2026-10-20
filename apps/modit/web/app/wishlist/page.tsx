@@ -164,17 +164,17 @@ export default function WishlistPage() {
                   <span className="text-xs font-bold text-[#2D1B69]">{product.rating}</span>
                   <Star className="h-2.5 w-2.5 fill-[#2D1B69] text-[#2D1B69]" />
                 </div>
-                <span className="text-tiny text-[#9B8CB5]">({product.reviewCount.toLocaleString()})</span>
+                <span className="text-tiny text-[#9B8CB5]">({product.reviewCount.toLocaleString("en-IN")})</span>
               </div>
 
               <div className="mt-3">
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl font-extrabold text-[#150726]">
-                    ₹{product.price.toLocaleString()}
+                    ₹{product.price.toLocaleString("en-IN")}
                   </span>
                   {product.mrp > product.price && (
                     <span className="text-xs text-[#9B8CB5] line-through">
-                      ₹{product.mrp.toLocaleString()}
+                      ₹{product.mrp.toLocaleString("en-IN")}
                     </span>
                   )}
                 </div>

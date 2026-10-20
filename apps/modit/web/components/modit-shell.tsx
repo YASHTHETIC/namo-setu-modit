@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -281,7 +281,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                             className={`flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-3 transition-colors last:border-0 ${highlightIdx === idx ? "bg-[var(--brand-50)]" : "hover:bg-[var(--bg-subtle)]"}`}
                           >
                           <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)] flex-shrink-0">
-                            <Image src={product.images[0]} alt={product.name} fill sizes="48px" loading="lazy" draggable={false} className="object-cover" />
+                            <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="48px" draggable={false} className="object-contain" />
                           </div>
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-sm font-semibold text-[var(--text)]">
@@ -290,9 +290,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                               <p className="text-xs text-[var(--text-muted)]">{product.category} · Verified listing</p>
                             </div>
                             <div className="text-right flex-shrink-0">
-                              <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString()}</p>
+                              <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString("en-IN")}</p>
                               {product.onSale
-                                ? <p className="text-tiny font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString()}</span></p>
+                                ? <p className="text-tiny font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString("en-IN")}</span></p>
                                 : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
                             </div>
                           </Link>
@@ -492,7 +492,7 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
                       className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white/5"
                     >
                       <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
-                        <Image src={product.images[0]} alt={product.name} fill sizes="40px" loading="lazy" draggable={false} className="object-cover" />
+                        <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="40px" draggable={false} className="object-contain" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="truncate text-body-sm font-semibold text-white">
@@ -500,7 +500,7 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
                         </p>
                         <p className="text-micro text-white/40">{product.category}</p>
                       </div>
-                      <p className="text-body-sm font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString()}</p>
+                      <p className="text-body-sm font-bold text-[#7CB518] flex-shrink-0">₹{product.price.toLocaleString("en-IN")}</p>
                     </Link>
                   ))}
                   <button

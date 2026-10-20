@@ -44,11 +44,11 @@ function GridProductCard({ p }: { p: ProductSummary }) {
         <Link href={`/products/${p.id}`}><h3 className="text-caption font-semibold text-[var(--text)] mt-0.5 line-clamp-2 leading-tight">{p.name}</h3></Link>
         <div className="flex items-center gap-1 mt-1.5">
           <span className="inline-flex items-center gap-0.5 bg-[var(--brand)] text-white text-tiny font-bold px-1.5 py-0.5 rounded">{p.rating} <Star className="h-2 w-2 fill-white" /></span>
-          <span className="text-tiny text-[var(--text-muted)]">({p.review_count.toLocaleString()})</span>
+          <span className="text-tiny text-[var(--text-muted)]">({p.review_count.toLocaleString("en-IN")})</span>
         </div>
         <div className="flex items-baseline gap-1.5 mt-1.5">
-          <span className="text-body-lg font-extrabold text-[var(--text)]">₹{live.price.toLocaleString()}</span>
-          {live.mrp > live.price && <span className="text-micro text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString()}</span>}
+          <span className="text-body-lg font-extrabold text-[var(--text)]">₹{live.price.toLocaleString("en-IN")}</span>
+          {live.mrp > live.price && <span className="text-micro text-[var(--text-muted)] line-through">₹{live.mrp.toLocaleString("en-IN")}</span>}
           {live.discount > 0 && <span className="text-tiny font-bold text-[var(--pink)]">{live.discount}% off</span>}
         </div>
         <p className="text-tiny text-[var(--green)] font-semibold mt-1 flex items-center gap-1">

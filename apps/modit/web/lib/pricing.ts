@@ -41,23 +41,13 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
   const needsShades =
     !product.hasShades && (!product.shades || product.shades.length === 0) && isTintableEmulsion(product);
 
+  // Client-side "sales" were a simulated fixture: the checkout total never
+  // matched these display prices, so buyers were quoted money that was never
+  // charged. Per launch decision, display = charged — no sale math here.
+  // (The admin Sales console stays a preview tool for server-side sales.)
   let onSale = false;
   let saleName: string | null = null;
   let salePrice: number | null = null;
-
-  const sale = getActiveSaleAt(sales, now);
-  if (sale && saleAppliesTo(sale, product)) {
-    const discounted =
-      sale.type === "percent"
-        ? Math.round(price * (1 - sale.value / 100))
-        : Math.max(1, price - sale.value);
-    if (discounted < price) {
-      onSale = true;
-      saleName = sale.name;
-      salePrice = discounted;
-      price = discounted;
-    }
-  }
 
   const discount =
     mrp > price ? Math.round(((mrp - price) / mrp) * 100) : product.discount;

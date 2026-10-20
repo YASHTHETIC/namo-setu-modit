@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import { Star, Clock, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -58,17 +58,14 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
       {/* Image */}
       <div className="relative bg-[#F7F4FC]">
         <Link href={productLink(product)} className="relative block aspect-square">
-          {product.images[0] ? (
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              sizes="50vw"
-              loading="lazy"
-              draggable={false}
-              className="object-contain animate-fade-in card3d-img"
-            />
-          ) : null}
+          <ImageGuard
+            src={product.images?.[0]}
+            alt={product.name}
+            fill
+            sizes="50vw"
+            draggable={false}
+            className="object-contain animate-fade-in card3d-img"
+          />
         </Link>
         {discountPct > 0 && (
           <span className="absolute top-0 left-0 rounded-br-lg bg-[#2D1B69] px-1.5 py-0.5 text-tiny font-black text-white">
@@ -134,11 +131,11 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         ) : <span className="h-[14px]" />}
         {unitRate ? <p className="text-tiny text-[#6B5B83] min-h-[14px]">{unitRate}</p> : <p className="text-tiny min-h-[14px]" aria-hidden="true"> </p>}
         <div className="flex items-baseline gap-1 mt-0.5">
-          <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString()}</span>
+          <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString("en-IN")}</span>
         </div>
         <div className="min-h-[14px]">
           {product.mrp > product.price ? (
-            <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString()}</span>
+            <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
           ) : (
             <span className="text-tiny invisible" aria-hidden="true">.</span>
           )}
@@ -152,7 +149,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
               <Star key={i} className={`h-2 w-2 ${i < stars ? "fill-[#E8A800] text-[#E8A800]" : "fill-[#DDD6EE] text-[#DDD6EE]"}`} />
             ))}
           </span>
-          <span className="text-tiny text-[#9B8CB5] ml-0.5">{product.reviewCount.toLocaleString()}</span>
+          <span className="text-tiny text-[#9B8CB5] ml-0.5">{product.reviewCount.toLocaleString("en-IN")}</span>
         </div>
         <div className="flex items-center gap-1.5 mt-1">
           <span className="flex items-center gap-0.5 text-tiny font-semibold text-[#6B5B83]">

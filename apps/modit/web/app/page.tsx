@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -852,7 +853,7 @@ export default function ModitHomePage() {
                         highlightIdx === idx ? "bg-[#7CB518]/20" : "hover:bg-white/10"
                       }`}
                     >
-                      <Image src={p.images[0]} alt={p.name} width={40} height={40} loading="lazy" className="h-10 w-10 rounded-lg object-cover bg-white/5" />
+                      <ImageGuard src={p.images?.[0]} alt={p.name} width={40} height={40} className="h-10 w-10 rounded-lg object-cover bg-white/5" />
                       <div className="flex-1 min-w-0">
                         <p className="text-body-sm font-semibold text-white truncate"><HighlightedText text={p.name} query={searchQuery} /></p>
                         <p className="text-micro text-white/50">{p.brand} · {p.unit}</p>

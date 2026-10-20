@@ -2,18 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ChevronRight, Check, Truck } from "lucide-react";
+import { Search, ChevronRight, Check, Truck, PackageOpen } from "lucide-react";
 import { useOrders, useUpdateOrderStatus, useCreateDelivery } from "@/lib/modit-api";
 import { useAdminStore, ORDER_STATUSES } from "@/lib/admin-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { broadcastPush } from "@/lib/pwa";
-
-const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3 },
-  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2 },
-  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1 },
-];
 
 const STATUS_LABEL: Record<string, string> = {
   placed: "Placed",
@@ -31,13 +25,13 @@ export default function AdminOrdersPage() {
   const [syncError, setSyncError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [dispatched, setDispatched] = useState<Record<string, string>>({});
-  const { data: orders } = useOrders(undefined, fallbackOrders);
+  const { data: orders, isError: ordersOffline, isLoading: ordersLoading } = useOrders(undefined);
   const updateStatus = useUpdateOrderStatus();
   const createDelivery = useCreateDelivery();
   const orderStatuses = useAdminStore((s) => s.orderStatuses);
   const setOrderStatus = useAdminStore((s) => s.setOrderStatus);
 
-  const list = (orders ?? fallbackOrders).map((o: any) => ({
+  const list = (orders ?? []).map((o: any) => ({
     ...o,
     status: orderStatuses[o.id]?.status ?? o.status,
     overridden: Boolean(orderStatuses[o.id]),
@@ -157,7 +151,17 @@ export default function AdminOrdersPage() {
             )}
           </div>
         ))}
-        {filtered.length === 0 && (
+        {filtered.length === 0 && !ordersLoading && !ordersOffline && (
+          <div className="text-center py-14">
+            <PackageOpen className="mx-auto h-10 w-10 text-[#C9B8E8]" />
+            <p className="mt-3 text-body-sm font-bold text-[#150726]">No orders yet</p>
+            <p className="mt-1 text-caption text-[#9B8CB5]">New buyer orders will show up here automatically.</p>
+          </div>
+        )}
+        {ordersOffline && (
+          <p className="text-center text-body-sm text-[#9B8CB5] py-10">Orders unavailable — server unreachable. Recheck connection.</p>
+        )}
+        {list.length > 0 && filtered.length === 0 && (
           <p className="text-center text-body-sm text-[#9B8CB5] py-10">No orders match “{query}”.</p>
         )}
         {syncError && (
