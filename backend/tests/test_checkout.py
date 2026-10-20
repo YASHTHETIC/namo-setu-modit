@@ -260,8 +260,9 @@ def test_catalog_parser_counts():
     items = parse_catalog(
         open("apps/modit/web/lib/product-data.ts", encoding="utf-8").read()
     )
-    # Full catalog: 73 curated + 242 kept supplier bulk + 806 Fixxly partner listings.
-    assert len(items) == 1121
+    # Full catalog: 73 curated + 242 kept supplier bulk + 805 Fixxly partner
+    # listings (the Generic counterfeits claw hammer was removed on request).
+    assert len(items) == 1120
     by_sku = {i["sku"]: i for i in items}
     acc = by_sku["CEM-ACC-50"]
     assert acc["price"] == 370.0 and acc["mrp"] == 400.0
