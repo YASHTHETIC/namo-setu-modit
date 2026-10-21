@@ -231,7 +231,7 @@ function ProductsContent() {
 
   return (
     <div
-      className="mx-auto max-w-[1400px] py-4 sm:px-6"
+      className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6"
       style={{
         background: selectedCategory
           ? `linear-gradient(180deg, ${catColor!.light} 0%, ${catColor!.bg.match(/#[A-Fa-f0-9]+/)?.[0] || '#FFFBF5'}33 200px, #FFFBF5 500px)`
@@ -564,7 +564,7 @@ function ProductsContent() {
           {/* Sort Bar */}
           <Reveal direction="none">
           <div
-            className="mb-4 flex items-center justify-between rounded-2xl border px-5 py-3.5"
+            className="mb-4 flex flex-wrap items-center justify-between gap-y-2 rounded-2xl border px-4 py-3 sm:px-5 sm:py-3.5"
             style={{
               borderColor: catColor?.border || '#E5DCF3',
               background: 'white',
@@ -810,7 +810,7 @@ function ProductsContent() {
 
       {/* Mobile Filter Bottom Sheet */}
       {showMobileFilter && (
-        <div className="fixed inset-0 z-sheet lg:hidden">
+        <div className="fixed inset-0 z-modal lg:hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileFilter(false)} />
           <div className="absolute bottom-0 left-0 right-0 max-h-[85dvh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
