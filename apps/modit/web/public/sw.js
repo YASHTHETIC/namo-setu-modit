@@ -1,4 +1,4 @@
-const CACHE_NAME = "modit-v3";
+const CACHE_NAME = "modit-v4";
 const STATIC_ASSETS = [
   "/",
   "/products",
@@ -45,17 +45,19 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Everything else: network first, cached copy only as offline fallback.
+  // (Cache-first kept stale hashed chunks and RSC payloads alive forever,
+  // which froze phones on dead pages where clicks did nothing.)
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const fetched = fetch(request).then((response) => {
+    fetch(request)
+      .then((response) => {
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      }).catch(() => cached);
-      return cached || fetched;
-    })
+      })
+      .catch(() => caches.match(request).then((cached) => cached || Response.error()))
   );
 });
 
