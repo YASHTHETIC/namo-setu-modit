@@ -2,27 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, User, ShoppingCart } from "lucide-react";
-import { useCartStore } from "@/lib/cart-store";
+import { Home, LayoutGrid, Package, User } from "lucide-react";
 import { useAuthReady } from "@/lib/use-auth";
 
-// Blinkit-app pattern: 4 tabs only. Orders lives under Account/menu —
-// never twice on the same screen.
+// Blinkit-app pattern: 4 tabs only. Cart lives in the header (count badge) +
+// the floating view-cart bar — never twice in a tab strip.
 const NAV_ITEMS = [
   { icon: Home, label: "Home", href: "/" },
   { icon: LayoutGrid, label: "Category", href: "/products" },
+  { icon: Package, label: "Orders", href: "/orders" },
   { icon: User, label: "Account", href: "/auth", isAccount: true },
-  { icon: ShoppingCart, label: "Cart", href: "/cart", isCart: true },
 ];
 
 /**
  * Bottom tab bar — AMOLED glass in MODIT colors: deep-black frosted bar,
- * soft-white icons, white active tab with a green top tick, pink count
- * badge on the cart. Hidden inside the staff panel.
+ * soft-white icons, white active tab with a green top tick. Hidden inside
+ * the staff panel.
  */
 export function BottomNav() {
   const pathname = usePathname();
-  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
   const loggedIn = useAuthReady();
 
   // Buyer nav on all screens (desktop included) — never inside staff panel or supplier hub.
@@ -38,7 +36,7 @@ export function BottomNav() {
         {NAV_ITEMS.map((item) => {
           const href = "isAccount" in item && item.isAccount && loggedIn ? "/dashboard" : item.href;
           const isActive = href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
-          const highlighted = isActive || ("isCart" in item && !!item.isCart && cartCount > 0);
+          const highlighted = isActive;
           return (
             <Link
               key={item.label}
@@ -52,11 +50,6 @@ export function BottomNav() {
               )}
               <div className="relative">
                 <item.icon className="h-5 w-5" fill={highlighted ? "currentColor" : "none"} strokeWidth={highlighted ? 0 : 2} />
-                {"isCart" in item && !!item.isCart && cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 rounded-full bg-[#E91E63] text-white text-tiny font-bold flex items-center justify-center px-1 shadow-lg shadow-pink-500/30">
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
               </div>
               <span className={`text-tiny ${isActive ? "font-bold" : "font-semibold"}`}>{item.label}</span>
             </Link>
