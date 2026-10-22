@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: "MODIT — Construction Materials Delivered",
     template: "%s | MODIT",
   },
-  description: "Construction materials delivered to your site. Cement, paint, lighting, tiling — all at the lowest prices with 60-minute delivery.",
+  description: "Construction materials delivered to your site in 60 minutes. Cement, paint, lighting, tiling — genuine products from verified sellers.",
   keywords: ["MODIT", "modit.in", "construction materials", "cement online", "paint online", "building material delivery India"],
   openGraph: {
     title: "MODIT — Construction Materials Delivered",

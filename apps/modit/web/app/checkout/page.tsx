@@ -124,7 +124,7 @@ export default function CheckoutPage() {
             <h1 className="text-body-lg font-bold text-white">Checkout</h1>
           </div>
         </header>
-        <div className="mx-auto max-w-[600px] py-20 text-center">
+        <div className="mx-auto max-w-[600px] py-20 text-center px-4">
           <ShoppingCart className="h-16 w-16 text-[#9B8CB5]/30 mx-auto mb-4" />
           <h2 className="text-title-md font-bold text-[#150726]">Your cart is empty</h2>
           <Link href="/products" className="mt-4 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all">
@@ -179,7 +179,7 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] pt-4 pb-28 sm:px-6 lg:pb-4">
+      <div className="mx-auto max-w-[1200px] px-4 pt-4 pb-28 sm:px-6 lg:pb-4">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-8 space-y-4">
             {/* 1 · Address Section */}

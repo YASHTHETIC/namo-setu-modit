@@ -130,7 +130,7 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[800px] py-4 sm:px-6">
+      <div className="mx-auto max-w-[800px] px-4 py-4 sm:px-6">
         {orderList.length > 0 && (
           <div className="mb-3 flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-0 pb-1">
             {(
