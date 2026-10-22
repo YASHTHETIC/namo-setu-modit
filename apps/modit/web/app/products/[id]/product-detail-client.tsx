@@ -211,7 +211,7 @@ export default function ProductDetailPage({
   const specs = Object.entries(product.specifications);
 
   return (
-    <div className="fx-page mx-auto max-w-[1400px] py-4 sm:px-6 pb-24 lg:pb-4">
+    <div className="fx-page mx-auto max-w-[1400px] px-4 py-4 sm:px-6 pb-[152px] lg:pb-4">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -429,7 +429,7 @@ export default function ProductDetailPage({
                 {product.brand}
               </Link>
             )}
-            <h1 className="mt-1 text-2xl font-bold text-[var(--text-primary)] lg:text-3xl">
+            <h1 className="mt-1 text-title-lg font-bold text-[var(--text-primary)] lg:text-3xl">
               {product.name}
             </h1>
             <div className="mt-2 flex items-center gap-3">
@@ -445,9 +445,9 @@ export default function ProductDetailPage({
           </div>
 
           {/* Price Block */}
-          <div className="rounded-xl border border-[var(--border)] bg-white p-5">
+          <div className="rounded-xl border border-[var(--border)] bg-white p-4 sm:p-5">
             {/* Delivery promise bar */}
-            <div className="rounded-xl bg-gradient-to-r from-[#7CB518]/10 to-[#00BCD4]/10 border border-[#7CB518]/20 p-3 mb-4">
+            <div className="rounded-xl bg-gradient-to-r from-[#7CB518]/10 to-[#00BCD4]/10 border border-[#7CB518]/20 p-2.5 mb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-full bg-[#7CB518] flex items-center justify-center">
@@ -771,8 +771,8 @@ export default function ProductDetailPage({
         </div>
       </div>
 
-      {/* Mobile sticky add-to-cart bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--border)] px-4 py-3 flex items-center gap-3 lg:hidden" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+      {/* Mobile sticky add-to-cart bar — docks above the bottom nav (64px + 12px gap) */}
+      <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white border-t border-[var(--border)] px-4 py-2.5 flex items-center gap-3 lg:hidden shadow-[0_-4px_16px_rgba(26,10,51,0.08)]">
         <div className="flex-1">
           <p className="text-micro text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
           <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>
@@ -819,7 +819,7 @@ export default function ProductDetailPage({
             >
               {tab.label}
               {activeTab === tab.key && (
-                <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--cyan)]" />
+                <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--green)]" />
               )}
             </button>
           ))}
@@ -885,15 +885,16 @@ export default function ProductDetailPage({
       {frequentlyBought.length > 0 && (
         <Reveal>
         <div className="mt-10">
-          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Frequently Bought Together</h3>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <h3 className="text-title-md font-bold text-[var(--text-primary)] mb-3">Frequently Bought Together</h3>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 sm:overflow-visible sm:gap-3 lg:grid-cols-4">
             {frequentlyBought.map((p) => (
-              <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <Link key={p.id} href={productLink(p)} className="w-[158px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
                   <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
                 </div>
-                <p className="mt-2 text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
-                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
+                {p.brand && <p className="mt-2 text-micro font-semibold text-[var(--brand)] truncate">{p.brand}</p>}
+                <p className="text-caption font-medium text-[var(--text-primary)] line-clamp-2 min-h-[28px]">{p.name}</p>
+                <p className="mt-1 text-body-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
               </Link>
             ))}
           </div>
@@ -905,25 +906,25 @@ export default function ProductDetailPage({
       {relatedProducts.length > 0 && (
         <Reveal>
         <div className="mt-10 mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">Similar Products in {product.category}</h3>
-            <Link href={`/products?category=${product.categorySlug}`} className="text-sm font-medium text-[var(--brand)] hover:underline">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-title-md font-bold text-[var(--text-primary)]">Similar Products in {product.category}</h3>
+            <Link href={`/products?category=${product.categorySlug}`} className="text-caption font-medium text-[var(--brand)] hover:underline">
               View All →
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 sm:overflow-visible sm:gap-3 lg:grid-cols-3 xl:grid-cols-6">
             {relatedProducts.map((p) => (
-              <Link key={p.id} href={productLink(p)} className="rounded-xl border border-[var(--border)] bg-white p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <Link key={p.id} href={productLink(p)} className="w-[150px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
                   <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
                 </div>
-                <p className="mt-2 text-tiny font-semibold text-[var(--brand)] truncate">{p.brand}</p>
-                <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-2 min-h-[32px]">{p.name}</p>
+                <p className="mt-2 text-micro font-semibold text-[var(--brand)] truncate">{p.brand}</p>
+                <p className="text-caption font-medium text-[var(--text-primary)] line-clamp-2 min-h-[28px]">{p.name}</p>
                 <div className="mt-1 flex items-center gap-1">
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
                   <span className="text-tiny font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
-                <p className="text-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
+                <p className="text-body-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
               </Link>
             ))}
           </div>
