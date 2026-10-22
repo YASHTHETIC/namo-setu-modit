@@ -20,6 +20,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
 import { productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
+import { MobileProductCard } from "@/components/mobile-product-card";
 import { useState } from "react";
 
 export default function WishlistPage() {
@@ -62,7 +63,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="fx-page mx-auto max-w-[1400px] py-4 sm:px-6">
+    <div className="fx-page mx-auto max-w-[1400px] px-4 py-4 sm:px-6">
       {/* Breadcrumb */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[#9B8CB5]">
         <Link href="/" className="hover:text-[#2D1B69]">Home</Link>
@@ -104,7 +105,14 @@ export default function WishlistPage() {
         </button>
       )}
 
-      <div className="product-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {/* Mobile: Blinkit-style compact 2-column grid */}
+      <div className="product-grid grid grid-cols-2 gap-2 sm:hidden">
+        {items.map((product) => (
+          <MobileProductCard key={product.id} product={product} />
+        ))}
+      </div>
+
+      <div className="product-grid hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {items.map((product) => (
           <div
             key={product.id}
