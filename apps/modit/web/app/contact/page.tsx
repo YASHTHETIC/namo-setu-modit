@@ -52,7 +52,7 @@ export default function ContactPage() {
             })}
           </div>
           <p className="mt-5 text-body-sm text-[#6B5B83] leading-relaxed">
-            For order issues, keep your order ID ready — it looks like <span className="font-bold text-[#150726]">PO-2026-XXXXXX</span> and is visible on Orders. GST invoice help, bulk quotes and contractor accounts are all handled on the same email.
+            For order issues, keep your order ID ready — it looks like <span className="font-bold text-[#150726]">ORD-2026-XXXXXX</span> and is visible on Orders. GST invoice help, bulk quotes and contractor accounts are all handled on the same email.
           </p>
         </div>
       </div>

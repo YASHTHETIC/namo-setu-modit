@@ -411,7 +411,20 @@ async def get_inventory_analytics(session: AsyncSession, organization_id: str | 
 async def rfq_to_detail(session: AsyncSession, rfq: RFQ) -> RFQDetailRead:
     """Convert RFQ to detail view with items and quotations."""
     await session.refresh(rfq, ["items", "quotations"])
-    
+
+    # Human labels for RFQ lines — one batched lookup, no N+1. Display-only:
+    # any session-shape quirk degrades to server ids without breaking reads.
+    product_ids = {item.product_id for item in rfq.items if item.product_id}
+    item_names: dict[str, str] = {}
+    if product_ids:
+        try:
+            for pid, name in (
+                await session.execute(select(Product.name).where(Product.id.in_(product_ids)))
+            ).all():
+                item_names[pid] = name
+        except Exception:
+            item_names = {}
+
     quotations_data = []
     for quote in rfq.quotations:
         quotations_data.append({
@@ -433,9 +446,15 @@ async def rfq_to_detail(session: AsyncSession, rfq: RFQ) -> RFQDetailRead:
         due_date=getattr(rfq, "due_date", None),
         notes=getattr(rfq, "notes", None),
         created_at=rfq.created_at,
-        items=[RFQItemRead.model_validate(item) for item in rfq.items],
+        items=[_rfq_item_read(item, item_names) for item in rfq.items],
         quotations=quotations_data,
     )
+
+
+def _rfq_item_read(item: RFQItem, item_names: dict[str, str]) -> RFQItemRead:
+    row = RFQItemRead.model_validate(item)
+    row.product_name = item_names.get(item.product_id)
+    return row
 
 
 async def create_rfq(session: AsyncSession, organization_id: str, user_id: str, items: list[dict], **kwargs) -> RFQ:

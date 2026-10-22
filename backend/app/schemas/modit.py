@@ -452,6 +452,8 @@ class RFQItemRead(ORMModel):
     unit_price_hint: float | None
     notes: str | None
     created_at: datetime
+    # Joined from the catalog for the RFQ detail view.
+    product_name: str | None = None
 
 
 class RFQDetailRead(RFQRead):

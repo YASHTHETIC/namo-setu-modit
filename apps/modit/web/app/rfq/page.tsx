@@ -14,9 +14,7 @@ export default function RFQPage() {
   const { data: me } = useCurrentUser();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newRFQ, setNewRFQ] = useState({ notes: "", due_date: "" });
-  const [itemDrafts, setItemDrafts] = useState<Array<{ product_id: string; requested_quantity: number }>>([]);
-  const [sku, setSku] = useState("");
-  const [qty, setQty] = useState(1);
+  const [itemDrafts, setItemDrafts] = useState<Array<{ product_id: string; requested_quantity: number; name?: string }>>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data: rfqs, isLoading, isError, refetch } = useRFQs();
   const createRFQ = useCreateRFQ();
@@ -41,12 +39,6 @@ export default function RFQPage() {
     }
   };
 
-  const addDraftLine = () => {
-    if (!sku.trim() || qty <= 0) return;
-    setItemDrafts((d) => [...d, { product_id: sku.trim(), requested_quantity: qty }]);
-    setSku("");
-    setQty(1);
-  };
 
   const handleAward = async (quotationId: string) => {
     if (!selectedId) return;
@@ -114,7 +106,7 @@ export default function RFQPage() {
             <div className="space-y-2">
               {(detail.items ?? []).map((it: any) => (
                 <div key={it.id} className="flex items-center justify-between rounded-xl bg-[var(--bg-subtle)] px-3 py-2 text-sm">
-                  <span className="font-mono text-xs text-[var(--text-secondary)]">{it.product_id.slice(0, 18)}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium text-[var(--text-primary)]">{it.product_name ?? `#${String(it.product_id).slice(0, 8)}`}</span>
                   <span className="font-bold text-[var(--text-primary)]">× {it.requested_quantity}</span>
                 </div>
               ))}
@@ -180,17 +172,37 @@ export default function RFQPage() {
               <div>
                 <p className="text-sm font-semibold text-[var(--text-primary)] mb-2">Items ({itemDrafts.length})</p>
                 {itemDrafts.map((d, i) => (
-                  <div key={i} className="flex items-center justify-between rounded-lg bg-[var(--bg-subtle)] px-3 py-1.5 text-sm mb-1.5">
-                    <span className="font-mono text-xs">{d.product_id.slice(0, 20)}</span>
-                    <span className="font-bold">× {d.requested_quantity}</span>
+                  <div key={`${d.product_id}:${i}`} className="flex items-center justify-between rounded-lg bg-[var(--bg-subtle)] px-3 py-1.5 text-sm mb-1.5">
+                    <span className="min-w-0 flex-1 truncate font-medium text-[var(--text-primary)]">{d.name ?? d.product_id.slice(0, 20)}</span>
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        aria-label="Decrease quantity"
+                        onClick={() => setItemDrafts((prev) => prev.map((x, j) => (j === i ? { ...x, requested_quantity: Math.max(1, x.requested_quantity - 1) } : x)))}
+                        className="px-1.5 font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center text-xs font-bold text-[var(--text-primary)] tabular-nums">{d.requested_quantity}</span>
+                      <button
+                        aria-label="Increase quantity"
+                        onClick={() => setItemDrafts((prev) => prev.map((x, j) => (j === i ? { ...x, requested_quantity: x.requested_quantity + 1 } : x)))}
+                        className="px-1.5 font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                      >
+                        +
+                      </button>
+                      <button
+                        aria-label="Remove item"
+                        onClick={() => setItemDrafts((prev) => prev.filter((_, j) => j !== i))}
+                        className="ml-1 rounded p-0.5 text-[var(--text-muted)] hover:text-red-500 transition-colors"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
-                <div className="flex gap-2 mt-2">
-                  <Input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="Product ID or SKU" />
-                  <Input type="number" value={qty} onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))} className="w-20" />
-                  <Button variant="secondary" onClick={addDraftLine}>Add</Button>
-                </div>
-                <p className="mt-1 text-tiny text-[var(--text-muted)]">Tip: open a product — its ID is the last part of the page address.</p>
+                <RFQItemSearch
+                  onAdd={(p) => setItemDrafts((d) => [...d, { product_id: p.id, requested_quantity: 1, name: p.name }])}
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-3">
@@ -204,31 +216,79 @@ export default function RFQPage() {
   );
 }
 
+/** Type-to-search product picker backed by the live catalog. Picking a result
+ * adds it with the chosen quantity — buyers never need to know internal IDs. */
+function RFQItemSearch({ onAdd }: { onAdd: (p: { id: string; name: string }) => void }) {
+  const [term, setTerm] = useState("");
+  const { data } = useSearchProducts(term.trim());
+  const active = term.trim().length >= 2;
+  const options: Array<{ id: string; name: string; price?: number }> = active ? ((data ?? []) as any).slice(0, 6) : [];
+  return (
+    <div className="relative">
+      <Input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search products to add…" />
+      {active && options.length > 0 && (
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl">
+          {options.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => {
+                onAdd({ id: p.id, name: p.name });
+                setTerm("");
+              }}
+              className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left hover:bg-[var(--bg-subtle)] transition-colors"
+            >
+              <span className="min-w-0 flex-1 truncate text-xs font-medium text-[var(--text-primary)]">{p.name}</span>
+              {typeof p.price === "number" && (
+                <span className="shrink-0 text-tiny font-bold text-[var(--brand)]">₹{p.price.toLocaleString("en-IN")}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+      {active && options.length === 0 && (
+        <p className="mt-1 text-tiny text-[var(--text-muted)]">No products matched — try another term.</p>
+      )}
+    </div>
+  );
+}
+
 function AddItemRow({ rfqId, onAdded }: { rfqId: string; onAdded: () => void }) {
   const toast = useToast();
-  const [sku, setSku] = useState("");
   const [qty, setQty] = useState(1);
   const addItems = useAddRFQItems();
   return (
-    <div className="mt-3 flex gap-2">
-      <Input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="Product ID" />
-      <Input type="number" value={qty} onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))} className="w-20" />
-      <Button
-        variant="secondary"
-        disabled={addItems.isPending}
-        onClick={async () => {
+    <div className="mt-3">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-tiny font-semibold text-[var(--text-secondary)]">Quantity</span>
+        <div className="flex items-center rounded-lg border border-[var(--border)]">
+          <button
+            aria-label="Decrease quantity"
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+            className="px-2.5 py-1 font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            −
+          </button>
+          <span className="min-w-8 text-center text-xs font-bold text-[var(--text-primary)] tabular-nums">{qty}</span>
+          <button
+            aria-label="Increase quantity"
+            onClick={() => setQty((q) => q + 1)}
+            className="px-2.5 py-1 font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <RFQItemSearch
+        onAdd={async (p) => {
           try {
-            await addItems.mutateAsync({ rfqId, lines: [{ product_id: sku.trim(), requested_quantity: qty }] });
-            setSku("");
-            setQty(1);
+            await addItems.mutateAsync({ rfqId, lines: [{ product_id: p.id, requested_quantity: qty }] } as never);
             onAdded();
+            toast.success("Item added", `${p.name} × ${qty}`);
           } catch (e) {
-            toast.error("Could not add", e instanceof Error ? e.message : "Unknown product?");
+            toast.error("Could not add", e instanceof Error ? e.message : "Try again.");
           }
         }}
-      >
-        Add
-      </Button>
+      />
     </div>
   );
 }
