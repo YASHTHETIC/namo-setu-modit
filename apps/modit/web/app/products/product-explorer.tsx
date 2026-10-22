@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -63,9 +63,17 @@ function ProductsContent() {
 
   const [search, setSearch] = useState(searchParams.get("search") || searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
-  const [selectedSub, setSelectedSub] = useState("");
-  // Subcategory belongs to its category — reset on category switch.
-  useEffect(() => { setSelectedSub(""); }, [selectedCategory]);
+  const [selectedSub, setSelectedSub] = useState(searchParams.get("sub") || "");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(
+    (searchParams.get("brands") || "").split(",").filter(Boolean)
+  );
+  const [priceRange, setPriceRange] = useState<[number, number]>(() => {
+    const [min = 0, max = 100000] = (searchParams.get("price") || "").split("-").map(Number);
+    return min >= 0 && max > 0 && max >= min ? [min, max] : [0, 100000];
+  });
+  const [minRating, setMinRating] = useState(Number(searchParams.get("rating")) || 0);
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "relevance");
 
   // Single source of truth: ONE unfiltered catalog fetch. Category, brand,
   // price, rating and stock all filter client-side below, so the sidebar
@@ -87,21 +95,76 @@ function ProductsContent() {
   const countProducts = products;
   const categories = apiCategories as { id?: string; name: string; slug: string; description: string; icon: string; productCount: number; subCategories: { name: string; slug: string; productCount: number }[] }[];
 
+  // URL → state: any navigation carrying filter params (home cards, search,
+  // shared links) lands in state exactly once, from one effect.
   useEffect(() => {
     setSelectedCategory(searchParams.get("category") || "");
     setSearch(searchParams.get("search") || searchParams.get("q") || "");
+    setSelectedSub(searchParams.get("sub") || "");
+    const brands = searchParams.get("brands");
+    setSelectedBrands(brands ? brands.split(",").filter(Boolean) : []);
+    const [min = 0, max = 100000] = (searchParams.get("price") || "").split("-").map(Number);
+    setPriceRange(min >= 0 && max > 0 && max >= min ? [min, max] : [0, 100000]);
+    setMinRating(Number(searchParams.get("rating")) || 0);
     const urlSort = searchParams.get("sort") as SortOption;
     if (urlSort) setSort(urlSort);
   }, [searchParams]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
-  const [minRating, setMinRating] = useState(0);
-  const [inStockOnly, setInStockOnly] = useState(false);
-  const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "relevance");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+
+  // Subcategory belongs to its category — reset on real category switches,
+  // but never on first mount (deep links may carry a category+sub pair).
+  const prevCategory = useRef<string | null>(null);
+  useEffect(() => {
+    if (prevCategory.current !== null && prevCategory.current !== selectedCategory) {
+      setSelectedSub("");
+    }
+    prevCategory.current = selectedCategory;
+  }, [selectedCategory]);
+
+  // Filter sheet behavior: lock background scroll while open (iOS scroll
+  // bleed otherwise) and close on Escape.
+  useEffect(() => {
+    if (!showMobileFilter) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowMobileFilter(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [showMobileFilter]);
+
+  // State → URL (debounced, replaceState — no router round-trip, no refresh):
+  // filtered views become address-bar real and shareable.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const desired = new URLSearchParams(window.location.search);
+      const setIf = (key: string, value: string) => {
+        if (value) desired.set(key, value);
+        else desired.delete(key);
+      };
+      setIf("search", search);
+      setIf("category", selectedCategory);
+      setIf("sub", selectedSub);
+      setIf("brands", selectedBrands.length > 0 ? selectedBrands.join(",") : "");
+      setIf(
+        "price",
+        priceRange[0] > 0 || priceRange[1] < 100000 ? `${priceRange[0]}-${priceRange[1]}` : ""
+      );
+      setIf("rating", minRating > 0 ? String(minRating) : "");
+      setIf("sort", sort !== "relevance" ? sort : "");
+      const next = `${window.location.pathname}${[...desired.keys()].length > 0 ? `?${desired}` : ""}`;
+      const current = `${window.location.pathname}${window.location.search}`;
+      if (next !== current) window.history.replaceState(null, "", next);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [search, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, sort]);
 
   const allBrands = useMemo(() => {
     const brandSet = new Set(products.map((p) => p.brand).filter(Boolean) as string[]);
@@ -574,9 +637,15 @@ function ProductsContent() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowMobileFilter(true)}
-                className="flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden border-[#C9B8E8] bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7]"
+                className="relative flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all lg:hidden border-[#C9B8E8] bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#E8E0F7]"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
+                {hasActiveFilters && (
+                  <>
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#7CB518] ring-2 ring-white" />
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#7CB518] animate-ping" />
+                  </>
+                )}
               </button>
               <p className="text-sm text-[var(--text-secondary)]">
                 <span className="font-black text-[var(--text-primary)]">{filteredProducts.length}</span> results
@@ -723,6 +792,36 @@ function ProductsContent() {
                   </button>
                 </span>
               )}
+              {minRating > 0 && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-xs font-bold text-amber-700 border border-amber-200 shadow-sm">
+                  <Star className="h-3 w-3" fill="#E8A800" color="#E8A800" /> {minRating}+
+                  <button onClick={() => setMinRating(0)} className="ml-0.5 rounded-full p-0.5 hover:bg-amber-100/60 transition-colors">
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {(priceRange[0] > 0 || priceRange[1] < 100000) && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3.5 py-1.5 text-xs font-bold text-[#2D1B69] border border-[#E5DCF3] shadow-sm">
+                  ₹{Math.min(priceRange[0], priceRange[1]).toLocaleString("en-IN")}–{priceRange[1].toLocaleString("en-IN")}
+                  <button onClick={() => setPriceRange([0, 100000])} className="ml-0.5 rounded-full p-0.5 hover:bg-white/60 transition-colors">
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {search && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-bold text-[#2D1B69] border border-[#DDD6EE] shadow-sm">
+                  &ldquo;{search}&rdquo;
+                  <button onClick={() => setSearch("")} className="ml-0.5 rounded-full p-0.5 hover:bg-[#F0ECF9] transition-colors">
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {hasActiveFilters && (
+                <button onClick={clearFilters} className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-black text-[#E91E63] border border-[#F48FB1]/60 bg-white shadow-sm hover:bg-[#FCE4EC] transition-all">
+                  Clear all
+                  <X className="h-3 w-3" />
+                </button>
+              )}
             </div>
           )}
 
@@ -810,7 +909,7 @@ function ProductsContent() {
 
       {/* Mobile Filter Bottom Sheet */}
       {showMobileFilter && (
-        <div className="fixed inset-0 z-modal lg:hidden">
+        <div className="fixed inset-0 z-modal lg:hidden" role="dialog" aria-modal="true" aria-label="Filter products">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileFilter(false)} />
           <div className="absolute bottom-0 left-0 right-0 max-h-[85dvh] bg-white rounded-t-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-in-up">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E0F7]">
@@ -824,7 +923,7 @@ function ProductsContent() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+            <div className="flex-1 overflow-y-auto overscroll-contain p-5 space-y-5">
               {/* Search */}
               <div>
                 <h3 className="mb-2 text-micro font-black uppercase tracking-wider text-[#2D1B69]">Search</h3>
