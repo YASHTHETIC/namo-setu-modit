@@ -42,6 +42,7 @@ from backend.app.models.modit import (
     Return,
     SubCategory,
     Supplier,
+    Transaction,
     Unit,
     Vehicle,
     Vendor,
@@ -850,13 +851,28 @@ async def get_order(order_id: str, db: AsyncSession = Depends(get_db)) -> OrderD
         row.name = name
         item_reads.append(row)
     pay_status = "pending"
+    pay_via = None
     pay_row = (
-        (await db.execute(select(ModitPayment.payment_status).where(ModitPayment.order_id == order.id).limit(1)))
-        .scalars()
-        .first()
+        (
+            await db.execute(
+                select(ModitPayment.id, ModitPayment.payment_status).where(ModitPayment.order_id == order.id).limit(1)
+            )
+        ).first()
     )
-    if pay_row:
-        pay_status = str(pay_row)
+    if pay_row is not None:
+        payment_id, pay_status = str(pay_row[0]), str(pay_row[1])
+        rzp_txn = (
+            await db.execute(
+                select(Transaction.id)
+                .where(
+                    Transaction.payment_id == payment_id,
+                    Transaction.provider_name == "razorpay",
+                )
+                .limit(1)
+            )
+        ).scalars()
+        if rzp_txn.first() is not None:
+            pay_via = "razorpay"
     base = OrderRead.model_validate(order)
     base.total = totals.get("grand_total", 0.0)
     base.items_count = len(order.items)
@@ -870,6 +886,7 @@ async def get_order(order_id: str, db: AsyncSession = Depends(get_db)) -> OrderD
         gst_total=totals.get("gst_total", 0.0),
         grand_total=totals.get("grand_total", 0.0),
         payment_status=pay_status,
+        paid_via=pay_via,
         address=_parse_order_address(order.shipping_address_json),
     )
 

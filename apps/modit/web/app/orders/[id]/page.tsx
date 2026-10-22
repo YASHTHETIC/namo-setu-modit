@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
+import { createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { getProductById } from "@/lib/product-data";
 import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
@@ -14,7 +15,7 @@ import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@foundation/ui";
 import {
   ArrowLeft, ArrowRight, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
-  Star, Navigation, MessageSquare, RefreshCcw, Check, XCircle
+  Star, Navigation, RefreshCcw, Check, XCircle
 } from "lucide-react";
 
 interface OrderItem {
@@ -107,13 +108,16 @@ const timelineSteps = [
 function toOrderDetail(api: any): OrderDetail | null {
   if (!api || typeof api !== "object" || !api.id) return null;
   const addr = (api.address ?? {}) as Record<string, any>;
-  const paid = String(api.payment_status ?? "pending").toLowerCase() === "paid";
+  // Server PaymentStatus values: captured/authorized mean money is reserved.
+  // "paid" stays accepted for demo/local records.
+  const ps = String(api.payment_status ?? "pending").toLowerCase();
+  const paid = ps === "paid" || ps === "captured" || ps === "authorized";
   const items = Array.isArray(api.items) ? api.items : [];
   return {
     id: String(api.order_number || api.id),
     status: String(api.status || "placed"),
     placedAt: String(api.placed_at || new Date().toISOString()),
-    expectedDelivery: "",
+    expectedDelivery: String(api.expected_delivery || ""),
     address: {
       name: String(addr.name || "Customer"),
       phone: String(addr.phone || ""),
@@ -162,6 +166,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [refreshing, setRefreshing] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
+  const [payAttempt, setPayAttempt] = useState(false);
   const updateStatus = useUpdateOrderStatus();
   const toast = useToast();
   const router = useRouter();
@@ -260,6 +265,56 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         },
       }
     );
+  };
+
+  // Failed/abandoned online payments complete straight from this page: the
+  // widget re-opens against the same server order (amount is server-side).
+  const handleCompletePayment = async () => {
+    if (!apiOrder || payAttempt) return;
+    setPayAttempt(true);
+    try {
+      const rzp = await createRazorpayOrder(String((apiOrder as { id: string }).id));
+      if (typeof window === "undefined" || !window.Razorpay) {
+        toast.error("Gateway not ready", "Refresh this page once and try again.");
+        setPayAttempt(false);
+        return;
+      }
+      const rzpInstance = new window.Razorpay({
+        key: rzp.key_id,
+        amount: rzp.amount_paise,
+        currency: rzp.currency,
+        name: "MODIT",
+        description: `Order ${order?.id ?? ""}`,
+        order_id: rzp.razorpay_order_id,
+        handler: async function (response: any) {
+          try {
+            const verification = await verifyRazorpayPayment({
+              orderId: id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+            if (!verification.verified) throw new Error("verification failed");
+            toast.success("Payment successful!", "This order is fully paid.");
+            refetchOrder();
+          } catch {
+            toast.error("Verification failed", "If money was debited it will auto-refund. Try again here.");
+          } finally {
+            setPayAttempt(false);
+          }
+        },
+        modal: { ondismiss: () => setPayAttempt(false) },
+        theme: { color: "#2D1B69" },
+      });
+      rzpInstance.on("payment.failed", () => {
+        toast.error("Payment failed", "Nothing was charged — tap Complete payment to retry.");
+        setPayAttempt(false);
+      });
+      rzpInstance.open();
+    } catch (err) {
+      toast.error("Payment setup failed", err instanceof Error ? err.message : "Try again shortly.");
+      setPayAttempt(false);
+    }
   };
 
   if (isLoading) {
@@ -371,9 +426,6 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <span className="text-body-sm font-bold">Live Tracking</span>
                   <span className="text-tiny text-white/60">· auto-updates every 30s</span>
                 </div>
-                <button onClick={() => { setRefreshing(true); refetchOrder().finally(() => setRefreshing(false)); }} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all" title="Refresh status">
-                  <RefreshCcw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
-                </button>
               </div>
               <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
                 <div className="flex items-center gap-4">
@@ -382,22 +434,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
                   <div className="flex-1">
                     <p className="text-body-md font-bold">
-                      {liveDelivery ? `Delivery ${liveDelivery.delivery_number}` : "Delivery Partner: Vikram S."}
+                      {liveDelivery ? `Delivery ${liveDelivery.delivery_number}` : "Awaiting dispatch"}
                     </p>
                     <p className="text-micro text-white/70 mt-0.5">
                       {liveDelivery
                         ? `Status: ${liveDelivery.status.replace(/_/g, " ")}`
-                        : "Estimated arrival: 12 min"}
+                        : "Tracking activates once the order is dispatched."}
                     </p>
                   </div>
-                  <div className="flex gap-2">
-                    <a href="tel:+919876543210" aria-label="Call support" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
-                      <Phone className="h-4 w-4" />
-                    </a>
-                    <button aria-label="Message support" className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all">
-                      <MessageSquare className="h-4 w-4" />
-                    </button>
-                  </div>
+                  <button onClick={() => { setRefreshing(true); refetchOrder().finally(() => setRefreshing(false)); }} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all" title="Refresh status">
+                    <RefreshCcw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
+                  </button>
                 </div>
                 {liveDelivery && (
                   <Link
@@ -518,6 +565,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {order.payment.transactionId && <span className="text-[#9B8CB5]">· {order.payment.transactionId}</span>}
             </div>
           </div>
+          {(apiOrder as unknown as Record<string, unknown>)?.paid_via === "razorpay" && order.payment.status !== "paid" && order.status !== "cancelled" && (
+            <button
+              onClick={handleCompletePayment}
+              disabled={payAttempt}
+              className="mx-5 mb-5 h-11 rounded-xl bg-[#2D1B69] text-caption font-bold text-white hover:bg-[#1E1245] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              <RefreshCcw className={`h-3.5 w-3.5 ${payAttempt ? "animate-spin" : ""}`} /> Complete payment
+            </button>
+          )}
         </div>
 
         {/* Delivery Address */}
@@ -549,10 +605,18 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <div className="h-10 w-10 rounded-xl bg-[#F0F9E8] flex items-center justify-center flex-shrink-0">
               <Calendar className="h-4 w-4 text-[#7CB518]" />
             </div>
-            <div>
-              <p className="text-micro text-[#9B8CB5]">{order.deliveredAt ? "Delivered on" : "Expected by"}</p>
-              <p className="text-body-md font-bold text-[#150726]">{order.deliveredAt ? formatDateTime(order.deliveredAt) : formatDate(order.expectedDelivery)}</p>
-            </div>
+          <div>
+            <p className="text-micro text-[#9B8CB5]">
+              {order.deliveredAt ? "Delivered on" : order.expectedDelivery && !isNaN(new Date(order.expectedDelivery).getTime()) ? "Expected by" : "Dispatch schedule"}
+            </p>
+            <p className="text-body-md font-bold text-[#150726]">
+              {order.deliveredAt
+                ? formatDateTime(order.deliveredAt)
+                : order.expectedDelivery && !isNaN(new Date(order.expectedDelivery).getTime())
+                  ? formatDate(order.expectedDelivery)
+                  : "Pending"}
+            </p>
+          </div>
           </div>
         </div>
 
@@ -625,9 +689,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {cancelArmed ? "Confirm cancel?" : "Cancel order"}
             </button>
           )}
-          <button className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
+          <Link href="/contact" className="flex-1 h-12 rounded-xl border-2 border-[#DDD6EE] bg-white text-body-sm font-bold text-[#150726] hover:border-[#00BCD4] hover:bg-[#E8F9FC] transition-all flex items-center justify-center gap-2">
             <Phone className="h-4 w-4 text-[#00BCD4]" /> Support
-          </button>
+          </Link>
         </div>
       </div>
 

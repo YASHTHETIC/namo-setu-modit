@@ -657,6 +657,9 @@ class OrderDetailRead(OrderRead):
     gst_total: float = 0.0
     grand_total: float = 0.0
     payment_status: str = "pending"
+    # Online rails this order was set up on ("razorpay") — lets the buyer
+    # retry a failed card/UPI payment straight from the order page.
+    paid_via: str | None = None
     # Buyer address snapshot saved at placement (name/phone/line1/city/
     # state/pincode keys) — powers the detail header + invoice.
     address: dict | None = None

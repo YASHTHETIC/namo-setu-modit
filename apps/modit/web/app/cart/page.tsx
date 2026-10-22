@@ -389,7 +389,7 @@ export default function CartPage() {
                   <Truck className="h-4 w-4 text-[#7CB518]" />
                   <div>
                     <p className="text-caption font-semibold text-[#5A8010]">Estimated delivery: Tomorrow</p>
-                    <p className="text-tiny text-[#7CB518]">Order within 2h 15m for same-day dispatch</p>
+                    <p className="text-tiny text-[#7CB518]">Express and timed slots available at checkout</p>
                   </div>
                 </div>
 

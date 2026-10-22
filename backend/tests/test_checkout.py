@@ -327,3 +327,28 @@ def test_order_serializers_carry_money():
         created_at="2026-10-12T00:00:00Z",
     )
     assert item.sku is None and item.name is None
+
+
+def test_order_detail_paid_via():
+    from backend.app.schemas.modit import OrderDetailRead, OrderRead
+
+    base = OrderRead(
+        id="o2",
+        organization_id="org",
+        purchase_order_id=None,
+        order_number="ORD-2",
+        status="placed",
+        placed_at="2026-10-22T00:00:00Z",
+        notes=None,
+        created_at="2026-10-22T00:00:00Z",
+    )
+    plain = OrderDetailRead(**base.model_dump(), items=[], delivery_id=None)
+    assert plain.payment_status == "pending" and plain.paid_via is None
+    rzp = OrderDetailRead(
+        **base.model_dump(),
+        items=[],
+        delivery_id=None,
+        payment_status="captured",
+        paid_via="razorpay",
+    )
+    assert rzp.paid_via == "razorpay"
