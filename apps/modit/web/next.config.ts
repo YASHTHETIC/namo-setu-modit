@@ -10,6 +10,22 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@foundation/ui", "@foundation/utils", "@foundation/api-client"],
   poweredByHeader: false,
   compress: true,
+  // Baseline security headers for every response (nginx adds TLS/HSTS
+  // upstream on the VPS; these apply wherever the app is served).
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // geolocation=(self) — the header location picker uses GPS
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },

@@ -54,8 +54,18 @@ NAMING_CONVENTION = {
 }
 
 # asyncpg defaults to a 60s connect timeout — a dead Postgres would make
-# every request hang for a minute. Fail fast instead.
-_connect_args = {"timeout": 5} if "+asyncpg" in db_url else {}
+# every request hang for a minute. Fail fast instead. server_settings adds
+# a server-side statement cap (runaway queries cancel instead of stacking
+# workers) and a visible application_name for pg_stat_activity forensics.
+_connect_args: dict = {}
+if "+asyncpg" in db_url:
+    _connect_args = {
+        "timeout": 5,
+        "server_settings": {
+            "application_name": "modit-api",
+            "statement_timeout": "20000",
+        },
+    }
 
 # sqlite (aiosqlite) uses NullPool — pool_size/max_overflow/pool_timeout are
 # invalid there. Only pass pool tuning for real server databases so the app
