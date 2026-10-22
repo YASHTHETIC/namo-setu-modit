@@ -6,6 +6,25 @@ import type { NextConfig } from "next";
 // /api/ directly so this never triggers there.
 const API_ORIGIN = process.env.MODIT_API_ORIGIN || "https://api.modit.in";
 
+// Baseline CSP: 'unsafe-inline' scripts/styles are required by Next.js RSC
+// hydration inline payloads and Tailwind-injected styles; Razorpay hosts are
+// allow-listed for the checkout widget (script + iframe + analytics). This
+// still blocks every other remote script/unknown frame if a catalog string
+// ever breaks out of a sink.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com",
+  "frame-src https://api.razorpay.com https://checkout.razorpay.com",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join("; ");
+
 const nextConfig: NextConfig = {
   transpilePackages: ["@foundation/ui", "@foundation/utils", "@foundation/api-client"],
   poweredByHeader: false,
@@ -20,6 +39,7 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Content-Security-Policy", value: CSP },
           // geolocation=(self) — the header location picker uses GPS
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
         ],

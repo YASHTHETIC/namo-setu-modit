@@ -15,6 +15,7 @@ from backend.app.core.database import get_db
 from backend.app.core.rbac import RoleName
 from backend.app.core.redis import get_redis
 from backend.app.core.security import (
+    burn_password_verify,
     create_access_token,
     create_refresh_token,
     decode_token,
@@ -184,7 +185,11 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> To
         .where(User.email == payload.email.lower())
     )
     user = result.scalar_one_or_none()
-    if user is None or not verify_password(payload.password, user.hashed_password):
+    if user is None:
+        # Same bcrypt cost as the real-hash branch — no timing oracle.
+        burn_password_verify()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    if not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     await _ensure_bootstrap_admin(db, user)

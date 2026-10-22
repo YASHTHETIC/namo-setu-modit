@@ -22,6 +22,16 @@ export interface InvoiceData {
   total: number;
 }
 
+/** Escape user/catalog-provided strings before interpolating into invoice
+ * HTML (the file may be opened as a document in a same-origin window). */
+function esc(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function gstBreakdown(items: InvoiceItem[]) {
   const map = new Map<number, { taxable: number; gst: number }>();
   items.forEach((i) => {
@@ -39,8 +49,8 @@ export function renderInvoiceHtml(data: InvoiceData): string {
     .map(
       (i, idx) => `<tr>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;">${idx + 1}</td>
-        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;">${i.name}<br/><span style="color:#9B8CB5">SKU: ${i.sku}</span></td>
-        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;">${i.quantity} ${i.unit}</td>
+        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;">${esc(i.name)}<br/><span style="color:#9B8CB5">SKU: ${esc(i.sku)}</span></td>
+        <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;">${i.quantity} ${esc(i.unit)}</td>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:right;">${i.price.toLocaleString("en-IN")}</td>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:right;">${(i.price * i.quantity).toLocaleString("en-IN")}</td>
         <td style="padding:8px;border:1px solid #DDD6EE;font-size:12px;text-align:center;">${i.gstRate}%</td>
@@ -59,15 +69,15 @@ export function renderInvoiceHtml(data: InvoiceData): string {
     )
     .join("");
 
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>Invoice ${data.invoiceNumber}</title></head><body style="font-family:Arial,sans-serif;color:#150726;margin:40px;">
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>Invoice ${esc(data.invoiceNumber)}</title></head><body style="font-family:Arial,sans-serif;color:#150726;margin:40px;">
 <h1 style="color:#2D1B69;font-size:22px;margin-bottom:4px;">MODIT INVOICE</h1>
 <p style="color:#9B8CB5;font-size:12px;margin:0 0 8px;">B2B Building Material Marketplace</p>
-<p style="font-size:12px;margin:0 0 4px;"><strong>Invoice No:</strong> ${data.invoiceNumber}</p>
-<p style="font-size:12px;margin:0 0 4px;"><strong>Order ID:</strong> ${data.orderId}</p>
-<p style="font-size:12px;margin:0 0 4px;"><strong>Date:</strong> ${data.date}</p>
-<p style="font-size:12px;margin:0 0 4px;"><strong>Buyer GSTIN:</strong> ${data.gstin || "Unregistered (B2C)"}</p>
-<p style="font-size:12px;margin:0 0 4px;"><strong>Bill To:</strong> ${data.buyerName}</p>
-<p style="font-size:12px;margin:0 0 20px;">${data.buyerAddress} — ${data.buyerPincode}</p>
+<p style="font-size:12px;margin:0 0 4px;"><strong>Invoice No:</strong> ${esc(data.invoiceNumber)}</p>
+<p style="font-size:12px;margin:0 0 4px;"><strong>Order ID:</strong> ${esc(data.orderId)}</p>
+<p style="font-size:12px;margin:0 0 4px;"><strong>Date:</strong> ${esc(data.date)}</p>
+<p style="font-size:12px;margin:0 0 4px;"><strong>Buyer GSTIN:</strong> ${esc(data.gstin) || "Unregistered (B2C)"}</p>
+<p style="font-size:12px;margin:0 0 4px;"><strong>Bill To:</strong> ${esc(data.buyerName)}</p>
+<p style="font-size:12px;margin:0 0 20px;">${esc(data.buyerAddress)} — ${esc(data.buyerPincode)}</p>
 
 <table style="border-collapse:collapse;width:100%;">
 <thead><tr style="background:#F0ECF9;">

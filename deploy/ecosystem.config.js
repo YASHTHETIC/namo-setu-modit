@@ -5,7 +5,9 @@ module.exports = {
       name: "modit-api",
       cwd: "/opt/modit",
       script: ".venv/bin/uvicorn",
-      args: "backend.app.main:app --workers 2 --host 127.0.0.1 --port 8000",
+      // --proxy-headers: honor X-Forwarded-For from nginx only (forwarded-allow-ips),
+      // so per-IP rate limiting and audit logs see real client IPs, not 127.0.0.1.
+      args: "backend.app.main:app --workers 2 --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1,::1",
       interpreter: "none",
       autorestart: true,
       max_restarts: 10,

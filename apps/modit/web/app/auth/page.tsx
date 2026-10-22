@@ -26,7 +26,11 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/products";
+  const nextParam = searchParams.get("next");
+  // Only follow same-origin, app-internal redirects: must start with a
+  // single slash (blocks "//evil.com", "https://..." and odd schemes).
+  const next =
+    nextParam && /^\/(?!\/)[^\s]*$/.test(nextParam) ? nextParam : "/products";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +53,7 @@ function LoginForm() {
         }
       });
     } catch { /* geolocation unavailable */ }
-    router.push(next.startsWith("/") ? next : "/products");
+    router.push(next);
   };
 
   const loginMutation = useMutation({

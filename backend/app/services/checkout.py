@@ -242,7 +242,13 @@ async def compute_checkout_totals(
 
 async def _decrement_inventory(session: AsyncSession, product_id: str, quantity: float) -> None:
     rows = (
-        (await session.execute(select(Inventory).where(Inventory.product_id == product_id)))
+        (
+            await session.execute(
+                # Row lock so two concurrent checkouts of the same SKU cannot
+                # both pass the availability check and oversell (lost update).
+                select(Inventory).where(Inventory.product_id == product_id).with_for_update()
+            )
+        )
         .scalars()
         .all()
     )

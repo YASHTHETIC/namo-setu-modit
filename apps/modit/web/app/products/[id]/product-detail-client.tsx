@@ -39,7 +39,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useCartStore } from "@/lib/cart-store";
-import { productLink } from "@/lib/utils";
+import { productLink, safeJsonLd } from "@/lib/utils";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -215,7 +215,7 @@ export default function ProductDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: safeJsonLd({
             "@context": "https://schema.org",
             "@type": "Product",
             name: product.name,

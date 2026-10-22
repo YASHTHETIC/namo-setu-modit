@@ -746,9 +746,10 @@ async def list_orders(
     user: User | None = Depends(get_optional_user),
 ) -> list[OrderRead]:
     """List orders. Anonymous callers see nothing; customers see their own
-    orgs; staff see everything when no org filter is given."""
+    orgs (an org filter may only narrow to one of those); staff see
+    everything, optionally narrowed to one org."""
     stmt = select(Order)
-    if organization_id:
+    if organization_id and is_staff(user):
         stmt = stmt.where(Order.organization_id == organization_id)
     elif not is_staff(user):
         if user is None:
@@ -756,7 +757,11 @@ async def list_orders(
         org_ids = await _own_org_ids(db, user)
         if not org_ids:
             return []
-        stmt = stmt.where(Order.organization_id.in_(org_ids))
+        # An org filter may only narrow to one of the caller's own orgs —
+        # arbitrary values scope to nothing instead of leaking other orgs.
+        if organization_id and organization_id not in org_ids:
+            return []
+        stmt = stmt.where(Order.organization_id.in_([organization_id] if organization_id else org_ids))
     result = await db.execute(stmt.order_by(Order.created_at.desc()))
     orders = list(result.scalars().all())
     # One grouped count for every listed order (no N+1): the buyer Orders
@@ -927,7 +932,11 @@ async def _restore_inventory_for_order(session: AsyncSession, order_id: str) -> 
         inv_rows = (
             (
                 await session.execute(
-                    select(Inventory).where(Inventory.product_id == item.product_id)
+                    # Same row lock as checkout so a cancel racing a live
+                    # checkout of the same SKU cannot lose an add-back.
+                    select(Inventory)
+                    .where(Inventory.product_id == item.product_id)
+                    .with_for_update()
                 )
             )
             .scalars()
@@ -1052,7 +1061,24 @@ async def list_invoices(organization_id: str | None = None, db: AsyncSession = D
 async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Invoice:
     """Create an invoice."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    if await db.get(Organization, payload.organization_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    if not is_staff(user):
+        own_orgs = await _own_org_ids(db, user)
+        if payload.organization_id not in own_orgs:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only create invoices for your own organization",
+            )
+    if payload.order_id:
+        order = await db.get(Order, payload.order_id)
+        if order is None or order.organization_id != payload.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Order does not belong to this organization",
+            )
+
     invoice = Invoice(
         organization_id=payload.organization_id,
         order_id=payload.order_id,
@@ -1072,9 +1098,20 @@ async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_
 
 @router.post("/returns", response_model=ReturnRead, status_code=status.HTTP_201_CREATED)
 async def create_return(payload: ReturnCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Return:
-    """Create a return request."""
+    """Create a return request. Non-staff may only return their own orgs' orders."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    po = await db.get(PurchaseOrder, payload.purchase_order_id)
+    if po is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Purchase order not found")
+    if not is_staff(user):
+        own_orgs = await _own_org_ids(db, user)
+        if po.organization_id not in own_orgs:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only request returns for your own orders",
+            )
+
     ret = Return(
         purchase_order_id=payload.purchase_order_id,
         return_number=make_modit_reference("RET"),
@@ -1200,10 +1237,18 @@ async def get_inventory_stats(organization_id: str | None = None, db: AsyncSessi
 
 @router.get("/deliveries", response_model=list[DeliveryRead])
 async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[Delivery]:
-    """List deliveries (login required; /deliveries/{id}/track stays public)."""
-    stmt = select(Delivery)
+    """List deliveries. Customers only see deliveries for their own orgs'
+    purchase orders (site coordinates stay scoped); staff see everything."""
+    stmt = select(Delivery).join(PurchaseOrder, Delivery.purchase_order_id == PurchaseOrder.id)
     if purchase_order_id:
         stmt = stmt.where(Delivery.purchase_order_id == purchase_order_id)
+    if not is_staff(user):
+        if user is None:
+            return []
+        org_ids = await _own_org_ids(db, user)
+        if not org_ids:
+            return []
+        stmt = stmt.where(PurchaseOrder.organization_id.in_(org_ids))
     result = await db.execute(stmt.order_by(Delivery.created_at.desc()))
     return result.scalars().all()
 
@@ -1237,7 +1282,14 @@ async def create_delivery_ping(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> DeliveryPingRead:
-    """Rider location heartbeat (driver app). First ping auto-dispatches."""
+    """Rider location heartbeat (driver app). First ping auto-dispatches.
+    Staff/dispatch-token only: pings drive the public tracking map, so an
+    open endpoint would let anyone falsify a customer's live delivery."""
+    if not is_staff(user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only dispatch staff can send rider pings",
+        )
     ping = await record_delivery_ping(db, delivery_id, payload.latitude, payload.longitude)
     return DeliveryPingRead.model_validate(ping)
 

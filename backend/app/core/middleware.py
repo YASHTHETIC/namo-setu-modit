@@ -52,7 +52,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     # Credential flows get their own tighter window so token spray attacks
     # are throttled independently of normal browsing traffic.
     _AUTH_PREFIX = "/api/v1/auth/"
-    _AUTH_PATHS = frozenset(("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"))
+    _AUTH_PATHS = frozenset(
+        (
+            "/auth/login",
+            "/auth/register",
+            "/auth/forgot-password",
+            "/auth/reset-password",
+            "/auth/otp/request",
+            "/auth/otp/verify",
+        )
+    )
 
     def __init__(self, app, requests_per_minute: int = 120, burst: int = 30):
         super().__init__(app)

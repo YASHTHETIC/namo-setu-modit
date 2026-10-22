@@ -18,6 +18,16 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
 
 
+def burn_password_verify() -> None:
+    """Compare against a throwaway hash to equalize response timing.
+
+    Used on the no-such-user path of credential endpoints so an attacker
+    cannot enumerate registered accounts by measuring how long a failed
+    login takes with vs. without a bcrypt round.
+    """
+    pwd_context.verify("timing-equalizer", pwd_context.hash("timing-equalizer"))
+
+
 def _create_token(subject: str, expires_delta: timedelta, token_type: str, extra_claims: dict[str, Any] | None = None) -> str:
     settings = get_settings()
     now = datetime.now(timezone.utc)

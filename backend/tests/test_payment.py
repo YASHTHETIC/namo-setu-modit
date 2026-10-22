@@ -2,13 +2,21 @@
 import pytest
 
 
-def test_checkout_requires_auth(client):
-    response = client.post("/api/v1/payments/checkout", json={"amount": 100, "currency": "INR"})
+def test_razorpay_order_requires_auth(client):
+    response = client.post("/api/v1/payments/razorpay/order", json={"order_id": "test"})
     assert response.status_code == 401
 
 
-def test_payment_intent_requires_auth(client):
-    response = client.post("/api/v1/payments/intent", json={"amount": 100, "currency": "INR"})
+def test_razorpay_verify_requires_auth(client):
+    response = client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "order_id": "test",
+            "razorpay_order_id": "order_x",
+            "razorpay_payment_id": "pay_x",
+            "razorpay_signature": "sig",
+        },
+    )
     assert response.status_code == 401
 
 
@@ -17,33 +25,24 @@ def test_payment_history_requires_auth(client):
     assert response.status_code == 401
 
 
-def test_payment_webhook_no_auth_needed(client):
-    response = client.post("/api/v1/payments/webhook", content=b"{}", headers={"Stripe-Signature": "test"})
-    assert response.status_code in (200, 400, 422, 500)
+def test_legacy_stripe_routes_removed(client):
+    # Razorpay replaced Stripe checkout/intent/webhook flows — the old
+    # routes must not half-exist (they served 500s via signature drift).
+    for path in (
+        "/api/v1/payments/checkout",
+        "/api/v1/payments/intent",
+        "/api/v1/payments/webhook",
+        "/api/v1/payments/donation",
+        "/api/v1/payments/booking",
+        "/api/v1/payments/order",
+        "/api/v1/payments/refund",
+        "/api/v1/payments/pay_xyz",
+    ):
+        assert client.post(path, json={}).status_code == 404
+        assert client.get(path).status_code == 404
 
 
-def test_donation_payment_requires_auth(client):
-    response = client.post("/api/v1/payments/donation", json={"amount": 500, "currency": "INR"})
-    assert response.status_code == 401
-
-
-def test_booking_payment_requires_auth(client):
-    response = client.post("/api/v1/payments/booking", json={"amount": 200, "currency": "INR"})
-    assert response.status_code == 401
-
-
-def test_order_payment_requires_auth(client):
-    response = client.post("/api/v1/payments/order", json={"amount": 1000, "currency": "INR"})
-    assert response.status_code == 401
-
-
-def test_refund_requires_auth(client):
-    response = client.post("/api/v1/payments/refund", json={"payment_id": "test", "reason": "test"})
-    assert response.status_code == 401
-
-
-def test_webhook_rejects_garbage_signature():
-    import pytest
+def test_webhook_signature_helper_still_rejects_garbage():
     from fastapi import HTTPException
 
     from backend.app.services.payment_service import _verify_webhook_signature
@@ -53,12 +52,11 @@ def test_webhook_rejects_garbage_signature():
     assert exc.value.status_code == 400
 
 
-def test_webhook_rejects_stale_timestamp():
+def test_webhook_signature_helper_rejects_stale_timestamp():
     import hashlib
     import hmac
     import time
 
-    import pytest
     from fastapi import HTTPException
 
     from backend.app.services.payment_service import _verify_webhook_signature
@@ -73,7 +71,7 @@ def test_webhook_rejects_stale_timestamp():
     assert "Stale" in exc.value.detail
 
 
-def test_webhook_accepts_fresh_valid_signature():
+def test_webhook_signature_helper_accepts_fresh_valid_signature():
     import hashlib
     import hmac
     import time

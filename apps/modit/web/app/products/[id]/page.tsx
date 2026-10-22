@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { products } from "@/lib/product-data";
+import { safeJsonLd } from "@/lib/utils";
 
 import ProductDetailClient from "./product-detail-client";
 
@@ -80,7 +81,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       )}
       <ProductDetailClient params={params} />

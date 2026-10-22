@@ -44,3 +44,13 @@ export function onlyDigits(value: string | null | undefined, maxLength?: number)
 export function productLink(p: { slug?: string | null; id: string }): string {
   return `/products/${p.slug || p.id}`;
 }
+
+/** JSON-LD body safe for embedding in a <script> tag: escapes '<' and the
+ * line-separator characters (U+2028/U+2029) so catalog strings can never
+ * break out of the tag into a stored-XSS sink. */
+export function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
