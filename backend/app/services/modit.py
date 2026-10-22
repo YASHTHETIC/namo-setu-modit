@@ -71,6 +71,7 @@ from backend.app.schemas.modit import (
     ProductDetailRead,
     ProductRead,
     ProjectDetailRead,
+    ProjectRead,
     RFQDetailRead,
     RFQItemRead,
     SmartReorderResponse,
@@ -106,6 +107,7 @@ async def product_to_detail(session: AsyncSession, product: Product) -> ProductD
     unit = getattr(product, "unit", None)
     gst = getattr(product, "gst", None)
     images = getattr(product, "images", None) or []
+    inventory = getattr(product, "inventory", None) or []
 
     images_data = []
     for img in images:
@@ -141,6 +143,7 @@ async def product_to_detail(session: AsyncSession, product: Product) -> ProductD
         unit=unit_data,
         gst=GSTRead.model_validate(gst).model_dump() if gst else None,
         images=images_data,
+        stock_units=float(sum(float(getattr(inv, "quantity_on_hand", 0) or 0) for inv in inventory)),
     )
 
 
@@ -214,11 +217,16 @@ async def search_products(
     page_size: int = 20,
     category_slug: str | None = None,
     brand_slug: str | None = None,
+    include_inactive: bool = False,
+    supplier_id: str | None = None,
 ) -> tuple[list[ProductDetailRead], int, list[str]]:
     """Search products with filters.
 
     Returns enriched ProductDetailRead (brand/category/unit/gst/images)
     so the storefront can render without a second lookup per row.
+
+    `include_inactive` is only passed for staff callers (admin console),
+    so hidden/deactivated products stay manageable there.
     """
     resolved_category_id = await _resolve_category_id(session, category_id, category_slug)
     resolved_brand_id = await _resolve_brand_id(session, brand_id, brand_slug)
@@ -232,9 +240,13 @@ async def search_products(
             selectinload(Product.unit),
             selectinload(Product.gst),
             selectinload(Product.images).selectinload(ProductImage.media),
+            selectinload(Product.inventory),
         )
-        .where(Product.is_active.is_(True), Product.deleted_at.is_(None))
     )
+    if include_inactive:
+        stmt = stmt.where(Product.deleted_at.is_(None))
+    else:
+        stmt = stmt.where(Product.is_active.is_(True), Product.deleted_at.is_(None))
 
     if query:
         stmt = stmt.where(
@@ -250,6 +262,9 @@ async def search_products(
 
     if resolved_brand_id:
         stmt = stmt.where(Product.brand_id == resolved_brand_id)
+
+    if supplier_id:
+        stmt = stmt.where(Product.supplier_id == supplier_id)
 
     # Get total count
     count_stmt = select(func.count()).select_from(stmt.subquery())
@@ -315,6 +330,7 @@ async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
             selectinload(Product.unit),
             selectinload(Product.gst),
             selectinload(Product.images).selectinload(ProductImage.media),
+            selectinload(Product.inventory),
         )
         .where(Product.id == product_id)
     )
@@ -492,7 +508,7 @@ async def project_to_detail(session: AsyncSession, project: Project) -> ProjectD
     await session.refresh(project, ["construction_sites", "material_requests", "boq"])
     
     return ProjectDetailRead(
-        **Project.model_validate(project).model_dump(),
+        **ProjectRead.model_validate(project).model_dump(),
         construction_sites=[ConstructionSite.model_validate(site) for site in project.construction_sites],
         material_requests=[MaterialRequest.model_validate(req) for req in project.material_requests],
         boq=[BOQ.model_validate(boq) for boq in project.boq],

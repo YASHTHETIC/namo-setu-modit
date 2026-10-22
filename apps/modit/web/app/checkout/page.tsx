@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Check, Plus, Package, Truck, Clock, CheckCircle2, ShoppingCart,
@@ -11,6 +11,7 @@ import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useAddressStore } from "@/lib/address-store";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCouponStore } from "@/lib/coupon-store";
+import { useServerCoupons } from "@/lib/modit-api";
 import { formatINR2 } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
@@ -30,6 +31,14 @@ export default function CheckoutPage() {
   const { selectedSlotId, slots, selectSlot, getSelected: getSlot } = useDeliveryStore();
   const { appliedCoupon, couponError, applyCoupon, removeCoupon, getDiscount, getBestCoupon, availableCoupons } = useCouponStore();
   const toast = useToast();
+  // Coupons come from the server (same rows checkout validates) — hydrate
+  // on load; local defaults only cover offline.
+  const serverCoupons = useServerCoupons();
+  useEffect(() => {
+    if (serverCoupons.data && (serverCoupons.data as unknown[]).length) {
+      useCouponStore.getState().hydrateFromServer(serverCoupons.data as unknown as Array<Record<string, unknown>>);
+    }
+  }, [serverCoupons.data]);
 
   const [orderPlaced, setOrderPlaced] = useState(false);
   const headerHidden = useHideOnScroll(140);

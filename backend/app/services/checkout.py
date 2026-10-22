@@ -34,6 +34,7 @@ from backend.app.models.modit import (
     OrderItem,
     Organization,
     OrganizationUser,
+    PlatformCoupon,
     Product,
     PurchaseOrder,
 )
@@ -53,8 +54,9 @@ def money(value: float) -> float:
     the frontend and payment gateway amounts."""
     return float(Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
-# Mirror of the storefront's built-in coupons (frontend defaultCoupons).
-# Custom admin-created codes are display-only until synced here.
+# Mirror of the storefront's built-in coupons — used only while the
+# platform_coupons table has no rows (e.g. a DB that hasn't run the
+# 20261022_0001 seed). Once admin-managed rows exist they are the truth.
 BUILT_IN_COUPONS: tuple[dict, ...] = (
     {"code": "FIRST100", "type": "flat", "value": 100.0, "max": None, "min_order": 1000.0, "till": "2026-12-31", "category": None},
     {"code": "BULK10", "type": "percent", "value": 10.0, "max": 500.0, "min_order": 5000.0, "till": "2026-12-31", "category": None},
@@ -66,14 +68,12 @@ BUILT_IN_COUPONS: tuple[dict, ...] = (
 )
 
 
-def validate_coupon(
-    code: str | None, subtotal: float, category_slugs: set[str], today: date | None = None
+def _validate_coupon_rows(
+    rows: list[dict], code: str, subtotal: float, category_slugs: set[str], today: date
 ) -> tuple[float, bool]:
-    """Return (discount_amount, free_shipping). Raises 400 on invalid coupons."""
-    if not code:
-        return 0.0, False
-    today = today or date.today()
-    coupon = next((c for c in BUILT_IN_COUPONS if c["code"] == code.strip().upper()), None)
+    """Shared coupon rules. `rows` carry the same keys as BUILT_IN_COUPONS
+    plus optional usage_limit/used_count (DB-backed rows)."""
+    coupon = next((c for c in rows if c["code"] == code.strip().upper()), None)
     if coupon is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Unknown coupon code: {code}")
     if today.isoformat() > coupon["till"]:
@@ -83,19 +83,76 @@ def validate_coupon(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Coupon {coupon['code']} needs a minimum order of ₹{coupon['min_order']:,.0f}",
         )
-    if coupon["category"] and coupon["category"] not in category_slugs:
+    if coupon.get("category") and coupon["category"] not in category_slugs:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Coupon {coupon['code']} applies to {coupon['category']} products only",
         )
+    used_count = coupon.get("used_count") or 0
+    usage_limit = coupon.get("usage_limit")
+    if usage_limit is not None and used_count >= usage_limit:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Coupon {coupon['code']} usage limit reached")
     if coupon["type"] == "flat":
         return money(min(coupon["value"], subtotal)), False
     if coupon["type"] == "percent":
         disc = money(subtotal * coupon["value"] / 100)
         if coupon["max"] is not None:
-            disc = min(disc, coupon["max"])
+            disc = min(disc, money(float(coupon["max"])))
         return disc, False
     return 0.0, True  # free shipping
+
+
+def validate_coupon(
+    code: str | None, subtotal: float, category_slugs: set[str], today: date | None = None
+) -> tuple[float, bool]:
+    """Return (discount_amount, free_shipping). Raises 400 on invalid coupons."""
+    if not code:
+        return 0.0, False
+    today = today or date.today()
+    rows = [dict(c) for c in BUILT_IN_COUPONS]
+    return _validate_coupon_rows(rows, code, subtotal, category_slugs, today)
+
+
+async def validate_coupon_db(
+    session: AsyncSession, code: str | None, subtotal: float, category_slugs: set[str], today: date | None = None
+) -> tuple[float, bool, str | None]:
+    """Checkout validation: admin-managed platform_coupons first, built-in
+    mirror while the table is empty. Returns the matched coupon row id so
+    place_checkout_order can count usage."""
+    if not code:
+        return 0.0, False, None
+    today = today or date.today()
+    rows: list[dict] = []
+    row_ids: dict[str, str] = {}
+    try:
+        result = await session.execute(
+            select(PlatformCoupon).where(
+                PlatformCoupon.is_active.is_(True), PlatformCoupon.deleted_at.is_(None)
+            )
+        )
+        for c in result.scalars().all():
+            normalized = {
+                "code": str(getattr(c, "code", "") or "").upper(),
+                "type": str(getattr(c, "discount_type", "") or "").lower(),
+                "value": float(getattr(c, "discount_value", 0) or 0),
+                "max": getattr(c, "max_discount", None),
+                "min_order": float(getattr(c, "min_order", 0) or 0),
+                "till": getattr(c, "valid_till", None).isoformat() if getattr(c, "valid_till", None) else "9999-12-31",
+                "category": getattr(c, "category", None),
+                "usage_limit": getattr(c, "usage_limit", None),
+                "used_count": getattr(c, "used_count", 0) or 0,
+            }
+            if normalized["code"] and normalized["type"] in ("flat", "percent", "ship"):
+                rows.append(normalized)
+                row_ids[normalized["code"]] = getattr(c, "id", None)
+    except Exception:
+        # Table not migrated yet / read issues → fall back to built-ins.
+        rows = []
+    if rows:
+        discount, free_ship = _validate_coupon_rows(rows, code, subtotal, category_slugs, today)
+        return discount, free_ship, row_ids.get(code.strip().upper())
+    discount, free_ship = validate_coupon(code, subtotal, category_slugs, today)
+    return discount, free_ship, None
 
 
 def _utcnow() -> datetime:
@@ -225,7 +282,7 @@ async def compute_checkout_totals(
         )
     subtotal = money(subtotal)
     gst_total = money(gst_total)
-    discount, free_ship = validate_coupon(payload.coupon_code, subtotal, category_slugs)
+    discount, free_ship, coupon_row_id = await validate_coupon_db(session, payload.coupon_code, subtotal, category_slugs)
     shipping = 0.0 if (free_ship or (subtotal - discount) >= FREE_SHIPPING_THRESHOLD) else FLAT_SHIPPING_FEE
     grand = money(subtotal - discount + shipping + gst_total)
     return {
@@ -237,6 +294,7 @@ async def compute_checkout_totals(
         "shipping_total": shipping,
         "gst_total": gst_total,
         "grand_total": grand,
+        "coupon_row_id": coupon_row_id,
     }
 
 
@@ -435,6 +493,14 @@ async def place_checkout_order(
         transaction_type="debit",
     )
     session.add(payment)
+
+    # Count coupon usage on the admin-managed row (built-in mirror codes
+    # have no row — nothing to count).
+    coupon_row_id = computed.get("coupon_row_id")
+    if coupon_row_id:
+        coupon_row = await session.get(PlatformCoupon, coupon_row_id)
+        if coupon_row is not None:
+            coupon_row.used_count = int(getattr(coupon_row, "used_count", 0) or 0) + 1
 
     # Staff see the order in admin immediately (same transaction).
     await _notify_staff_new_order(session, computed["retail_org"].id, order, computed["grand_total"])

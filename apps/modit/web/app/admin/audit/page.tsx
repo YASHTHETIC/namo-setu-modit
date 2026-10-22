@@ -1,13 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FileText, Search, Trash2, Cloud, HardDrive } from "lucide-react";
-import { useAdminActivity, ADMIN_ACTION_LABEL, type AdminActivity } from "@/lib/admin-activity";
+import { FileText, Search, Cloud } from "lucide-react";
 import { useAuditLogs } from "@/lib/modit-api";
 import { Stagger } from "@/components/fx";
 
-/** Server action strings come from inside the platform (media/org uploads etc).
- * Humanize known ones; fall back to a readable form of the raw action. */
 function serverActionLabel(action: string): string {
   const known: Record<string, string> = {
     "media.upload": "Media uploaded",
@@ -18,6 +15,16 @@ function serverActionLabel(action: string): string {
     "media.upload_temple_image": "Temple image uploaded",
     "media.upload_product_image": "Product image uploaded",
     "organization.create": "Organization created",
+    "modit.product.create": "Product created",
+    "modit.product.update": "Product updated",
+    "modit.product.delete": "Product deleted",
+    "modit.order.status": "Order status changed",
+    "modit.inventory.create": "Stock recorded",
+    "modit.inventory.update": "Stock updated",
+    "modit.coupon.create": "Coupon created",
+    "modit.coupon.update": "Coupon updated",
+    "modit.coupon.delete": "Coupon deleted",
+    "modit.staff.claim": "Staff access claimed",
   };
   if (known[action]) return known[action];
   return action
@@ -26,65 +33,36 @@ function serverActionLabel(action: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-interface TimelineEntry {
-  id: string;
-  type: string;
-  summary: string;
-  detail?: string;
-  at: number; // local epoch ms
-  source: "server" | "local";
-  actor?: string | null;
-}
-
 const TYPE_COLORS: Record<string, string> = {
-  "product.update": "bg-[#E8F9FC] text-[#00BCD4]",
-  "product.reset": "bg-[#F0ECF9] text-[#9B8CB5]",
-  "product.bulk_update": "bg-[#E8F9FC] text-[#00BCD4]",
-  "sale.create": "bg-[#FCE4EC] text-[#E91E63]",
-  "sale.update": "bg-[#FCE4EC] text-[#E91E63]",
-  "sale.toggle": "bg-[#FFFBF5] text-[#FF9800]",
-  "sale.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
-  "order.status": "bg-[#F0F9E8] text-[#7CB518]",
-  "coupon.create": "bg-[#F0ECF9] text-[#2D1B69]",
-  "coupon.update": "bg-[#F0ECF9] text-[#2D1B69]",
-  "coupon.toggle": "bg-[#FFFBF5] text-[#FF9800]",
-  "coupon.delete": "bg-[#F0ECF9] text-[#9B8CB5]",
-  "return.advance": "bg-[#FCE4EC] text-[#C2185B]",
-  "supplier.status": "bg-[#E8F9FC] text-[#00838F]",
-  "supplier.add": "bg-[#F0F9E8] text-[#5a8010]",
-  "admin.unlock": "bg-[#F0ECF9] text-[#2D1B69]",
+  "modit.product.create": "bg-[#F0F9E8] text-[#5a8010]",
+  "modit.product.update": "bg-[#E8F9FC] text-[#00BCD4]",
+  "modit.product.delete": "bg-[#FCE4EC] text-[#E91E63]",
+  "modit.order.status": "bg-[#F0F9E8] text-[#7CB518]",
+  "modit.inventory.create": "bg-[#F0F9E8] text-[#5a8010]",
+  "modit.inventory.update": "bg-[#E8F9FC] text-[#00838F]",
+  "media.upload": "bg-[#E8F9FC] text-[#00BCD4]",
+  "organization.create": "bg-[#F0F9E8] text-[#5a8010]",
 };
 
 export default function AdminAuditPage() {
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("");
-  const localEntries = useAdminActivity((s) => s.entries);
-  const clear = useAdminActivity((s) => s.clear);
-  const audit = useAuditLogs(1, 50);
+  const [page, setPage] = useState(1);
+  const pageSize = 50;
+  const audit = useAuditLogs(page, pageSize);
   const serverOffline = audit.isError;
 
-  // One merged timeline: authoritative server rows first, then this device's
-  // row cache (entries the API does not record yet, e.g. price edits).
-  const entries: TimelineEntry[] = useMemo(() => {
-    const server: TimelineEntry[] = (audit.data?.logs ?? []).map((l) => ({
-      id: `srv-${l.id}`,
+  const entries = useMemo(() => {
+    return (audit.data?.logs ?? []).map((l) => ({
+      id: l.id,
       type: l.action,
       summary: serverActionLabel(l.action),
-      detail: `${l.entity_type} ${l.entity_id}${l.after_json ? " · changed" : " · queried"}`,
+      detail: `${l.entity_type} ${l.entity_id}`,
       at: new Date(l.created_at).getTime(),
-      source: "server" as const,
       actor: l.actor_user_id,
+      changed: Boolean(l.after_json),
     }));
-    const local: TimelineEntry[] = localEntries.map((e: AdminActivity) => ({
-      id: e.id,
-      type: e.type,
-      summary: e.summary,
-      detail: e.detail,
-      at: e.at,
-      source: "local" as const,
-    }));
-    return [...server, ...local].sort((a, b) => b.at - a.at);
-  }, [audit.data, localEntries]);
+  }, [audit.data]);
 
   const typeOptions = useMemo(() => {
     const set = new Set<string>();
@@ -96,12 +74,12 @@ export default function AdminAuditPage() {
     if (typeFilter && e.type !== typeFilter) return false;
     if (query.trim()) {
       const q = query.trim().toLowerCase();
-      return e.summary.toLowerCase().includes(q) || (e.detail ?? "").toLowerCase().includes(q);
+      return e.summary.toLowerCase().includes(q) || e.detail.toLowerCase().includes(q);
     }
     return true;
   });
 
-  const groups = new Map<string, TimelineEntry[]>();
+  const groups = new Map<string, typeof entries>();
   filtered.forEach((e) => {
     const day = new Date(e.at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
     if (!groups.has(day)) groups.set(day, []);
@@ -114,21 +92,14 @@ export default function AdminAuditPage() {
         <div>
           <h1 className="text-title-lg font-extrabold text-[#150726]">Activity Log</h1>
           <p className="text-caption text-[#9B8CB5] mt-0.5">
-            {audit.data?.total ?? 0} server events · {localEntries.length} on-this-device · who changed what, when
+            {audit.data?.total ?? 0} server events · who changed what, when
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {!serverOffline && (
-            <span className="flex items-center gap-1 rounded-full bg-[#F0F9E8] px-3 py-2 text-tiny font-bold text-[#5a8010]">
-              <Cloud className="h-3.5 w-3.5" /> Synced with server
-            </span>
-          )}
-          {localEntries.length > 0 && (
-            <button onClick={() => { if (confirm("Clear on-this-device entries?")) clear(); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#DDD6EE] text-micro font-bold text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
-              <Trash2 className="h-3.5 w-3.5" /> Clear local
-            </button>
-          )}
-        </div>
+        {!serverOffline && (
+          <span className="flex items-center gap-1 rounded-full bg-[#F0F9E8] px-3 py-2 text-tiny font-bold text-[#5a8010]">
+            <Cloud className="h-3.5 w-3.5" /> Synced with server
+          </span>
+        )}
       </div>
 
       <div className="mt-4 flex gap-2 flex-wrap">
@@ -144,22 +115,22 @@ export default function AdminAuditPage() {
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="rounded-xl border border-[#DDD6EE] bg-white px-3 py-2.5 text-caption font-bold text-[#6B5B83] focus:outline-none focus:border-[#2D1B69]">
           <option value="">All actions</option>
           {typeOptions.map((t) => (
-            <option key={t} value={t}>{ADMIN_ACTION_LABEL[t as keyof typeof ADMIN_ACTION_LABEL] ?? serverActionLabel(t)}</option>
+            <option key={t} value={t}>{serverActionLabel(t)}</option>
           ))}
         </select>
       </div>
 
       {serverOffline && (
         <p className="mt-3 rounded-xl border border-[#FF9800]/30 bg-[#FFFBF5] px-4 py-2.5 text-caption font-semibold text-[#B45309]">
-          Server log unreachable — showing on-this-device entries only.
+          Server log unreachable — cannot show audit history right now.
         </p>
       )}
 
       {filtered.length === 0 ? (
         <div className="mt-4 rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
           <FileText className="h-8 w-8 text-[#9B8CB5] mx-auto mb-2" />
-          <p className="text-body-md font-bold text-[#150726]">No activity yet</p>
-          <p className="text-caption text-[#9B8CB5] mt-1">Store events (uploads, org changes) and staff actions will appear here automatically.</p>
+          <p className="text-body-md font-bold text-[#150726]">No activity found</p>
+          <p className="text-caption text-[#9B8CB5] mt-1">Staff actions (product edits, stock changes, order updates) are recorded here automatically.</p>
         </div>
       ) : (
         <div className="mt-4 space-y-5">
@@ -172,24 +143,44 @@ export default function AdminAuditPage() {
                   <div key={e.id} className={`px-4 py-3 ${idx > 0 ? "border-t border-[#F0ECF9]" : ""}`}>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`rounded-full px-2 py-0.5 text-tiny font-bold ${TYPE_COLORS[e.type] ?? "bg-[#F0ECF9] text-[#2D1B69]"}`}>
-                        {ADMIN_ACTION_LABEL[e.type as keyof typeof ADMIN_ACTION_LABEL] ?? serverActionLabel(e.type)}
+                        {serverActionLabel(e.type)}
                       </span>
-                      <span className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-tiny font-bold ${e.source === "server" ? "bg-[#F0F9E8] text-[#5a8010]" : "bg-[#FFFBF5] text-[#B45309]"}`}>
-                        {e.source === "server" ? <><Cloud className="h-3 w-3" /> Server</> : <><HardDrive className="h-3 w-3" /> This device</>}
-                      </span>
+                      {e.changed && (
+                        <span className="flex items-center gap-1 rounded-full px-2 py-0.5 text-tiny font-bold bg-[#F0F9E8] text-[#5a8010]">
+                          changed
+                        </span>
+                      )}
                       <span className="text-micro text-[#9B8CB5] tabular-nums">
                         {new Date(e.at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                       </span>
                       {e.actor && <span className="text-micro text-[#9B8CB5]">· actor {e.actor.slice(0, 8)}{e.actor.length > 8 ? "…" : ""}</span>}
                     </div>
                     <p className="text-body-sm font-bold text-[#150726] mt-1">{e.summary}</p>
-                    {e.detail && <p className="text-micro text-[#6B5B83] mt-0.5">{e.detail}</p>}
+                    <p className="text-micro text-[#6B5B83] mt-0.5">{e.detail}</p>
                   </div>
                 ))}
               </div>
             </div>
           ))}
           </Stagger>
+          {audit.data && audit.data.total > page * pageSize && (
+            <div className="flex justify-center gap-3">
+              {page > 1 && (
+                <button
+                  onClick={() => setPage((n) => Math.max(1, n - 1))}
+                  className="px-5 py-2.5 rounded-xl border border-[#DDD6EE] bg-white text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
+                >
+                  Newer events
+                </button>
+              )}
+              <button
+                onClick={() => setPage((n) => n + 1)}
+                className="px-5 py-2.5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245]"
+              >
+                Older events
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

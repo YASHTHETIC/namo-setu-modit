@@ -7,7 +7,6 @@ import { useOrders, fetchOrderDetail } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { notifyOrderEvent } from "@/lib/order-notifications";
-import { useAdminStore } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
@@ -37,7 +36,6 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "delivered" | "cancelled">("all");
   const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
   const orderList = orders ?? fallbackOrders;
-  const adminOrderStatuses = useAdminStore((s) => s.orderStatuses);
 
   const totalSpent = orderList.reduce((sum, o) => sum + ((o as any).total || 0), 0);
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
@@ -183,14 +181,14 @@ export default function OrdersPage() {
           <div className="space-y-3 px-4 sm:px-0">
             {orderList
               .filter((order) => {
-                const s = (adminOrderStatuses[(order as any).id]?.status ?? (order as any).status) as string;
+                const s = (order as any).status as string;
                 if (statusFilter === "all") return true;
                 if (statusFilter === "delivered") return s === "delivered";
                 if (statusFilter === "cancelled") return s === "cancelled";
                 return !["delivered", "cancelled"].includes(s);
               })
               .map((order, idx) => {
-              const liveStatus = adminOrderStatuses[order.id]?.status ?? order.status;
+              const liveStatus = order.status;
               const st = statusConfig[liveStatus] || statusConfig.placed;
               const Icon = st.icon;
               const date = order.placed_at

@@ -20,7 +20,8 @@ from backend.app.api.deps import require_permission, require_supplier
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
 from backend.app.core.security import hash_password
-from backend.app.models.enums import OrderStatus, QuotationStatus, RFQStatus
+from backend.app.models.enums import OrderStatus, ProductCode, QuotationStatus, RFQStatus
+from backend.app.services.audit_service import create_audit_log
 from backend.app.models.modit import (
     GST,
     Order,
@@ -144,11 +145,31 @@ def _to_product(p: Product) -> SupplierProduct:
 
 
 async def _my_order_items(supplier: Supplier, db: AsyncSession) -> list[OrderItem]:
-    result = await db.execute(select(OrderItem).join(Product, OrderItem.product_id == Product.id))
+    """All order lines for this supplier's catalog — supplier filter runs in
+    SQL (was a full-table scan + per-row db.get). Fake compatibility: the
+    test double ignores SQL filters, so rival rows are still dropped here."""
+    result = await db.execute(
+        select(OrderItem)
+        .join(Product, Product.id == OrderItem.product_id)
+        .where(Product.supplier_id == supplier.id)
+        .order_by(OrderItem.created_at.desc())
+        .limit(2000)
+    )
     items = list(result.scalars().all())
+    product_ids = [getattr(item, "product_id", None) for item in items if getattr(item, "product_id", None)]
+    products: dict[str, Product] = {}
+    if product_ids:
+        rows = await db.execute(select(Product).where(Product.id.in_(product_ids)))
+        products = {p.id: p for p in rows.scalars().all()}
+        # Missing ids (soft-deleted rows, exotic doubles): cheap per-id fallback.
+        for pid in product_ids:
+            if pid not in products:
+                got = await db.get(Product, pid)
+                if got is not None:
+                    products[str(getattr(got, "id", pid))] = got
     mine: list[OrderItem] = []
     for item in items:
-        product = await db.get(Product, getattr(item, "product_id", None))
+        product = products.get(getattr(item, "product_id", None))
         if product is not None and str(getattr(product, "supplier_id", "")) == str(supplier.id):
             # Stash the resolved product so callers never re-query.
             setattr(item, "_supplier_product", product)
@@ -156,10 +177,28 @@ async def _my_order_items(supplier: Supplier, db: AsyncSession) -> list[OrderIte
     return mine
 
 
+async def _orders_by_id(db: AsyncSession, items: list[OrderItem]) -> dict[str, Order]:
+    """Batched order lookup for order lines (one query, no per-line get).
+    Ids the batch misses (soft delete, test doubles) fall back to db.get."""
+    order_ids = [getattr(item, "order_id", None) for item in items if getattr(item, "order_id", None)]
+    if not order_ids:
+        return {}
+    rows = await db.execute(select(Order).where(Order.id.in_(order_ids)))
+    orders = {o.id: o for o in rows.scalars().all()}
+    missing = {oid for oid in order_ids if str(oid) not in orders}
+    for oid in missing:
+        got = await db.get(Order, oid)
+        if got is not None:
+            orders[str(getattr(got, "id", oid))] = got
+    return orders
+
+
 async def _my_orders(supplier: Supplier, db: AsyncSession) -> list[SupplierOrder]:
     grouped: dict[str, SupplierOrder] = {}
-    for item in await _my_order_items(supplier, db):
-        order = await db.get(Order, getattr(item, "order_id", None))
+    lines = await _my_order_items(supplier, db)
+    orders = await _orders_by_id(db, lines)
+    for item in lines:
+        order = orders.get(getattr(item, "order_id", None))
         if order is None:
             continue
         status_value = getattr(order, "status", None)
@@ -371,7 +410,7 @@ async def decide_supplier_application(
     supplier_id: str,
     payload: ApplicationDecision,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(require_permission(PermissionName.ORGANIZATION_MANAGE)),
+    user: User = Depends(require_permission(PermissionName.ORGANIZATION_MANAGE)),
 ) -> SupplierApplicationRead:
     """Staff approve/reject. Approve verifies the profile and activates the org."""
     supplier = await db.get(Supplier, supplier_id)
@@ -381,6 +420,7 @@ async def decide_supplier_application(
     if org is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Business profile not found")
     settings = _application_settings(org)
+    before = {"status": settings.get("status"), "is_verified": bool(supplier.is_verified)}
     if payload.action == "approve":
         org.is_active = True
         supplier.is_verified = True
@@ -390,6 +430,16 @@ async def decide_supplier_application(
         supplier.is_verified = False
         settings["status"] = "rejected"
     org.settings_json = jsonlib.dumps(settings)
+    await create_audit_log(
+        db,
+        product_code=ProductCode.MODIT,
+        actor_user_id=user.id,
+        action="modit.supplier.decision",
+        entity_type="supplier",
+        entity_id=str(supplier.id),
+        before=before,
+        after={"status": settings.get("status"), "is_verified": payload.action == "approve"},
+    )
     await db.commit()
     user = await db.get(User, supplier.user_id) if supplier.user_id else None
     return _to_application(supplier, org, user)
@@ -511,28 +561,46 @@ async def supplier_rfq_inbox(
     db: AsyncSession = Depends(get_db),
 ) -> list[SupplierRFQRead]:
     """Open RFQs any verified supplier may quote (marketplace broadcast)."""
-    result = await db.execute(
-        select(RFQ).where(RFQ.status.in_(QUOTABLE_RFQ_STATUSES)).order_by(RFQ.created_at.desc())
+    rfq_rows = (
+        (await db.execute(
+            select(RFQ).where(RFQ.status.in_(QUOTABLE_RFQ_STATUSES)).order_by(RFQ.created_at.desc())
+        ))
+        .scalars()
+        .all()
     )
-    out: list[SupplierRFQRead] = []
-    for rfq in result.scalars().all():
-        item_rows = (
-            (await db.execute(select(RFQItem).where(RFQItem.rfq_id == rfq.id))).scalars().all()
-        )
-        quote_rows = (
-            (await db.execute(select(Quotation).where(Quotation.rfq_id == rfq.id))).scalars().all()
-        )
-        out.append(SupplierRFQRead(
+    rfq_ids = [str(r.id) for r in rfq_rows]
+    item_counts: dict[str, int] = {}
+    quote_counts: dict[str, int] = {}
+    if rfq_ids:
+        item_counts = {
+            r[0]: int(r[1])
+            for r in (
+                await db.execute(
+                    select(RFQItem.rfq_id, func.count()).where(RFQItem.rfq_id.in_(rfq_ids)).group_by(RFQItem.rfq_id)
+                )
+            ).all()
+        }
+        quote_counts = {
+            r[0]: int(r[1])
+            for r in (
+                await db.execute(
+                    select(Quotation.rfq_id, func.count()).where(Quotation.rfq_id.in_(rfq_ids)).group_by(Quotation.rfq_id)
+                )
+            ).all()
+        }
+    return [
+        SupplierRFQRead(
             id=str(rfq.id),
             rfq_number=rfq.rfq_number,
             notes=rfq.notes,
             due_date=rfq.due_date,
             status=rfq.status,
-            items_count=len(list(item_rows)),
-            quotes_count=len(list(quote_rows)),
+            items_count=item_counts.get(str(rfq.id), 0),
+            quotes_count=quote_counts.get(str(rfq.id), 0),
             created_at=rfq.created_at,
-        ))
-    return out
+        )
+        for rfq in rfq_rows
+    ]
 
 
 class SupplierQuoteResponse(BaseModel):

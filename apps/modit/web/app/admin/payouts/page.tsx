@@ -2,9 +2,7 @@
 
 import { useMemo } from "react";
 import { IndianRupee, Download, Info } from "lucide-react";
-import { useOrders } from "@/lib/modit-api";
-import { useAdminStore } from "@/lib/admin-store";
-import { useReturnStore, refundAmount } from "@/lib/return-store";
+import { useOrders, useServerReturns } from "@/lib/modit-api";
 import {
   COMMISSION_PCT, DEFAULT_COMMISSION_PCT, FULFILLMENT_FEE, FREE_FULFILLMENT_ABOVE,
   TCS_PCT, settleOrder, type SettleRow,
@@ -12,19 +10,17 @@ import {
 
 export default function AdminPayoutsPage() {
   const { data: apiOrders, isError: ordersOffline, isLoading: ordersLoading } = useOrders(undefined);
-  const orderStatuses = useAdminStore((s) => s.orderStatuses);
-  const returns = useReturnStore((s) => s.returns);
+  const { data: serverReturns = [] } = useServerReturns();
 
   const rows: SettleRow[] = useMemo(() => {
     const list = (apiOrders ?? []) as any[];
     return list
-      .filter((o) => o.status !== "cancelled" && (orderStatuses[o.id]?.status ?? o.status) !== "cancelled")
-      .map((o) => settleOrder({ ...o, status: orderStatuses[o.id]?.status ?? o.status }));
-  }, [apiOrders, orderStatuses]);
+      .filter((o) => o.status !== "cancelled")
+      .map((o) => settleOrder(o));
+  }, [apiOrders]);
 
-  const returnDeductions = useMemo(
-    () => returns.filter((r) => r.status !== "rejected").reduce((s, r) => s + refundAmount(r), 0),
-    [returns]
+  const openReturns = (serverReturns as any[]).filter(
+    (r) => !["refunded", "rejected"].includes(r.status)
   );
 
   const totals = useMemo(() => ({
@@ -32,8 +28,8 @@ export default function AdminPayoutsPage() {
     commission: rows.reduce((s, r) => s + r.commission, 0),
     fulfillment: rows.reduce((s, r) => s + r.fulfillment, 0),
     tcs: rows.reduce((s, r) => s + r.tcs, 0),
-    net: rows.reduce((s, r) => s + r.net, 0) - returnDeductions,
-  }), [rows, returnDeductions]);
+    net: rows.reduce((s, r) => s + r.net, 0),
+  }), [rows]);
 
   const exportCsv = () => {
     const lines = [
@@ -57,7 +53,6 @@ export default function AdminPayoutsPage() {
     { label: "Commission", value: `−₹${totals.commission.toLocaleString("en-IN")}`, color: "#E91E63" },
     { label: "Fulfillment", value: `−₹${totals.fulfillment.toLocaleString("en-IN")}`, color: "#FF9800" },
     { label: "TCS (0.5%)", value: `−₹${totals.tcs.toLocaleString("en-IN")}`, color: "#00BCD4" },
-    { label: "Returns", value: `−₹${returnDeductions.toLocaleString("en-IN")}`, color: "#C2185B" },
     { label: "Net payable", value: `₹${totals.net.toLocaleString("en-IN")}`, color: "#5a8010", highlight: true },
   ];
 
@@ -82,7 +77,14 @@ export default function AdminPayoutsPage() {
         ))}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-[#F7F4FC] px-4 py-3 flex items-start gap-2">
+      {openReturns.length > 0 && (
+    <div className="mt-3 rounded-2xl border border-[#E91E63]/20 bg-[#FCE4EC] px-4 py-3">
+      <p className="text-micro font-bold text-[#C2185B]">
+        {openReturns.length} open return{openReturns.length === 1 ? "" : "s"} await resolution — settlement rows adjust after refunds are tracked server-side.
+      </p>
+    </div>
+  )}
+  <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-[#F7F4FC] px-4 py-3 flex items-start gap-2">
         <Info className="h-4 w-4 text-[#2D1B69] mt-0.5 flex-shrink-0" />
         <p className="text-micro text-[#6B5B83]">
           <span className="font-bold text-[#150726]">Rate card:</span> commission {Object.entries(COMMISSION_PCT).map(([k, v]) => `${k} ${v}%`).join(" · ")} (default {DEFAULT_COMMISSION_PCT}%) · fulfillment ₹{FULFILLMENT_FEE} below ₹{FREE_FULFILLMENT_ABOVE.toLocaleString("en-IN")} · TCS {TCS_PCT}% like marketplace settlements.

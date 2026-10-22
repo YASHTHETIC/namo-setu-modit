@@ -29,6 +29,10 @@ interface CouponState {
   getDiscount: (subtotal: number) => number;
   getBestCoupon: (subtotal: number) => Coupon | null;
 
+  /** Replace the list with server truth (GET /modit/coupons). Falls back
+   * to the baked-in defaults when the response is empty (offline etc.). */
+  hydrateFromServer: (offers: Array<Record<string, unknown>>) => void;
+
   addCoupon: (coupon: Coupon) => { success: boolean; message: string };
   updateCoupon: (code: string, patch: Partial<Coupon>) => void;
   toggleCoupon: (code: string) => void;
@@ -137,6 +141,39 @@ export const useCouponStore = create<CouponState>()(
         }
         set((state) => ({ availableCoupons: [{ ...coupon, code }, ...state.availableCoupons] }));
         return { success: true, message: `Coupon "${code}" created.` };
+      },
+
+      hydrateFromServer: (offers) => {
+        const mapped = offers
+          .map((c) => {
+            const type = String(c.discount_type || "");
+            if (type !== "flat" && type !== "percent" && type !== "ship") return null;
+            const left = typeof c.usage_left === "number" ? c.usage_left : null;
+            const coupon: Coupon = {
+              code: String(c.code || "").toUpperCase(),
+              description: String(c.description || ""),
+              discountType: type === "flat" ? "flat" : type === "percent" ? "percentage" : "free_shipping",
+              discountValue: Number(c.discount_value || 0),
+              maxDiscount: typeof c.max_discount === "number" ? c.max_discount : undefined,
+              minOrder: Number(c.min_order || 0),
+              validTill: typeof c.valid_till === "string" ? c.valid_till : "2026-12-31",
+              usageLimit: left ?? 9999,
+              usedCount: 0,
+              category: typeof c.category === "string" ? c.category : undefined,
+              active: true,
+            };
+            return coupon.code ? coupon : null;
+          })
+          .filter((c): c is Coupon => c !== null);
+        if (mapped.length > 0) {
+          set((state) => ({
+            availableCoupons: mapped,
+            appliedCoupon:
+              state.appliedCoupon && mapped.some((c) => c.code === state.appliedCoupon!.code)
+                ? state.appliedCoupon
+                : null,
+          }));
+        }
       },
 
       updateCoupon: (code, patch) =>

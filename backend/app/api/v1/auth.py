@@ -39,6 +39,8 @@ from backend.app.schemas.auth import (
 )
 from backend.app.services.otp_service import normalize_phone, request_login_otp, verify_login_otp
 from backend.app.schemas.user import UserRead
+from backend.app.services.audit_service import create_audit_log
+from backend.app.models.enums import ProductCode
 
 router = APIRouter()
 settings = get_settings()
@@ -312,6 +314,17 @@ async def claim_staff(
     """Become the first staff member. Works ONLY while zero staff exist —
     afterwards it fails closed (ask an admin instead). No SSH needed."""
     if await _claim_first_staff(db, user):
+        # First-staff claim elevates an account to admin — always auditable
+        # (same transaction as the role change so it cannot land without it).
+        await create_audit_log(
+            db,
+            product_code=ProductCode.MODIT,
+            actor_user_id=user.id,
+            action="modit.staff.claim",
+            entity_type="user",
+            entity_id=user.id,
+            after={"email": user.email, "name": user.name},
+        )
         await db.commit()
         return ClaimStaffResponse(claimed=True)
     raise HTTPException(

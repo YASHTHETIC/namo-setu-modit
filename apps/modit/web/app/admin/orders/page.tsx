@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, ChevronRight, Check, Truck, PackageOpen } from "lucide-react";
 import { useOrders, useUpdateOrderStatus, useCreateDelivery } from "@/lib/modit-api";
-import { useAdminStore, ORDER_STATUSES } from "@/lib/admin-store";
+import { ORDER_STATUSES } from "@/lib/admin-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 import { logAdminActivity } from "@/lib/admin-activity";
 import { broadcastPush } from "@/lib/pwa";
@@ -28,21 +28,23 @@ export default function AdminOrdersPage() {
   const { data: orders, isError: ordersOffline, isLoading: ordersLoading } = useOrders(undefined);
   const updateStatus = useUpdateOrderStatus();
   const createDelivery = useCreateDelivery();
-  const orderStatuses = useAdminStore((s) => s.orderStatuses);
-  const setOrderStatus = useAdminStore((s) => s.setOrderStatus);
 
-  const list = (orders ?? []).map((o: any) => ({
-    ...o,
-    status: orderStatuses[o.id]?.status ?? o.status,
-    overridden: Boolean(orderStatuses[o.id]),
-  }));
+  const list = orders ?? [];
 
   const filtered = query.trim()
     ? list.filter((o: any) => (o.order_number || o.id).toLowerCase().includes(query.trim().toLowerCase()))
     : list;
 
   const handleStatus = async (order: any, status: string) => {
-    setOrderStatus(order.id, status);
+    // Server is the source of truth: PATCH the order, then the shared cache
+    // refetch reflects the new status for admin and buyer alike.
+    setSyncError("");
+    try {
+      await updateStatus.mutateAsync({ orderId: order.id, status });
+    } catch {
+      setSyncError(`Server sync failed for ${order.order_number || order.id} — try again.`);
+      return;
+    }
     logAdminActivity("order.status", `Order ${order.order_number || order.id} → ${STATUS_LABEL[status] ?? status}`);
     broadcastPush(
       `Order ${STATUS_LABEL[status] ?? status}`,
@@ -57,13 +59,6 @@ export default function AdminOrdersPage() {
     });
     setSavedId(order.id);
     setTimeout(() => setSavedId(null), 1500);
-    // Persist server-side for real orders. Demo/fallback rows have no
-    // backend record (404) and stay local-only — that is expected.
-    try {
-      await updateStatus.mutateAsync({ orderId: order.id, status });
-    } catch {
-      setSyncError(`Server sync failed for ${order.order_number || order.id} — status kept locally only.`);
-    }
   };
 
   const handleDispatch = async (order: any) => {
@@ -111,28 +106,31 @@ export default function AdminOrdersPage() {
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-caption font-extrabold text-[#2D1B69]">₹{(o.total || 0).toLocaleString("en-IN")}</span>
                 <span className="text-micro text-[#9B8CB5]">{o.items_count ?? "?"} items</span>
-                {o.overridden && (
-                  <span className="rounded-full bg-[#E8F9FC] px-2 py-0.5 text-tiny font-bold text-[#00BCD4]">Updated by admin</span>
-                )}
                 {savedId === o.id && (
                   <span className="flex items-center gap-1 rounded-full bg-[#F0F9E8] px-2 py-0.5 text-tiny font-bold text-[#7CB518]"><Check className="h-3 w-3" /> Saved</span>
                 )}
               </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {ORDER_STATUSES.map((st) => (
-                <button
-                  key={st}
-                  onClick={() => handleStatus(o, st)}
-                  className={`px-2.5 py-1.5 rounded-lg text-micro font-bold border-2 transition-all ${
-                    o.status === st
-                      ? "border-[#7CB518] bg-[#F0F9E8] text-[#5a8010]"
-                      : "border-[#F0ECF9] text-[#9B8CB5] hover:border-[#C9B8E8] hover:text-[#2D1B69]"
-                  }`}
-                >
-                  {STATUS_LABEL[st]}
-                </button>
-              ))}
+              {ORDER_STATUSES.map((st) => {
+                // Delivered/cancelled orders are final server-side — no
+                // clickable dead buttons that would 400.
+                const final = o.status === "delivered" || o.status === "cancelled";
+                return (
+                  <button
+                    key={st}
+                    onClick={() => handleStatus(o, st)}
+                    disabled={final || o.status === st}
+                    className={`px-2.5 py-1.5 rounded-lg text-micro font-bold border-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
+                      o.status === st
+                        ? "border-[#7CB518] bg-[#F0F9E8] text-[#5a8010]"
+                        : "border-[#F0ECF9] text-[#9B8CB5] hover:border-[#C9B8E8] hover:text-[#2D1B69]"
+                    }`}
+                  >
+                    {STATUS_LABEL[st]}
+                  </button>
+                );
+              })}
               {o.purchase_order_id && !["dispatched", "in_transit", "delivered", "cancelled"].includes(o.status) && (
                 <button
                   onClick={() => handleDispatch(o)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageGuard } from "@/components/product-thumb";
 import { ProductThumb } from "@/components/product-thumb";
 import Link from "next/link";
@@ -21,6 +21,7 @@ import {
 import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useCouponStore } from "@/lib/coupon-store";
+import { useServerCoupons } from "@/lib/modit-api";
 import { resolveProduct } from "@/lib/pricing";
 import { formatINR, productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
@@ -49,6 +50,15 @@ export default function CartPage() {
   const applyCoupon = useCouponStore((s) => s.applyCoupon);
   const removeCoupon = useCouponStore((s) => s.removeCoupon);
   const getCouponDiscount = useCouponStore((s) => s.getDiscount);
+
+  // Coupons come from the server (same rows checkout validates) — hydrate
+  // on load; local defaults only cover offline.
+  const serverCoupons = useServerCoupons();
+  useEffect(() => {
+    if (serverCoupons.data && (serverCoupons.data as unknown[]).length) {
+      useCouponStore.getState().hydrateFromServer(serverCoupons.data as unknown as Array<Record<string, unknown>>);
+    }
+  }, [serverCoupons.data]);
 
   const handleApplyCoupon = () => {
     applyCoupon(couponCode.trim(), getCartTotal());

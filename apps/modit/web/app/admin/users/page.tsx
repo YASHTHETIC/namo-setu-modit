@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createApiClient } from "@foundation/api-client";
 import {
-  Users, Search, UserCheck, UserX, Eye, Shield, X, Loader2,
+  Users, Search, UserCheck, UserX, Eye, Shield, X, Loader2, AlertCircle,
 } from "lucide-react";
 import {
   Card, CardHeader, CardContent, Button, Input, Badge, Table, TableHead,
@@ -21,79 +21,104 @@ function getClient() {
   });
 }
 
-interface UserRecord {
+interface RoleRef {
   id: string;
   name: string;
+}
+
+/** Row shape returned by GET /admin/users (admin_extended). */
+interface UserRecord {
+  id: string;
   email: string;
-  role?: string;
-  status: string;
-  email_verified?: boolean;
-  last_login_at?: string;
+  full_name: string | null;
+  is_active: boolean;
+  is_verified: boolean;
+  roles: RoleRef[] | null;
+}
+
+/** Richer lookup shape from GET /admin/users/{id}. */
+interface UserDetail extends UserRecord {
+  mfa_enabled: boolean;
+  last_login_at: string | null;
   created_at: string;
+  sessions: { id: string; ip_address: string | null; expires_at: string; is_revoked: boolean }[];
 }
 
 interface Role {
   id: string;
   name: string;
+  description?: string | null;
+  user_count?: number;
 }
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
-  const [detailUser, setDetailUser] = useState<UserRecord | null>(null);
-  const [assignRoleUser, setAssignRoleUser] = useState<UserRecord | null>(null);
-  const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [assignUser, setAssignUser] = useState<UserRecord | null>(null);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [actionError, setActionError] = useState("");
 
-  const { data: users, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["modit", "admin-users", search],
     queryFn: async () => {
-      const client = getClient();
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       params.set("page", "1");
       params.set("page_size", "100");
-      return client.request<{ items: UserRecord[] }>(`/api/v1/admin/users?${params.toString()}`).then((r) => r.items ?? []);
+      return getClient().request<{ items: UserRecord[]; total: number }>(`/admin/users?${params.toString()}`);
     },
   });
 
   const { data: roles } = useQuery({
     queryKey: ["modit", "roles"],
     queryFn: async () => {
-      const client = getClient();
-      return client.request<{ items: Role[] }>("/admin/roles").then((r) => r.items ?? []);
+      return getClient().request<Role[]>("/admin/roles");
     },
+  });
+
+  const { data: detail } = useQuery({
+    queryKey: ["modit", "admin-user", detailId],
+    enabled: Boolean(detailId),
+    queryFn: async () => getClient().request<UserDetail>(`/admin/users/${detailId}`),
   });
 
   const toggleStatusMutation = useMutation({
     mutationFn: async ({ id, activate }: { id: string; activate: boolean }) => {
-      const client = getClient();
-      await client.request(`/api/v1/admin/users/${id}/status`, {
+      await getClient().request(`/admin/users/${id}/status`, {
         method: "PUT",
-        body: JSON.stringify({ status: activate ? "active" : "inactive" }),
+        body: JSON.stringify({ is_active: activate }),
       });
     },
     onSuccess: () => {
+      setActionError("");
       queryClient.invalidateQueries({ queryKey: ["modit", "admin-users"] });
+      queryClient.invalidateQueries({ queryKey: ["modit", "admin-user"] });
     },
+    onError: (err: Error) => setActionError(err.message || "Could not update user status."),
   });
 
   const assignRoleMutation = useMutation({
     mutationFn: async () => {
-      if (!assignRoleUser || !selectedRoleId) return;
-      const client = getClient();
-      await client.request("/admin/roles/assign", {
+      if (!assignUser || !selectedRole) return;
+      await getClient().request("/admin/roles/assign", {
         method: "POST",
-        body: JSON.stringify({ user_id: assignRoleUser.id, role_id: selectedRoleId }),
+        body: JSON.stringify({ user_id: assignUser.id, role_name: selectedRole }),
       });
     },
     onSuccess: () => {
+      setActionError("");
       queryClient.invalidateQueries({ queryKey: ["modit", "admin-users"] });
-      setAssignRoleUser(null);
-      setSelectedRoleId("");
+      queryClient.invalidateQueries({ queryKey: ["modit", "admin-user"] });
+      setAssignUser(null);
+      setSelectedRole("");
     },
+    onError: (err: Error) => setActionError(err.message || "Could not assign role."),
   });
 
-  const filteredUsers = users ?? [];
+  const users = data?.items ?? [];
+  const total = data?.total ?? 0;
 
   return (
     <div>
@@ -107,137 +132,173 @@ export default function AdminUsersPage() {
       {/* Search */}
       <Card className="mb-6">
         <CardContent>
-          <div className="relative">
+          <form
+            className="relative flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearch(searchInput.trim());
+            }}
+          >
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
             <Input
               placeholder="Search users by name or email..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               className="pl-10"
             />
-          </div>
+            <Button type="submit" variant="secondary" className="shrink-0">Search</Button>
+            {search && (
+              <Button
+                type="button"
+                variant="ghost"
+                className="shrink-0"
+                onClick={() => {
+                  setSearchInput("");
+                  setSearch("");
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </form>
         </CardContent>
       </Card>
+
+      {isError && (
+        <Card className="mb-6">
+          <CardContent className="flex items-center gap-2 text-sm font-medium text-red-600">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            Users unavailable — server unreachable or you lack the user-manage permission.
+          </CardContent>
+        </Card>
+      )}
+      {actionError && (
+        <Card className="mb-6">
+          <CardContent className="flex items-center gap-2 text-sm font-medium text-red-600">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {actionError}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Users table */}
       <Card>
         {isLoading ? (
           <LoadingSpinner />
-        ) : filteredUsers.length === 0 ? (
+        ) : users.length === 0 ? (
           <CardContent>
             <EmptyState
               icon={<Users className="h-8 w-8" />}
               title="No users found"
-              description={search ? "Try a different search term." : "No users in the system."}
+              description={search ? "Try a different search term." : "No users in the system yet."}
             />
           </CardContent>
         ) : (
-          <Table className="fx-table">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>User</TableHeaderCell>
-                <TableHeaderCell>Role</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell>Verified</TableHeaderCell>
-                <TableHeaderCell>Last Login</TableHeaderCell>
-                <TableHeaderCell className="text-right">Actions</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar name={user.name} size="sm" />
-                      <div>
-                        <p className="font-medium text-[var(--text-primary)]">{user.name}</p>
-                        <p className="text-xs text-[var(--text-muted)]">{user.email}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="info" className="capitalize">
-                      {user.role ?? "No role"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={user.status === "active" ? "success" : "danger"}>
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {user.email_verified ? (
-                      <Badge variant="success">Verified</Badge>
-                    ) : (
-                      <Badge variant="warning">Pending</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs text-[var(--text-muted)]">
-                      {user.last_login_at
-                        ? new Date(user.last_login_at).toLocaleString()
-                        : "Never"}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => setDetailUser(user)}
-                        className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
-                        title="View details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setAssignRoleUser(user);
-                          setSelectedRoleId("");
-                        }}
-                        className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--brand)]"
-                        title="Assign role"
-                      >
-                        <Shield className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          toggleStatusMutation.mutate({
-                            id: user.id,
-                            activate: user.status !== "active",
-                          })
-                        }
-                        disabled={toggleStatusMutation.isPending}
-                        className={cn(
-                          "rounded-lg p-1.5 hover:bg-[var(--bg-subtle)]",
-                          user.status === "active"
-                            ? "text-[var(--text-muted)] hover:text-red-600"
-                            : "text-[var(--text-muted)] hover:text-emerald-600"
-                        )}
-                        title={user.status === "active" ? "Deactivate" : "Activate"}
-                      >
-                        {user.status === "active" ? (
-                          <UserX className="h-4 w-4" />
-                        ) : (
-                          <UserCheck className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  </TableCell>
+          <>
+            <CardContent className="pb-0 pt-4">
+              <p className="text-xs text-[var(--text-muted)]">
+                Showing {users.length} of {total} user{total === 1 ? "" : "s"}
+                {search ? ` matching “${search}”` : ""}
+              </p>
+            </CardContent>
+            <Table className="fx-table">
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>User</TableHeaderCell>
+                  <TableHeaderCell>Role</TableHeaderCell>
+                  <TableHeaderCell>Status</TableHeaderCell>
+                  <TableHeaderCell>Verified</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Actions</TableHeaderCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={user.full_name || user.email} size="sm" />
+                        <div>
+                          <p className="font-medium text-[var(--text-primary)]">{user.full_name || "(no name)"}</p>
+                          <p className="text-xs text-[var(--text-muted)]">{user.email}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {(user.roles ?? []).length === 0 ? (
+                          <span className="text-xs text-[var(--text-muted)]">No role</span>
+                        ) : (
+                          (user.roles ?? []).map((r) => (
+                            <Badge key={r.id} variant="info">
+                              {r.name.replace(/_/g, " ")}
+                            </Badge>
+                          ))
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.is_active ? "success" : "danger"}>
+                        {user.is_active ? "Active" : "Disabled"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {user.is_verified ? (
+                        <Badge variant="success">Verified</Badge>
+                      ) : (
+                        <Badge variant="warning">Pending</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setDetailId(user.id)}
+                          className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]"
+                          title="View details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setAssignUser(user);
+                            setSelectedRole("");
+                          }}
+                          className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--brand)]"
+                          title="Assign role"
+                        >
+                          <Shield className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => toggleStatusMutation.mutate({ id: user.id, activate: !user.is_active })}
+                          disabled={toggleStatusMutation.isPending}
+                          className={cn(
+                            "rounded-lg p-1.5 hover:bg-[var(--bg-subtle)]",
+                            user.is_active
+                              ? "text-[var(--text-muted)] hover:text-red-600"
+                              : "text-[var(--text-muted)] hover:text-emerald-600"
+                          )}
+                          title={user.is_active ? "Deactivate" : "Activate"}
+                        >
+                          {user.is_active ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
         )}
       </Card>
 
       {/* User detail modal */}
-      {detailUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      {detailId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <Card className="w-full max-w-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h2 className="text-h4 text-[var(--text-primary)]">User Details</h2>
                 <button
-                  onClick={() => setDetailUser(null)}
+                  onClick={() => setDetailId(null)}
                   className="rounded-lg p-1 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
                 >
                   <X className="h-4 w-4" />
@@ -245,88 +306,99 @@ export default function AdminUsersPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Avatar name={detailUser.name} size="lg" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">
-                      {detailUser.name}
-                    </h3>
-                    <p className="text-sm text-[var(--text-muted)]">{detailUser.email}</p>
+              {!detail ? (
+                <LoadingSpinner />
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <Avatar name={detail.full_name || detail.email} size="lg" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                        {detail.full_name || "(no name)"}
+                      </h3>
+                      <p className="text-sm text-[var(--text-muted)]">{detail.email}</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">Status</p>
-                    <Badge variant={detailUser.status === "active" ? "success" : "danger"}>
-                      {detailUser.status}
-                    </Badge>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">Status</p>
+                      <Badge variant={detail.is_active ? "success" : "danger"}>
+                        {detail.is_active ? "Active" : "Disabled"}
+                      </Badge>
+                    </div>
+                    <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">Roles</p>
+                      <div className="flex flex-wrap gap-1">
+                        {(detail.roles ?? []).length === 0 ? (
+                          <span className="text-xs text-[var(--text-muted)]">No role</span>
+                        ) : (
+                          (detail.roles ?? []).map((r) => (
+                            <Badge key={r.id} variant="info">{r.name}</Badge>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                    <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">2FA</p>
+                      <Badge variant={detail.mfa_enabled ? "success" : "default"}>
+                        {detail.mfa_enabled ? "Enabled" : "Off"}
+                      </Badge>
+                    </div>
+                    <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">Joined</p>
+                      <p className="text-sm text-[var(--text-primary)]">
+                        {detail.created_at ? new Date(detail.created_at).toLocaleDateString() : "—"}
+                      </p>
+                    </div>
+                    <div className="col-span-2 rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">Last Login</p>
+                      <p className="text-sm text-[var(--text-primary)]">
+                        {detail.last_login_at
+                          ? new Date(detail.last_login_at).toLocaleString()
+                          : "Never logged in"}
+                      </p>
+                    </div>
+                    <div className="col-span-2 rounded-xl bg-[var(--bg-subtle)] p-3">
+                      <p className="text-xs font-medium text-[var(--text-muted)]">
+                        Active sessions: {(detail.sessions ?? []).filter((s) => !s.is_revoked).length}
+                      </p>
+                      <p className="font-mono text-xs text-[var(--text-secondary)]">{detail.id}</p>
+                    </div>
                   </div>
-                  <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">Role</p>
-                    <Badge variant="info">{detailUser.role ?? "No role"}</Badge>
-                  </div>
-                  <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">Email Verified</p>
-                    <Badge variant={detailUser.email_verified ? "success" : "warning"}>
-                      {detailUser.email_verified ? "Yes" : "No"}
-                    </Badge>
-                  </div>
-                  <div className="rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">Joined</p>
-                    <p className="text-sm text-[var(--text-primary)]">
-                      {new Date(detailUser.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="col-span-2 rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">Last Login</p>
-                    <p className="text-sm text-[var(--text-primary)]">
-                      {detailUser.last_login_at
-                        ? new Date(detailUser.last_login_at).toLocaleString()
-                        : "Never logged in"}
-                    </p>
-                  </div>
-                  <div className="col-span-2 rounded-xl bg-[var(--bg-subtle)] p-3">
-                    <p className="text-xs font-medium text-[var(--text-muted)]">User ID</p>
-                    <p className="font-mono text-xs text-[var(--text-secondary)]">{detailUser.id}</p>
-                  </div>
-                </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    variant={detailUser.status === "active" ? "danger" : "primary"}
-                    onClick={() => {
-                      toggleStatusMutation.mutate({
-                        id: detailUser.id,
-                        activate: detailUser.status !== "active",
-                      });
-                      setDetailUser(null);
-                    }}
-                  >
-                    {detailUser.status === "active" ? "Deactivate User" : "Activate User"}
-                  </Button>
-                  <Button variant="secondary" onClick={() => setDetailUser(null)}>
-                    Close
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={detail.is_active ? "danger" : "primary"}
+                      onClick={() => {
+                        toggleStatusMutation.mutate({ id: detail.id, activate: !detail.is_active });
+                        setDetailId(null);
+                      }}
+                    >
+                      {detail.is_active ? "Deactivate User" : "Activate User"}
+                    </Button>
+                    <Button variant="secondary" onClick={() => setDetailId(null)}>
+                      Close
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
       )}
 
       {/* Assign role modal */}
-      {assignRoleUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      {assignUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <Card className="w-full max-w-md">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h2 className="text-h4 text-[var(--text-primary)]">
-                  Assign role to {assignRoleUser.name}
+                  Assign role
                 </h2>
                 <button
-                  onClick={() => setAssignRoleUser(null)}
+                  onClick={() => setAssignUser(null)}
                   className="rounded-lg p-1 text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
                 >
                   <X className="h-4 w-4" />
@@ -335,31 +407,39 @@ export default function AdminUsersPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <p className="text-sm text-[var(--text-muted)]">
+                  {assignUser.full_name || assignUser.email} ·{" "}
+                  {(assignUser.roles ?? []).map((r) => r.name).join(", ") || "no roles"}
+                </p>
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-[var(--text-primary)]">Select role</label>
                   <select
-                    value={selectedRoleId}
-                    onChange={(e) => setSelectedRoleId(e.target.value)}
+                    value={selectedRole}
+                    onChange={(e) => setSelectedRole(e.target.value)}
                     className="flex h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]"
                   >
                     <option value="">Choose a role...</option>
-                    {roles?.map((r) => (
-                      <option key={r.id} value={r.id}>
+                    {(roles ?? []).map((r) => (
+                      <option key={r.id} value={r.name}>
                         {r.name}
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    One role per step — assign again to add more.
+                  </p>
                 </div>
+                {assignRoleMutation.isPending && (
+                  <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                    <Loader2 className="h-4 w-4 animate-spin" /> Assigning…
+                  </div>
+                )}
                 <Button
                   className="w-full"
-                  disabled={!selectedRoleId || assignRoleMutation.isPending}
+                  disabled={!selectedRole || assignRoleMutation.isPending}
                   onClick={() => assignRoleMutation.mutate()}
                 >
-                  {assignRoleMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    "Assign Role"
-                  )}
+                  Assign Role
                 </Button>
               </div>
             </CardContent>

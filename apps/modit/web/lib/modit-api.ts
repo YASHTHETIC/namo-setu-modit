@@ -48,6 +48,8 @@ export const moditKeys = {
   inventory: (warehouseId?: string) => ["modit", "inventory", warehouseId] as const,
   inventoryAlerts: (orgId?: string) => ["modit", "inventory-alerts", orgId] as const,
   inventoryAnalytics: (orgId?: string) => ["modit", "inventory-analytics", orgId] as const,
+  adminCoupons: () => ["modit", "admin-coupons"] as const,
+  coupons: () => ["modit", "coupons"] as const,
   deliveries: (poId?: string) => ["modit", "deliveries", poId] as const,
   deliveryTrack: (id: string) => ["modit", "delivery-track", id] as const,
   nearestWarehouse: (lat?: number, lng?: number) => ["modit", "nearest-warehouse", lat, lng] as const,
@@ -65,7 +67,7 @@ export const moditKeys = {
 };
 
 // Product Catalog
-export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; page?: number; page_size?: number }) {
+export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; supplier_id?: string; page?: number; page_size?: number }) {
   return useQuery({
     queryKey: moditKeys.products(params),
     // react-query aborts the in-flight request on key change/unmount via signal.
@@ -478,6 +480,49 @@ export function useInventoryAlerts(organizationId?: string) {
     queryKey: moditKeys.inventoryAlerts(organizationId),
     queryFn: () => getModitApi().getInventoryAlerts(organizationId),
     ...fastQueryOpts,
+  });
+}
+
+// Coupons shown to buyers (same data checkout validates)
+export function useServerCoupons() {
+  return useQuery({
+    queryKey: moditKeys.coupons(),
+    queryFn: ({ signal }) => getModitApi().listCoupons({ signal }),
+    ...fastQueryOpts,
+  });
+}
+
+// Server-managed coupons (checkout validation truth)
+export function useAdminCoupons() {
+  return useQuery({
+    queryKey: moditKeys.adminCoupons(),
+    queryFn: ({ signal }) => getModitApi().listAdminCoupons({ signal }),
+    ...fastQueryOpts,
+  });
+}
+
+export function useCreateAdminCoupon() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: Record<string, unknown>) => getModitApi().createAdminCoupon(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.adminCoupons() }),
+  });
+}
+
+export function useUpdateAdminCoupon() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Record<string, unknown> }) =>
+      getModitApi().updateAdminCoupon(id, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.adminCoupons() }),
+  });
+}
+
+export function useDeleteAdminCoupon() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => getModitApi().deleteAdminCoupon(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: moditKeys.adminCoupons() }),
   });
 }
 

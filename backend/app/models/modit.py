@@ -847,3 +847,25 @@ class ModitReview(BaseModel):
     title: Mapped[str | None] = mapped_column(String(255), nullable=True)
     body: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+
+class PlatformCoupon(BaseModel):
+    """Checkout coupons the admin console manages. Source of truth for
+    validate_coupon() (seeded built-ins stay available until this table has
+    rows thanks to the checkout fallback)."""
+
+    __tablename__ = "platform_coupons"
+    __table_args__ = (Index("ix_platform_coupons_active", "is_active", "deleted_at"),)
+
+    code: Mapped[str] = mapped_column(String(40), nullable=False, unique=True)
+    description: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # "flat" | "percent" | "ship"
+    discount_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    discount_value: Mapped[float] = mapped_column(Numeric(12, 2), default=0, nullable=False)
+    max_discount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    min_order: Mapped[float] = mapped_column(Numeric(12, 2), default=0, nullable=False)
+    valid_till: Mapped[date | None] = mapped_column(Date, nullable=True)
+    usage_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    used_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    category: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

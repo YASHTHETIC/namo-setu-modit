@@ -2,8 +2,7 @@
 
 import type { Product } from "./product-data";
 import { getProductById, COMMON_EMULSION_SHADES, isTintableEmulsion } from "./product-data";
-import { useAdminStore, getActiveSaleAt, type Sale } from "./admin-store";
-import { useSupplierStore, isBrandPaused } from "./supplier-store";
+import type { Sale } from "./admin-store";
 
 export interface DisplayProduct extends Product {
   onSale: boolean;
@@ -19,35 +18,20 @@ export function saleAppliesTo(sale: Sale, product: Product): boolean {
   return false;
 }
 
-/** Merge admin price/stock overrides + the currently active sale into a product. */
-export function resolveProduct(product: Product, now: number = Date.now()): DisplayProduct {
-  const { overrides, sales } = useAdminStore.getState();
-  // Overrides are keyed by static id in the admin console, but live API rows
-  // carry server UUIDs — fall back to SKU so an admin price edit previews
-  // instantly no matter which row shape is on screen.
-  const ov = overrides[product.id] ?? (product.sku ? overrides[product.sku] : undefined);
-
-  let price = ov?.price ?? product.price;
-  const mrp = ov?.mrp ?? product.mrp;
-  const bulkPrice = ov && "bulkPrice" in ov ? ov.bulkPrice ?? null : product.bulkPrice;
-  const bulkMinQty = ov && "bulkMinQty" in ov ? ov.bulkMinQty ?? null : product.bulkMinQty;
-  const stockLevel = ov?.stockLevel ?? product.stockLevel;
-  const inStock = ov?.inStock ?? product.inStock;
-  const hidden = ov?.hidden === true || isBrandPaused(product.brand);
+/**
+ * Resolve display fields for a product. Prices come straight from the
+ * product row (server list_price/mrp when served by the API) — no client
+ * overrides and no sale math. Per launch decision, display = charged.
+ */
+export function resolveProduct(product: Product): DisplayProduct {
+  const price = product.price;
+  const mrp = product.mrp;
 
   // Every tintable emulsion carries the full shade card (like a dealer fan-deck),
   // so colour options appear on all emulsion paints, not just the few with
   // hand-entered shades.
   const needsShades =
     !product.hasShades && (!product.shades || product.shades.length === 0) && isTintableEmulsion(product);
-
-  // Client-side "sales" were a simulated fixture: the checkout total never
-  // matched these display prices, so buyers were quoted money that was never
-  // charged. Per launch decision, display = charged — no sale math here.
-  // (The admin Sales console stays a preview tool for server-side sales.)
-  let onSale = false;
-  let saleName: string | null = null;
-  let salePrice: number | null = null;
 
   const discount =
     mrp > price ? Math.round(((mrp - price) / mrp) * 100) : product.discount;
@@ -57,37 +41,28 @@ export function resolveProduct(product: Product, now: number = Date.now()): Disp
     price,
     mrp,
     discount,
-    bulkPrice,
-    bulkMinQty,
-    stockLevel,
-    inStock: hidden ? false : inStock,
-    onSale,
-    saleName,
-    salePrice,
-    hidden,
+    onSale: false,
+    saleName: null,
+    salePrice: null,
+    hidden: false,
     hasShades: product.hasShades || needsShades,
     shades: needsShades ? COMMON_EMULSION_SHADES : product.shades,
   };
 }
 
-/** Resolve a list, dropping hidden products. Reactive hook version for components. */
+/** Resolve a list, dropping hidden products. */
 export function useDisplayProducts(products: Product[]): DisplayProduct[] {
-  const overrides = useAdminStore((s) => s.overrides);
-  const sales = useAdminStore((s) => s.sales);
-  const suppliers = useSupplierStore((s) => s.suppliers);
-  // subscribe so components re-render when admin changes anything
-  void overrides;
-  void sales;
-  void suppliers;
   return products
     .map((p) => resolveProduct(p))
     .filter((p) => !p.hidden);
 }
 
-/** Current active sale (reactive). */
+/**
+ * Current active sale — server-side sales engine is not launched yet, so
+ * there is never a client-visible sale. Kept for the future integration point.
+ */
 export function useActiveSale(): Sale | null {
-  const sales = useAdminStore((s) => s.sales);
-  return getActiveSaleAt(sales, Date.now());
+  return null;
 }
 
 export interface LiveSummary {
@@ -102,18 +77,12 @@ export interface LiveSummary {
 /**
  * Live pricing for lightweight summary cards (home rails) that only carry
  * id + fallback price/mrp/discount. Falls back to the baked-in values when
- * the full product is unavailable. Reactive — re-renders on admin changes.
+ * the full product is unavailable.
  */
 export function useLiveSummary(
   id: string,
   fallback: { price: number; mrp: number; discount: number }
 ): LiveSummary {
-  const overrides = useAdminStore((s) => s.overrides);
-  const sales = useAdminStore((s) => s.sales);
-  const suppliers = useSupplierStore((s) => s.suppliers);
-  void overrides;
-  void sales;
-  void suppliers;
   const full = getProductById(id);
   if (!full) return { ...fallback, onSale: false, saleName: null, hidden: false };
   const r = resolveProduct(full);

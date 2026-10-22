@@ -325,6 +325,35 @@ export interface InventoryAlert {
   alert_type: string;
 }
 
+export interface CouponOffer {
+  code: string;
+  description: string | null;
+  discount_type: "flat" | "percent" | "ship";
+  discount_value: number;
+  max_discount: number | null;
+  min_order: number;
+  valid_till: string | null;
+  category: string | null;
+  usage_left: number | null;
+}
+
+export interface PlatformCouponRead {
+  id: string;
+  code: string;
+  description: string | null;
+  discount_type: "flat" | "percent" | "ship";
+  discount_value: number;
+  max_discount: number | null;
+  min_order: number;
+  valid_till: string | null;
+  usage_limit: number | null;
+  used_count: number;
+  category: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface InventoryAnalytics {
   total_products: number;
   low_stock_count: number;
@@ -589,7 +618,7 @@ export function createModitApi(client: ApiClient) {
 
   return {
     // Product Catalog
-    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string }, init?: RequestInit) {
+    listProducts(params?: { page?: number; page_size?: number; search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; supplier_id?: string }, init?: RequestInit) {
       const query = new URLSearchParams();
       if (params?.page) query.set("page", String(params.page));
       if (params?.page_size) query.set("page_size", String(params.page_size));
@@ -598,6 +627,7 @@ export function createModitApi(client: ApiClient) {
       if (params?.brand_id) query.set("brand_id", params.brand_id);
       if (params?.category_slug) query.set("category_slug", params.category_slug);
       if (params?.brand_slug) query.set("brand_slug", params.brand_slug);
+      if (params?.supplier_id) query.set("supplier_id", params.supplier_id);
       const qs = query.toString();
       return client.request<ProductSearchResponse>(`${base}/products${qs ? `?${qs}` : ""}`, init);
     },
@@ -853,9 +883,34 @@ export function createModitApi(client: ApiClient) {
     },
 
     // Inventory
-    listInventory(warehouseId?: string) {
-      const qs = warehouseId ? `?warehouse_id=${warehouseId}` : "";
-      return client.request<InventoryRead[]>(`${base}/inventory${qs}`);
+    listInventory(warehouseId?: string, productId?: string) {
+      const qs = new URLSearchParams();
+      if (warehouseId) qs.set("warehouse_id", warehouseId);
+      if (productId) qs.set("product_id", productId);
+      const q = qs.toString();
+      return client.request<InventoryRead[]>(`${base}/inventory${q ? `?${q}` : ""}`);
+    },
+
+    // Coupons shown to buyers; checkout validates against the same data.
+    listCoupons(init?: RequestInit) {
+      return client.request<CouponOffer[]>(`${base}/coupons`, init);
+    },
+
+    // Server-managed coupons (checkout validation truth)
+    listAdminCoupons(init?: RequestInit) {
+      return client.request<PlatformCouponRead[]>(`${base}/admin/coupons`, init);
+    },
+
+    createAdminCoupon(payload: Record<string, unknown>) {
+      return client.request<PlatformCouponRead>(`${base}/admin/coupons`, { method: "POST", body: JSON.stringify(payload) });
+    },
+
+    updateAdminCoupon(couponId: string, payload: Record<string, unknown>) {
+      return client.request<PlatformCouponRead>(`${base}/admin/coupons/${couponId}`, { method: "PATCH", body: JSON.stringify(payload) });
+    },
+
+    deleteAdminCoupon(couponId: string) {
+      return client.request<PlatformCouponRead>(`${base}/admin/coupons/${couponId}`, { method: "DELETE" });
     },
 
     createInventory(payload: Record<string, unknown>) {

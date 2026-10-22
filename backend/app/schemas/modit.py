@@ -241,6 +241,9 @@ class ProductDetailRead(ProductRead):
     unit: UnitRead
     gst: GSTRead | None
     images: list[dict]
+    # Sum of quantity_on_hand across inventory rows so the storefront and
+    # admin console can show real availability without a second request.
+    stock_units: float = 0.0
 
 
 class ProductImageBase(BaseModel):
@@ -1120,6 +1123,74 @@ class ReturnRead(ORMModel):
 
 class ReturnStatusUpdate(BaseModel):
     status: str = Field(min_length=1, max_length=20)
+
+
+class PlatformCouponRead(ORMModel):
+    id: str
+    code: str
+    description: str | None
+    discount_type: str
+    discount_value: float
+    max_discount: float | None
+    min_order: float
+    valid_till: date | None
+    usage_limit: int | None
+    used_count: int
+    category: str | None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class CouponOfferRead(BaseModel):
+    """Buyer-facing coupon offer (GET /modit/coupons)."""
+    code: str
+    description: str | None = None
+    discount_type: str
+    discount_value: float
+    max_discount: float | None = None
+    min_order: float = 0
+    valid_till: str | None = None
+    category: str | None = None
+    usage_left: int | None = None
+
+
+class PlatformCouponCreate(BaseModel):
+    code: str = Field(min_length=2, max_length=40)
+    description: str | None = None
+    discount_type: str = Field(pattern="^(flat|percent|ship)$")
+    discount_value: float = Field(ge=0, default=0)
+    max_discount: float | None = Field(default=None, ge=0)
+    min_order: float = Field(ge=0, default=0)
+    valid_till: date | None = None
+    usage_limit: int | None = Field(default=None, ge=1)
+    category: str | None = Field(default=None, max_length=64)
+    is_active: bool = True
+
+    @model_validator(mode="after")
+    def _code_shape(self) -> PlatformCouponCreate:
+        self.code = self.code.strip().upper().replace(" ", "")
+        if not self.code:
+            raise ValueError("code cannot be empty")
+        if self.discount_type != "percent" and self.max_discount is not None:
+            self.max_discount = None
+        if self.discount_type == "ship":
+            self.discount_value = 0.0
+        if self.discount_type == "percent" and self.discount_value > 90:
+            raise ValueError("percentage discount cannot exceed 90%")
+        return self
+
+
+class PlatformCouponUpdate(BaseModel):
+    description: str | None = None
+    discount_type: str | None = Field(default=None, pattern="^(flat|percent|ship)$")
+    discount_value: float | None = Field(default=None, ge=0)
+    max_discount: float | None = Field(default=None, ge=0)
+    min_order: float | None = Field(default=None, ge=0)
+    valid_till: date | None = None
+    usage_limit: int | None = Field(default=None, ge=1)
+    category: str | None = Field(default=None, max_length=64)
+    is_active: bool | None = None
 
 
 # AI Features

@@ -35,6 +35,7 @@ from backend.app.models.modit import (
     ProductImage,
     Project,
     PurchaseOrder,
+    PlatformCoupon,
     Quotation,
     QuotationItem,
     RFQ,
@@ -50,6 +51,7 @@ from backend.app.models.modit import (
 )
 from backend.app.models.shared import AnalyticsEvent
 from backend.app.models.user import User
+from backend.app.services.audit_service import create_audit_log
 from backend.app.schemas.modit import (
     AIMaterialRecommendationRequest,
     AIMaterialRecommendationResponse,
@@ -76,6 +78,7 @@ from backend.app.schemas.modit import (
     CheckoutResponse,
     ConstructionSiteCreate,
     ConstructionSiteRead,
+    CouponOfferRead,
     DeliveryCreate,
     DeliveryPingCreate,
     DeliveryPingRead,
@@ -222,7 +225,9 @@ async def list_products(
     brand_slug: str | None = None,
     # Back-compat: older storefront sends the slug in `category`.
     category: str | None = None,
+    supplier_id: str | None = None,
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
 ) -> ProductSearchResponse:
     """List products with search and filters.
 
@@ -230,10 +235,13 @@ async def list_products(
     `category` (legacy slug alias), or a slug inside `category_id`.
     """
     eff_category_slug = category_slug or category
+    # Staff callers (admin console) also see hidden/deactivated rows.
+    allow_inactive = is_staff(user)
     items, total, suggestions = await search_products(
         db, query=search, category_id=category_id, brand_id=brand_id,
         page=page, page_size=page_size,
         category_slug=eff_category_slug, brand_slug=brand_slug,
+        include_inactive=allow_inactive, supplier_id=supplier_id,
     )
     did_you_mean: str | None = None
     if total == 0 and search:
@@ -248,6 +256,7 @@ async def list_products(
                 db, query=corrected, category_id=category_id, brand_id=brand_id,
                 page=page, page_size=page_size,
                 category_slug=eff_category_slug, brand_slug=brand_slug,
+                include_inactive=allow_inactive, supplier_id=supplier_id,
             )
     return ProductSearchResponse(
         items=items,
@@ -265,6 +274,7 @@ async def create_product(payload: ProductCreate, db: AsyncSession = Depends(get_
     """Create a product."""
     product = Product(**payload.model_dump())
     db.add(product)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.product.create", entity_type="product", entity_id=payload.sku)
     await db.commit()
     await db.refresh(product)
     return await product_to_read(db, product)
@@ -278,25 +288,28 @@ async def get_product(product_id: str, db: AsyncSession = Depends(get_db)) -> Pr
 
 
 @router.patch("/products/{product_id}", response_model=ProductRead, dependencies=[admin_dependency])
-async def update_product(product_id: str, payload: ProductUpdate, db: AsyncSession = Depends(get_db)) -> ProductRead:
+async def update_product(product_id: str, payload: ProductUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProductRead:
     """Update product."""
     product = await get_product_or_404(db, product_id)
     data = payload.model_dump(exclude_unset=True)
     if data.get("supplier_id") is not None:
         if await db.get(Supplier, data["supplier_id"]) is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supplier not found")
+    before = {k: getattr(product, k) for k in data}
     for key, value in data.items():
         setattr(product, key, value)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.product.update", entity_type="product", entity_id=product.sku, before=before, after=data)
     await db.commit()
     await db.refresh(product)
     return await product_to_read(db, product)
 
 
 @router.delete("/products/{product_id}", response_model=StandardResponse[str], dependencies=[admin_dependency])
-async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
+async def delete_product(product_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> StandardResponse[str]:
     """Delete product (soft delete)."""
     product = await get_product_or_404(db, product_id)
     product.is_active = False
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.product.delete", entity_type="product", entity_id=product.sku)
     await db.commit()
     return StandardResponse(message="Product deleted", data=product_id)
 
@@ -797,6 +810,57 @@ async def checkout(
     return await place_checkout_order(db, user, payload)
 
 
+@router.get("/coupons", response_model=list[CouponOfferRead])
+async def available_coupons(db: AsyncSession = Depends(get_db)) -> list[dict]:
+    """Offers the cart/checkout screens may show. Same data checkout validates:
+    admin-managed rows when present, else the seeded built-ins."""
+    try:
+        result = await db.execute(
+            select(PlatformCoupon).where(
+                PlatformCoupon.is_active.is_(True), PlatformCoupon.deleted_at.is_(None)
+            )
+        )
+        coupons = list(result.scalars().all())
+    except HTTPException:
+        raise
+    except Exception:
+        coupons = []
+    rows: list[dict] = []
+    if coupons:
+        for c in coupons:
+            rows.append(
+                {
+                    "code": c.code,
+                    "description": c.description,
+                    "discount_type": c.discount_type,
+                    "discount_value": float(c.discount_value or 0),
+                    "max_discount": float(c.max_discount) if c.max_discount is not None else None,
+                    "min_order": float(c.min_order or 0),
+                    "valid_till": c.valid_till.isoformat() if c.valid_till else None,
+                    "category": c.category,
+                    "usage_left": c.usage_limit,
+                }
+            )
+    else:
+        from backend.app.services.checkout import BUILT_IN_COUPONS
+
+        for c in BUILT_IN_COUPONS:
+            rows.append(
+                {
+                    "code": c["code"],
+                    "description": None,
+                    "discount_type": c["type"],
+                    "discount_value": c["value"],
+                    "max_discount": c["max"],
+                    "min_order": c["min_order"],
+                    "valid_till": c["till"],
+                    "category": c["category"],
+                    "usage_left": None,
+                }
+            )
+    return rows
+
+
 @router.post("/orders", response_model=OrderDetailRead, status_code=status.HTTP_201_CREATED)
 async def create_order(payload: OrderCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> OrderDetailRead:
     """Create an order inside the caller's own org (staff: any org)."""
@@ -993,6 +1057,13 @@ async def update_order_status(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     if payload.status not in ORDER_STATUS_VALUES:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Unknown status: {payload.status}")
+    # Terminal states are final: reviving a delivered/cancelled order breaks
+    # every payout/payment/report below it. Corrections go through returns.
+    if order.status in ("delivered", "cancelled") and payload.status != order.status:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Order is already {order.status} — final status. Use returns/invoices for corrections.",
+        )
     if not is_staff(user):
         if payload.status != "cancelled":
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only staff can change order status")
@@ -1005,7 +1076,9 @@ async def update_order_status(
             )
     if payload.status == "cancelled" and order.status != "cancelled":
         await _restore_inventory_for_order(db, order.id)
+    before_status = order.status
     order.status = payload.status
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.order.status", entity_type="order", entity_id=order.order_number or order.id, before={"status": before_status}, after={"status": payload.status})
     await db.commit()
     await db.refresh(order)
     return OrderRead.model_validate(order)
@@ -1201,6 +1274,7 @@ async def create_inventory(payload: InventoryCreate, db: AsyncSession = Depends(
     """Create inventory record."""
     inventory = Inventory(**payload.model_dump())
     db.add(inventory)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.inventory.create", entity_type="inventory", entity_id=f"{payload.warehouse_id}:{payload.product_id}")
     await db.commit()
     await db.refresh(inventory)
     return InventoryRead.model_validate(inventory)
@@ -1212,8 +1286,11 @@ async def update_inventory(inventory_id: str, payload: InventoryUpdate, db: Asyn
     inventory = await db.get(Inventory, inventory_id)
     if inventory is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inventory not found")
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+    before = {k: getattr(inventory, k) for k in data}
+    for key, value in data.items():
         setattr(inventory, key, value)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.inventory.update", entity_type="inventory", entity_id=inventory_id, before=before, after=data)
     await db.commit()
     await db.refresh(inventory)
     return InventoryRead.model_validate(inventory)

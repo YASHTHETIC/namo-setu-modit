@@ -65,6 +65,18 @@ class LoopFakeDB(FakeDatabaseSession):
                     return None
             return _Empty()
 
+        # GROUP BY counts -> tuple rows like a real DB, built from the
+        # registries (matches the group-by shapes in the endpoint code).
+        if "count(" in s.lower():
+            counts: dict[str, int] = {}
+            source = list(self.quotes.values()) if "quotation" in s else \
+                [it for r in self.rfqs.values() for it in getattr(r, "items", [])]
+            for obj in source:
+                key = str(getattr(obj, "rfq_id", None))
+                if key and key != "None":
+                    counts[key] = counts.get(key, 0) + 1
+            return FakeResult(list(counts.items()))
+
         def _rfq_id():
             try:
                 lit = str(statement.compile(compile_kwargs={"literal_binds": True}))

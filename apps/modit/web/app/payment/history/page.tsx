@@ -63,7 +63,7 @@ export default function ModitPaymentHistoryPage() {
       const params = new URLSearchParams();
       if (statusFilter !== "all") params.set("status", statusFilter);
       const data = await client.request<{ items: Payment[]; total: number }>(
-        `/api/v1/payments/history?${params.toString()}`,
+        `/payments/history?${params.toString()}`,
         { method: "GET" }
       );
       return data;

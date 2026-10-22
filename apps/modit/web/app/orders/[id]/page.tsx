@@ -11,7 +11,6 @@ import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
-import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@foundation/ui";
 import {
   ArrowLeft, ArrowRight, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
@@ -197,19 +196,13 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     setTimeout(() => router.push("/cart"), 600);
   };
   const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
-  const adminOrderStatus = useAdminStore((s) => s.orderStatuses[id]?.status);
 
   const order = useMemo(() => {
     // Demo showcase ids keep their built-in data; every real server order
     // goes through the normalizer (raw API shape cannot render directly).
-    if (demoOrders[id]) {
-      const base = demoOrders[id];
-      return adminOrderStatus ? { ...base, status: adminOrderStatus } : base;
-    }
-    const base = apiOrder ? toOrderDetail(apiOrder as unknown as Record<string, unknown>) : null;
-    if (!base) return null;
-    return adminOrderStatus ? { ...base, status: adminOrderStatus } : base;
-  }, [apiOrder, id, adminOrderStatus]);
+    if (demoOrders[id]) return demoOrders[id];
+    return apiOrder ? toOrderDetail(apiOrder as unknown as Record<string, unknown>) : null;
+  }, [apiOrder, id]);
 
   const currentStepIndex = useMemo(() => {
     if (!order) return -1;

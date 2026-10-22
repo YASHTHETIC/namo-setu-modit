@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.api.deps import get_current_user, require_permission
 from backend.app.core.database import get_db
 from backend.app.core.rbac import PermissionName
+from backend.app.models.enums import ProductCode
+from backend.app.models.modit import PlatformCoupon
 from backend.app.models.user import User
 from backend.app.schemas.admin import (
     AuditLogListResponse,
@@ -20,8 +23,14 @@ from backend.app.schemas.admin import (
     UserStatusUpdate,
     UserRoleAssignRequest,
 )
+from backend.app.schemas.modit import (
+    PlatformCouponCreate,
+    PlatformCouponRead,
+    PlatformCouponUpdate,
+)
 from backend.app.schemas.platform import PermissionCreate as PlatformPermissionCreate, StandardResponse
 from backend.app.services.admin_service import AdminService
+from backend.app.services.audit_service import create_audit_log
 
 router = APIRouter()
 
@@ -219,21 +228,25 @@ async def activity_timeline_endpoint(
 async def list_users_endpoint(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
+    search: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
-) -> list[dict]:
+) -> dict:
     svc = AdminService(db)
-    users = await svc.list_users(page, page_size)
-    return [
-        {
-            "id": u.id,
-            "email": u.email,
-            "full_name": u.full_name,
-            "is_active": u.is_active,
-            "is_verified": u.is_verified,
-            "roles": [{"id": r.id, "name": r.name} for r in u.roles],
-        }
-        for u in users
-    ]
+    users = await svc.list_users(page, page_size, search)
+    return {
+        "items": [
+            {
+                "id": u.id,
+                "email": u.email,
+                "full_name": u.full_name,
+                "is_active": u.is_active,
+                "is_verified": u.is_verified,
+                "roles": [{"id": r.id, "name": r.name} for r in u.roles],
+            }
+            for u in users
+        ],
+        "total": await svc.count_users(search),
+    }
 
 
 @router.get(
@@ -283,3 +296,115 @@ async def update_user_status_endpoint(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     state = "activated" if payload.is_active else "deactivated"
     return StandardResponse(message=f"User {state}", data=user_id)
+
+
+# =====================================================
+# Server-managed coupons (validation truth for checkout)
+# =====================================================
+
+COUPON_ADMIN = Depends(require_permission(PermissionName.CONFIG_READ))
+
+
+@router.get(
+    "/admin/coupons",
+    response_model=list[PlatformCouponRead],
+    dependencies=[COUPON_ADMIN],
+)
+async def list_coupons_endpoint(db: AsyncSession = Depends(get_db)) -> list[PlatformCoupon]:
+    result = await db.execute(
+        select(PlatformCoupon)
+        .where(PlatformCoupon.deleted_at.is_(None))
+        .order_by(PlatformCoupon.is_active.desc(), PlatformCoupon.created_at.desc())
+    )
+    return list(result.scalars().all())
+
+
+@router.post(
+    "/admin/coupons",
+    response_model=PlatformCouponRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[COUPON_ADMIN],
+)
+async def create_coupon_endpoint(
+    payload: PlatformCouponCreate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> PlatformCoupon:
+    existing = (
+        await db.execute(
+            select(PlatformCoupon).where(PlatformCoupon.code == payload.code, PlatformCoupon.deleted_at.is_(None))
+        )
+    )
+    if existing.scalars().first() is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Coupon {payload.code} already exists")
+    coupon = PlatformCoupon(
+        code=payload.code,
+        description=payload.description,
+        discount_type=payload.discount_type,
+        discount_value=payload.discount_value,
+        max_discount=payload.max_discount,
+        min_order=payload.min_order,
+        valid_till=payload.valid_till,
+        usage_limit=payload.usage_limit,
+        used_count=0,
+        category=payload.category,
+        is_active=payload.is_active,
+    )
+    db.add(coupon)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.coupon.create", entity_type="coupon", entity_id=payload.code, after=payload.model_dump(mode="json"))
+    await db.commit()
+    await db.refresh(coupon)
+    return coupon
+
+
+@router.patch(
+    "/admin/coupons/{coupon_id}",
+    response_model=PlatformCouponRead,
+    dependencies=[COUPON_ADMIN],
+)
+async def update_coupon_endpoint(
+    coupon_id: str,
+    payload: PlatformCouponUpdate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> PlatformCoupon:
+    coupon = await db.get(PlatformCoupon, coupon_id)
+    if coupon is None or coupon.deleted_at is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coupon not found")
+    data = payload.model_dump(exclude_unset=True)
+    new_type = data.get("discount_type") or coupon.discount_type
+    if new_type == "ship":
+        data["discount_value"] = 0.0
+        data["max_discount"] = None
+    if new_type == "percent":
+        value = data.get("discount_value", coupon.discount_value)
+        if value is not None and float(value) > 90:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="percentage discount cannot exceed 90%")
+    elif new_type != "percent" and "max_discount" not in data and coupon.max_discount is not None and data.get("discount_type"):
+        data["max_discount"] = None
+    before = {k: getattr(coupon, k) for k in data}
+    for key, value in data.items():
+        setattr(coupon, key, value)
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.coupon.update", entity_type="coupon", entity_id=coupon.code, before=before, after=data)
+    await db.commit()
+    await db.refresh(coupon)
+    return coupon
+
+
+@router.delete(
+    "/admin/coupons/{coupon_id}",
+    response_model=StandardResponse[str],
+    dependencies=[COUPON_ADMIN],
+)
+async def delete_coupon_endpoint(
+    coupon_id: str,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> StandardResponse[str]:
+    coupon = await db.get(PlatformCoupon, coupon_id)
+    if coupon is None or coupon.deleted_at is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coupon not found")
+    coupon.soft_delete()
+    await create_audit_log(db, product_code=ProductCode.MODIT, actor_user_id=user.id, action="modit.coupon.delete", entity_type="coupon", entity_id=coupon.code)
+    await db.commit()
+    return StandardResponse(message="Coupon deleted", data=coupon.id)

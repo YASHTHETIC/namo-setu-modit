@@ -1,289 +1,68 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Plus, X, Zap, Power, Trash2, CalendarClock, Tag } from "lucide-react";
-import { useAdminStore, type Sale, type SaleScope } from "@/lib/admin-store";
-import { products } from "@/lib/product-data";
-import { useCategories } from "@/lib/api-hooks";
-import { logAdminActivity } from "@/lib/admin-activity";
-import { saleAppliesTo } from "@/lib/pricing";
-import { Stagger } from "@/components/fx";
-import { broadcastPush } from "@/lib/pwa";
+import Link from "next/link";
+import { Zap, Ticket, Tag } from "lucide-react";
 
-function toLocalInput(ts: number) {
-  const d = new Date(ts);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
+/**
+ * Honest stub: the scheduled "sale engine" these screens used to simulate is
+ * not built — sale rows used to live only in the browser and never moved a
+ * single price, banner or order. Pricing truth today:
+ *  - Product prices/Live-Hidden: Products & Pricing (server PATCH)
+ *  - Coupon offers validated server-side at checkout: Coupons
+ * A server-backed campaign scheduler can replace this screen when built.
+ */
 export default function AdminSalesPage() {
-  const sales = useAdminStore((s) => s.sales);
-  const addSale = useAdminStore((s) => s.addSale);
-  const updateSale = useAdminStore((s) => s.updateSale);
-  const toggleSale = useAdminStore((s) => s.toggleSale);
-  const deleteSale = useAdminStore((s) => s.deleteSale);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const { data: apiCategories = [] } = useCategories();
-  const categories = (apiCategories as { slug: string; name: string }[]).length > 0
-    ? (apiCategories as { slug: string; name: string }[])
-    : Array.from(new Map(products.map((p) => [p.categorySlug, p.category])).entries()).map(([slug, name]) => ({ slug, name }));
-
-  const now = Date.now();
-  const statusOf = (s: Sale) => {
-    if (!s.active) return { label: "Paused", cls: "bg-[#F0ECF9] text-[#9B8CB5]" };
-    if (now < s.startAt) return { label: "Scheduled", cls: "bg-[#FFFBF5] text-[#FF9800]" };
-    if (now > s.endAt) return { label: "Ended", cls: "bg-[#F0ECF9] text-[#9B8CB5]" };
-    return { label: "LIVE", cls: "bg-[#7CB518] text-white" };
-  };
-
-  const scopeText = (s: Sale) =>
-    s.scope === "all"
-      ? "Entire store"
-      : s.scope === "category"
-        ? `${s.categorySlugs.length} categor${s.categorySlugs.length === 1 ? "y" : "ies"}`
-        : `${s.productIds.length} products`;
-
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-title-lg font-extrabold text-[#150726]">Sales & Banners</h1>
-          <p className="text-caption text-[#9B8CB5] mt-0.5">Schedule discounts like Blinkit/Zepto — prices drop and revert automatically, banners announce it.</p>
-        </div>
-        <button onClick={() => { setEditingId(null); setShowForm(true); }} className="btn-shine flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">
-          <Plus className="h-4 w-4" /> New sale
-        </button>
-      </div>
-
-      <div className="mt-4 space-y-3">
-        <Stagger step={60}>
-        {sales.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-[#DDD6EE] bg-white p-10 text-center">
-            <Zap className="h-8 w-8 text-[#FF9800] mx-auto mb-2" />
-            <p className="text-body-md font-bold text-[#150726]">No sales yet</p>
-            <p className="text-caption text-[#9B8CB5] mt-1">Create a Diwali sale, monsoon offer or weekend deal — the store announces it automatically.</p>
-          </div>
-        )}
-        {sales.map((s) => {
-          const st = statusOf(s);
-          const affected = products.filter((p) => saleAppliesTo(s, p)).length;
-          return (
-            <div key={s.id} className="rounded-2xl border border-[#DDD6EE] bg-white p-4">
-              <div className="flex items-start justify-between gap-3 flex-wrap">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-body-md font-extrabold text-[#150726]">{s.name}</p>
-                    <span className={`rounded-full px-2 py-0.5 text-tiny font-black ${st.cls}`}>{st.label}</span>
-                    <span className="rounded-full bg-[#F0ECF9] px-2 py-0.5 text-tiny font-bold text-[#2D1B69]">
-                      {s.type === "percent" ? `${s.value}% OFF` : `₹${s.value} OFF`} · {scopeText(s)}
-                    </span>
-                    <span className="rounded-full bg-[#F0F9E8] px-2 py-0.5 text-tiny font-bold text-[#5a8010]">
-                      {affected.toLocaleString("en-IN")} products affected
-                    </span>
-                  </div>
-                  <p className="text-micro text-[#9B8CB5] mt-1 flex items-center gap-1.5 flex-wrap">
-                    <CalendarClock className="h-3 w-3" />
-                    {new Date(s.startAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                    {" → "}
-                    {new Date(s.endAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                    <span className="text-[#9B8CB5]">· Banner: “{s.bannerTitle}”</span>
-                  </p>
-                </div>
-                <div className="flex gap-1.5">
-                  <button onClick={() => { toggleSale(s.id); logAdminActivity("sale.toggle", `Sale "${s.name}" ${s.active ? "paused" : "activated"}`); }} title={s.active ? "Pause" : "Activate"} className={`p-2 rounded-lg border transition-all ${s.active ? "border-[#7CB518]/40 text-[#7CB518] bg-[#F0F9E8]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
-                    <Power className="h-3.5 w-3.5" />
-                  </button>
-                  <button onClick={() => { setEditingId(s.id); setShowForm(true); }} className="px-3 py-2 rounded-lg bg-[#2D1B69] text-white text-micro font-bold hover:bg-[#1E1245]">Edit</button>
-                  <button onClick={() => { if (confirm(`Delete sale "${s.name}"?`)) { deleteSale(s.id); logAdminActivity("sale.delete", `Sale "${s.name}" deleted`); } }} className="p-2 rounded-lg border border-[#DDD6EE] text-[#9B8CB5] hover:text-[#E91E63] hover:border-[#E91E63]/40">
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-        </Stagger>
-      </div>
-
-      {showForm && (
-        <SaleForm
-          key={editingId ?? "new"}
-          initial={sales.find((s) => s.id === editingId) ?? null}
-          categories={categories}
-          onClose={() => { setShowForm(false); setEditingId(null); }}
-          onSave={(data) => {
-            if (editingId) {
-              updateSale(editingId, data);
-              logAdminActivity("sale.update", `Sale "${data.name}" updated`, `${data.type === "percent" ? `${data.value}% off` : `₹${data.value} off`} · ${data.scope}`);
-            } else {
-              const created = addSale(data);
-              logAdminActivity("sale.create", `Sale "${data.name}" launched`, `${data.type === "percent" ? `${data.value}% off` : `₹${data.value} off`} · ${data.scope} · ${created.id}`);
-              broadcastPush(
-                `${data.bannerTitle}`,
-                `${data.bannerSubtitle} · Tap to shop the sale.`,
-                "/products"
-              );
-            }
-            setShowForm(false);
-            setEditingId(null);
-          }}
-        />
-      )}
-    </div>
-  );
-}
-
-function SaleForm({ initial, categories, onClose, onSave }: {
-  initial: Sale | null;
-  categories: { slug: string; name: string }[];
-  onClose: () => void;
-  onSave: (d: Omit<Sale, "id" | "createdAt">) => void;
-}) {
-  const [name, setName] = useState(initial?.name ?? "");
-  const [type, setType] = useState<"percent" | "flat">(initial?.type ?? "percent");
-  const [value, setValue] = useState(String(initial?.value ?? 10));
-  const [scope, setScope] = useState<SaleScope>(initial?.scope ?? "all");
-  const [categorySlugs, setCategorySlugs] = useState<string[]>(initial?.categorySlugs ?? []);
-  const [productQuery, setProductQuery] = useState("");
-  const [productIds, setProductIds] = useState<string[]>(initial?.productIds ?? []);
-  const [startAt, setStartAt] = useState(toLocalInput(initial?.startAt ?? Date.now()));
-  const [endAt, setEndAt] = useState(toLocalInput(initial?.endAt ?? Date.now() + 3 * 86400000));
-  const [bannerTitle, setBannerTitle] = useState(initial?.bannerTitle ?? "");
-  const [bannerSubtitle, setBannerSubtitle] = useState(initial?.bannerSubtitle ?? "");
-  const [error, setError] = useState("");
-
-  const matchedProducts = useMemo(() => {
-    const q = productQuery.trim().toLowerCase();
-    if (!q) return [];
-    return products
-      .filter((p) => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q))
-      .slice(0, 8);
-  }, [productQuery]);
-
-  const toggleCategory = (slug: string) =>
-    setCategorySlugs((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
-
-  const handleSave = () => {
-    const v = Number(value);
-    if (!name.trim()) return setError("Sale name is required.");
-    if (!Number.isFinite(v) || v <= 0) return setError("Discount value must be greater than 0.");
-    if (type === "percent" && v > 90) return setError("Percent discount cannot exceed 90%.");
-    const start = new Date(startAt).getTime();
-    const end = new Date(endAt).getTime();
-    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return setError("End time must be after start time.");
-    if (scope === "category" && categorySlugs.length === 0) return setError("Pick at least one category.");
-    if (scope === "products" && productIds.length === 0) return setError("Add at least one product.");
-    setError("");
-    onSave({
-      name: name.trim(),
-      type,
-      value: v,
-      scope,
-      categorySlugs,
-      productIds,
-      startAt: start,
-      endAt: end,
-      bannerTitle: bannerTitle.trim() || `${name.trim()} — up to ${type === "percent" ? `${v}% OFF` : `₹${v} OFF`}`,
-      bannerSubtitle: bannerSubtitle.trim() || "Limited period offer · GST invoice available",
-      active: initial?.active ?? true,
-    });
-  };
-
-  const field = "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-sm font-semibold focus:outline-none focus:border-[#E91E63]";
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-body-lg font-bold text-[#150726]">{initial ? "Edit sale" : "New sale"}</h2>
-          <button onClick={onClose} aria-label="Close" className="rounded-lg p-1.5 text-[#9B8CB5] hover:bg-[#F7F4FC]"><X className="h-5 w-5" /></button>
-        </div>
-
-        <label className="block text-micro font-bold text-[#150726] mb-1.5">Sale name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Diwali Dhamaka Sale" className={`${field} mb-3`} />
-
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label className="block text-micro font-bold text-[#150726] mb-1.5">Discount type</label>
-            <div className="grid grid-cols-2 gap-2">
-              {(["percent", "flat"] as const).map((t) => (
-                <button key={t} onClick={() => setType(t)} className={`py-2 rounded-lg text-caption font-bold border-2 ${type === t ? "border-[#E91E63] bg-[#FCE4EC] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
-                  {t === "percent" ? "% Off" : "₹ Flat"}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label className="block text-micro font-bold text-[#150726] mb-1.5">Value {type === "percent" ? "(%)" : "(₹)"}</label>
-            <input value={value} onChange={(e) => setValue(e.target.value)} inputMode="numeric" className={field} />
-          </div>
-        </div>
-
-        <label className="block text-micro font-bold text-[#150726] mb-1.5">Applies to</label>
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          {((["all", "category", "products"] as const).map((sc) => (
-            <button key={sc} onClick={() => setScope(sc)} className={`py-2 rounded-lg text-caption font-bold border-2 capitalize ${scope === sc ? "border-[#E91E63] bg-[#FCE4EC] text-[#E91E63]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
-              {sc === "all" ? "Entire store" : sc}
-            </button>
-          )))}
-        </div>
-
-        {scope === "category" && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {categories.map((c) => (
-              <button key={c.slug} onClick={() => toggleCategory(c.slug)} className={`px-3 py-1.5 rounded-full text-micro font-bold border-2 ${categorySlugs.includes(c.slug) ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]" : "border-[#DDD6EE] text-[#9B8CB5]"}`}>
-                {c.name}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {scope === "products" && (
-          <div className="mb-3">
-            <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Search products to include..." className={`${field} mb-2`} />
-            {matchedProducts.map((p) => (
-              <button key={p.id} onClick={() => { if (!productIds.includes(p.id)) setProductIds([...productIds, p.id]); setProductQuery(""); }} className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F7F4FC] text-caption font-semibold text-[#150726] border border-transparent hover:border-[#DDD6EE] mb-1">
-                + {p.name} <span className="text-[#9B8CB5] font-medium">· ₹{p.price.toLocaleString("en-IN")}</span>
-              </button>
-            ))}
-            {productIds.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {productIds.map((pid) => (
-                  <span key={pid} className="inline-flex items-center gap-1 rounded-full bg-[#F0ECF9] px-2.5 py-1 text-tiny font-bold text-[#2D1B69]">
-                    {products.find((p) => p.id === pid)?.name.slice(0, 28) ?? pid}
-                    <button onClick={() => setProductIds(productIds.filter((x) => x !== pid))} className="hover:text-[#E91E63]"><X className="h-3 w-3" /></button>
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label className="block text-micro font-bold text-[#150726] mb-1.5">Starts at</label>
-            <input type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} className={field} />
-          </div>
-          <div>
-            <label className="block text-micro font-bold text-[#150726] mb-1.5">Ends at</label>
-            <input type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} className={field} />
-          </div>
-        </div>
-
-        <label className="text-micro font-bold text-[#150726] mb-1.5 flex items-center gap-1"><Tag className="h-3 w-3" /> Banner headline</label>
-        <input value={bannerTitle} onChange={(e) => setBannerTitle(e.target.value)} placeholder="Auto-filled from sale name if empty" className={`${field} mb-3`} />
-        <label className="block text-micro font-bold text-[#150726] mb-1.5">Banner subtext</label>
-        <input value={bannerSubtitle} onChange={(e) => setBannerSubtitle(e.target.value)} placeholder="Auto-filled if empty" className={`${field} mb-3`} />
-
-        {error && <p className="text-micro text-red-500 font-semibold mb-3">{error}</p>}
-
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2.5 rounded-lg text-caption font-bold text-[#9B8CB5] hover:bg-[#F7F4FC]">Cancel</button>
-          <button onClick={handleSave} className="btn-shine px-5 py-2.5 rounded-lg bg-[#E91E63] text-white text-caption font-bold hover:bg-[#C2185B]">{initial ? "Save changes" : "Launch sale"}</button>
+          <h1 className="text-title-lg font-extrabold text-[#150726] flex items-center gap-2">
+            <Zap className="h-5 w-5 text-[#FF9800]" /> Sales & Banners
+          </h1>
+          <p className="text-caption text-[#9B8CB5] mt-0.5">
+            Scheduled sale campaigns are not part of the platform yet — nothing here previously changed real prices.
+          </p>
         </div>
       </div>
+
+      <div className="mt-6 rounded-2xl border border-[#DDD6EE] bg-white p-8 max-w-2xl">
+        <div className="h-12 w-12 rounded-2xl bg-[#F0F9E8] flex items-center justify-center mb-4">
+          <Zap className="h-6 w-6 text-[#5a8010]" />
+        </div>
+        <p className="text-body-md font-extrabold text-[#150726]">Run promotions the honest way today</p>
+        <p className="text-caption text-[#5C4A7A] mt-1 leading-relaxed">
+          Discounts are real right now through two server-backed tools:
+        </p>
+        <div className="mt-4 grid gap-2">
+          <Link
+            href="/admin/products"
+            className="rounded-xl border border-[#DDD6EE] bg-white p-3 flex items-center gap-3 hover:border-[#2D1B69]/40 transition-colors"
+          >
+            <span className="h-9 w-9 rounded-lg bg-[#F0ECF9] flex items-center justify-center"><Tag className="h-4 w-4 text-[#2D1B69]" /></span>
+            <span>
+              <span className="block text-body-sm font-bold text-[#150726]">Products & Pricing</span>
+              <span className="block text-micro text-[#9B8CB5]">Set price, MRP and Live/Hidden per product — buyers always see exactly what they pay.</span>
+            </span>
+          </Link>
+          <Link
+            href="/admin/coupons"
+            className="rounded-xl border border-[#DDD6EE] bg-white p-3 flex items-center gap-3 hover:border-[#2D1B69]/40 transition-colors"
+          >
+            <span className="h-9 w-9 rounded-lg bg-[#F8CB46]/20 flex items-center justify-center"><Ticket className="h-4 w-4 text-[#B45309]" /></span>
+            <span>
+              <span className="block text-body-sm font-bold text-[#150726]">Coupons</span>
+              <span className="block text-micro text-[#9B8CB5]">Checkout-validated offer codes — flat, percent or free shipping — with usage limits.</span>
+            </span>
+          </Link>
+        </div>
+        <p className="text-micro text-[#9B8CB5] mt-4">
+          A scheduled sale engine (auto price drops, banners, reverts) would need server-side campaign storage and will be built deliberately, not faked.
+        </p>
+      </div>
+
+      {/* Legacy client-side sale previews (browser-only) were removed: they
+          never affected the storefront and would mislead staff. */}
+      <p className="text-micro text-[#9B8CB5] mt-4">Previously created browser-only sale previews have been deleted — verify your current prices on the products list.</p>
     </div>
   );
 }

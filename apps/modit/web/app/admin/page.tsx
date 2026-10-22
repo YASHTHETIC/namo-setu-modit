@@ -3,22 +3,17 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Package, ShoppingCart, Ticket, Zap, AlertTriangle, ArrowRight, IndianRupee,
+  Package, ShoppingCart, Zap, AlertTriangle, ArrowRight, IndianRupee,
   RotateCcw, Plus, Activity, BellRing, Send, Warehouse,
 } from "lucide-react";
-import { products } from "@/lib/product-data";
-import { useAdminStore, getActiveSaleAt, getUpcomingSaleAt, ORDER_STATUSES } from "@/lib/admin-store";
-import { resolveProduct } from "@/lib/pricing";
-import { useCouponStore } from "@/lib/coupon-store";
-import { useReturnStore } from "@/lib/return-store";
-import { useAdminActivity } from "@/lib/admin-activity";
-import { useOrders, useWarehouses } from "@/lib/modit-api";
-import { logAdminActivity } from "@/lib/admin-activity";
+import { useOrders, useWarehouses, useInventoryAlerts, useServerReturns, useAuditLogs, useProducts, getModitApi } from "@/lib/modit-api";
 import { getAccessToken } from "@/lib/auth";
+import { useToast } from "@foundation/ui";
 import { CountUp, Stagger, FxBackdrop } from "@/components/fx";
 import { Reveal } from "@/components/reveal";
 
 const STAGE_LABEL: Record<string, string> = {
+  draft: "Draft",
   placed: "New",
   confirmed: "Confirmed",
   processing: "Processing",
@@ -27,6 +22,8 @@ const STAGE_LABEL: Record<string, string> = {
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
+
+const STAGES = ["placed", "confirmed", "processing", "dispatched", "in_transit", "delivered"] as const;
 
 const STAGE_DOT: Record<string, string> = {
   placed: "#E91E63",
@@ -38,22 +35,23 @@ const STAGE_DOT: Record<string, string> = {
 };
 
 export default function AdminDashboard() {
-  const overrides = useAdminStore((s) => s.overrides);
-  const sales = useAdminStore((s) => s.sales);
-  const orderStatuses = useAdminStore((s) => s.orderStatuses);
-  const setOverride = useAdminStore((s) => s.setOverride);
-  const coupons = useCouponStore((s) => s.availableCoupons);
-  const returns = useReturnStore((s) => s.returns);
-  const activity = useAdminActivity((s) => s.entries);
   const { data: apiOrders, isError: ordersOffline } = useOrders(undefined);
   const { data: serverWarehouses = [] } = useWarehouses();
   const warehousesReady = serverWarehouses.length > 0;
+  const { data: alerts = [], isLoading: alertsLoading } = useInventoryAlerts();
+  const { data: serverReturns = [] } = useServerReturns();
+  const { data: auditPage } = useAuditLogs(1, 50);
+  // Single-row probe just to read the live catalog count for the checklist.
+  const { data: catalogProbe } = useProducts({ page: 1, page_size: 1 });
+  const catalogCount = catalogProbe?.total ?? 0;
+  const toast = useToast();
   const [pushTitle, setPushTitle] = useState("");
   const [pushBody, setPushBody] = useState("");
   const [pushStatus, setPushStatus] = useState("");
   const [pushSending, setPushSending] = useState(false);
   const [subCount, setSubCount] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [restocking, setRestocking] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -102,18 +100,16 @@ export default function AdminDashboard() {
 
   const orders = useMemo(() => {
     const list = (apiOrders ?? []) as any[];
-    return list.map((o) => ({ ...o, status: orderStatuses[o.id]?.status ?? o.status }));
-  }, [apiOrders, orderStatuses]);
+    return list;
+  }, [apiOrders]);
 
   const gmv = orders.reduce((s, o) => s + (o.total || 0), 0);
   const aov = orders.length ? Math.round(gmv / orders.length) : 0;
 
   const pipeline = useMemo(() => {
     const counts: Record<string, number> = {};
-    ORDER_STATUSES.forEach((st) => { counts[st] = 0; });
     orders.forEach((o) => {
-      if (counts[o.status] !== undefined) counts[o.status] += 1;
-      else counts[o.status] = 1;
+      counts[o.status] = (counts[o.status] ?? 0) + 1;
     });
     return counts;
   }, [orders]);
@@ -134,47 +130,64 @@ export default function AdminDashboard() {
   }, [orders]);
   const maxDay = Math.max(1, ...revenue7d.map((d) => d.total));
 
+  // Server inventory alerts are the real low-stock signal; client stock
+  // overrides were removed with the fake-data layer.
   const lowStock = useMemo(
     () =>
-      products
-        .map((p) => ({ p, stock: overrides[p.id]?.stockLevel ?? p.stockLevel }))
-        .filter((x) => x.stock <= 50)
-        .sort((a, b) => a.stock - b.stock)
+      (alerts as any[])
+        .slice()
+        .sort((a, b) => a.current_stock - b.current_stock)
         .slice(0, 5),
-    [overrides]
+    [alerts]
   );
 
-  const openReturns = returns.filter((r) => !["refunded", "rejected"].includes(r.status));
-  const upcoming = getUpcomingSaleAt(sales, Date.now());
-  const activeSale = getActiveSaleAt(sales, Date.now());
-  const onSaleCount = activeSale ? products.filter((p) => resolveProduct(p).onSale).length : 0;
+  const openReturns = useMemo(
+    () => (serverReturns as any[]).filter((r) => !["refunded", "rejected"].includes(r.status)),
+    [serverReturns]
+  );
 
-  const quickRestock = (id: string, name: string, current: number, add: number) => {
-    setOverride(id, { stockLevel: current + add, inStock: true });
-    logAdminActivity("product.update", `${name} restocked +${add}`, `Stock ${current} → ${current + add}`);
+  // Push stock to the server: find that warehouse's inventory row and patch it.
+  const quickRestock = async (alert: any, add: number) => {
+    setRestocking(`${alert.product_id}:${alert.warehouse_id}`);
+    try {
+      const api = getModitApi();
+      const rows = await api.listInventory(alert.warehouse_id, alert.product_id);
+      if (!rows.length) {
+        toast.error("No stock row", "Set up the inventory entry in Stores & Stock first.");
+      } else {
+        const target = rows[0];
+        await api.updateInventory(target.id, {
+          quantity_on_hand: (target.quantity_on_hand ?? 0) + add,
+        });
+        toast.success("Restocked", `${alert.product_name} +${add} at ${alert.warehouse_name}`);
+      }
+    } catch (e: any) {
+      toast.error("Restock failed", e?.message || "Try again in Stores & Stock.");
+    }
+    setRestocking(null);
   };
 
-  const lowStockCount = products.filter((p) => (overrides[p.id]?.stockLevel ?? p.stockLevel) <= 50).length;
+  const lowStockCount = alerts.length;
   const stats = [
     { label: "Revenue (GMV)", value: `₹${(gmv / 100000).toFixed(2)}L`, raw: gmv, money: true, sub: `${orders.length} orders · AOV ₹${aov.toLocaleString("en-IN")}`, icon: IndianRupee, color: "#2D1B69", bg: "#F0ECF9" },
-    { label: "Products on sale", value: onSaleCount, raw: onSaleCount, sub: activeSale ? `${activeSale.name} LIVE` : "No sale live", icon: Zap, color: "#7CB518", bg: "#F0F9E8", href: "/admin/sales" },
-    { label: "Low stock", value: lowStockCount, raw: lowStockCount, sub: "items at ≤ 50 units", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products", attention: lowStockCount > 0, ring: "ring-2 ring-[#FF9800]/40" },
-    { label: "Active coupons", value: coupons.filter((c) => c.active).length, raw: coupons.filter((c) => c.active).length, sub: "buyer offers live", icon: Ticket, color: "#E91E63", bg: "#FCE4EC", href: "/admin/coupons" },
+    { label: "Low stock", value: lowStockCount, raw: lowStockCount, sub: alertsLoading ? "checking inventory…" : "alerts from store inventory", icon: AlertTriangle, color: "#FF9800", bg: "#FFFBF5", href: "/admin/products", attention: lowStockCount > 0, ring: "ring-2 ring-[#FF9800]/40" },
     { label: "Open returns", value: openReturns.length, raw: openReturns.length, sub: "need action", icon: RotateCcw, color: "#C2185B", bg: "#FCE4EC", href: "/admin/returns", attention: openReturns.length > 0, ring: "ring-2 ring-[#E91E63]/40" },
-    { label: "Staff actions", value: activity.length, raw: activity.length, sub: "logged in audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
+    { label: "Audit entries", value: auditPage?.total ?? 0, raw: auditPage?.total ?? 0, sub: "server audit trail", icon: Activity, color: "#00BCD4", bg: "#E8F9FC", href: "/admin/audit" },
   ];
 
+  if (subCount !== null) {
+    stats.push({ label: "Push devices", value: subCount, raw: subCount, sub: "subscribed to announcements", icon: BellRing, color: "#E91E63", bg: "#FCE4EC", href: "#push" });
+  }
+
   const quickActions = [
-    { label: "New sale", href: "/admin/sales", icon: Zap },
     { label: "Add product", href: "/admin/products", icon: Plus },
     { label: "Open store", href: "/admin/stores", icon: Warehouse },
     { label: "Announce", href: "#push", icon: BellRing },
   ];
 
   const launchSteps = [
-    { label: "Seed the catalog", sub: "499 products + stock on server", href: "/admin/stores", done: true },
-    { label: "Open your store", sub: "Noida live · add more pincodes", href: "/admin/stores", done: warehousesReady },
-    { label: "Launch a sale", sub: activeSale ? `${activeSale.name} is LIVE` : "Diwali deals go here", href: "/admin/sales", done: Boolean(activeSale) },
+    { label: "Add products", sub: catalogCount > 0 ? `${catalogCount.toLocaleString("en-IN")} live in the catalog` : "Create your first catalog item", href: "/admin/products", done: catalogCount > 0 },
+    { label: "Open your store", sub: warehousesReady ? "Store is live" : "Pick a location and open", href: "/admin/stores", done: warehousesReady },
     { label: "Place a test order", sub: "COD · fill the pipeline", href: "/products", done: orders.length > 0 },
   ];
 
@@ -288,8 +301,8 @@ export default function AdminDashboard() {
             Manage <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
-          {ORDER_STATUSES.filter((s) => s !== "cancelled").map((st) => (
+        <div className="mt-3 grid grid-cols-4 sm:grid-cols-6 gap-2">
+          {STAGES.map((st) => (
             <Link key={st} href="/admin/orders" className="card-lift rounded-xl bg-[#F7F4FC] border border-[#F0ECF9] px-2 py-2.5 text-center">
               <span
                 className="mx-auto mb-1 block h-1.5 w-1.5 rounded-full"
@@ -336,71 +349,37 @@ export default function AdminDashboard() {
           <div className="mt-3 space-y-2.5 max-h-56 overflow-y-auto">
             {openReturns.slice(0, 3).map((r) => (
               <Link key={r.id} href="/admin/returns" className="flex items-center justify-between rounded-xl bg-[#FCE4EC] px-3 py-2.5 hover:bg-[#F8BBD0]/40">
-                <span className="text-caption font-bold text-[#150726]">Return {r.id} · {r.reason}</span>
+                <span className="text-caption font-bold text-[#150726]">{r.return_number ?? r.id} · {r.reason || "Return requested"}</span>
                 <ArrowRight className="h-3.5 w-3.5 text-[#E91E63]" />
               </Link>
             ))}
-            {lowStock.map(({ p, stock }) => (
-              <div key={p.id} className="flex items-center justify-between rounded-xl bg-[#FFFBF5] px-3 py-2.5">
+            {lowStock.map((a) => (
+              <div key={`${a.product_id}:${a.warehouse_id}`} className="flex items-center justify-between rounded-xl bg-[#FFFBF5] px-3 py-2.5">
                 <div className="min-w-0">
-                  <p className="text-caption font-bold text-[#150726] truncate max-w-[220px]">{p.name}</p>
-                  <p className="text-tiny text-[#9B8CB5]">{stock} units left</p>
+                  <p className="text-caption font-bold text-[#150726] truncate max-w-[220px]">{a.product_name}</p>
+                  <p className="text-tiny text-[#9B8CB5]">{a.current_stock} units · {a.warehouse_name}</p>
                 </div>
                 <div className="flex gap-1.5">
                   {[50, 100].map((q) => (
-                    <button key={q} onClick={() => quickRestock(p.id, p.name, stock, q)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-white border border-[#FF9800]/30 text-tiny font-bold text-[#FF9800] hover:bg-[#FF9800] hover:text-white">
+                    <button
+                      key={q}
+                      onClick={() => void quickRestock(a, q)}
+                      disabled={restocking === `${a.product_id}:${a.warehouse_id}`}
+                      className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-white border border-[#FF9800]/30 text-tiny font-bold text-[#FF9800] hover:bg-[#FF9800] hover:text-white disabled:opacity-50"
+                    >
                       <Plus className="h-3 w-3" />{q}
                     </button>
                   ))}
                 </div>
               </div>
             ))}
-            {upcoming && (
-              <Link href="/admin/sales" className="flex items-center justify-between rounded-xl bg-[#F0ECF9] px-3 py-2.5">
-                <span className="text-caption font-bold text-[#150726]">Sale “{upcoming.name}” starts {new Date(upcoming.startAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
-                <ArrowRight className="h-3.5 w-3.5 text-[#2D1B69]" />
-              </Link>
-            )}
-            {openReturns.length === 0 && lowStock.length === 0 && !upcoming && (
+            {!alertsLoading && openReturns.length === 0 && lowStock.length === 0 && (
               <p className="text-caption text-[#7CB518] font-bold text-center py-4">All clear — nothing needs action 🎉</p>
             )}
           </div>
           </div>
         </Reveal>
       </div>
-
-      {/* Sale engine status */}
-      <Reveal>
-        <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
-            <Zap className="h-4 w-4 text-[#FF9800]" /> Sale engine
-          </h2>
-          <Link href="/admin/sales" className="flex items-center gap-1 text-caption font-bold text-[#2D1B69] hover:underline">
-            Manage sales <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-        {activeSale ? (
-          <div className="mt-3 rounded-xl bg-[#F0F9E8] border border-[#7CB518]/30 px-4 py-3 flex items-center gap-3">
-            <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-60" /><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#7CB518]" /></span>
-            <div>
-              <p className="text-body-sm font-extrabold text-[#150726]">{activeSale.name} is LIVE — {onSaleCount} products discounted</p>
-              <p className="text-micro text-[#6B5B83]">Ends {new Date(activeSale.endAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · prices revert automatically</p>
-            </div>
-          </div>
-        ) : upcoming ? (
-          <div className="mt-3 rounded-xl bg-[#FFFBF5] border border-[#FF9800]/30 px-4 py-3">
-            <p className="text-body-sm font-bold text-[#150726]">{upcoming.name} scheduled</p>
-            <p className="text-micro text-[#6B5B83]">Starts {new Date(upcoming.startAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
-          </div>
-        ) : (
-          <div className="mt-3 rounded-xl bg-[#F7F4FC] border border-[#DDD6EE] px-4 py-3 flex items-center justify-between">
-            <p className="text-caption text-[#6B5B83]">No sale live. Create one to announce discounts store-wide like Blinkit/Zepto.</p>
-            <Link href="/admin/sales" className="px-3 py-1.5 rounded-lg bg-[#E91E63] text-white text-micro font-bold hover:bg-[#C2185B]">Create sale</Link>
-          </div>
-        )}
-        </div>
-      </Reveal>
 
       {/* Push announcements */}
       <Reveal>
@@ -441,8 +420,8 @@ export default function AdminDashboard() {
         </div>
       </Reveal>
 
-      {/* Recent activity */}
-      {activity.length > 0 && (
+      {/* Recent activity — straight from the server audit trail */}
+      {auditPage && auditPage.logs.length > 0 && (
         <Reveal>
           <div className="mt-4 rounded-2xl border border-[#DDD6EE] bg-white p-5">
           <div className="flex items-center justify-between">
@@ -454,11 +433,11 @@ export default function AdminDashboard() {
             </Link>
           </div>
           <div className="mt-2 divide-y divide-[#F0ECF9]">
-            {activity.slice(0, 5).map((a) => (
+            {auditPage.logs.slice(0, 5).map((a) => (
               <div key={a.id} className="py-2 flex items-center justify-between gap-3">
-                <p className="text-caption font-semibold text-[#150726] truncate">{a.summary}</p>
+                <p className="text-caption font-semibold text-[#150726] truncate">{a.action} · {a.entity_type} {a.entity_id}</p>
                 <span className="text-tiny text-[#9B8CB5] whitespace-nowrap tabular-nums">
-                  {new Date(a.at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  {new Date(a.created_at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </span>
               </div>
             ))}

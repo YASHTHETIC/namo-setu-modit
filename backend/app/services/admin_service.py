@@ -261,15 +261,24 @@ class AdminService:
             ))
         return items
 
-    async def list_users(self, page: int = 1, page_size: int = 20) -> list[User]:
+    async def list_users(
+        self, page: int = 1, page_size: int = 20, search: str | None = None
+    ) -> list[User]:
+        query = select(User).options(selectinload(User.roles))
+        if search:
+            needle = f"%{search.strip()}%"
+            query = query.where(User.email.ilike(needle) | User.full_name.ilike(needle))
         result = await self.db.execute(
-            select(User)
-            .options(selectinload(User.roles))
-            .order_by(User.created_at.desc())
-            .offset((page - 1) * page_size)
-            .limit(page_size)
+            query.order_by(User.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
         )
         return list(result.scalars().all())
+
+    async def count_users(self, search: str | None = None) -> int:
+        query = select(func.count(User.id))
+        if search:
+            needle = f"%{search.strip()}%"
+            query = query.where(User.email.ilike(needle) | User.full_name.ilike(needle))
+        return (await self.db.execute(query)).scalar_one() or 0
 
     async def get_user_detail(self, user_id: str) -> User:
         result = await self.db.execute(

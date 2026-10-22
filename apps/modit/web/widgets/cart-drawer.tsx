@@ -6,6 +6,7 @@ import { ShoppingCart, Trash2, Timer, Share2, ArrowLeft } from "lucide-react";
 
 import { useCartStore } from "@/lib/cart-store";
 import { useCouponStore } from "@/lib/coupon-store";
+import { useServerCoupons } from "@/lib/modit-api";
 import { useDeliveryStore } from "@/lib/delivery-store";
 import { useCartUi } from "@/lib/cart-ui";
 import { computeBill } from "@/lib/bill";
@@ -30,6 +31,15 @@ export function CartDrawer() {
   const getSlot = useDeliveryStore((s) => s.getSelected);
   const loggedIn = useAuthReady();
   const toast = useToast();
+
+  // Coupons come from the server (same rows checkout validates) — hydrate
+  // when the drawer opens so the bill preview matches checkout.
+  const serverCoupons = useServerCoupons();
+  useEffect(() => {
+    if (serverCoupons.data && (serverCoupons.data as unknown[]).length) {
+      useCouponStore.getState().hydrateFromServer(serverCoupons.data as unknown as Array<Record<string, unknown>>);
+    }
+  }, [serverCoupons.data, open]);
 
   const shareCart = async () => {
     const bill = computeBill();
