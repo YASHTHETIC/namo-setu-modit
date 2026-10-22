@@ -235,6 +235,74 @@ async def build_home_layout(
     )
 
 
+# ── Fallback Builder (used by the endpoint when the DB path fails) ──
+
+def build_fallback_layout(
+    pincode: str = "201301",
+    user_segment: str = "all",
+) -> LayoutResponse:
+    """Static-only home layout — zero DB access.
+
+    Same graceful-degradation contract as the Redis circuit breaker: if the
+    catalog queries are unavailable, shoppers still get a complete, valid
+    layout instead of a 500.
+    """
+    now = datetime.now(timezone.utc)
+    sections: list[Section] = [
+        Section(
+            type=SectionType.DELIVERY_BAR,
+            id="delivery_bar_001",
+            order=0,
+            data=DeliveryBarData(
+                eta_minutes=60,
+                pincode=pincode,
+                city="New Delhi",
+                is_serviceable=True,
+            ).model_dump(),
+        ),
+        Section(
+            type=SectionType.ASSURED_STRIP,
+            id="assured_strip_001",
+            order=1,
+            data=AssuredStripData(
+                title="Modit Assured",
+                features=ASSURED_FEATURES,
+            ).model_dump(),
+        ),
+        Section(
+            type=SectionType.CATEGORY_GRID,
+            id="category_grid_001",
+            order=2,
+            data=CategoryGridData(
+                categories=_get_fallback_categories(),
+                columns=4,
+            ).model_dump(),
+        ),
+        Section(
+            type=SectionType.PRODUCT_CAROUSEL,
+            id="product_carousel_001",
+            order=3,
+            data=ProductCarouselData(
+                title="Trending Now",
+                products=_get_fallback_products(),
+            ).model_dump(),
+        ),
+    ]
+    return LayoutResponse(
+        version="1.0",
+        screen="home",
+        meta=LayoutMeta(
+            pincode=pincode,
+            city="New Delhi",
+            eta="60 mins",
+            store_id=None,
+            is_serviceable=True,
+            user_segment=user_segment,
+        ),
+        sections=sections,
+    )
+
+
 # ── Helpers ────────────────────────────────────────────────────────
 
 def _product_to_summary(p: Product) -> ProductSummary:
