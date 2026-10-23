@@ -1,4 +1,4 @@
-const CACHE_NAME = "modit-v4";
+const CACHE_NAME = "modit-v5";
 const STATIC_ASSETS = [
   "/",
   "/products",
