@@ -67,7 +67,7 @@ def upgrade() -> None:
             "discount_value": value,
             "max_discount": max_disc,
             "min_order": min_order,
-            "valid_till": till,
+            "valid_till": datetime.strptime(till, "%Y-%m-%d").date(),
             "usage_limit": usage_limit,
             "used_count": 0,
             "category": category,

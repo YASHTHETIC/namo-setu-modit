@@ -247,8 +247,8 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
             {"name": item["unit"], "is_active": True},
         )
         brand, _ = await _get_or_create(
-            session, Brand, {"name": item["brand"]},
-            {"slug": item["brand_slug"], "is_active": True},
+            session, Brand, {"slug": item["brand_slug"]},
+            {"name": item["brand"], "is_active": True},
         )
         category, _ = await _get_or_create(
             session, Category, {"slug": item["category_slug"]},
