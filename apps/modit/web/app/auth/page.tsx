@@ -75,7 +75,7 @@ function LoginForm() {
   });
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex pb-[calc(var(--chrome-nav)+16px)]">
       {/* Left panel — brand */}
       <div className="hidden lg:flex lg:w-[480px] relative overflow-hidden flex-col justify-between p-10"
         style={{ background: "linear-gradient(160deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>

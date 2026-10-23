@@ -102,6 +102,40 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ═══════════════════════════════════════════════
+   DEVICE-CLASS CHROME STACK — one source for every fixed bar/bubble offset.
+   Android/iOS phones differ in gesture-bar height, notches and browser
+   chrome; fixed px values (bottom-[76px] etc.) overlapped the tab bar on
+   larger devices. All floating chrome now measures against:
+     --chrome-nav    top edge of the bottom tab bar (nav + stable gesture inset)
+     --chrome-bar    band of docked action bars (view-cart / buy / pay)
+     --chrome-stack  floating secondary bands stacked above that (compare bar)
+   Stable inset (safe-area-max-inset-bottom) prevents the Chrome Android
+   edge-to-edge chin from animating these bars every scroll (perf guidance).
+   ═══════════════════════════════════════════════ */
+:root {
+  --nav-h: 56px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-max-b: env(safe-area-max-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --chrome-nav: calc(var(--nav-h) + var(--safe-max-b));
+  --chrome-bar: calc(var(--chrome-nav) + 20px);
+  --chrome-stack: calc(var(--chrome-bar) + 64px);
+  --chrome-top: calc(var(--chrome-bar) + 140px);
+}
+
+/* Docked action band (view-cart bar, product buy bar, checkout pay bar) */
+.dock-bar { bottom: calc(var(--chrome-nav) + 20px); }
+
+/* Floating secondary bands stacked above a docked bar */
+.dock-compare { bottom: var(--chrome-stack); }
+
+/* Support chat positions */
+.dock-bubble { bottom: calc(var(--chrome-bar) + 4px); }
+.dock-bubble-docked { bottom: calc(var(--chrome-bar) + 84px); }
+.dock-chat { bottom: calc(var(--chrome-bar) + 68px); }
+.dock-chat-open { bottom: var(--chrome-top); }
+
 
 
 
@@ -404,7 +438,7 @@ img { display: block; max-width: 100%; }
 /* Cart toast notification */
 .cart-toast {
   position: fixed;
-  bottom: 140px;
+  bottom: calc(var(--chrome-stack) + 0px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
@@ -477,7 +511,7 @@ img { display: block; max-width: 100%; }
 /* Sticky cart bar — floating premium card docked above the bottom nav */
 .sticky-cart-bar {
   position: fixed;
-  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  bottom: var(--chrome-bar);
   left: 12px;
   right: 12px;
   z-index: 40;
@@ -1125,6 +1159,10 @@ input:focus:not(:focus-visible) {
   background: linear-gradient(90deg, #150726 0%, #1E1245 50%, #150726 100%);
   position: relative;
   overflow: hidden;
+  /* Notched/gesture devices paint edge-to-edge (viewport-fit=cover): keep the
+     announcement text clear of the status bar without changing its look. */
+  padding-top: calc(8px + var(--safe-t));
+  padding-bottom: 8px;
 }
 
 
@@ -1903,7 +1941,7 @@ button { touch-action: manipulation; }
 
 
 .market-container {
-  width: min(1600px, calc(100vw - 2rem));
+  width: min(1600px, calc(100% - 2rem));
   margin-inline: auto;
 }
 

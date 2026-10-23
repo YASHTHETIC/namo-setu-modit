@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
   });
 
   return (
-    <div className="fx-page min-h-screen flex">
+    <div className="fx-page min-h-screen flex pb-[calc(var(--chrome-nav)+16px)]">
       <div className="hidden lg:flex lg:w-[480px] relative overflow-hidden flex-col justify-between p-10"
         style={{ background: "linear-gradient(160deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
         <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 30% 70%, rgba(124,181,24,0.4), transparent 50%), radial-gradient(circle at 80% 20%, rgba(233,30,99,0.3), transparent 50%)" }} />

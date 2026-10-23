@@ -58,13 +58,13 @@ export function SupportChat() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Support chat"
-        className={`fixed right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#2D1B69] text-white shadow-lg transition-all hover:scale-105 ${docked ? "bottom-40" : "bottom-20"}`}
+        className={`fixed right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#2D1B69] text-white shadow-lg transition-all hover:scale-105 ${docked ? "dock-bubble-docked" : "dock-bubble"}`}
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
       </button>
 
       {open && (
-        <div className={`fixed right-4 z-50 flex h-[420px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-[#DDD6EE] bg-white shadow-2xl transition-all ${docked ? "bottom-[216px]" : "bottom-36"}`}>
+        <div className={`fixed right-4 z-50 flex h-[420px] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-[#DDD6EE] bg-white shadow-2xl transition-all ${docked ? "dock-chat-open" : "dock-chat"}`}>
           <div className="flex items-center gap-2 bg-[#2D1B69] px-4 py-3 text-white">
             {activeId && (
               <button onClick={() => setActiveId(null)} aria-label="Back to threads">

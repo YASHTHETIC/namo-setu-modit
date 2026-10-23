@@ -78,7 +78,7 @@ export default function CartPage() {
             <Link href="/" aria-label="Back to home" className="text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <h1 className="text-body-lg font-bold text-white">Shopping Cart</h1>
+            <h2 className="text-body-lg font-bold text-white">Shopping Cart</h2>
           </div>
         </header>
 
@@ -123,7 +123,7 @@ export default function CartPage() {
           <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <h1 className="text-body-lg font-bold text-white flex-1">Shopping Cart</h1>
+          <h2 className="text-body-lg font-bold text-white flex-1">Shopping Cart</h2>
           <button onClick={clearCart} className="text-caption font-semibold text-[#E91E63] hover:text-[#C2185B] transition-colors">
             Clear Cart
           </button>
@@ -426,7 +426,7 @@ export default function CartPage() {
         </div>
 
         {/* Mobile sticky total — clears the support-chat gutter on the right */}
-        <div className="lg:hidden sticky bottom-[76px] z-40 ml-4 mr-20 mb-4">
+        <div className="dock-bar lg:hidden sticky z-40 ml-4 mr-20 mb-4">
           <div className="flex items-center gap-3 rounded-2xl bg-[#150726] pl-4 pr-2 py-2 shadow-xl">
             <div className="flex-1 min-w-0">
               <p className="text-tiny text-white/50">Total</p>

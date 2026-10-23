@@ -49,6 +49,13 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
+  // Search Console ownership proof (optional): build with
+  // NEXT_PUBLIC_GSC_VERIFICATION=<value-from-search-console> and the meta tag
+  // ships to <head>. DNS TXT verification (recommended path, see
+  // SEO-LAUNCH-STEPS) needs no rebuild.
+  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } }
+    : {}),
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -65,6 +72,12 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   userScalable: true,
+  // Edge-to-edge: viewport spans under Android's gesture bar / iOS home
+  // indicator, and every fixed bar reads env(safe-area-inset-*) instead of
+  // assuming a fixed device chin. Keyboard shrinks the layout viewport so
+  // fixed bottom bars (checkout pay CTA) rise above the keyboard.
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -9,7 +9,7 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, Receipt, ShieldCheck
+  BadgeCheck, Undo2, ReceiptIndianRupee, ShieldCheck
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { ModitLogo } from "@/components/modit-logo";
@@ -191,7 +191,7 @@ export default function ModitHomePage() {
 
       {/* ═══ HEADER — mobile: one row (menu · logo · search · cart).
            sm+: menu + logo + cart with the full search row below. ═══ */}
-      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
           <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)}>
             <Menu className="h-5 w-5" />
@@ -297,7 +297,7 @@ export default function ModitHomePage() {
             {[
               { icon: Undo2, title: "7-Day Returns", tint: "#7CB518" },
               { icon: Truck, title: "Free Delivery", tint: "#00BCD4" },
-              { icon: Receipt, title: "GST Invoice", tint: "#E91E63" },
+              { icon: ReceiptIndianRupee, title: "GST Invoice", tint: "#E91E63" },
               { icon: BadgeCheck, title: "Genuine Products", tint: "#2D1B69" },
             ].map((t) => (
               <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 text-center">
@@ -317,7 +317,7 @@ export default function ModitHomePage() {
             {[
               { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518" },
               { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4" },
-              { icon: Receipt, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
+              { icon: ReceiptIndianRupee, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
               { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
             ].map((t) => (
               <div key={t.title} className="flex flex-col items-center gap-1.5 px-1 text-center">
@@ -676,14 +676,14 @@ export default function ModitHomePage() {
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
         className={`fixed z-40 left-4 hidden sm:flex bg-[#150726] text-white p-3 rounded-full shadow-xl shadow-purple-900/30 transition-all duration-300 hover:scale-110 active:scale-95 ${
-          showBackToTop ? "bottom-[150px] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
+          showBackToTop ? "bottom-[var(--chrome-stack)] opacity-100 translate-y-0" : "bottom-24 opacity-0 translate-y-4 pointer-events-none"
         }`}
       >
         <ChevronUp className="h-5 w-5" />
       </button>
 
       {/* ═══ BOTTOM NAV ═══ */}
-      <SiteFooter className="pb-24 lg:pb-8" />
+      <SiteFooter className="pb-[calc(var(--chrome-nav)+20px)] lg:pb-8" />
       <PushNotificationPrompt />
       <PwaInstallPrompt />
       <ComparisonBar />

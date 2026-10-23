@@ -163,12 +163,12 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="app-shell min-h-screen">
-      {/* Announcement bar */}
-      <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center py-2 text-xs font-bold tracking-wide">
+      {/* Announcement bar (announce-bar CSS owns vertical padding + notch inset) */}
+      <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center text-xs font-bold tracking-wide">
         Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
       </div>
 
-      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.35)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, rgba(11,3,24,0.92) 0%, rgba(21,7,38,0.88) 55%, rgba(30,18,69,0.9) 130%)' }}>
+      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.35)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, rgba(11,3,24,0.92) 0%, rgba(21,7,38,0.88) 55%, rgba(30,18,69,0.9) 130%)', paddingTop: "var(--safe-t)" }}>
         <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
           <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
             <ModitLogo light className="h-[36px] sm:h-[42px] w-auto" />
@@ -554,7 +554,9 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
         </div>
       )}
 
-      <main className="fx-page market-container min-h-[60vh] py-6 pb-20 lg:pb-8">{children}</main>
+      {/* Content clearance derives from the chrome stack: tab bar + stable
+          gesture-nav inset — 3-button Android nav no longer swallows content. */}
+      <main className="fx-page market-container min-h-[60vh] py-6 pb-[calc(var(--chrome-nav)+20px)] lg:pb-8">{children}</main>
 
       <SiteFooter />
 
