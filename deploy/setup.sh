@@ -294,10 +294,19 @@ echo "  modit-api (uvicorn :8000, 2 workers), modit-web (next :3001)"
 # ---------------------------------------------------------------------------
 stage "Nginx"
 if [ -n "$DOMAIN" ]; then
+  # Canonical host block: www always redirects to the apex (301) so one URL
+  # per page is served. HTTPS on the main block below is added by certbot;
+  # this redirect must run BEFORE that block so both hosts resolve there.
   cat > /etc/nginx/sites-available/modit <<EOF
 server {
     listen 80;
-    server_name ${DOMAIN} www.${DOMAIN};
+    server_name www.${DOMAIN};
+    server_tokens off;
+    return 301 https://${DOMAIN}\$request_uri;
+}
+server {
+    listen 80;
+    server_name ${DOMAIN};
     server_tokens off;
     client_max_body_size 20m;
     add_header X-Content-Type-Options "nosniff" always;

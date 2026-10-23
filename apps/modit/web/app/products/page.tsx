@@ -39,7 +39,20 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     title,
     description,
     alternates: { canonical: "/products" },
-    openGraph: { title, description, url: "/products", siteName: "MODIT", locale: "en_IN" },
+    openGraph: {
+      title,
+      description,
+      url: "/products",
+      siteName: "MODIT",
+      locale: "en_IN",
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "MODIT — construction materials delivered" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
   };
 }
 

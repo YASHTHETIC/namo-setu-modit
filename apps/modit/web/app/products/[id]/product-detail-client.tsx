@@ -39,7 +39,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useCartStore } from "@/lib/cart-store";
-import { productLink, safeJsonLd } from "@/lib/utils";
+import { productLink } from "@/lib/utils";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -212,37 +212,9 @@ export default function ProductDetailPage({
 
   return (
     <div className="fx-page mx-auto max-w-[1400px] px-4 py-4 sm:px-6 pb-[152px] lg:pb-4">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: safeJsonLd({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            name: product.name,
-            image: (product.images || []).map((src: string) =>
-              src.startsWith("http") ? src : `https://modit.in${src.startsWith("/") ? "" : "/"}${src}`
-            ),
-            description: product.shortDescription || product.description,
-            sku: product.sku,
-            brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "INR",
-              price: displayPrice,
-              availability: displayStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            },
-            ...(product.reviewCount > 0
-              ? {
-                  aggregateRating: {
-                    "@type": "AggregateRating",
-                    ratingValue: product.rating,
-                    reviewCount: product.reviewCount,
-                  },
-                }
-              : {}),
-          }),
-        }}
-      />
+      {/* Product + BreadcrumbList JSON-LD is rendered by the server page — a
+          second client-side copy on the same URL would emit two conflicting
+          Product nodes to search engines. */}
       {/* Breadcrumb */}
       <nav className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)] overflow-x-auto scrollbar-hide pb-1">
         <Link href="/" className="hover:text-[var(--brand)] whitespace-nowrap">Home</Link>
@@ -772,7 +744,7 @@ export default function ProductDetailPage({
       </div>
 
       {/* Mobile sticky add-to-cart bar — docks above the bottom nav (64px + 12px gap) */}
-      <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white border-t border-[var(--border)] px-4 py-2.5 flex items-center gap-3 lg:hidden shadow-[0_-4px_16px_rgba(26,10,51,0.08)]">
+      <div className="dock-bar fixed left-0 right-0 z-40 bg-white border-t border-[var(--border)] px-4 py-2.5 flex items-center gap-3 lg:hidden shadow-[0_-4px_16px_rgba(26,10,51,0.08)]">
         <div className="flex-1">
           <p className="text-micro text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
           <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>

@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { products } from "@/lib/product-data";
+import { getSeoProduct } from "@/lib/seo-product";
 import { safeJsonLd } from "@/lib/utils";
 
 import ProductDetailClient from "./product-detail-client";
 
 type PageProps = { params: Promise<{ id: string }> };
 
-function findBySlugOrId(idOrSlug: string) {
-  return products.find((p) => p.id === idOrSlug || p.slug === idOrSlug);
-}
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://modit.in";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const p = findBySlugOrId(id);
+  const p = await getSeoProduct(id);
   if (!p) {
-    return { title: "Product not found" };
+    return { title: "Product not found", robots: { index: false, follow: true } };
   }
   const description = (p.shortDescription || p.description || "").slice(0, 160);
   const url = `/products/${p.slug || p.id}`;
+  // Price display = price charged (checkout re-validates against the DB).
   const ogImage = p.images[0];
   return {
     title: p.name,
@@ -31,20 +31,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: "MODIT",
       locale: "en_IN",
       type: "website",
-      ...(ogImage ? { images: [{ url: ogImage, width: 600, height: 600, alt: p.name }] } : {}),
+      ...(ogImage ? { images: [{ url: ogImage, width: 600, height: 600, alt: p.name }] } : { images: ["https://modit.in/og-image.png"] }),
     },
     twitter: {
       card: "summary_large_image",
       title: p.name,
       description,
-      ...(ogImage ? { images: [ogImage] } : {}),
+      ...(ogImage ? { images: [ogImage] } : { images: ["https://modit.in/og-image.png"] }),
     },
   };
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const p = findBySlugOrId(id);
+  const p = await getSeoProduct(id);
+  if (!p) notFound();
+
+  const productUrl = `${SITE_URL}/products/${p.slug || p.id}`;
+  const productImages = p.images.slice(0, 5).map((src) =>
+    src.startsWith("http") ? src : `${SITE_URL}${src.startsWith("/") ? "" : "/"}${src}`
+  );
   const jsonLd = p
     ? {
         "@context": "https://schema.org",
@@ -52,7 +58,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         name: p.name,
         description: p.shortDescription || p.description,
         sku: p.sku,
-        image: p.images.slice(0, 3),
+        ...(productImages.length ? { image: productImages } : {}),
         category: p.category,
         ...(p.brand ? { brand: { "@type": "Brand", name: p.brand } } : {}),
         ...(p.reviewCount > 0 && p.rating > 0
@@ -66,13 +72,33 @@ export default async function ProductDetailPage({ params }: PageProps) {
           : {}),
         offers: {
           "@type": "Offer",
-          url: `https://modit.in/products/${p.slug || p.id}`,
+          url: productUrl,
           priceCurrency: "INR",
           price: String(p.price),
           availability: p.inStock
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
+          itemCondition: "https://schema.org/NewCondition",
         },
+      }
+    : null;
+
+  const breadcrumbLd = p
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: p.category,
+            item: p.categorySlug
+              ? `${SITE_URL}/products?category=${p.categorySlug}`
+              : `${SITE_URL}/products`,
+          },
+          { "@type": "ListItem", position: 3, name: p.name, item: productUrl },
+        ],
       }
     : null;
 
@@ -82,6 +108,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+        />
+      )}
+      {breadcrumbLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbLd) }}
         />
       )}
       <ProductDetailClient params={params} />
