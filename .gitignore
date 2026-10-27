@@ -64,6 +64,9 @@ storage/
 start-backend.py
 start-modit.py
 
+# Local E2E test artifacts (scripts/local-e2e-server.py)
+.local-test/
+
 # Local launch docs (never ship)
 *.pdf
 
