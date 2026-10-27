@@ -66,7 +66,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#150726]">Categories <Link href="/products" className="ml-1 text-xs font-semibold text-[#5A8010] hover:underline">see all</Link></h4>
+              <h4 className="text-sm font-bold text-[#150726]">Categories</h4>
               <ul className="mt-4 space-y-2 text-sm text-[#6B5B83]">
                 <li><Link href="/products?category=cement" className="transition-colors hover:text-[#2D1B69]">Cement</Link></li>
                 <li><Link href="/products?category=painting" className="transition-colors hover:text-[#2D1B69]">Paints</Link></li>
