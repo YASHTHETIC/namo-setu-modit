@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 import HomeClient from "@/components/home-client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // Homepage metadata lives here (server component) because the page tree is a
 // client component: "/" is the money URL and must carry an explicit canonical
 // (root layout deliberately does not set one — it would leak onto every page).
