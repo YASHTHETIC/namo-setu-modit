@@ -178,7 +178,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             <LocationMenu />
           </div>
 
-          <div className="hidden flex-1 items-center xl:flex">
+          <div className="hidden flex-1 items-center lg:flex">
             <div ref={searchRef} className="relative w-full">
               <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[0_4px_16px_rgba(0,0,0,0.35)] ring-1 ring-white/10 transition-shadow focus-within:shadow-[var(--shadow-md)]">
                 <input
