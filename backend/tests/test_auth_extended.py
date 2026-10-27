@@ -18,7 +18,7 @@ def test_verify_email(client):
 
 def test_google_login(client):
     response = client.post("/api/v1/auth/google", json={"id_token": "fake_token"})
-    assert response.status_code in (200, 401, 422, 500)
+    assert response.status_code == 501
 
 
 def test_sessions_requires_auth(client):

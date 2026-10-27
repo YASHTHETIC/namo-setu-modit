@@ -439,15 +439,6 @@ def test_create_purchase_order_outside_org_blocked(client, buyer_only):
     assert response.status_code == 404
 
 
-def test_smart_reorder_other_org_blocked(client, buyer_only):
-    response = client.post(
-        "/api/v1/modit/ai/smart-reorder",
-        json={"organization_id": "org-other"},
-        headers=_auth_headers(),
-    )
-    assert response.status_code == 403
-
-
 def test_healthz_never_leaks_driver_text(client):
     response = client.get("/api/v1/healthz")
     assert response.status_code in (200, 503)

@@ -19,7 +19,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from backend.app.models.base import BaseModel
 from backend.app.models.enums import (
-    AIMessageRole,
     AddressOwnerType,
     AddressType,
     AnalyticsEventType,
@@ -216,47 +215,6 @@ class Notification(BaseModel):
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     user = relationship("User", back_populates="notifications")
-
-
-class AISession(BaseModel):
-    __tablename__ = "ai_sessions"
-    __table_args__ = (Index("ix_ai_sessions_user_product", "user_id", "product_code"),)
-
-    product_code: Mapped[str] = mapped_column(String(20), nullable=False)
-    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    provider: Mapped[str] = mapped_column(String(50), nullable=False)
-    model_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    system_prompt: Mapped[str | None] = mapped_column(Text, nullable=True)
-    context_json: Mapped[str | None] = mapped_column(Text, nullable=True)
-    token_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-
-    user = relationship("User", back_populates="ai_sessions")
-    chats = relationship("AIChat", back_populates="session", cascade="all, delete-orphan")
-
-
-class AIChat(BaseModel):
-    __tablename__ = "ai_chats"
-    __table_args__ = (Index("ix_ai_chats_session_created", "session_id", "created_at"),)
-
-    session_id: Mapped[str] = mapped_column(ForeignKey("ai_sessions.id", ondelete="CASCADE"), nullable=False)
-    title: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    topic: Mapped[str | None] = mapped_column(String(255), nullable=True)
-
-    session = relationship("AISession", back_populates="chats")
-    messages = relationship("AIMessage", back_populates="chat", cascade="all, delete-orphan")
-
-
-class AIMessage(BaseModel):
-    __tablename__ = "ai_messages"
-    __table_args__ = (Index("ix_ai_messages_chat_created", "chat_id", "created_at"),)
-
-    chat_id: Mapped[str] = mapped_column(ForeignKey("ai_chats.id", ondelete="CASCADE"), nullable=False)
-    role: Mapped[str] = mapped_column(String(20), nullable=False)
-    content: Mapped[str] = mapped_column(Text, nullable=False)
-    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
-    token_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-
-    chat = relationship("AIChat", back_populates="messages")
 
 
 class SearchHistory(BaseModel):

@@ -223,95 +223,15 @@ async def send_verification(
 
 
 # ---------------------------------------------------------------------------
-# Google OAuth (simulated)
+# Google OAuth (removed — the simulated id_token flow could mint sessions
+# from client-supplied tokens; real Google OAuth must verify the JWK set)
 # ---------------------------------------------------------------------------
 
 @router.post("/google", response_model=TokenResponse)
-async def google_login(
-    payload: GoogleLoginRequest,
-    db: AsyncSession = Depends(get_db),
-    request: Request = None,
-) -> TokenResponse:
-    ip, ua = _get_session_info(request) if request else (None, None)
-
-    try:
-        claims = decode_token(payload.id_token)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Google token")
-
-    email = claims.get("email")
-    if not email:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not found in token")
-
-    result = await db.execute(
-        select(User)
-        .options(selectinload(User.roles), selectinload(User.profile), selectinload(User.sessions))
-        .where(User.email == email.lower())
-    )
-    user = result.scalar_one_or_none()
-
-    if user is None:
-        from backend.app.core.rbac import RoleName
-        from backend.app.models.user import Role
-
-        user = User(
-            email=email.lower(),
-            full_name=claims.get("name"),
-            hashed_password=hash_password(secrets.token_urlsafe(32)),
-            is_active=True,
-            is_verified=True,
-            email_verified_at=datetime.now(timezone.utc),
-        )
-        role_result = await db.execute(select(Role).where(Role.name == RoleName.USER.value))
-        role = role_result.scalar_one_or_none()
-        if role is None:
-            role = Role(name=RoleName.USER.value, description="User")
-            db.add(role)
-            await db.flush()
-        user.roles.append(role)
-        db.add(user)
-        await db.commit()
-        user = await db.execute(
-            select(User)
-            .options(selectinload(User.roles), selectinload(User.profile), selectinload(User.sessions))
-            .where(User.id == user.id)
-        )
-        user = user.scalar_one()
-
-    session_id = uuid4().hex
-    access_token = create_access_token(subject=user.id, extra_claims={"roles": [r.name for r in user.roles]})
-    refresh_token = create_refresh_token(
-        subject=user.id,
-        extra_claims={"roles": [r.name for r in user.roles], "sid": session_id},
-    )
-
-    db.add(
-        UserSession(
-            user_id=user.id,
-            session_token=session_id,
-            refresh_token_hash=hash_token(refresh_token),
-            ip_address=ip,
-            user_agent=ua,
-            expires_at=datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days),
-            is_revoked=False,
-        )
-    )
-    user.last_login_at = datetime.now(timezone.utc)
-
-    db.add(
-        RefreshToken(
-            user_id=user.id,
-            token_hash=hash_token(refresh_token),
-            expires_at=datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days),
-            revoked=False,
-        )
-    )
-    await db.commit()
-
-    return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token,
-        user=UserRead.model_validate(user),
+async def google_login() -> TokenResponse:
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Google sign-in is not available yet. Use phone OTP or email login.",
     )
 
 

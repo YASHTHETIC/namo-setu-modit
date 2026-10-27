@@ -80,22 +80,13 @@ def test_analytics_summary(client):
     assert response.status_code == 401
 
 
-def test_ai_material_recommendation(client):
-    """Test AI material recommendation."""
+def test_ai_endpoints_removed(client):
+    """The temple-era AI endpoints were removed — routes must not exist."""
     response = client.post(
         "/api/v1/modit/ai/material-recommendation",
         json={"project_type": "residential", "budget": 1000000, "requirements": "Cement and steel"},
     )
-    assert response.status_code == 401
-
-
-def test_ai_procurement_assistant(client):
-    """Test AI procurement assistant."""
-    response = client.post(
-        "/api/v1/modit/ai/procurement-assistant",
-        json={"message": "What materials do I need for a residential project?"},
-    )
-    assert response.status_code == 401
+    assert response.status_code == 404
 
 
 def test_seed_catalog_requires_staff(client):

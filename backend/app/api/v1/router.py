@@ -1,5 +1,5 @@
 from backend.app.api.base import BaseAPIRouter
-from backend.app.api.v1 import admin, admin_extended, ai, analytics, audit, auth, auth_extended, identity, layout, media, modit, notifications, organizations, payments, reviews, maps, search, security, supplier
+from backend.app.api.v1 import admin, admin_extended, analytics, audit, auth, auth_extended, identity, layout, media, modit, notifications, organizations, payments, reviews, maps, search, security, supplier
 
 api_router = BaseAPIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
@@ -13,7 +13,6 @@ api_router.include_router(audit.router, tags=["audit"])
 api_router.include_router(admin.router, tags=["admin"])
 api_router.include_router(admin_extended.router, tags=["admin-extended"])
 api_router.include_router(security.router, tags=["security"])
-api_router.include_router(ai.router)
 api_router.include_router(analytics.router, tags=["analytics"])
 api_router.include_router(modit.router)
 api_router.include_router(supplier.router)

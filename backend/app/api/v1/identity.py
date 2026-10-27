@@ -265,7 +265,7 @@ async def request_password_reset(payload: PasswordResetRequest, db: AsyncSession
         )
         db.add(reset_row)
         await db.commit()
-    return StandardResponse(message="If the account exists, a reset link has been generated.", data=token if settings.environment != "production" else "accepted")
+    return StandardResponse(message="If the account exists, a reset link has been generated.", data="accepted")
 
 
 @router.post("/users/password/reset/confirm", response_model=StandardResponse[str])

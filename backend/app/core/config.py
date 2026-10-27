@@ -36,13 +36,6 @@ class Settings(BaseSettings):
     # which rejects plain "a,b,c" env values before validators run. Skip the
     # source decoding; parse_cors_origins below handles str -> list.
     backend_cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:3000"])
-    openai_api_key: str | None = None
-    langchain_tracing_v2: bool = False
-    langchain_api_key: str | None = None
-    chroma_db_path: str = "/data/chroma"
-    faiss_index_path: str = "/data/faiss"
-    celery_broker_url: str = "redis://localhost:6379/1"
-    celery_result_backend: str = "redis://localhost:6379/2"
     smtp_host: str = "localhost"
     smtp_port: int = 587
     smtp_user: str = ""
@@ -71,7 +64,7 @@ class Settings(BaseSettings):
     def parse_cors_origins(cls, data: Any) -> Any:
         if isinstance(data, dict):
             import re as _re
-            for key in ("database_url", "redis_url", "celery_broker_url", "celery_result_backend"):
+            for key in ("database_url", "redis_url"):
                 val = data.get(key)
                 if isinstance(val, str):
                     val = _re.sub(r'[\r\n\t\x00-\x1f\x7f]+', '', val)

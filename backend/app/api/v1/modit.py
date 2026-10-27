@@ -53,17 +53,8 @@ from backend.app.models.shared import AnalyticsEvent
 from backend.app.models.user import User
 from backend.app.services.audit_service import create_audit_log
 from backend.app.schemas.modit import (
-    AIMaterialRecommendationRequest,
-    AIMaterialRecommendationResponse,
-    AIProcurementAssistantRequest,
-    AIProcurementAssistantResponse,
-    AIQuoteComparisonResponse,
-    AIVendorMatchingRequest,
-    AIVendorMatchingResponse,
     BOQItemCreate,
     BOQItemRead,
-    BOQReaderRequest,
-    BOQReaderResponse,
     BOQRead,
     BrandRead,
     CartCreate,
@@ -138,8 +129,6 @@ from backend.app.schemas.modit import (
     ReturnCreate,
     ReturnRead,
     ReturnStatusUpdate,
-    SmartReorderResponse,
-    SmartReorderRequest,
     SubCategoryCreate,
     SubCategoryRead,
     SubCategoryUpdate,
@@ -155,8 +144,6 @@ from backend.app.schemas.modit import (
     VendorRead,
     VehicleCreate,
     VehicleRead,
-    VoiceOrderRequest,
-    VoiceOrderResponse,
     WarehouseCreate,
     WarehouseRead,
 )
@@ -170,11 +157,6 @@ from backend.app.services.support import (
 )
 from backend.app.services.tracking import get_delivery_track, get_order_delivery, record_delivery_ping
 from backend.app.services.modit import (
-    ai_boq_reader,
-    ai_material_recommendation,
-    ai_procurement_assistant,
-    ai_quote_comparison,
-    ai_vendor_matching,
     analytics_summary,
     create_modit_notification,
     create_project,
@@ -187,10 +169,8 @@ from backend.app.services.modit import (
     project_to_detail,
     rfq_to_detail,
     search_products,
-    smart_reorder_suggestions,
     suggest_correction,
     track_analytics_event,
-    voice_order_processing,
 )
 from backend.app.services.checkout import (
     DEFAULT_GST_RATE,
@@ -216,7 +196,7 @@ async def _count(session: AsyncSession, stmt) -> int:
 
 @router.get("/products", response_model=ProductSearchResponse)
 async def list_products(
-    page: int = 1,
+    page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=200),
     search: str | None = None,
     category_id: str | None = None,
@@ -647,23 +627,35 @@ async def award_rfq(
 
 @router.get("/rfq/{rfq_id}", response_model=RFQDetailRead)
 async def get_rfq(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> RFQDetailRead:
-    """Get RFQ details (login required)."""
+    """Get RFQ details (owner or staff)."""
     rfq = await db.get(RFQ, rfq_id)
     if rfq is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can view it.")
     return await rfq_to_detail(db, rfq)
 
 
 @router.get("/rfq/{rfq_id}/quotations", response_model=list[QuotationRead])
 async def list_rfq_quotations(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[QuotationRead]:
-    """List quotations for an RFQ."""
+    """List quotations for an RFQ (owner or staff)."""
+    rfq = await db.get(RFQ, rfq_id)
+    if rfq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can view quotations.")
     result = await db.execute(select(Quotation).where(Quotation.rfq_id == rfq_id, Quotation.deleted_at.is_(None)).order_by(Quotation.grand_total.asc()))
     return [QuotationRead.model_validate(item) for item in result.scalars().all()]
 
 
 @router.post("/quotations", response_model=QuotationDetailRead, status_code=status.HTTP_201_CREATED)
 async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> QuotationDetailRead:
-    """Create a quotation."""
+    """Create a quotation (RFQ owner or staff)."""
+    rfq = await db.get(RFQ, payload.rfq_id)
+    if rfq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
+    if rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can add quotations.")
     quotation = Quotation(**payload.model_dump())
     db.add(quotation)
     await db.commit()
@@ -673,10 +665,13 @@ async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(
 
 @router.get("/quotations/{quotation_id}", response_model=QuotationDetailRead)
 async def get_quotation(quotation_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> QuotationDetailRead:
-    """Get quotation details."""
+    """Get quotation details (RFQ owner or staff)."""
     quotation = await db.get(Quotation, quotation_id)
     if quotation is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Quotation not found")
+    rfq = await db.get(RFQ, quotation.rfq_id)
+    if rfq is not None and rfq.requested_by_user_id != user.id and not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can view this quotation.")
     await db.refresh(quotation, ["items"])
     return QuotationDetailRead(
         **QuotationRead.model_validate(quotation).model_dump(),
@@ -1457,19 +1452,23 @@ async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Dep
 
 @router.get("/projects/{project_id}", response_model=ProjectDetailRead)
 async def get_project(project_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ProjectDetailRead:
-    """Get project details (login required)."""
+    """Get project details (org member or staff)."""
     project = await db.get(Project, project_id)
     if project is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
     return await project_to_detail(db, project)
 
 
 @router.patch("/projects/{project_id}", response_model=ProjectRead)
 async def update_project(project_id: str, payload: ProjectUpdate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Project:
-    """Update project."""
+    """Update project (org member or staff)."""
     project = await db.get(Project, project_id)
     if project is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
     for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(project, key, value)
     await db.commit()
@@ -1479,9 +1478,14 @@ async def update_project(project_id: str, payload: ProjectUpdate, db: AsyncSessi
 
 @router.post("/projects/{project_id}/sites", response_model=ConstructionSiteRead, status_code=status.HTTP_201_CREATED)
 async def create_construction_site(project_id: str, payload: ConstructionSiteCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> ConstructionSite:
-    """Create a construction site."""
+    """Create a construction site (org member or staff)."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    project = await db.get(Project, project_id)
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
     site = ConstructionSite(
         project_id=project_id,
         site_code=make_modit_reference("SITE"),
@@ -1495,7 +1499,12 @@ async def create_construction_site(project_id: str, payload: ConstructionSiteCre
 
 @router.get("/projects/{project_id}/material-requests", response_model=list[MaterialRequestRead])
 async def list_material_requests(project_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> list[MaterialRequest]:
-    """List material requests for a project (login required)."""
+    """List material requests for a project (org member or staff)."""
+    project = await db.get(Project, project_id)
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
     result = await db.execute(
         select(MaterialRequest).where(MaterialRequest.project_id == project_id, MaterialRequest.deleted_at.is_(None)).order_by(MaterialRequest.created_at.desc())
     )
@@ -1504,9 +1513,14 @@ async def list_material_requests(project_id: str, db: AsyncSession = Depends(get
 
 @router.post("/material-requests", response_model=MaterialRequestRead, status_code=status.HTTP_201_CREATED)
 async def create_material_request(payload: MaterialRequestCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> MaterialRequest:
-    """Create a material request."""
+    """Create a material request (org member or staff)."""
     from backend.app.services.modit import make_modit_reference
-    
+
+    project = await db.get(Project, payload.project_id)
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
     mr = MaterialRequest(
         project_id=payload.project_id,
         requested_by_user_id=user.id,
@@ -1539,58 +1553,6 @@ async def create_boq_item(boq_id: str, payload: BOQItemCreate, db: AsyncSession 
     await db.commit()
     await db.refresh(item)
     return BOQItemRead.model_validate(item)
-
-
-# =====================================================
-# 8. AI Features
-# =====================================================
-
-@router.post("/ai/material-recommendation", response_model=AIMaterialRecommendationResponse)
-async def ai_material_recommendation_endpoint(payload: AIMaterialRecommendationRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIMaterialRecommendationResponse:
-    """AI-powered material recommendation."""
-    return await ai_material_recommendation(db, payload.model_dump())
-
-
-@router.post("/ai/boq-reader", response_model=BOQReaderResponse)
-async def ai_boq_reader_endpoint(payload: BOQReaderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQReaderResponse:
-    """AI-powered BOQ document reader."""
-    return await ai_boq_reader(db, payload.file_url, payload.project_id)
-
-
-@router.post("/ai/quote-comparison", response_model=AIQuoteComparisonResponse)
-async def ai_quote_comparison_endpoint(rfq_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIQuoteComparisonResponse:
-    """AI-powered quotation comparison."""
-    return await ai_quote_comparison(db, rfq_id)
-
-
-@router.post("/ai/vendor-matching", response_model=AIVendorMatchingResponse)
-async def ai_vendor_matching_endpoint(payload: AIVendorMatchingRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIVendorMatchingResponse:
-    """AI-powered vendor matching."""
-    return await ai_vendor_matching(db, payload.model_dump())
-
-
-@router.post("/ai/procurement-assistant", response_model=AIProcurementAssistantResponse)
-async def ai_procurement_assistant_endpoint(payload: AIProcurementAssistantRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> AIProcurementAssistantResponse:
-    """AI-powered procurement assistant."""
-    return await ai_procurement_assistant(db, payload.message, payload.context)
-
-
-@router.post("/ai/voice-order", response_model=VoiceOrderResponse)
-async def ai_voice_order_endpoint(payload: VoiceOrderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> VoiceOrderResponse:
-    """AI-powered voice ordering."""
-    if payload.organization_id and not is_staff(user):
-        if payload.organization_id not in await _own_org_ids(db, user):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
-    return await voice_order_processing(db, payload.transcript, payload.organization_id)
-
-
-@router.post("/ai/smart-reorder", response_model=SmartReorderResponse)
-async def ai_smart_reorder_endpoint(payload: SmartReorderRequest, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> SmartReorderResponse:
-    """AI-powered smart reorder suggestions."""
-    if payload.organization_id and not is_staff(user):
-        if payload.organization_id not in await _own_org_ids(db, user):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
-    return await smart_reorder_suggestions(db, payload.organization_id, payload.warehouse_id)
 
 
 # =====================================================

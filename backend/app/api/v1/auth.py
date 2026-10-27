@@ -379,6 +379,9 @@ async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -
         revoked=False,
     )
     db.add(refresh_row)
+    # Rotation must retire the token it replaces — otherwise a stolen
+    # refresh token stays valid for its full 30-day lifetime.
+    stored_token.revoked = True
     if session_id:
         session_row.refresh_token_hash = hash_token(refresh_token)
         session_row.expires_at = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)

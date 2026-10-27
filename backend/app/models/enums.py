@@ -64,13 +64,6 @@ class NotificationStatus(StrEnum):
     FAILED = "failed"
 
 
-class AIMessageRole(StrEnum):
-    SYSTEM = "system"
-    USER = "user"
-    ASSISTANT = "assistant"
-    TOOL = "tool"
-
-
 class OrganizationType(StrEnum):
     BUILDER = "builder"
     CONTRACTOR = "contractor"

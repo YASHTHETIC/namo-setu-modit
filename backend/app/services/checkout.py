@@ -12,6 +12,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import hmac
+import html
 import json
 import logging
 from datetime import date, datetime, timezone
@@ -519,7 +520,7 @@ async def place_checkout_order(
     customer_email = getattr(user, "email", None)
     if customer_email:
         lines_html = "".join(
-            f"<li>{it['name']} × {it['quantity']:g} — ₹{it['line_total']:,.0f}</li>" for it in item_reads
+            f"<li>{html.escape(str(it['name']))} × {it['quantity']:g} — ₹{it['line_total']:,.0f}</li>" for it in item_reads
         )
         try:
             asyncio.get_running_loop().create_task(

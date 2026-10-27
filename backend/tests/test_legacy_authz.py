@@ -47,13 +47,6 @@ CASES = [
     ("GET", "/api/v1/modit/inventory/alerts"),
     ("GET", "/api/v1/modit/inventory/analytics"),
     ("GET", "/api/v1/modit/deliveries"),
-    ("POST", "/api/v1/modit/ai/material-recommendation"),
-    ("POST", "/api/v1/modit/ai/boq-reader"),
-    ("POST", "/api/v1/modit/ai/quote-comparison"),
-    ("POST", "/api/v1/modit/ai/vendor-matching"),
-    ("POST", "/api/v1/modit/ai/procurement-assistant"),
-    ("POST", "/api/v1/modit/ai/voice-order"),
-    ("POST", "/api/v1/modit/ai/smart-reorder"),
 ]
 
 

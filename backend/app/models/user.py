@@ -43,7 +43,6 @@ class User(BaseModel):
     media_assets = relationship("MediaAsset", back_populates="owner")
     documents = relationship("DocumentAsset", back_populates="owner")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
-    ai_sessions = relationship("AISession", back_populates="user", cascade="all, delete-orphan")
     organization_memberships = relationship("OrganizationUser", back_populates="user", cascade="all, delete-orphan")
     owned_organizations = relationship("Organization", back_populates="owner")
     password_reset_tokens = relationship("PasswordResetToken", back_populates="user", cascade="all, delete-orphan")
