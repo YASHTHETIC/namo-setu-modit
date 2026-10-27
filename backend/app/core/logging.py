@@ -17,9 +17,18 @@ class JsonFormatter(logging.Formatter):
 
 
 def configure_logging(level: str = "INFO") -> None:
+    import os
     handler = logging.StreamHandler()
     handler.setFormatter(JsonFormatter())
     root_logger = logging.getLogger()
     root_logger.handlers.clear()
     root_logger.addHandler(handler)
+    log_file = os.getenv("LOG_FILE")
+    if log_file:
+        try:
+            fh = logging.FileHandler(log_file, encoding="utf-8")
+            fh.setFormatter(JsonFormatter())
+            root_logger.addHandler(fh)
+        except Exception:
+            pass
     root_logger.setLevel(level.upper())

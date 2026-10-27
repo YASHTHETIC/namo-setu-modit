@@ -140,7 +140,7 @@ function LoginForm() {
             </div>
 
             {/* Mobile OTP first (Blinkit-style), email as fallback */}
-            <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl bg-[#F0ECF9] p-1">
+            <div className="mb-2 grid grid-cols-2 gap-1 rounded-xl bg-[#F0ECF9] p-1">
               {(["otp", "email"] as const).map((m) => (
                 <button
                   key={m}
@@ -153,6 +153,33 @@ function LoginForm() {
                   {m === "otp" ? "Mobile OTP" : "Email"}
                 </button>
               ))}
+            </div>
+
+            {/* Quick Test Accounts Bar */}
+            <div className="mb-4 flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-[#F0ECF9]/60 border border-[#DDD6EE]">
+              <span className="text-tiny font-bold text-[#6B5B83] mr-1">⚡ Test Mode:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("email");
+                  setEmail("demo@modit.in");
+                  setPassword("Demo@1234");
+                }}
+                className="rounded-md bg-white px-2 py-1 text-tiny font-bold text-[#2D1B69] border border-[#DDD6EE] hover:border-[#2D1B69] transition-all cursor-pointer shadow-2xs"
+              >
+                👤 Buyer Demo
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("email");
+                  setEmail("admin@modit.in");
+                  setPassword("Demo@1234");
+                }}
+                className="rounded-md bg-white px-2 py-1 text-tiny font-bold text-[#2D1B69] border border-[#DDD6EE] hover:border-[#2D1B69] transition-all cursor-pointer shadow-2xs"
+              >
+                🛡️ Admin Demo
+              </button>
             </div>
 
             {mode === "otp" ? (
@@ -320,7 +347,20 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
         )}
 
         <div className="space-y-1.5">
-          <label className="block text-body-sm font-semibold text-[#150726]">Mobile number</label>
+          <div className="flex items-center justify-between">
+            <label className="block text-body-sm font-semibold text-[#150726]">Mobile number</label>
+            <button
+              type="button"
+              onClick={() => {
+                setPhone("9999900001");
+                setSent(false);
+                setError("");
+              }}
+              className="text-tiny font-bold text-[#7CB518] hover:underline cursor-pointer"
+            >
+              ⚡ Use Test Phone
+            </button>
+          </div>
           <div className="relative">
             <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B8CB5]" />
             <div className="absolute left-10 top-1/2 -translate-y-1/2 text-body-md font-bold text-[#150726]">+91</div>

@@ -21,6 +21,10 @@ const API_ORIGIN = process.env.MODIT_API_ORIGIN || "https://api.modit.in";
 // cdn.razorpay.com serves the risk-detection bundle and widget assets.
 const DEV_CSP_EXTRA =
   process.env.NODE_ENV === "development" ? " 'unsafe-eval' 'wasm-unsafe-eval'" : "";
+const DEV_CONNECT_EXTRA =
+  process.env.NODE_ENV === "development"
+    ? " http://localhost:8000 http://127.0.0.1:8000 ws://localhost:* ws://127.0.0.1:*"
+    : "";
 
 const CSP = [
   "default-src 'self'",
@@ -28,7 +32,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://cdn.razorpay.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://cdn.razorpay.com",
-  "connect-src 'self' https://api.modit.in https://api.razorpay.com https://lumberjack.razorpay.com",
+  `connect-src 'self' https://api.modit.in https://api.razorpay.com https://lumberjack.razorpay.com${DEV_CONNECT_EXTRA}`,
   "frame-src https://api.razorpay.com https://checkout.razorpay.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",

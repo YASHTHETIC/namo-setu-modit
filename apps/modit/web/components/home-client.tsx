@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
@@ -195,25 +195,15 @@ export default function HomeClient() {
            sm+: menu + logo + cart with the full search row below. ═══ */}
       <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
-          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5 lg:hidden" onClick={() => setShowMenu(true)}>
+          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)} aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </RippleButton>
-          <div className="flex-1 flex justify-center sm:justify-center">
+          <div className="flex-1 flex justify-center">
             <Link href="/" className="transition-all hover:scale-105 active:scale-95">
               <ModitLogo className="h-[40px] w-auto" light={true} />
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            {/* Desktop: real site nav (mobile keeps the drawer + tab bar) */}
-            <nav className="hidden lg:flex items-center gap-1 mr-1" aria-label="Primary">
-              <Link href="/products" className="px-3 py-2 rounded-xl text-sm font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">Catalog</Link>
-              <Link href="/orders" className="px-3 py-2 rounded-xl text-sm font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">Orders</Link>
-              <Link href="/supplier" className="px-3 py-2 rounded-xl text-sm font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">Supplier Hub</Link>
-              <Link href={loggedIn ? "/dashboard" : "/auth"} className="ml-1 inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(45,27,105,0.3)] transition-all hover:shadow-[0_6px_16px_rgba(45,27,105,0.4)]">
-                <User className="h-4 w-4" />
-                {loggedIn ? "Account" : "Sign in"}
-              </Link>
-            </nav>
             <button
               onClick={() => setShowSearch(true)}
               aria-label="Search products"
@@ -355,7 +345,7 @@ export default function HomeClient() {
                 <Truck className="h-3 w-3" />
                 FREE DELIVERY
               </div>
-              <h1 className="text-white text-title-md sm:text-title-lg font-extrabold leading-tight">Construction Materials, Delivered</h1>
+              <h1 className="text-white text-title-md sm:text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
               <p className="text-white/70 text-tiny sm:text-body-sm mt-0.5 sm:mt-1">Cement, paints, lights & more — in 60 minutes</p>
               <Link href="/products" className="mt-2 sm:mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-bold px-4 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
                 Shop Now

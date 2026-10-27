@@ -42,6 +42,11 @@ def _setup_env() -> None:
     os.environ.setdefault("LOG_LEVEL", "INFO")
     os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")  # unreachable; shim used anyway
     os.environ.setdefault("SMS_GATEWAY_URL", "")  # OTP prints to logs
+    os.environ.setdefault(
+        "BACKEND_CORS_ORIGINS",
+        "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001,https://modit.in,https://api.modit.in",
+    )
+    os.environ.setdefault("LOG_FILE", str(DB_DIR / "server.log"))
     sys.path.insert(0, str(REPO))
 
 

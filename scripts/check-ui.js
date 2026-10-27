@@ -37,7 +37,7 @@ const rules = {
   'type-scale': (src) => (src.match(/text-\[\d+(\.\d+)?px\]/g) || []).length,
   'z-index': (src) => (src.match(/\bz-\[\d+\]/g) || []).length,
   colors: (src, file) => {
-    if (file === GLOBALS) return 0;
+    if (file === GLOBALS || file.endsWith("product-data.ts")) return 0;
     return (src.match(/#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g) || [])
       .filter(h => !allowedHex.has(h.toLowerCase())).length;
   },

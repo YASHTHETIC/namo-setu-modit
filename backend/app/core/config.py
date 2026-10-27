@@ -35,7 +35,14 @@ class Settings(BaseSettings):
     # NoDecode: pydantic-settings JSON-decodes list fields at the source level,
     # which rejects plain "a,b,c" env values before validators run. Skip the
     # source decoding; parse_cors_origins below handles str -> list.
-    backend_cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:3000"])
+    backend_cors_origins: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001",
+        ]
+    )
     smtp_host: str = "localhost"
     smtp_port: int = 587
     smtp_user: str = ""

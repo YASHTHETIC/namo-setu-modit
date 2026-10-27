@@ -200,10 +200,33 @@ export default function CheckoutPage() {
             {/* 1 · Address Section */}
               <Reveal>
               <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-                <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2 mb-3">
-                  <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">1</span>
-                  <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-body-md font-bold text-[#150726] flex items-center gap-2">
+                    <span className="h-5 w-5 rounded-full bg-[#2D1B69] text-white text-tiny font-bold flex items-center justify-center">1</span>
+                    <MapPin className="h-4 w-4 text-[#2D1B69]" /> Delivery Address
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      addAddress({
+                        label: "Test Site Alpha",
+                        name: "Demo Tester",
+                        phone: "9876543210",
+                        line1: "Plot 42, Sector 62, Industrial Area",
+                        city: "Noida",
+                        state: "Uttar Pradesh",
+                        pincode: "201301",
+                        type: "site",
+                        isDefault: true,
+                      });
+                      toast.success("Test address added!", "Pre-filled and selected for checkout");
+                      setShowAddAddress(false);
+                    }}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#7CB518]/15 px-3 py-1 text-tiny font-bold text-[#7CB518] hover:bg-[#7CB518]/25 transition-all border border-[#7CB518]/30 cursor-pointer"
+                  >
+                    ⚡ Quick Test Address
+                  </button>
+                </div>
                 <div className="space-y-2">
                   {addresses.map((addr) => (
                     <div key={addr.id} className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-all ${

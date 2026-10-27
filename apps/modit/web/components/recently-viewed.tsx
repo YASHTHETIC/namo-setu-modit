@@ -19,7 +19,7 @@ export function RecentlyViewed() {
 
   return (
     <div className="mt-3 sm:mt-6">
-      <h2 className="section-header px-0 !mb-1 text-[17px] font-extrabold text-[#150726] tracking-tight">Recently Viewed</h2>
+      <h2 className="section-header px-0 !mb-1 text-body-lg font-extrabold text-[#150726] tracking-tight">Recently Viewed</h2>
       <div className="scroll-rail">
         {items.map(({ product }) => (
           <div key={product.id} className="w-[140px] sm:w-[168px] flex-shrink-0">

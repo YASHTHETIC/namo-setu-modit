@@ -113,6 +113,21 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       try {
         rzp = await createRazorpayOrder(result.orderId);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : "";
+        if (msg.includes("Cash on Delivery") || msg.includes("not configured")) {
+          const due = result.total ?? total;
+          clearCart();
+          chooseMethod("cod");
+          toast.success("Order confirmed!", `Order ${result.orderNumber ?? result.orderId} placed — payable via Cash on Delivery.`);
+          notifyOrderEvent({
+            title: "Order placed (COD)",
+            body: `Order ${result.orderId} confirmed — ${formatINR2(due)} payable on delivery.`,
+            type: "order",
+            orderId: result.orderId,
+          });
+          onPaymentComplete(result.orderId, due);
+          return;
+        }
         setError(err instanceof Error ? err.message : "Payment setup failed. Your order is saved — retry from Orders.");
         setProcessing(false);
         return;

@@ -18,6 +18,17 @@ const EMPTY: AddressFormValue = {
   type: "site",
 };
 
+const TEST_ADDRESS: AddressFormValue = {
+  label: "Site Alpha",
+  name: "Demo Tester",
+  phone: "9876543210",
+  line1: "Plot 42, Sector 62, Industrial Area",
+  city: "Noida",
+  state: "Uttar Pradesh",
+  pincode: "201301",
+  type: "site",
+};
+
 const field =
   "w-full px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]";
 
@@ -60,11 +71,21 @@ export function AddressForm({
     <div className="p-4 rounded-xl border-2 border-[#2D1B69] bg-[#F8F6FC] space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-body-sm font-bold text-[#150726]">New Address</span>
-        {onCancel && (
-          <button onClick={onCancel} aria-label="Close" className="text-[#9B8CB5] hover:text-[#150726]">
-            <X className="h-4 w-4" />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => { setForm(TEST_ADDRESS); setError(""); }}
+            className="inline-flex items-center gap-1 rounded-md bg-[#7CB518]/15 px-2 py-1 text-tiny font-bold text-[#7CB518] hover:bg-[#7CB518]/25 transition-colors cursor-pointer"
+            title="Autofill test address"
+          >
+            ⚡ Fill Test Address
           </button>
-        )}
+          {onCancel && (
+            <button onClick={onCancel} aria-label="Close" className="text-[#9B8CB5] hover:text-[#150726]">
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <label className="block">

@@ -87,8 +87,10 @@ export function ProductThumb({
     );
   }
 
+  const handleImgError = () => setBroken(true);
+
   return (
-    // Plain <img> is deliberate: callers size this via className, and the
+    // Plain img tag is deliberate: callers size this via className, and the
     // onError fallback must fire synchronously to avoid broken-image spill.
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -98,7 +100,7 @@ export function ProductThumb({
       height={400}
       loading="lazy"
       decoding="async"
-      onError={() => setBroken(true)}
+      onError={handleImgError}
       className={className}
       draggable={false}
     />

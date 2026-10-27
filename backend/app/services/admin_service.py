@@ -215,8 +215,8 @@ class AdminService:
         except Exception:
             redis_status = "unhealthy"
 
-        import psutil
         try:
+            import psutil
             mem = psutil.virtual_memory()
             memory_usage = {"total_gb": round(mem.total / (1024**3), 2), "used_gb": round(mem.used / (1024**3), 2), "percent": mem.percent}
         except Exception:
