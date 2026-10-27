@@ -35,14 +35,18 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     description = `Search results for \u201C${search}\u201D on MODIT — compare prices across cement, paint, lighting, tiling and more.`;
   }
 
+  // Filtered views are real landing surfaces (linked from the footer,
+  // PDP breadcrumbs, brand rails) — each gets its own canonical.
+  const canonical = category ? `/products?category=${category}` : search ? `/products?search=${encodeURIComponent(search)}` : "/products";
+
   return {
     title,
     description,
-    alternates: { canonical: "/products" },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
-      url: "/products",
+      url: canonical,
       siteName: "MODIT",
       locale: "en_IN",
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "MODIT — construction materials delivered" }],

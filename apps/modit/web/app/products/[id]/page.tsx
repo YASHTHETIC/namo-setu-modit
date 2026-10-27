@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getSeoProduct } from "@/lib/seo-product";
+import { products } from "@/lib/product-data";
 import { safeJsonLd } from "@/lib/utils";
 
 import ProductDetailClient from "./product-detail-client";
@@ -16,7 +17,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!p) {
     return { title: "Product not found", robots: { index: false, follow: true } };
   }
-  const description = (p.shortDescription || p.description || "").slice(0, 160);
+  // Prefer the real copy; when it's too thin for a snippet, compose a
+  // factual fallback (name, brand, category, price, delivery promise).
+  const short = (p.shortDescription || p.description || "").trim();
+  const description = (
+    short.length >= 80
+      ? short
+      : `${p.name} — ${p.brand ? `${p.brand} ` : ""}${p.category || "construction material"} at ₹${p.price} on MODIT. 60-minute delivery, GST invoice, COD available.`
+  ).slice(0, 160);
   const url = `/products/${p.slug || p.id}`;
   // Price display = price charged (checkout re-validates against the DB).
   const ogImage = p.images[0];
@@ -102,6 +110,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
       }
     : null;
 
+  // Server-resolved static product: ships the real H1/name/price in the
+  // SSR HTML (Googlebot + first paint) instead of a skeleton. The client's
+  // live `useProduct` result still takes precedence once it lands, and
+  // admin-added API-only products simply have no initialProduct here.
+  const initialProduct = products.find((x) => x.id === id || x.slug === id) ?? undefined;
+
   return (
     <>
       {jsonLd && (
@@ -116,7 +130,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbLd) }}
         />
       )}
-      <ProductDetailClient params={params} />
+      <ProductDetailClient params={params} initialProduct={initialProduct} />
     </>
   );
 }

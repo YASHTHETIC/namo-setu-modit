@@ -53,11 +53,17 @@ import { notifyOrderEvent } from "@/lib/order-notifications";
 
 export default function ProductDetailPage({
   params,
+  initialProduct,
 }: {
   params: Promise<{ id: string }>;
+  initialProduct?: Product;
 }) {
   const { id } = use(params);
-  const { data: rawProduct, isLoading } = useProduct(id);
+  const fetched = useProduct(id);
+  // Server-passed product renders instantly (SSR ships real H1/price/stock);
+  // the live API result replaces it once it resolves (fresh price/stock).
+  const rawProduct = (fetched.data as Product | undefined) ?? initialProduct;
+  const isLoading = fetched.isLoading && !initialProduct;
   const adminOverrides = useAdminStore((s) => s.overrides);
   const adminSales = useAdminStore((s) => s.sales);
   const adminSuppliers = useSupplierStore((s) => s.suppliers);
@@ -102,23 +108,27 @@ export default function ProductDetailPage({
   const requireLogin = useRequireLogin();
   const areaBlocked = Boolean(deliveryPincode) && !areaServiceable;
 
-  const { data: allProducts = [] } = useProducts({ page_size: 2000 });
-  const allProductsList = allProducts as Product[];
+  // Related/bought-together rails: one small category-scoped query instead
+  // of dragging the whole catalog (page_size 2000) into every PDP.
+  const { data: categoryProducts = [] } = useProducts(
+    product ? { category_slug: product.categorySlug, page_size: 14 } : undefined
+  );
+  const categoryList = categoryProducts as Product[];
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
-    return allProductsList
-      .filter((p) => p.categorySlug === product.categorySlug && p.id !== product.id)
+    return categoryList
+      .filter((p) => p.id !== product.id)
       .slice(0, 6);
-  }, [product, allProductsList]);
+  }, [product, categoryList]);
 
   const frequentlyBought = useMemo(() => {
     if (!product) return [];
-    return allProductsList
-      .filter((p) => p.categorySlug !== product.categorySlug && p.inStock)
+    return categoryList
+      .filter((p) => p.id !== product.id && p.inStock)
       .sort(() => Math.random() - 0.5)
       .slice(0, 4);
-  }, [product, allProductsList]);
+  }, [product, categoryList]);
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;

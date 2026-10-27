@@ -36,13 +36,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));
+  // Real per-product timestamps — stamping everything "today" on every build
+  // teaches Google that lastModified is noise and slows re-crawling.
   const productEntries: MetadataRoute.Sitemap = indexableProducts()
     // Filter on the stable id (junk rules were verified against ids — full
     // slugs contain real model numbers like 35783nkpm that trip the segment
     // rule), but emit slug URLs to match internal productLink().
     .map((p) => ({
       url: `${SITE_URL}/products/${p.slug || p.id}`,
-      lastModified: now,
+      // Omit lastModified when the catalog has no real timestamp — a fake
+      // "today" on every build is worse than no field at all.
+      ...(p.updatedAt ? { lastModified: new Date(p.updatedAt) } : {}),
       changeFrequency: "weekly",
       priority: 0.8,
     }));

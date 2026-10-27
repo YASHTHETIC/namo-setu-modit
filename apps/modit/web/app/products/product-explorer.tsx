@@ -302,18 +302,21 @@ function ProductsContent() {
         minHeight: '100dvh',
       }}
     >
-      {/* Breadcrumb */}
+      {/* Breadcrumb — the page's H1 lives here: category name when filtered,
+          otherwise "Products" (matches generateMetadata). */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
         <Link href="/" className="hover:text-[var(--brand)] transition-colors">Home</Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="font-medium text-[var(--text-primary)]">Products</span>
-        {selectedCategory && (
+        {selectedCategory ? (
           <>
+            <span className="font-medium text-[var(--text-primary)]">Products</span>
             <ChevronRight className="h-3 w-3" />
-            <span className="font-bold" style={{ color: catColor?.accent }}>
+            <h1 className="font-bold" style={{ color: catColor?.accent }}>
               {categories.find((c) => c.slug === selectedCategory)?.name}
-            </span>
+            </h1>
           </>
+        ) : (
+          <h1 className="font-medium text-[var(--text-primary)]">Products</h1>
         )}
         {search && (
           <>

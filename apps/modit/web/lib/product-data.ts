@@ -100,6 +100,8 @@ export interface Product {
   deliveryMinutes?: number;
   hasShades?: boolean;
   freeDeliveryThreshold?: number;
+  /** ISO timestamp of the last catalog change (sitemap lastModified). */
+  updatedAt?: string;
 }
 
 export interface Category {
