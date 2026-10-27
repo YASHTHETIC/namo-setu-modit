@@ -5,7 +5,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { placeOrder, checkServerUp, createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
 import { useToast } from "@foundation/ui";
 import { formatINR2 } from "@/lib/utils";
-import { Shield, Truck, Clock, Check, CreditCard, Banknote, Smartphone, Building2 } from "lucide-react";
+import { Shield, Truck, Clock, Check, CreditCard, Banknote, Building2 } from "lucide-react";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 
 declare global {
@@ -27,23 +27,26 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const toast = useToast();
-  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "upi" | "credit">(() => {
+  // Payment methods. "upi" (pay-to-own-VPA manual flow) is intentionally
+  // absent for launch: it recorded the order as pending with no way for the
+  // buyer to actually pay the merchant. Razorpay's widget already covers
+  // UPI intent/collect. If a saved method is "upi", fall back to razorpay.
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod" | "credit">(() => {
     try {
       const saved = localStorage.getItem("modit_pay_method");
-      return saved === "cod" || saved === "upi" || saved === "credit" ? saved : "razorpay";
+      return saved === "cod" || saved === "credit" ? saved : "razorpay";
     } catch {
       return "razorpay";
     }
   });
 
-  const chooseMethod = (m: "razorpay" | "cod" | "upi" | "credit") => {
+  const chooseMethod = (m: "razorpay" | "cod" | "credit") => {
     setPaymentMethod(m);
     try {
       localStorage.setItem("modit_pay_method", m);
     } catch { /* ignore */ }
   };
   const [processing, setProcessing] = useState(false);
-  const [upiId, setUpiId] = useState("");
   const [error, setError] = useState<string | null>(null);
   // Server reachability probe — a dead API fails fast here instead of at tap.
   const [serverUp, setServerUp] = useState<boolean | null>(null);
@@ -146,9 +149,9 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           }
         },
         prefill: {
-          name: "",
-          email: "",
-          contact: "",
+          // From the delivery address — saves typing at the UPI/card step.
+          name: shippingAddress?.name ?? "",
+          contact: shippingAddress?.phone ?? "",
         },
         theme: {
           color: "#2D1B69",
@@ -203,50 +206,15 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
     }
   };
 
-  const handleUPI = async () => {
-    if (!upiId || !upiId.includes("@")) {
-      setError("Please enter a valid UPI ID (e.g. name@upi)");
-      return;
-    }
-    setError(null);
-    setProcessing(true);
-    try {
-      // Manual UPI-to-merchant flow: the order is recorded with server totals;
-      // the pending payment is settled outside the widget (collect on delivery).
-      const result = await placeOrder({ ...cartPayload(), paymentMethod: "upi" });
-      if (result.success && result.orderId) {
-        const due = result.total ?? total;
-        clearCart();
-        toast.success("Order placed!", `Order ${result.orderNumber ?? result.orderId} confirmed — UPI payment pending`);
-        notifyOrderEvent({
-          title: "Order placed (UPI)",
-          body: `Order ${result.orderId} confirmed — complete your UPI payment of ${formatINR2(due)} to ${upiId}.`,
-          type: "order",
-          orderId: result.orderId,
-        });
-        onPaymentComplete(result.orderId, due);
-      } else {
-        setError(result.error || "Failed to place order. Please try again.");
-        setProcessing(false);
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-      setProcessing(false);
-    }
-  };
-
   const placeHandler =
     paymentMethod === "razorpay"
       ? handleRazorpayPayment
       : paymentMethod === "cod"
         ? handleCOD
-        : paymentMethod === "upi"
-          ? handleUPI
-          : handleCredit;
-  const placeDisabled =
-    processing || items.length === 0 || !shippingAddress || (paymentMethod === "upi" && (!upiId || !upiId.includes("@")));
+        : handleCredit;
+  const placeDisabled = processing || items.length === 0 || !shippingAddress;
   const placeLabel =
-    paymentMethod === "upi" || paymentMethod === "razorpay"
+    paymentMethod === "razorpay"
       ? `Pay ${formatINR2(total)} securely`
       : `Place Order • ${formatINR2(total)}`;
 
@@ -274,7 +242,6 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         <div className="space-y-2">
           {[
             { id: "razorpay", label: "UPI / Card / Netbanking", icon: CreditCard, desc: "Powered by Razorpay" },
-            { id: "upi", label: "Pay by UPI ID", icon: Smartphone, desc: "Google Pay, PhonePe, Paytm" },
             { id: "cod", label: "Cash on Delivery", icon: Banknote, desc: "Pay when order arrives" },
             { id: "credit", label: "Business Credit Terms", icon: Building2, desc: "Net 30 · approved accounts only" },
           ].map((method) => (
@@ -307,19 +274,6 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
             </button>
           ))}
         </div>
-
-{/* UPI ID Input */}
-        {paymentMethod === "upi" && (
-          <div className="mt-3">
-            <input
-              type="text"
-              value={upiId}
-              onChange={(e) => setUpiId(e.target.value)}
-              placeholder="yourname@upi"
-              className="w-full border-2 border-[#DDD6EE] rounded-xl px-4 py-3 text-body-lg focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10 transition-all"
-            />
-          </div>
-        )}
 
  {/* Credit terms note */}
         {paymentMethod === "credit" && (

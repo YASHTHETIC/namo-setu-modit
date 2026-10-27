@@ -52,14 +52,20 @@ export default function CheckoutPage() {
   // all visible at once — no wizard steps. Pay stays disabled until an
   // address is selected.
   const [gstin, setGstin] = useState("");
-  // One idempotency key per checkout session: retries/replays after a
+  // One idempotency key per checkout attempt: retries/replays after a
   // network blip return the same server order instead of duplicating it.
+  // If the cart changes after an abandoned attempt (dismissed Razorpay
+  // widget, qty edit), the key rotates so the next Pay creates a FRESH
+  // order for the new cart instead of replaying the stored old one.
   const attemptKeyRef = useRef<string | null>(null);
-  if (attemptKeyRef.current === null) {
+  const attemptCartSigRef = useRef<string>("");
+  const cartSig = items.map((i) => `${i.product.id}:${i.quantity}`).join("|");
+  if (attemptKeyRef.current === null || attemptCartSigRef.current !== cartSig) {
     attemptKeyRef.current =
       typeof crypto !== "undefined" && "randomUUID" in crypto
         ? crypto.randomUUID()
         : `att-${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+    attemptCartSigRef.current = cartSig;
   }
 
   const subtotal = getCartTotal();
