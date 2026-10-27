@@ -65,14 +65,33 @@ export function ProductRail({
 
   return (
     <section className="mt-3 sm:mt-4 relative group/rail">
-      {/* Section header */}
-      <div className="section-header">
+      {/* Section header with slider controls in place of See all */}
+      <div className="section-header flex items-center justify-between">
         <h2>{title}</h2>
-        {seeAllHref && (
-          <Link href={seeAllHref} className={`${colorMap[accentColor]} text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all`}>
-            See all <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
-        )}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => scroll("left")}
+            aria-label={`Scroll ${title} left`}
+            disabled={!canScrollLeft}
+            className={`h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] transition-all hover:scale-105 active:scale-95 ${
+              canScrollLeft ? "hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] cursor-pointer" : "opacity-30 cursor-not-allowed"
+            }`}
+          >
+            <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scroll("right")}
+            aria-label={`Scroll ${title} right`}
+            disabled={!canScrollRight}
+            className={`h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] transition-all hover:scale-105 active:scale-95 ${
+              canScrollRight ? "hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] cursor-pointer" : "opacity-30 cursor-not-allowed"
+            }`}
+          >
+            <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Scroll arrows — visible on hover */}

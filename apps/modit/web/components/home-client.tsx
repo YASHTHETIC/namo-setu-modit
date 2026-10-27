@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
-  ArrowRight, Star, ChevronRight, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
+  ArrowRight, Star, ChevronRight, ChevronLeft, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
   BadgeCheck, Undo2, ReceiptIndianRupee, ShieldCheck
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -96,6 +96,22 @@ export default function HomeClient() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const dealsScrollRef = useRef<HTMLDivElement>(null);
+  const categoriesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollDeals = (dir: "left" | "right") => {
+    const el = dealsScrollRef.current;
+    if (!el) return;
+    const amount = Math.round(el.clientWidth * 0.75);
+    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  };
+
+  const scrollCategories = (dir: "left" | "right") => {
+    const el = categoriesScrollRef.current;
+    if (!el) return;
+    const amount = Math.round(el.clientWidth * 0.75);
+    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  };
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
@@ -371,13 +387,28 @@ export default function HomeClient() {
       </Reveal>
 
       {/* ═══ PROMO CARDS — Blinkit solid-color row, construction edition ═══ */}
-      <div className="section-header !pb-1">
+      <div className="section-header !pb-1 flex items-center justify-between">
         <h2>Site essentials, top deals</h2>
-        <Link href="/products?sort=discount" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-          See all <ArrowRight className="h-3 w-3" />
-        </Link>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => scrollDeals("left")}
+            aria-label="Scroll deals left"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollDeals("right")}
+            aria-label="Scroll deals right"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          </button>
+        </div>
       </div>
-      <div className="flex gap-2.5 sm:gap-3 overflow-x-auto scrollbar-hide snap-x pb-1">
+      <div ref={dealsScrollRef} className="flex gap-2.5 sm:gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 scroll-smooth">
         {[
           { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
           { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
@@ -414,20 +445,30 @@ export default function HomeClient() {
       {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
       <Reveal delay={150}>
         <div className="mt-4 sm:mt-5">
-          <div className="section-header">
+          <div className="section-header flex items-center justify-between">
             <h2>Shop by Category</h2>
-            <Link href="/products" className="text-[#7CB518] text-body-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-              See all <ArrowRight className="h-3 w-3" />
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => scrollCategories("left")}
+                aria-label="Scroll categories left"
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollCategories("right")}
+                aria-label="Scroll categories right"
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[#DDD6EE] bg-white shadow-2xs flex items-center justify-center text-[#150726] hover:bg-[#7CB518] hover:text-white hover:border-[#7CB518] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </button>
+            </div>
           </div>
-          {/* Blinkit Home pattern: EVERY category on the first page.
-              Mobile: mock-style 4-col grid, first 12 tiles (3 rows) with the
-              header's See-all for the rest; sm+ shows the full wall. */}
-          <div className="grid grid-cols-6 gap-x-2 gap-y-3 pb-1 sm:grid-cols-6 sm:gap-4 lg:grid-cols-10 [&>*:nth-child(n+13)]:hidden sm:[&>*:nth-child(n+13)]:flex">
+          <div ref={categoriesScrollRef} className="flex gap-2.5 sm:gap-3.5 overflow-x-auto scrollbar-hide snap-x pb-2 pt-1 scroll-smooth">
             {visibleCategories.map((cat, i) => {
               const manual = TILE_IMAGES[cat.slug];
-              // Blinkit wall: EVERY tile gets a real photo — curated art for
-              // headline categories, first catalog image for the rest.
               const fallbackImg = !manual
                 ? products.find((p) => p.categorySlug === cat.slug)?.images?.[0]
                 : undefined;
@@ -438,7 +479,7 @@ export default function HomeClient() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex flex-col items-center gap-1 group"
+                  className="snap-start shrink-0 w-[78px] sm:w-[98px] flex flex-col items-center gap-1 group"
                 >
                   <div
                     className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
