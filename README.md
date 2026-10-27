@@ -30,7 +30,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 Local infra (optional): `docker-compose.yml` provides Postgres 16 + Redis 7.
-The backend test suite is fully hermetic (194 tests, no live Postgres or
+The backend test suite is fully hermetic (216 tests, no live Postgres or
 Redis required). The frontend builds against its bundled catalog, so it
 renders with zero backend running.
 
