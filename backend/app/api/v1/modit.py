@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.api.deps import get_current_user, get_optional_user, is_staff, require_permission
 from backend.app.core.database import get_db
+from backend.app.core.orm_utils import safe_collection_append
 from backend.app.core.rbac import PermissionName
 from backend.app.models.enums import ProductCode, QuotationStatus, RFQStatus
 from backend.app.models.modit import (
@@ -574,7 +575,9 @@ async def add_rfq_items(
             notes=line.notes,
         )
         db.add(item)
-        rfq.items.append(item)
+        # Test fakes need the in-memory append; persistent rows skip it (an
+        # unloaded-collection append would sync-lazy-load -> MissingGreenlet).
+        safe_collection_append(rfq, "items", item)
     await db.commit()
     return await rfq_to_detail(db, rfq)
 
@@ -656,10 +659,18 @@ async def create_quotation(payload: QuotationCreate, db: AsyncSession = Depends(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RFQ not found")
     if rfq.requested_by_user_id != user.id and not is_staff(user):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the RFQ owner can add quotations.")
-    quotation = Quotation(**payload.model_dump())
+    from backend.app.services.modit import make_modit_reference
+
+    data = payload.model_dump()
+    # quotation_number is NOT NULL + unique in the DB and has no default —
+    # without this every quotation insert fails with an IntegrityError.
+    data["quotation_number"] = make_modit_reference("QT")
+    quotation = Quotation(**data)
     db.add(quotation)
     await db.commit()
-    await db.refresh(quotation)
+    # Eager-load items for QuotationDetailRead serialization (unloaded
+    # relationship access during model_validate raises MissingGreenlet).
+    await db.refresh(quotation, ["items"])
     return QuotationDetailRead.model_validate(quotation)
 
 

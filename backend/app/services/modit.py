@@ -10,6 +10,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from backend.app.core.orm_utils import safe_collection_append
 from backend.app.models.enums import (
     DeliveryStatus,
     InventoryStatus,
@@ -469,7 +470,9 @@ def _rfq_item_read(item: RFQItem, item_names: dict[str, str]) -> RFQItemRead:
 async def create_rfq(session: AsyncSession, organization_id: str, user_id: str, items: list[dict], **kwargs) -> RFQ:
     """Create a new RFQ with items."""
     rfq_number = make_modit_reference("RFQ")
+    # Explicit id so RFQItem rows can reference it before the flush.
     rfq = RFQ(
+        id=str(uuid4()),
         organization_id=organization_id,
         rfq_number=rfq_number,
         requested_by_user_id=user_id,
@@ -477,8 +480,7 @@ async def create_rfq(session: AsyncSession, organization_id: str, user_id: str, 
         **kwargs
     )
     session.add(rfq)
-    await session.flush()
-    
+
     for item_data in items:
         rfq_item = RFQItem(
             rfq_id=rfq.id,
@@ -488,10 +490,13 @@ async def create_rfq(session: AsyncSession, organization_id: str, user_id: str, 
             notes=item_data.get("notes"),
         )
         session.add(rfq_item)
-        # Keep the in-memory graph consistent (the DB flush does this in
-        # production; without it fresh objects read back empty items).
-        rfq.items.append(rfq_item)
-    
+        # rfq is transient/pending here — appending is memory-only (no lazy
+        # load). After the flush it would be persistent and an append would
+        # raise MissingGreenlet, which is why this happens before flushing.
+        safe_collection_append(rfq, "items", rfq_item)
+
+    await session.flush()
+
     return rfq
 
 

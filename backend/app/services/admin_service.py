@@ -92,7 +92,13 @@ class AdminService:
         return [PermissionRead.model_validate(p) for p in role.permissions]
 
     async def assign_role_to_user(self, user_id: str, role_name: str) -> None:
-        user = await self.db.get(User, user_id)
+        # Eager-load roles: iterating an unloaded relationship on a persistent
+        # user triggers a sync lazy load (MissingGreenlet -> 500) in async
+        # SQLAlchemy.
+        result = await self.db.execute(
+            select(User).options(selectinload(User.roles)).where(User.id == user_id)
+        )
+        user = result.scalar_one_or_none()
         if user is None:
             raise ValueError("User not found")
         result = await self.db.execute(select(Role).where(Role.name == role_name))
@@ -105,7 +111,10 @@ class AdminService:
             await self.db.commit()
 
     async def remove_role_from_user(self, user_id: str, role_name: str) -> None:
-        user = await self.db.get(User, user_id)
+        result = await self.db.execute(
+            select(User).options(selectinload(User.roles)).where(User.id == user_id)
+        )
+        user = result.scalar_one_or_none()
         if user is None:
             raise ValueError("User not found")
         result = await self.db.execute(select(Role).where(Role.name == role_name))

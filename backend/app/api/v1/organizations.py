@@ -228,7 +228,9 @@ async def accept_invitation(token: str, db: AsyncSession = Depends(get_db), user
     token_hash = sha256(token.encode("utf-8")).hexdigest()
     result = await db.execute(select(OrganizationInvitation).where(OrganizationInvitation.token_hash == token_hash))
     invitation = result.scalar_one_or_none()
-    if invitation is None or invitation.expires_at <= datetime.now(timezone.utc):
+    from backend.app.core.datetime_utils import is_expired
+
+    if invitation is None or is_expired(invitation.expires_at):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invitation invalid or expired")
     membership = OrganizationUser(
         organization_id=invitation.organization_id,

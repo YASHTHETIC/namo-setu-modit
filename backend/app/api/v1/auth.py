@@ -356,7 +356,9 @@ async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -
     stored_token = token_result.scalar_one_or_none()
     if stored_token is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token revoked")
-    if stored_token.expires_at <= datetime.now(timezone.utc):
+    from backend.app.core.datetime_utils import is_expired
+
+    if is_expired(stored_token.expires_at):
         stored_token.revoked = True
         await db.commit()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token expired")

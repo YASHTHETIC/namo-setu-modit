@@ -273,7 +273,9 @@ async def confirm_password_reset(payload: PasswordResetConfirmRequest, db: Async
     token_hash = sha256(payload.token.encode("utf-8")).hexdigest()
     result = await db.execute(select(PasswordResetToken).where(PasswordResetToken.token_hash == token_hash, PasswordResetToken.revoked.is_(False)))
     token_row = result.scalar_one_or_none()
-    if token_row is None or token_row.expires_at <= datetime.now(timezone.utc):
+    from backend.app.core.datetime_utils import is_expired
+
+    if token_row is None or is_expired(token_row.expires_at):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Reset token is invalid or expired")
     user = await db.get(User, token_row.user_id)
     if user is None:
@@ -312,7 +314,9 @@ async def confirm_email_verification(token: str, db: AsyncSession = Depends(get_
     token_hash = sha256(token.encode("utf-8")).hexdigest()
     result = await db.execute(select(EmailVerificationToken).where(EmailVerificationToken.token_hash == token_hash, EmailVerificationToken.revoked.is_(False)))
     token_row = result.scalar_one_or_none()
-    if token_row is None or token_row.expires_at <= datetime.now(timezone.utc):
+    from backend.app.core.datetime_utils import is_expired
+
+    if token_row is None or is_expired(token_row.expires_at):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification token is invalid or expired")
     user = await db.get(User, token_row.user_id)
     if user is None:
