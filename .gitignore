@@ -64,6 +64,9 @@ storage/
 start-backend.py
 start-modit.py
 
+# Local launch docs (never ship)
+*.pdf
+
 # Build artifacts
 namo_setu_modit_backend.egg-info/
 

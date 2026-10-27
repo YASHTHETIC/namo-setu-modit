@@ -26,7 +26,7 @@ build:
 	npm run build --workspaces --if-present
 
 compose-up:
-	docker compose up --build
+	docker compose up -d postgres redis
 
 compose-down:
 	docker compose down
