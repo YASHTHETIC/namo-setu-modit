@@ -11,13 +11,24 @@ const API_ORIGIN = process.env.MODIT_API_ORIGIN || "https://api.modit.in";
 // allow-listed for the checkout widget (script + iframe + analytics). This
 // still blocks every other remote script/unknown frame if a catalog string
 // ever breaks out of a sink.
+//
+// connect-src must keep listing the absolute API host: a deploy that builds
+// with NEXT_PUBLIC_API_BASE_URL=https://api.modit.in (instead of the
+// same-origin /api/v1 + rewrite) talks to the API cross-origin, and blocking
+// it there broke every client call — checkout, login, coupons ("Failed to
+// fetch"). The same-origin base remains the preferred setup; this is the
+// belt-and-braces entry for builds that override it.
+// cdn.razorpay.com serves the risk-detection bundle and widget assets.
+const DEV_CSP_EXTRA =
+  process.env.NODE_ENV === "development" ? " 'unsafe-eval' 'wasm-unsafe-eval'" : "";
+
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com",
-  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${DEV_CSP_EXTRA} https://checkout.razorpay.com https://cdn.razorpay.com`,
+  "style-src 'self' 'unsafe-inline' https://cdn.razorpay.com",
   "img-src 'self' data: blob: https:",
-  "font-src 'self' data:",
-  "connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com",
+  "font-src 'self' data: https://cdn.razorpay.com",
+  "connect-src 'self' https://api.modit.in https://api.razorpay.com https://lumberjack.razorpay.com",
   "frame-src https://api.razorpay.com https://checkout.razorpay.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",

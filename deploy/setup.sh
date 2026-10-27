@@ -457,6 +457,13 @@ if [ -n "$DOMAIN" ] && [ -n "$CERTBOT_EMAIL" ]; then
       --non-interactive --agree-tos --no-eff-email -m "$CERTBOT_EMAIL" --redirect; then
     FRONTEND_URL="https://$DOMAIN"
     echo "  SSL installed (HTTP -> HTTPS redirect on)"
+    # Best-effort www cert so https://www.<domain> served from the VPS is
+    # not caught by cert-common-name errors. Non-fatal: if www's DNS points
+    # elsewhere (e.g. a CDN/managed host), HTTP-01 fails and we just warn.
+    if ! certbot --nginx -d "www.$DOMAIN" \
+        --non-interactive --agree-tos --no-eff-email -m "$CERTBOT_EMAIL" --redirect >/dev/null 2>&1; then
+      warn "No cert for www.$DOMAIN (its DNS likely points to another host) — fine if www redirects from there"
+    fi
   else
     warn "Certbot failed — check DNS A records for $DOMAIN and $API_SUBDOMAIN.$DOMAIN, then re-run: certbot --nginx -d $DOMAIN -d $API_SUBDOMAIN.$DOMAIN -m $CERTBOT_EMAIL"
   fi
