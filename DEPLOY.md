@@ -94,7 +94,7 @@ Staff PIN for `/admin`: `grep '^NEXT_PUBLIC_ADMIN_PIN=' /opt/modit/apps/modit/we
 | SSL failed | Point DNS first (`ping yourdomain` = VPS IP), then: `certbot --nginx -d yourdomain.com -d api.yourdomain.com -m you@email.com` |
 | DB not reachable | `systemctl status postgresql`; check `DATABASE_URL` in `/opt/modit/.env` |
 | Port 80 blocked | `ufw status` · also check Hostinger's panel firewall |
-| Razorpay "key invalid" | It's the **test** key — go live by setting `NEXT_PUBLIC_RAZORPAY_KEY_ID` (live) in `.env.local`, rebuild, restart |
+| Razorpay "key invalid" / 503 "use Cash on Delivery" | Keys live in the **backend** env, not the frontend: add `RAZORPAY_KEY_ID` (live `rzp_live_…`) + `RAZORPAY_KEY_SECRET` to `/opt/modit/.env`, then `pm2 restart modit-api` (no frontend rebuild — the widget key arrives per-order from the API) |
 
 ## Security notes
 

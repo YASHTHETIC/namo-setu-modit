@@ -60,7 +60,7 @@ if [ -n "$DOMAIN" ]; then
   [ -n "$CERTBOT_EMAIL" ] || warn "No email given — SSL will be skipped (plain HTTP for now)"
   FRONTEND_URL="https://$DOMAIN"
   API_BASE="https://$API_SUBDOMAIN.$DOMAIN/api/v1"
-  CORS_ORIGINS="https://$DOMAIN,https://www.$DOMAIN,https://$API_SUBDOMAIN.$DOMAIN,https://modit-web-prod.vercel.app,http://$SERVER_IP"
+  CORS_ORIGINS="https://$DOMAIN,https://www.$DOMAIN,https://$API_SUBDOMAIN.$DOMAIN,http://$SERVER_IP"
 else
   DOMAIN=""
   FRONTEND_URL="http://$SERVER_IP"
@@ -69,6 +69,10 @@ else
 fi
 if [ -t 0 ] && [ -z "$RAZORPAY_KEY_ID" ]; then
   read -r -p "Razorpay key id (blank = keep demo/test placeholder): " RAZORPAY_KEY_ID
+fi
+if [ -n "$RAZORPAY_KEY_ID" ] && [ -t 0 ] && [ -z "$RAZORPAY_KEY_SECRET" ]; then
+  read -r -s -p "Razorpay key secret (input hidden, needed for online payments): " RAZORPAY_KEY_SECRET
+  echo ""
 fi
 if [ -t 0 ] && [ -z "$BOOTSTRAP_ADMIN_EMAIL" ]; then
   read -r -p "Staff login email (auto super-admin on first login, blank = skip): " BOOTSTRAP_ADMIN_EMAIL
@@ -167,6 +171,8 @@ JWT_SECRET_KEY=$(openssl rand -hex 32)
 BACKEND_CORS_ORIGINS=${CORS_ORIGINS}
 FRONTEND_URL=${FRONTEND_URL}
 BOOTSTRAP_ADMIN_EMAIL=${BOOTSTRAP_ADMIN_EMAIL:-}
+RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
+RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
 EOF
   chmod 600 "$ENV_FILE"
   echo "  created $ENV_FILE"
@@ -175,6 +181,16 @@ else
   if [ -n "${BOOTSTRAP_ADMIN_EMAIL:-}" ] && ! grep -q '^BOOTSTRAP_ADMIN_EMAIL=' "$ENV_FILE"; then
     echo "BOOTSTRAP_ADMIN_EMAIL=${BOOTSTRAP_ADMIN_EMAIL}" >> "$ENV_FILE"
     echo "  staff email recorded (takes effect on next staff login)"
+  fi
+  # Razorpay keys live in the BACKEND env — the checkout widget receives the
+  # key id per-order from the API and signatures are verified with the secret.
+  if [ -n "$RAZORPAY_KEY_ID" ] && ! grep -q '^RAZORPAY_KEY_ID=' "$ENV_FILE"; then
+    echo "RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}" >> "$ENV_FILE"
+    echo "  razorpay key id recorded"
+  fi
+  if [ -n "$RAZORPAY_KEY_SECRET" ] && ! grep -q '^RAZORPAY_KEY_SECRET=' "$ENV_FILE"; then
+    echo "RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}" >> "$ENV_FILE"
+    echo "  razorpay key secret recorded"
   fi
   if [ -n "$DOMAIN" ]; then
     sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=${FRONTEND_URL}|" "$ENV_FILE"
@@ -231,8 +247,8 @@ if [ ! -f "$WEB_ENV" ]; then
     echo "NEXT_PUBLIC_VAPID_PUBLIC_KEY=${VAPID_PUB}"
     echo "VAPID_PRIVATE_KEY=${VAPID_PRIV}"
     echo "VAPID_SUBJECT=mailto:support@modit.in"
-    [ -n "$RAZORPAY_KEY_ID" ] && echo "NEXT_PUBLIC_RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}"
-    echo "NEXT_PUBLIC_ADMIN_PIN=${ADMIN_PIN:-$(shuf -i 100000-999999 -n 1)}"
+    # Razorpay keys are backend-only: the widget receives the key id from the
+    # checkout API response; NEXT_PUBLIC_ variants are never read by the app.
   } > "$WEB_ENV"
   chmod 600 "$WEB_ENV"
   echo "  created $WEB_ENV (VAPID keys generated)"
@@ -242,10 +258,6 @@ else
     echo "  updated API base for domain mode"
   else
     echo "  kept existing $WEB_ENV"
-  fi
-  if ! grep -q '^NEXT_PUBLIC_ADMIN_PIN=' "$WEB_ENV"; then
-    echo "NEXT_PUBLIC_ADMIN_PIN=${ADMIN_PIN:-$(shuf -i 100000-999999 -n 1)}" >> "$WEB_ENV"
-    echo "  staff PIN generated (see summary)"
   fi
 fi
 
@@ -509,8 +521,9 @@ cat <<EOF
 $(printf '\033[1;32m')DEPLOY COMPLETE$(printf '\033[0m')
   Site : $FRONTEND_URL
   API  : $API_BASE/healthz
-  Staff PIN (admin panel): $(grep '^NEXT_PUBLIC_ADMIN_PIN=' "$WEB_ENV" | cut -d= -f2-)
+  Staff access (admin panel): claim within minutes of first login — see DEPLOY.md
   Staff email (super-admin): $(grep '^BOOTSTRAP_ADMIN_EMAIL=' "$ENV_FILE" | cut -d= -f2-)
+  Online payments: $([ -n "$(grep '^RAZORPAY_KEY_SECRET=' "$ENV_FILE" | cut -d= -f2-)" ] && echo configured || echo "NOT configured — COD only (add RAZORPAY_KEY_SECRET to $ENV_FILE)")
   Logs : pm2 logs        |  status: pm2 status
   Env  : $ENV_FILE  &  $WEB_ENV   (chmod 600, never in git)
   Update flow: see DEPLOY.md
