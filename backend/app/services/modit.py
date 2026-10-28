@@ -314,22 +314,28 @@ async def suggest_correction(
 
 
 async def get_product_or_404(session: AsyncSession, product_id: str) -> Product:
-    """Get product by ID or raise 404."""
-    stmt = (
-        select(Product)
-        .options(
-            selectinload(Product.brand),
-            selectinload(Product.category),
-            selectinload(Product.sub_category),
-            selectinload(Product.unit),
-            selectinload(Product.gst),
-            selectinload(Product.images).selectinload(ProductImage.media),
-            selectinload(Product.inventory),
-        )
-        .where(Product.id == product_id)
+    """Get product by ID or slug and raise 404 otherwise.
+
+    The storefront routes are slug-based (/products/acc-cement-50kg) while
+    admin links carry UUIDs — accept both, like the category/brand filters.
+    Without the slug fallback every PDP lookup 404s and silently renders
+    stale static data instead of live admin-managed rows.
+    """
+    eager = (
+        selectinload(Product.brand),
+        selectinload(Product.category),
+        selectinload(Product.sub_category),
+        selectinload(Product.unit),
+        selectinload(Product.gst),
+        selectinload(Product.images).selectinload(ProductImage.media),
+        selectinload(Product.inventory),
     )
-    result = await session.execute(stmt)
+    result = await session.execute(select(Product).options(*eager).where(Product.id == product_id))
     product = result.scalar_one_or_none()
+    if product is None:
+        # Not a UUID hit: try the slug (storefront URLs).
+        result = await session.execute(select(Product).options(*eager).where(Product.slug == product_id))
+        product = result.scalar_one_or_none()
     if product is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     return product

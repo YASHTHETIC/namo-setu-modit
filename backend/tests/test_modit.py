@@ -30,6 +30,58 @@ def test_get_product_detail_never_500s_on_partial_data(client):
     assert isinstance(data.get("images"), list)
 
 
+def test_get_product_or_404_falls_back_to_slug():
+    """Storefront URLs are slug-based (/products/acc-cement-50kg) while admin
+    links carry UUIDs — the lookup must accept both. Without the slug
+    fallback every PDP 404s and silently renders stale static data."""
+    import asyncio
+
+    from fastapi import HTTPException
+
+    from backend.app.services.modit import get_product_or_404
+
+    product = object()
+
+    class _Result:
+        def __init__(self, value):
+            self._value = value
+
+        def scalar_one_or_none(self):
+            return self._value
+
+    class _Session:
+        """First execute (id lookup) misses; second (slug lookup) hits."""
+
+        def __init__(self, id_hit: bool):
+            self.calls = 0
+            self._id_hit = id_hit
+
+        async def execute(self, stmt):
+            self.calls += 1
+            if self.calls == 1:
+                return _Result(product if self._id_hit else None)
+            return _Result(product)
+
+    # UUID hit: one query, no slug fallback.
+    by_id = _Session(id_hit=True)
+    assert asyncio.run(get_product_or_404(by_id, "8fdce630-a7a9")) is product
+    assert by_id.calls == 1
+
+    # Slug hit: id lookup misses, slug lookup finds it.
+    by_slug = _Session(id_hit=False)
+    assert asyncio.run(get_product_or_404(by_slug, "acc-cement-50kg")) is product
+    assert by_slug.calls == 2
+
+    # Neither matches: 404.
+    class _MissSession(_Session):
+        async def execute(self, stmt):
+            return _Result(None)
+
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(get_product_or_404(_MissSession(id_hit=False), "nope"))
+    assert exc.value.status_code == 404
+
+
 def test_list_suppliers(client):
     """Supplier directory is internal: login required."""
     response = client.get("/api/v1/modit/suppliers")
