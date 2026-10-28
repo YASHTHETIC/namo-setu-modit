@@ -896,21 +896,23 @@ export function createModitApi(client: ApiClient) {
       return client.request<CouponOffer[]>(`${base}/coupons`, init);
     },
 
-    // Server-managed coupons (checkout validation truth)
+    // Server-managed coupons (checkout validation truth). These live on the
+    // v1 ROOT (/api/v1/admin/coupons — admin_extended router), not under the
+    // /modit prefix, so the path is absolute from the API base.
     listAdminCoupons(init?: RequestInit) {
-      return client.request<PlatformCouponRead[]>(`${base}/admin/coupons`, init);
+      return client.request<PlatformCouponRead[]>(`/admin/coupons`, init);
     },
 
     createAdminCoupon(payload: Record<string, unknown>) {
-      return client.request<PlatformCouponRead>(`${base}/admin/coupons`, { method: "POST", body: JSON.stringify(payload) });
+      return client.request<PlatformCouponRead>(`/admin/coupons`, { method: "POST", body: JSON.stringify(payload) });
     },
 
     updateAdminCoupon(couponId: string, payload: Record<string, unknown>) {
-      return client.request<PlatformCouponRead>(`${base}/admin/coupons/${couponId}`, { method: "PATCH", body: JSON.stringify(payload) });
+      return client.request<PlatformCouponRead>(`/admin/coupons/${couponId}`, { method: "PATCH", body: JSON.stringify(payload) });
     },
 
     deleteAdminCoupon(couponId: string) {
-      return client.request<PlatformCouponRead>(`${base}/admin/coupons/${couponId}`, { method: "DELETE" });
+      return client.request<PlatformCouponRead>(`/admin/coupons/${couponId}`, { method: "DELETE" });
     },
 
     createInventory(payload: Record<string, unknown>) {
