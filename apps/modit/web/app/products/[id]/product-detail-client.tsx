@@ -286,11 +286,6 @@ export default function ProductDetailPage({
                   <Package className="h-32 w-32 text-[var(--text-muted)]/20" />
                 </div>
               )}
-              {product.discount > 0 && (
-                <span className="absolute top-4 left-4 rounded-xl bg-[#E91E63] px-3 py-1 text-sm font-bold text-white shadow-lg shadow-pink-500/20">
-                  {product.discount}% OFF
-                </span>
-              )}
               {/* Wishlist + Share on image */}
               <div className="absolute top-3 right-3 flex flex-col gap-2">
                 <button

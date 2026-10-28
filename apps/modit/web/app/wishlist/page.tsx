@@ -144,11 +144,6 @@ export default function WishlistPage() {
               >
                 <Heart className="h-4 w-4 fill-red-500 text-red-500" />
               </button>
-              {product.discount > 0 && (
-                <span className="absolute top-2 right-2 z-20 rounded-lg bg-[#E91E63] px-2 py-0.5 text-tiny font-bold text-white">
-                  {product.discount}% OFF
-                </span>
-              )}
               {product.seller.isVerified && (
                 <span className="absolute bottom-2 left-2 z-20 rounded-lg bg-[#7CB518]/10 px-2 py-0.5 text-tiny font-bold text-[#7CB518]">
                   <CheckCircle className="mr-0.5 inline h-2.5 w-2.5" /> Verified
@@ -176,13 +171,18 @@ export default function WishlistPage() {
               </div>
 
               <div className="mt-3">
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-xl font-extrabold text-[#150726]">
                     ₹{product.price.toLocaleString("en-IN")}
                   </span>
                   {product.mrp > product.price && (
                     <span className="text-xs text-[#9B8CB5] line-through">
                       ₹{product.mrp.toLocaleString("en-IN")}
+                    </span>
+                  )}
+                  {product.discount > 0 && (
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight leading-none">
+                      {product.discount}% OFF
                     </span>
                   )}
                 </div>

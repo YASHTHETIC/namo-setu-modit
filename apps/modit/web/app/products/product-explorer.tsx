@@ -1090,7 +1090,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain card3d-img"
+                className="object-contain p-2 card3d-img"
               />
             ) : (
             <div className="flex h-full items-center justify-center">
@@ -1100,13 +1100,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           {/* Bottom gradient overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
-
-        {/* Discount ribbon — premium modern pill */}
-        {savingsPercent > 0 && (
-          <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
-            {savingsPercent}% OFF
-          </span>
-        )}
 
         {/* Delivery time pill — bottom-left */}
         <div className="absolute bottom-3 left-3 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
@@ -1126,13 +1119,20 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Bottom row — price block left, ADD column right */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div className="min-w-0">
-            <p className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
-              ₹{product.price.toLocaleString("en-IN")}
-            </p>
-            {product.mrp > product.price && (
-              <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
-                ₹{product.mrp.toLocaleString("en-IN")}
-              </p>
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
+                ₹{product.price.toLocaleString("en-IN")}
+              </span>
+              {product.mrp > product.price && (
+                <span className="text-tiny text-[#9B8CB5] line-through tabular-nums">
+                  ₹{product.mrp.toLocaleString("en-IN")}
+                </span>
+              )}
+            </div>
+            {savingsPercent > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight mt-0.5 leading-none">
+                {savingsPercent}% OFF
+              </span>
             )}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
@@ -1240,14 +1240,6 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
         >
           <Heart className={`h-3.5 w-3.5 ${wishlisted ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
         </button>
-        {product.discount > 0 && (
-          <span
-            className="absolute top-2 right-2 z-20 flex items-center gap-1 rounded-lg bg-[#2D1B69] px-2 py-1 text-tiny font-black text-white shadow-lg"
-          >
-            <TrendingDown className="h-3 w-3" />
-            {savingsPercent}% OFF
-          </span>
-        )}
       </div>
 
       {/* Info */}
@@ -1288,10 +1280,15 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
         <div className="mt-auto pt-3 flex items-center gap-6">
           <div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-2 flex-wrap">
               <span className="text-2xl font-black text-[var(--text-primary)]">₹{product.price.toLocaleString("en-IN")}</span>
               {product.mrp > product.price && (
                 <span className="text-xs text-[var(--text-muted)] line-through font-medium">₹{product.mrp.toLocaleString("en-IN")}</span>
+              )}
+              {savingsPercent > 0 && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight leading-none">
+                  {savingsPercent}% OFF
+                </span>
               )}
             </div>
             {product.bulkLabel && (

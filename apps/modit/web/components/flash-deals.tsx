@@ -90,18 +90,20 @@ export function FlashDeals() {
                       <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white/20" />
                     </span>
                   )}
-                  <span className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
-                    {product.discount}% OFF
-                  </span>
                 </Link>
                 <div className="p-2">
                   <p className="text-tiny font-bold text-[#7CB518] uppercase truncate leading-none">{product.brand}</p>
                   <Link href={productLink(product)}>
                     <p className="text-micro sm:text-tiny font-semibold text-white leading-tight line-clamp-2 min-h-[24px] mt-1 hover:text-[#7CB518] transition-colors">{product.name}</p>
                   </Link>
-                  <div className="flex items-baseline gap-1.5 mt-1">
+                  <div className="flex items-baseline gap-1.5 mt-1 flex-wrap">
                     <span className="text-body-md font-extrabold text-[#7CB518]">₹{product.price.toLocaleString("en-IN")}</span>
                     <span className="text-tiny text-white/30 line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
+                    {product.discount > 0 && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#7CB518]/20 border border-[#7CB518]/40 text-[#7CB518] text-[9.5px] font-extrabold leading-none">
+                        {product.discount}% OFF
+                      </span>
+                    )}
                   </div>
                   <div className="mt-1.5 min-h-[30px]">
                     <button

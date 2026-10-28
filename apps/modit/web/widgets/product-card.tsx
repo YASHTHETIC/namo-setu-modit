@@ -80,21 +80,16 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       href={productLink(product)}
       className={`bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
-      {/* Image zone — single %OFF ribbon, nothing else */}
-      <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden">
+      {/* Image zone — clean & unobstructed product photo */}
+      <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden p-2">
         <ImageGuard
           src={product.images?.[0]}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
           draggable={false}
-          className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+          className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
         />
-        {discount > 0 && (
-          <span className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
-            {discount}% OFF
-          </span>
-        )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -128,13 +123,20 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Bottom row — price block left, ADD/stepper right */}
         <div className="mt-auto flex items-end justify-between gap-1.5 pt-1">
           <div className="min-w-0">
-            <p className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
-              ₹{activePrice.toLocaleString("en-IN")}
-            </p>
-            {activeMrp > activePrice && (
-              <p className="text-tiny text-[#9B8CB5] line-through tabular-nums">
-                ₹{activeMrp.toLocaleString("en-IN")}
-              </p>
+            <div className="flex items-baseline gap-1 flex-wrap">
+              <span className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
+                ₹{activePrice.toLocaleString("en-IN")}
+              </span>
+              {activeMrp > activePrice && (
+                <span className="text-micro text-[#9B8CB5] line-through tabular-nums">
+                  ₹{activeMrp.toLocaleString("en-IN")}
+                </span>
+              )}
+            </div>
+            {discount > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[9.5px] font-extrabold tracking-tight mt-0.5 leading-none">
+                {discount}% OFF
+              </span>
             )}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
