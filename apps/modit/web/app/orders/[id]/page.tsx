@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
-import { getProductById } from "@/lib/product-data";
+import { getProductById, getProductBySku } from "@/lib/product-data";
 import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
@@ -131,7 +131,12 @@ function toOrderDetail(api: any): OrderDetail | null {
       transactionId: api.payment_reference ? String(api.payment_reference) : undefined,
     },
     items: items.map((it: any) => {
-      const p = it?.product_id ? getProductById(String(it.product_id)) : undefined;
+      // API order items carry a DB-UUID product_id that the static catalog
+      // (slug-keyed) can't resolve; the SKU is stable across both, so look
+      // it up by SKU first and only then fall back to the id.
+      const p =
+        (it?.sku ? getProductBySku(String(it.sku)) : undefined) ??
+        (it?.product_id ? getProductById(String(it.product_id)) : undefined);
       const qty = Number(it?.quantity ?? 0);
       const unitPrice = Number(it?.unit_price ?? 0);
       return {
