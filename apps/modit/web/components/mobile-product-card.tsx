@@ -68,7 +68,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           />
         </Link>
         {discountPct > 0 && (
-          <span className="absolute top-0 left-0 rounded-br-lg bg-[#2D1B69] px-1.5 py-0.5 text-tiny font-black text-white">
+          <span className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
             {discountPct}% OFF
           </span>
         )}

@@ -91,14 +91,14 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           className="object-contain animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
         />
         {discount > 0 && (
-          <span className="absolute top-0 left-0 z-10 bg-[#2D1B69] text-white rounded-br-lg px-1.5 py-0.5 text-micro font-black">
+          <span className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
             {discount}% OFF
           </span>
         )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-1 right-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-1.5 right-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-xs hover:scale-110 active:scale-95 transition-transform"
         >
           <svg viewBox="0 0 24 24" className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />

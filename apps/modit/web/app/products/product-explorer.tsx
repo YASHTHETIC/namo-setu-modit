@@ -1101,9 +1101,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
 
-        {/* Discount ribbon — the single discount signal */}
+        {/* Discount ribbon — premium modern pill */}
         {savingsPercent > 0 && (
-          <span className="absolute top-0 left-0 z-20 bg-[#2D1B69] text-white rounded-br-lg px-2 py-1 text-tiny font-black">
+          <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
             {savingsPercent}% OFF
           </span>
         )}

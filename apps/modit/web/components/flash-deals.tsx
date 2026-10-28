@@ -90,7 +90,7 @@ export function FlashDeals() {
                       <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white/20" />
                     </span>
                   )}
-                  <span className="absolute top-1.5 left-1.5 bg-[#2D1B69] text-white text-micro font-bold px-1.5 py-0.5 rounded-full">
+                  <span className="absolute top-1.5 left-1.5 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] px-2 py-0.5 text-[10px] font-extrabold tracking-tight text-white shadow-xs">
                     {product.discount}% OFF
                   </span>
                 </Link>
