@@ -195,6 +195,101 @@ def test_find_order_by_reference():
         validate_coupon("CEMENT50", 5000.0, {"painting"}, date(2026, 1, 1))  # wrong category
 
 
+def test_checkout_double_tap_race_replays_winner(monkeypatch):
+    """A concurrent duplicate (same client_reference) that loses the INSERT
+    race must replay the winner's order — not surface a 500. Found by real
+    browser double-tap testing: the loser's flush raised IntegrityError
+    before the commit-level guard could catch it."""
+    import asyncio
+
+    from sqlalchemy.exc import IntegrityError
+
+    from backend.app.schemas.modit import CheckoutRequest
+    from backend.app.services import checkout as svc
+
+    winner = object()
+    replayed = object()
+    find_calls = []
+
+    async def fake_totals(session, payload):
+        return {
+            "subtotal": 370.0,
+            "discount_total": 0.0,
+            "shipping_total": 250.0,
+            "gst_total": 103.6,
+            "grand_total": 723.6,
+            "lines": [],
+        }
+
+    async def fake_org(session, user):
+        class Org:
+            id = "org-1"  # plain attribute: survives rollback in the fakes
+
+        return Org()
+
+    async def fake_find(session, org_id, ref):
+        assert org_id == "org-1"
+        find_calls.append(ref)
+        # First call = pre-insert idempotency check: nothing stored yet (the
+        # winner hasn't committed). Second call = post-race replay: found.
+        return None if len(find_calls) == 1 else winner
+
+    async def fake_stored(session, order):
+        assert order is winner
+        return replayed
+
+    class RaceSession:
+        """PO insert flushes fine; the order INSERT (2nd flush) hits the
+        UNIQUE client_reference constraint — a lost double-tap race."""
+
+        rolled_back = False
+
+        def __init__(self):
+            self._flushes = 0
+
+        def add(self, obj):
+            pass  # PO/order adds are no-ops; the order flush raises below
+
+        async def flush(self):
+            self._flushes += 1
+            if self._flushes >= 2:
+                raise IntegrityError(
+                    "INSERT INTO orders ...",
+                    {},
+                    Exception("UNIQUE constraint failed: orders.client_reference"),
+                )
+
+        async def rollback(self):
+            self.rolled_back = True
+
+    monkeypatch.setattr(svc, "compute_checkout_totals", fake_totals)
+    monkeypatch.setattr(svc, "get_or_create_personal_org", fake_org)
+    monkeypatch.setattr(svc, "_find_order_by_reference", fake_find)
+    monkeypatch.setattr(svc, "_stored_checkout_response", fake_stored)
+
+    payload = CheckoutRequest(
+        items=[{"sku": "CEM-ACC-50", "quantity": 1}],
+        payment_method="cod",
+        client_reference="double-tap-1",
+    )
+    session = RaceSession()
+    result = asyncio.run(svc.place_checkout_order(session, object(), payload))
+    assert result is replayed  # winner replayed, no exception escaped
+    assert session.rolled_back is True  # loser's writes were discarded
+
+    # A non-client_reference IntegrityError (a real bug) must still raise
+    # from the guarded order flush — not be swallowed by the race replay.
+    class OtherRaceSession(RaceSession):
+        async def flush(self):
+            self._flushes += 1
+            if self._flushes >= 2:
+                raise IntegrityError("INSERT", {}, Exception("UNIQUE constraint failed: users.email"))
+
+    find_calls.clear()  # fresh race: pre-insert check finds nothing again
+    with pytest.raises(IntegrityError):
+        asyncio.run(svc.place_checkout_order(OtherRaceSession(), object(), payload))
+
+
 def test_razorpay_hmac():
     import hashlib
     import hmac

@@ -401,16 +401,20 @@ async def place_checkout_order(
     """Create PO + Order + items + payment atomically. Returns server totals."""
     computed = await compute_checkout_totals(session, payload)
     org = await get_or_create_personal_org(session, user)
+    # Plain string copy: after a rollback (race replay below) every ORM
+    # object is expired, and sync attribute access on it raises
+    # MissingGreenlet. The id never changes, so snapshot it up front.
+    org_id = str(org.id)
 
     # Retry-safe: same buyer + same reference replays the stored order.
     ref = (getattr(payload, "client_reference", None) or "").strip() or None
     if ref:
-        existing = await _find_order_by_reference(session, org.id, ref)
+        existing = await _find_order_by_reference(session, org_id, ref)
         if existing is not None:
             return await _stored_checkout_response(session, existing)
 
     if str(getattr(payload, "payment_method", "cod") or "cod").lower() == "credit":
-        await _require_credit_approval(session, org.id, computed["grand_total"])
+        await _require_credit_approval(session, org_id, computed["grand_total"])
 
     now = _utcnow()
 
@@ -454,7 +458,19 @@ async def place_checkout_order(
         ),
     )
     session.add(order)
-    await session.flush()
+    try:
+        await session.flush()
+    except IntegrityError as exc:
+        # Lost a double-tap race on client_reference (a concurrent request
+        # with the same key committed first): replay the winner's order
+        # instead of surfacing a 500. The loser's flush blocks until the
+        # winner commits, so the row is visible to the replay lookup.
+        await session.rollback()
+        if ref and "client_reference" in str(getattr(exc, "orig", exc)):
+            existing = await _find_order_by_reference(session, org_id, ref)
+            if existing is not None:
+                return await _stored_checkout_response(session, existing)
+        raise
 
     item_reads = []
     for line in computed["lines"]:
@@ -511,7 +527,7 @@ async def place_checkout_order(
         # Lost a double-tap race on client_reference: replay the winner.
         await session.rollback()
         if ref and "client_reference" in str(getattr(exc, "orig", exc)):
-            existing = await _find_order_by_reference(session, org.id, ref)
+            existing = await _find_order_by_reference(session, org_id, ref)
             if existing is not None:
                 return await _stored_checkout_response(session, existing)
         raise
