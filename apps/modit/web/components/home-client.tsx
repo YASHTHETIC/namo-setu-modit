@@ -173,14 +173,26 @@ export default function HomeClient() {
   }, [products]);
 
   const categories = [
-    { name: "Cement", slug: "cement", img: "/products/cement/Ambuja Cement.png", count: 10, color: "#2D1B69" },
-    { name: "Tiling &\nWaterproof", slug: "tiling", img: "/products/tiling/Dr Fixit.png", count: 14, color: "#E91E63" },
-    { name: "Painting", slug: "painting", img: "/products/painting/Asian Paint.png", count: 34, color: "#7CB518" },
-    { name: "Lighting", slug: "lighting", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp", count: 12, color: "#00BCD4" },
-    { name: "Wires &\nCables", slug: "electrical", img: "/products/lighting/download-Photoroom 1.png", count: 8, color: "#FF9800" },
-    { name: "Plywood,\nMDF", slug: "plywood", img: "/products/painting/Asian Paints Tractor Emulsion Base White 20 L.png", count: 6, color: "#795548" },
-    { name: "Fevicol", slug: "fevicol", img: "/products/tiling/Bostik.png", count: 5, color: "#E91E63" },
-    { name: "Hardware", slug: "hardware-tools", img: "/products/hardware-tools/250g Wooden Handle Claw Hammer.png", count: 27, color: "#607D8B" },
+    { name: "Cement", slug: "cement", img: "/products/cement/Ambuja Cement.png", count: 14, color: "#2D1B69" },
+    { name: "Painting", slug: "painting", img: "/products/painting/Asian Paint.png", count: 98, color: "#7CB518" },
+    { name: "Lighting", slug: "lighting", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp", count: 45, color: "#00BCD4" },
+    { name: "Tiling", slug: "tiling", img: "/products/tiling/Dr Fixit.png", count: 68, color: "#E91E63" },
+    { name: "Conduits & GI Boxes", slug: "conduits", img: "/products/conduits/PRINS-PVC-Conduit-Pipe-20-mm-Heavy-for-Electrical-Fittings.png", count: 37, color: "#FF9800" },
+    { name: "Hardware & Tools", slug: "hardware-tools", img: "/products/hardware-tools/250g Wooden Handle Claw Hammer.png", count: 103, color: "#607D8B" },
+    { name: "Hinges & Handles", slug: "hinges", img: "/products/hinges/Ebco Sleek Telescopic Drawer Channel Regular Close 35 Kg Capacity Zinc.png", count: 104, color: "#795548" },
+    { name: "Pipes & Tanks", slug: "pipes", img: "/products/pipes/Ashirvad Flowguard Plus CPVC Ball Valve.png", count: 116, color: "#00BCD4" },
+    { name: "Sanitary & Bath", slug: "sanitary", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp", count: 157, color: "#2196F3" },
+    { name: "Waterproofing", slug: "waterproofing", img: "/products/waterproofing/Asian Paints SmartCare Damp Proof Advanced.png", count: 21, color: "#009688" },
+    { name: "Fans & Exhaust", slug: "fans", img: "/products/fans/Aero 400.png", count: 42, color: "#673AB7" },
+    { name: "Door Locks", slug: "locks", img: "/products/locks/Atom.png", count: 52, color: "#3F51B5" },
+    { name: "Fevicol Adhesives", slug: "fevicol", img: "/products/fevicol/Fevicol HeatX Heatproof Adhesive 1 Ltr.png", count: 56, color: "#E91E63" },
+    { name: "Home Appliances", slug: "appliances", img: "/products/appliances/ArnoNeo6L2022PackagingFrontView_1.webp", count: 56, color: "#FF5722" },
+    { name: "Kitchen Sinks", slug: "kitchen", img: "/products/kitchen/Florentine Prime Sink Cock Table Mounted Swinging Spout.jpeg", count: 40, color: "#00BCD4" },
+    { name: "Plywood & MDF", slug: "plywood", img: "/products/plywood/12mm Sainik 710 Plywood Board 8x4 ft at.png", count: 44, color: "#795548" },
+    { name: "Switches & Sockets", slug: "switches", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg", count: 166, color: "#607D8B" },
+    { name: "Designer Tiles", slug: "tiles", img: "/products/tiles/Blue-Granite.png", count: 19, color: "#9C27B0" },
+    { name: "Wardrobe Fittings", slug: "wardrobe", img: "/products/wardrobe/45mm-Telescopic-Channel.png", count: 25, color: "#4CAF50" },
+    { name: "Wires, MCB & Boards", slug: "electrical", img: "/products/electrical/0020082_havells-25-sq-mm-180-mtr-frls-house-wire_600-Photoroom.png", count: 42, color: "#FF9800" },
   ];
 
   /** Photo tiles for headline categories; the rest use brand icons. */
