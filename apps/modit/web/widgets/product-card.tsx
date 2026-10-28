@@ -80,7 +80,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       href={productLink(product)}
       className={`bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 ${compact ? "w-[140px]" : "w-full"} group group/card`}
     >
-      {/* Image zone — clean & unobstructed product photo */}
+      {/* Image zone — clean & unobstructed with corner discount pill */}
       <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden p-2">
         <ImageGuard
           src={product.images?.[0]}
@@ -88,12 +88,17 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
           draggable={false}
-          className="object-contain p-1.5 animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+          className="object-contain pt-6 pb-1.5 px-2 animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
         />
+        {discount > 0 && (
+          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+            {discount}% OFF
+          </span>
+        )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-1.5 right-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-xs hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-2 right-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-xs hover:scale-110 active:scale-95 transition-transform"
         >
           <svg viewBox="0 0 24 24" className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
@@ -133,11 +138,6 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 </span>
               )}
             </div>
-            {discount > 0 && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[9.5px] font-extrabold tracking-tight mt-0.5 leading-none">
-                {discount}% OFF
-              </span>
-            )}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
             {qty === 0 ? (

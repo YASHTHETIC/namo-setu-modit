@@ -64,12 +64,17 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             fill
             sizes="50vw"
             draggable={false}
-            className="object-contain p-1 animate-fade-in card3d-img"
+            className="object-contain pt-6 pb-1 px-1.5 animate-fade-in card3d-img"
           />
         </Link>
+        {discountPct > 0 && (
+          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+            {discountPct}% OFF
+          </span>
+        )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
-          className="absolute top-1.5 right-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
+          className="absolute top-2 right-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
           aria-label="Wishlist"
         >
           <Heart className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "text-[#9B8CB5]"}`} />
@@ -120,15 +125,10 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </button>
         ) : <span className="h-[14px]" />}
         {unitRate ? <p className="text-tiny text-[#6B5B83] min-h-[14px]">{unitRate}</p> : <p className="text-tiny min-h-[14px]" aria-hidden="true"> </p>}
-        <div className="flex items-baseline gap-1 mt-0.5 flex-wrap">
+        <div className="flex items-baseline gap-1.5 mt-0.5">
           <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString("en-IN")}</span>
           {product.mrp > product.price && (
             <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
-          )}
-          {discountPct > 0 && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[9.5px] font-extrabold leading-none">
-              {discountPct}% OFF
-            </span>
           )}
         </div>
         <Link href={productLink(product)}>

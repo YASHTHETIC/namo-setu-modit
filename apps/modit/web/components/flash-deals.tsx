@@ -84,10 +84,15 @@ export function FlashDeals() {
               <div key={product.id} className="w-[152px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
                 <Link href={productLink(product)} className="block relative aspect-square bg-white/5 p-2">
                   {product.images[0] ? (
-                    <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 46vw, 180px" loading="lazy" draggable={false} className="object-contain animate-fade-in group-hover:scale-105 transition-transform" />
+                    <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 46vw, 180px" loading="lazy" draggable={false} className="object-contain pt-6 pb-1 px-1.5 animate-fade-in group-hover:scale-105 transition-transform" />
                   ) : (
                     <span className="flex h-full w-full items-center justify-center">
                       <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white/20" />
+                    </span>
+                  )}
+                  {product.discount > 0 && (
+                    <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#7CB518] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-[#150726] shadow-xs">
+                      {product.discount}% OFF
                     </span>
                   )}
                 </Link>
@@ -96,14 +101,9 @@ export function FlashDeals() {
                   <Link href={productLink(product)}>
                     <p className="text-micro sm:text-tiny font-semibold text-white leading-tight line-clamp-2 min-h-[24px] mt-1 hover:text-[#7CB518] transition-colors">{product.name}</p>
                   </Link>
-                  <div className="flex items-baseline gap-1.5 mt-1 flex-wrap">
+                  <div className="flex items-baseline gap-1.5 mt-1">
                     <span className="text-body-md font-extrabold text-[#7CB518]">₹{product.price.toLocaleString("en-IN")}</span>
                     <span className="text-tiny text-white/30 line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
-                    {product.discount > 0 && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#7CB518]/20 border border-[#7CB518]/40 text-[#7CB518] text-[9.5px] font-extrabold leading-none">
-                        {product.discount}% OFF
-                      </span>
-                    )}
                   </div>
                   <div className="mt-1.5 min-h-[30px]">
                     <button

@@ -129,7 +129,7 @@ export default function WishlistPage() {
                     sizes="(max-width: 640px) 100vw, 400px"
                     loading="lazy"
                     draggable={false}
-                    className="object-contain"
+                    className="object-contain pt-6 pb-2 px-2"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
@@ -137,9 +137,14 @@ export default function WishlistPage() {
                   </div>
                 )}
               </Link>
+              {product.discount > 0 && (
+                <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+                  {product.discount}% OFF
+                </span>
+              )}
               <button
                 onClick={() => removeWishlist(product.id)}
-                className="absolute top-2 left-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-all hover:bg-white hover:scale-110"
+                className="absolute top-2 right-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-all hover:bg-white hover:scale-110"
                 title="Remove from Wishlist"
               >
                 <Heart className="h-4 w-4 fill-red-500 text-red-500" />
@@ -178,11 +183,6 @@ export default function WishlistPage() {
                   {product.mrp > product.price && (
                     <span className="text-xs text-[#9B8CB5] line-through">
                       ₹{product.mrp.toLocaleString("en-IN")}
-                    </span>
-                  )}
-                  {product.discount > 0 && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight leading-none">
-                      {product.discount}% OFF
                     </span>
                   )}
                 </div>

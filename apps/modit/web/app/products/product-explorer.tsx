@@ -1090,7 +1090,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain p-2 card3d-img"
+                className="object-contain pt-6 pb-2 px-2.5 card3d-img"
               />
             ) : (
             <div className="flex h-full items-center justify-center">
@@ -1100,6 +1100,13 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           {/* Bottom gradient overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
+
+        {/* Discount badge — premium modern corner tag */}
+        {savingsPercent > 0 && (
+          <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+            {savingsPercent}% OFF
+          </span>
+        )}
 
         {/* Delivery time pill — bottom-left */}
         <div className="absolute bottom-3 left-3 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
@@ -1129,11 +1136,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 </span>
               )}
             </div>
-            {savingsPercent > 0 && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight mt-0.5 leading-none">
-                {savingsPercent}% OFF
-              </span>
-            )}
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
             <button
@@ -1221,7 +1223,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
               sizes="176px"
               loading="lazy"
               draggable={false}
-              className="object-contain transition-transform duration-500 group-hover:scale-105"
+              className="object-contain pt-6 pb-2 px-2.5 transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -1229,9 +1231,14 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
             </div>
           )}
         </Link>
+        {savingsPercent > 0 && (
+          <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+            {savingsPercent}% OFF
+          </span>
+        )}
         <button
           onClick={handleWishlist}
-          className="absolute top-2 left-2 z-20 flex h-8 w-8 items-center justify-center rounded-full transition-all"
+          className="absolute top-2 right-2 z-20 flex h-8 w-8 items-center justify-center rounded-full transition-all"
           style={{
             background: wishlisted ? '#FCE4EC' : 'rgba(255,255,255,0.92)',
             boxShadow: wishlisted ? '0 2px 8px rgba(239,68,68,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
@@ -1284,11 +1291,6 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
               <span className="text-2xl font-black text-[var(--text-primary)]">₹{product.price.toLocaleString("en-IN")}</span>
               {product.mrp > product.price && (
                 <span className="text-xs text-[var(--text-muted)] line-through font-medium">₹{product.mrp.toLocaleString("en-IN")}</span>
-              )}
-              {savingsPercent > 0 && (
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] text-[10px] font-extrabold tracking-tight leading-none">
-                  {savingsPercent}% OFF
-                </span>
               )}
             </div>
             {product.bulkLabel && (
