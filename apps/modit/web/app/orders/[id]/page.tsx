@@ -17,6 +17,10 @@ import {
   Star, Navigation, RefreshCcw, Check, XCircle
 } from "lucide-react";
 
+// Statuses where a delivery row may exist on the server (created by the
+// admin's "Dispatch + delivery"). Used to skip the delivery fetch earlier.
+const DISPATCHED_STATUSES = new Set(["dispatched", "in_transit", "out_for_delivery", "delivered"]);
+
 interface OrderItem {
   productId?: string;
   name: string;
@@ -163,8 +167,11 @@ function toOrderDetail(api: any): OrderDetail | null {
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { data: apiOrder, isLoading, refetch: refetchOrder, dataUpdatedAt } = useOrder(id, demoOrders[id] ?? null);
-  // Real delivery for the Track button (404s quietly when none exists yet).
-  const { data: liveDelivery } = useOrderDelivery(id);
+  // Real delivery for the Track button. Delivery rows only exist once the
+  // order is dispatched, so asking earlier is a guaranteed 404 (console
+  // noise) — gate on the loaded order's status.
+  const orderStatus = String((apiOrder as { status?: string } | null)?.status ?? "");
+  const { data: liveDelivery } = useOrderDelivery(id, DISPATCHED_STATUSES.has(orderStatus));
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
   const [refreshing, setRefreshing] = useState(false);

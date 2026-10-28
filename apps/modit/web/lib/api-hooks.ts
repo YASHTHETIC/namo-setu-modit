@@ -318,6 +318,19 @@ export function useCategories() {
   const apiCategories = rawCategories
     .map(mapApiCategoryToFrontend)
     .filter((c): c is Category => c !== null);
+  // Order must be deterministic across server and client: SSR renders the
+  // curated static order, while a fast local API can answer before hydration
+  // finishes and return a different order — React then reports a hydration
+  // mismatch. Rank live categories into the curated order (new/unknown ones
+  // appended, slug-sorted) so both sources render identically.
+  if (apiCategories.length > 0) {
+    const rank = new Map(staticCategories.map((c, i) => [c.slug, i]));
+    apiCategories.sort((a, b) => {
+      const ra = rank.get(a.slug) ?? Number.MAX_SAFE_INTEGER;
+      const rb = rank.get(b.slug) ?? Number.MAX_SAFE_INTEGER;
+      return ra !== rb ? ra - rb : a.slug.localeCompare(b.slug);
+    });
+  }
 
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "categories"],

@@ -6,6 +6,8 @@ import { useOrders, useOrderDelivery, useDeliveryTrack } from "@/lib/modit-api";
 import { useAuthReady } from "@/lib/use-auth";
 
 const ACTIVE_STATUSES = new Set(["placed", "confirmed", "processing", "in_transit", "dispatched"]);
+// Statuses where a delivery row may exist (created by "Dispatch + delivery").
+const DISPATCHED_STATUSES = new Set(["dispatched", "in_transit"]);
 
 const STATUS_LABEL: Record<string, string> = {
   placed: "Placed",
@@ -34,7 +36,11 @@ export function ActiveOrderBanner() {
   const active = Array.isArray(orders)
     ? orders.find((o) => ACTIVE_STATUSES.has(o.status))
     : undefined;
-  const { data: delivery } = useOrderDelivery(active?.id, Boolean(active));
+  // Delivery rows are only created at dispatch — asking for one on a
+  // just-placed order is a guaranteed 404 (console noise on every home
+  // load). Query only once the order can actually have a delivery.
+  const mayHaveDelivery = Boolean(active) && DISPATCHED_STATUSES.has(active?.status ?? "");
+  const { data: delivery } = useOrderDelivery(active?.id, mayHaveDelivery);
   const { data: track } = useDeliveryTrack(delivery?.id);
 
   if (!active) return null;
