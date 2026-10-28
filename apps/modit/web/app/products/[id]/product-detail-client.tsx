@@ -51,6 +51,16 @@ import { MessageSquareQuote, Bell } from "lucide-react";
 import { useStockAlertStore } from "@/lib/stock-alert-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
 
+/** Stable 32-bit string hash (deterministic shuffle seed — SSR-safe). */
+function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i += 1) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
 export default function ProductDetailPage({
   params,
   initialProduct,
@@ -122,11 +132,20 @@ export default function ProductDetailPage({
       .slice(0, 6);
   }, [product, categoryList]);
 
+  // Deterministic "shuffle" keyed to the current product: a plain
+  // Math.random() sort here would run once during SSR and once at hydration,
+  // yielding different orders and breaking React hydration. Hashing the ids
+  // gives the same scrambled order on server and client while still varying
+  // per product.
   const frequentlyBought = useMemo(() => {
     if (!product) return [];
+    const seed = hashString(product.id);
     return categoryList
       .filter((p) => p.id !== product.id && p.inStock)
-      .sort(() => Math.random() - 0.5)
+      .slice(0, 20)
+      .map((p) => ({ p, k: hashString(`${seed}:${p.id}`) }))
+      .sort((a, b) => a.k - b.k)
+      .map(({ p }) => p)
       .slice(0, 4);
   }, [product, categoryList]);
 
