@@ -67,11 +67,47 @@ export const moditKeys = {
 };
 
 // Product Catalog
+// The backend caps page_size at 200 (list perf budget). A few screens — the
+// product explorer, home rails, dashboard — intentionally ask for the WHOLE
+// catalog in one cached query so client-side filters and sidebar counts can
+// never disagree. Honour that intent by walking the server pages inside this
+// single queryFn and concatenating: same hook API, same cache key, live data
+// instead of the 422 → static-catalog fallback (which hid admin edits).
+const SERVER_MAX_PAGE_SIZE = 200;
+
+async function listProductsPaged(
+  params: Parameters<ReturnType<typeof getModitApi>["listProducts"]>[0],
+  signal: AbortSignal,
+) {
+  const wanted = Number(params?.page_size ?? 0);
+  if (!params || wanted <= SERVER_MAX_PAGE_SIZE) {
+    return getModitApi().listProducts(params, { signal });
+  }
+  const pageSize = SERVER_MAX_PAGE_SIZE;
+  const first = await getModitApi().listProducts({ ...params, page: 1, page_size: pageSize }, { signal });
+  const firstPage = first as { items?: unknown[]; total?: number };
+  const items = [...(firstPage.items ?? [])];
+  const total = Number(firstPage.total ?? items.length);
+  // Never walk past what the caller asked for (wanted/size pages), and never
+  // past what the server reports (total/size) — whichever is smaller.
+  const pages = Math.min(Math.ceil(total / pageSize), Math.ceil(wanted / pageSize));
+  if (pages > 1) {
+    // Remaining pages in parallel — page 1 already told us the total.
+    const rest = await Promise.all(
+      Array.from({ length: pages - 1 }, (_, i) =>
+        getModitApi().listProducts({ ...params, page: i + 2, page_size: pageSize }, { signal })
+      ),
+    );
+    for (const next of rest) items.push(...(((next as { items?: unknown[] }).items ?? []) as unknown[]));
+  }
+  return { ...(first as object), items, total } as typeof first;
+}
+
 export function useProducts(params?: { search?: string; category_id?: string; brand_id?: string; category_slug?: string; brand_slug?: string; supplier_id?: string; page?: number; page_size?: number }) {
   return useQuery({
     queryKey: moditKeys.products(params),
     // react-query aborts the in-flight request on key change/unmount via signal.
-    queryFn: ({ signal }) => getModitApi().listProducts(params, { signal }),
+    queryFn: ({ signal }) => listProductsPaged(params, signal),
     ...fastQueryOpts,
   });
 }
