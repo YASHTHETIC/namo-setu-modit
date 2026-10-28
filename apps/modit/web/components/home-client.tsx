@@ -288,32 +288,11 @@ export default function HomeClient() {
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
       <div className="mt-3 sm:mt-4">
-        {/* Phone: FLAT — bare brand-colored icons on the page background,
-            no chips, no cards. sm+: the dark premium panel. */}
-        <div className="sm:hidden">
-          <div className="flex items-center justify-center gap-1.5 pb-2">
-            <ShieldCheck className="h-3.5 w-3.5 text-[#7CB518]" />
-            <p className="text-tiny font-extrabold tracking-[0.08em] text-[#150726]">MODIT ASSURED</p>
-          </div>
-          <div className="grid grid-cols-4 divide-x divide-[#E7DEF5]">
-            {[
-              { icon: Undo2, title: "7-Day Returns", tint: "#7CB518" },
-              { icon: Truck, title: "Free Delivery", tint: "#00BCD4" },
-              { icon: ReceiptIndianRupee, title: "GST Invoice", tint: "#E91E63" },
-              { icon: BadgeCheck, title: "Genuine Products", tint: "#2D1B69" },
-            ].map((t) => (
-              <div key={t.title} className="flex flex-col items-center gap-1 px-0.5 text-center">
-                <t.icon className="h-5 w-5" style={{ color: t.tint }} />
-                <span className="text-micro font-bold leading-tight" style={{ color: t.tint }}>{t.title}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* sm+: dark premium panel — centered banner width, never a full-width void */}
-        <div className="assure-stripes hidden sm:block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-4 max-w-[1000px] mx-auto">
-          <div className="flex items-center justify-center gap-1.5 mb-3">
-            <ShieldCheck className="h-4 w-4 text-[#7CB518]" />
-            <p className="text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
+        {/* MODIT ASSURED — dark premium panel across all devices (Mobile & Desktop) */}
+        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-3 sm:py-4 max-w-[1000px] mx-auto shadow-md">
+          <div className="flex items-center justify-center gap-1.5 mb-2.5 sm:mb-3">
+            <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#7CB518]" />
+            <p className="text-[11px] sm:text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
           </div>
           <div className="grid grid-cols-4 divide-x divide-white/10">
             {[
@@ -322,12 +301,19 @@ export default function HomeClient() {
               { icon: ReceiptIndianRupee, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
               { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
             ].map((t) => (
-              <div key={t.title} className="flex flex-col items-center gap-1.5 px-1 text-center">
-                <span className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}>
-                  <t.icon className="h-4 w-4" style={{ color: t.tint }} />
+              <div key={t.title} className="flex flex-col items-center gap-1 sm:gap-1.5 px-0.5 sm:px-1 text-center">
+                <span
+                  className="h-7 w-7 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}
+                >
+                  <t.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: t.tint }} />
                 </span>
-                <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>{t.title}</span>
-                <span className="text-tiny text-white/55 leading-tight">{t.sub}</span>
+                <span className="text-[9.5px] sm:text-tiny font-black leading-tight" style={{ color: t.tint }}>
+                  {t.title}
+                </span>
+                <span className="text-[8px] sm:text-tiny text-white/55 leading-tight">
+                  {t.sub}
+                </span>
               </div>
             ))}
           </div>
