@@ -1338,17 +1338,25 @@ async def list_deliveries(purchase_order_id: str | None = None, db: AsyncSession
 
 @router.post("/deliveries", response_model=DeliveryRead, status_code=status.HTTP_201_CREATED, dependencies=[admin_dependency])
 async def create_delivery(payload: DeliveryCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> Delivery:
-    """Create a delivery."""
+    """Create a delivery.
+
+    `status="picked_up"` (admin "Dispatch + delivery") stamps dispatched_at
+    so the buyer's track timeline shows the order as actually dispatched —
+    not still packed at the warehouse.
+    """
     from backend.app.services.modit import make_modit_reference
-    
+
+    now = datetime.now(timezone.utc)
+    dispatched = payload.status == "picked_up"
     delivery = Delivery(
         purchase_order_id=payload.purchase_order_id,
         delivery_number=make_modit_reference("DEL"),
-        status="pending",
+        status=payload.status,
         driver_id=payload.driver_id,
         vehicle_id=payload.vehicle_id,
         dest_lat=payload.dest_lat,
         dest_lng=payload.dest_lng,
+        dispatched_at=now if dispatched else None,
     )
     db.add(delivery)
     await db.commit()

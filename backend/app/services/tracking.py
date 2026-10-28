@@ -49,7 +49,7 @@ async def record_delivery_ping(
 ) -> DeliveryPing:
     """Store a rider heartbeat and refresh the delivery's last-known position.
 
-    First ping on a pending delivery auto-marks it dispatched/in_transit so
+    First ping on a pending/picked-up delivery auto-marks it in_transit so
     customers see movement without dispatcher input.
     """
     delivery = await session.get(Delivery, delivery_id)
@@ -61,7 +61,10 @@ async def record_delivery_ping(
     delivery.last_lat = lat
     delivery.last_lng = lng
     delivery.last_ping_at = now
-    if getattr(delivery, "status", None) == DeliveryStatus.PENDING.value:
+    if getattr(delivery, "status", None) in (
+        DeliveryStatus.PENDING.value,
+        DeliveryStatus.PICKED_UP.value,
+    ):
         delivery.status = DeliveryStatus.IN_TRANSIT.value
         if getattr(delivery, "dispatched_at", None) is None:
             delivery.dispatched_at = now

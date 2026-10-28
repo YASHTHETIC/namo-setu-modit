@@ -170,3 +170,107 @@ def test_order_delivery_absent_is_404(client):
     response = client.get("/api/v1/modit/orders/some-id/delivery")
     assert response.status_code == 404
     assert "detail" in response.json()
+
+
+def test_delivery_create_rejects_unknown_status(client):
+    # Only pending (rider not started) and picked_up (dispatched now) are
+    # creatable; anything else would fabricate timeline state.
+    from types import SimpleNamespace
+    from backend.app.main import app
+    from backend.app.api.deps import get_current_user
+
+    async def _mock_admin():
+        return SimpleNamespace(
+            id="admin-1",
+            is_active=True,
+            is_staff=lambda: True,
+            roles=[SimpleNamespace(name="super_admin")],
+        )
+
+    app.dependency_overrides[get_current_user] = _mock_admin
+    try:
+        response = client.post(
+            "/api/v1/modit/deliveries",
+            json={"purchase_order_id": "1", "status": "delivered"},
+            headers={"Authorization": "Bearer fake"},
+        )
+        assert response.status_code == 422
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+
+
+def test_delivery_create_picked_up_stamps_dispatched_at(client):
+    """Admin 'Dispatch + delivery' must create a *dispatched* delivery.
+
+    Regression: the row used to be created pending with dispatched_at=None
+    while the order was set to 'dispatched' — the buyer's track timeline then
+    contradicted the order status ('Packed at warehouse' next vs 'Dispatched').
+    """
+    from datetime import datetime, timezone
+    from backend.app.schemas.modit import DeliveryCreate
+
+    picked = DeliveryCreate(purchase_order_id="1", status="picked_up")
+    assert picked.status == "picked_up"
+    pending = DeliveryCreate(purchase_order_id="1")
+    assert pending.status == "pending"
+
+    # The endpoint stamps dispatched_at only for picked_up.
+    import asyncio
+    from types import SimpleNamespace
+
+    from backend.app.api.v1 import modit as api
+
+    captured = {}
+
+    class _S:
+        def add(self, obj):
+            captured["delivery"] = obj
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj, attribute_names=None):
+            if getattr(obj, "id", None) is None:
+                obj.id = "fake-delivery-id"
+            if getattr(obj, "created_at", None) is None:
+                obj.created_at = datetime.now(timezone.utc)
+
+    async def _create():
+        return await api.create_delivery(picked, _S(), SimpleNamespace(is_staff=lambda: True))
+
+    delivery = asyncio.run(_create())
+    assert delivery.status == "picked_up"
+    assert captured["delivery"].dispatched_at is not None
+
+
+def test_first_ping_advances_picked_up_to_in_transit():
+    """A picked_up delivery (created by dispatch) must move to in_transit on
+    the rider's first GPS ping — same as a pending one."""
+    import asyncio
+    from datetime import datetime, timezone
+    from types import SimpleNamespace
+
+    from backend.app.services import tracking
+
+    delivery = SimpleNamespace(
+        id="d1", status="picked_up", dispatched_at=None,
+        last_lat=None, last_lng=None, last_ping_at=None,
+    )
+
+    class _S:
+        def add(self, obj):
+            pass
+
+        async def get(self, model, ident):
+            return delivery
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj, attribute_names=None):
+            pass
+
+    ping = asyncio.run(tracking.record_delivery_ping(_S(), "d1", 28.6, 77.2))
+    assert delivery.status == "in_transit"
+    assert delivery.dispatched_at is not None  # backfilled for the timeline
+    assert ping.latitude == 28.6

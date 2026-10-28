@@ -12,12 +12,26 @@ const stepIcons: Record<string, typeof Package> = {
   delivered: CheckCircle2,
 };
 
-function formatEta(etaMinutes: number | null): string {
-  if (etaMinutes === null || etaMinutes === undefined) return "Calculating…";
+function formatEta(etaMinutes: number): string {
   if (etaMinutes < 60) return `Arriving in ~${etaMinutes} min`;
   const h = Math.floor(etaMinutes / 60);
   const m = etaMinutes % 60;
   return m === 0 ? `Arriving in ~${h} hr` : `Arriving in ~${h} hr ${m} min`;
+}
+
+/**
+ * Honest headline. An ETA only exists once the rider has pinged a location
+ * AND we know the destination — until then "Calculating…" would spin
+ * forever. Fall back to what the delivery status actually says instead.
+ */
+function trackHeadline(track: DeliveryTrackRead): string {
+  if (track.status === "delivered") return "Delivered";
+  if (track.status === "failed") return "Delivery delayed";
+  if (track.eta_minutes !== null && track.eta_minutes !== undefined) {
+    return formatEta(track.eta_minutes);
+  }
+  if (track.status === "pending") return "Preparing your order";
+  return "On the way"; // picked_up / in_transit, rider GPS not started yet
 }
 
 export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
@@ -34,7 +48,7 @@ export function DeliveryTracker({ track }: { track: DeliveryTrackRead }) {
             {track.delivery_number}
           </p>
           <h2 className="mt-1 text-xl font-extrabold text-[#2D1B69]">
-            {track.status === "delivered" ? "Delivered" : formatEta(track.eta_minutes)}
+            {trackHeadline(track)}
           </h2>
         </div>
         <span className="rounded-full bg-[#F0ECF9] px-3 py-1 text-xs font-bold capitalize text-[#2D1B69]">

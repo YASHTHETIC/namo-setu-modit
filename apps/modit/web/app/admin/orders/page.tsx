@@ -67,7 +67,9 @@ export default function AdminOrdersPage() {
     setBusyId(order.id);
     setSyncError("");
     try {
-      const delivery = await createDelivery.mutateAsync({ purchase_order_id: poId });
+      // picked_up = the goods leave the warehouse NOW: the backend stamps
+      // dispatched_at so the buyer's track timeline matches the order status.
+      const delivery = await createDelivery.mutateAsync({ purchase_order_id: poId, status: "picked_up" });
       setDispatched((prev) => ({ ...prev, [order.id]: delivery.delivery_number }));
       await handleStatus(order, "dispatched");
     } catch {

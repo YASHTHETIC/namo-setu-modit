@@ -972,7 +972,22 @@ class DeliveryBase(BaseModel):
 
 
 class DeliveryCreate(DeliveryBase):
-    pass
+    """Admin/dispatch creation.
+
+    `status="picked_up"` means the goods have left the warehouse *now*
+    (stamps dispatched_at) — used by the admin "Dispatch + delivery" button,
+    so the buyer's track timeline agrees with the order status.
+    `status="pending"` (default) waits for the rider's first GPS ping to
+    auto-dispatch.
+    """
+
+    status: str = "pending"
+
+    @model_validator(mode="after")
+    def _check_status(self):
+        if self.status not in {"pending", "picked_up"}:
+            raise ValueError("status must be 'pending' or 'picked_up'")
+        return self
 
 
 class DeliveryRead(ORMModel):
