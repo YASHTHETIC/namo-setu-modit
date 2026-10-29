@@ -2470,7 +2470,11 @@ button { touch-action: manipulation; }
 
 @keyframes fx-page-in {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  /* `none`, not translateY(0): with fill-mode both the end value persists,
+     and a lingering identity matrix would make .fx-page the containing block
+     for position:fixed descendants (mobile filter sheet rendered against the
+     tall <main> instead of the viewport). Same visual, no containing block. */
+  to { opacity: 1; transform: none; }
 }
 
 
@@ -2734,7 +2738,13 @@ button { touch-action: manipulation; }
 
 
 /* Whole-page mount entrance */
-.fx-page { animation: fx-page-in 0.45s ease-out both; }
+/* `backwards`, not `both`: a forwards fill pins transform: matrix(identity)
+   on <main> for the page's lifetime, which makes .fx-page the containing
+   block for position:fixed descendants — the mobile filter sheet then
+   positions against the tall <main> instead of the viewport (overlay only,
+   sheet pushed thousands of px below the fold). Backwards keeps the same
+   slide-in, and after 0.45s computed transform returns to none. */
+.fx-page { animation: fx-page-in 0.45s ease-out backwards; }
 
 
 
