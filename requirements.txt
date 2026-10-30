@@ -20,5 +20,5 @@ pyotp==2.9.0
 cryptography==44.0.0
 reportlab==4.2.5
 openpyxl==3.1.5
-psycopg2-binary==2.9.10
+psycopg2-binary==2.9.13
 psutil>=6.0.0
