@@ -1,0 +1,34 @@
+# Uptime watchdog for prod (modit.in). Runs on GitHub's schedule even when
+# no one has pushed: a red ✗ here = the site is down → GitHub notifies you
+# (email by default; enable "Actions" in your GitHub notification settings).
+# Edit the URLs below if the domain changes. Also runnable manually (Run ▸).
+name: Uptime watchdog
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Prod reachable
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Frontend 200
+        run: |
+          code=$(curl -s -o /dev/null -m 20 -w "%{http_code}" https://modit.in)
+          echo "GET https://modit.in -> $code"
+          [ "$code" = "200" ] || exit 1
+
+      - name: API healthz 200
+        run: |
+          code=$(curl -s -o /dev/null -m 20 -w "%{http_code}" https://api.modit.in/api/v1/healthz)
+          echo "GET https://api.modit.in/api/v1/healthz -> $code"
+          [ "$code" = "200" ] || exit 1
+
+      - name: API health has healthy dependencies
+        run: |
+          body=$(curl -s -m 20 https://api.modit.in/api/v1/healthz)
+          echo "healthz body: $body"
+          echo "$body" | grep -q '"status":"ok"' || { echo "API status is not ok"; exit 1; }

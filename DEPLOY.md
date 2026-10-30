@@ -48,18 +48,28 @@ Then open your domain (or `http://SERVER_IP`) in a browser.
 ## Updates after pushing new code
 
 ```bash
+# On your PC — never deploy red code:
+python -m pytest backend/tests -q          # all must pass
+npm run build --workspace=@modit/web       # and CI green on GitHub
+
+# On the server:
 cd /opt/modit
 git pull
 npm install --legacy-peer-deps
 .venv/bin/python -m alembic -c backend/alembic.ini upgrade head
-# first time / empty catalog only (fills 499 products + inventory):
+# first time / empty catalog only (seeds the static catalog ~1,100
+# products + inventory + demo users; safe to re-run):
 cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog && cd /opt/modit
 npm run build --workspace=@modit/web
 pm2 restart modit-web modit-api
 pm2 status
 ```
-Staff PIN for `/admin`: `grep '^NEXT_PUBLIC_ADMIN_PIN=' /opt/modit/apps/modit/web/.env.local`
-(first setup prints it; override anytime with `ADMIN_PIN=xxxxxx bash deploy/setup.sh`).
+
+Staff access (`/admin`): log in with the **staff email** you entered during
+setup (`BOOTSTRAP_ADMIN_EMAIL` in `/opt/modit/.env`) — first login with it
+auto-grants super_admin. Re-run the setup prompt (
+`BOOTSTRAP_ADMIN_EMAIL=you@modit.in bash deploy/setup.sh`) to change it.
+Any user with an admin/super_admin/support/manager role also gets staff access..
 
 ## Where things live
 
@@ -104,6 +114,10 @@ Staff PIN for `/admin`: `grep '^NEXT_PUBLIC_ADMIN_PIN=' /opt/modit/apps/modit/we
   never shipped to browsers.
 - Rotate JWT/database passwords by editing `/opt/modit/.env` + Postgres, then
   `pm2 restart modit-api`.
+- Prod error alerts (optional but please enable): add
+  `ERROR_WEBHOOK_URL=<discord/slack webhook>` to `/opt/modit/.env` and
+  `pm2 restart modit-api` — every unexpected 500 then pings your phone.
+  Watch the site itself via the GitHub **Uptime watchdog** workflow.
 
 ## Private repo access (server updates)
 
