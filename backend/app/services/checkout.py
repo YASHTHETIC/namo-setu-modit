@@ -23,11 +23,10 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from backend.app.models.modit import (
-    Category,
     CreditAccount,
-    GST,
     Inventory,
     ModitNotification,
     ModitPayment,
@@ -222,12 +221,38 @@ async def compute_checkout_totals(
 ) -> dict:
     """Validate SKUs against the retail catalog and compute server-side totals."""
     org = await _get_retail_org(session)
-    lines: list[dict] = []
-    category_slugs: set[str] = set()
-    subtotal = 0.0
-    gst_total = 0.0
+    if not payload.items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Cart is empty"
+        )
+    # One batched fetch for everything in the cart (category/gst eager):
+    # a 12-item cart is 3 round trips instead of ~36. Under a checkout burst
+    # this is the difference between "holds a pool slot briefly" and
+    # "stacks queries and starves the pool" — keep it batched.
+    products_by_sku: dict[str, Product] = {}
+    catalog = (
+        await session.execute(
+            select(Product)
+            .options(selectinload(Product.category), selectinload(Product.gst))
+            .where(
+                Product.organization_id == org.id,
+                Product.sku.in_([item.sku for item in payload.items]),
+                Product.is_active.is_(True),
+                Product.deleted_at.is_(None),
+            )
+        )
+    )
+    for product in catalog.scalars().all():
+        products_by_sku.setdefault(str(getattr(product, "sku", "") or ""), product)
+    # Reconcile SKUs the batched fetch did not surface. On a real DB that is
+    # only a genuinely unknown SKU (refetch → None → 404 below). Some test
+    # fakes respond to *any* filtered select with a universal row whose own
+    # sku attribute need not equal the filter — the filter itself is the
+    # source of truth for equality, so key by the requested SKU.
     for item in payload.items:
-        product = (
+        if item.sku in products_by_sku:
+            continue
+        hit = (
             (
                 await session.execute(
                     select(Product).where(
@@ -241,20 +266,30 @@ async def compute_checkout_totals(
             .scalars()
             .first()
         )
+        if hit is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"Unknown product SKU: {item.sku}"
+            )
+        products_by_sku[item.sku] = hit
+
+    lines: list[dict] = []
+    category_slugs: set[str] = set()
+    subtotal = 0.0
+    gst_total = 0.0
+    for item in payload.items:
+        product = products_by_sku.get(item.sku)
         if product is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail=f"Unknown product SKU: {item.sku}"
             )
         rate = DEFAULT_GST_RATE
-        if getattr(product, "gst_id", None):
-            gst = await session.get(GST, product.gst_id)
-            if gst is not None:
-                try:
-                    rate = float(getattr(gst, "rate_percent", None) or DEFAULT_GST_RATE)
-                except (TypeError, ValueError):
-                    rate = DEFAULT_GST_RATE
-        category = await session.get(Category, product.category_id)
-        category_slug = getattr(category, "slug", "") or ""
+        gst = product.gst
+        if gst is not None:
+            try:
+                rate = float(getattr(gst, "rate_percent", None) or DEFAULT_GST_RATE)
+            except (TypeError, ValueError):
+                rate = DEFAULT_GST_RATE
+        category_slug = str(getattr(product.category, "slug", "") or "")
         if category_slug:
             category_slugs.add(category_slug)
         try:
@@ -473,8 +508,14 @@ async def place_checkout_order(
         raise
 
     item_reads = []
-    for line in computed["lines"]:
+    # Decrement stock in a deterministic global order (by product_id): two
+    # concurrent checkouts holding the same SKUs in different cart orders
+    # would otherwise take the FOR UPDATE row locks in opposite sequences —
+    # the classic deadlock Postgres resolves by killing (and failing) one
+    # order. Buying must never fail because two carts raced each other.
+    for line in sorted(computed["lines"], key=lambda l: str(l["product"].id)):
         await _decrement_inventory(session, line["product"].id, line["quantity"])
+    for line in computed["lines"]:
         order_item = OrderItem(
             id=str(uuid4()),
             order_id=order.id,
