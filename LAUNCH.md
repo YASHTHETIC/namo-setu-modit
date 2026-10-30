@@ -100,3 +100,32 @@ On https://modit.in after the server update:
 3. Return request approval automation (returns pages exist; admin reviews
    them manually).
 4. Sentry-style trace grouping if webhook alerts feel raw.
+
+## Capacity model ("thousands of users at once")
+
+Configured headroom and where the ceiling is:
+
+- **Browsing** (the big crowd): the catalog is bundled in the app bundle,
+  so browsing hits Next SSR + nginx static cache + Cloudinary images.
+  `modit-web` runs PM2 **cluster of 2** (`deploy/ecosystem.config.js`) —
+  two Node loops share the :3001 socket. Next capacity x2 vs a single
+  process. nginx serves `/_next/static` etc. with 1-year cache headers.
+- **API reads**: catalog list/detail/category/brand GETs run in a dedicated
+  **browse bucket, 1200 req/min per IP** (CGNAT-safe; thousands of Indian
+  mobile shoppers share IPs). Writes/checkouts/admin: 300/min per IP.
+  Credentials (login/register/OTP): 10/min per IP. Test: `scripts/read_load.py`
+  (ladder to 200 concurrent, zero 5xx required).
+- **Orders**: pool math is deliberate — 2 uvicorn workers x (10 pool + 20
+  overflow) = 60 connections < PG max_connections 100. **Do not raise
+  workers without lowering the pool**: 4 workers x 30 = 120 > 100 and
+  Postgres will refuse checkouts. Checkout itself is one short
+  transaction with deadline guards (request 30s / statement 20s) and a
+  load test: `scripts/order_load.py`.
+- **Safety nets**: request timeout middleware (30s), rate limiter
+  (per-IP, shared via Redis with graceful fallback), ingest guards on
+  uploads, plus row-locked inventory so rushes cannot oversell.
+
+Scaling beyond this box (only when exceeded): put a CDN in front for
+static+images, add `--workers 4` + reduce the pool to `pool_size=5,
+max_overflow=15`, or add a read replica. Watch the Uptime watchdog
+workflow — it pings prod every 30 min.

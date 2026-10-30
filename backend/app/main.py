@@ -82,7 +82,9 @@ def create_app() -> FastAPI:
     app.add_middleware(RequestTimeoutMiddleware)
 
     # Rate limiting (Redis-backed with in-process fallback circuit breaker)
-    app.add_middleware(RateLimitMiddleware, requests_per_minute=120, burst=30)
+    # 120 req/min/IP false-throttles shared office/CGNAT mobile IPs during
+    # a sales rush; 300/min still throttles any single-IP script hard.
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=300, burst=100)
 
     # Request ID + timing + security headers (single layer)
     app.add_middleware(RequestTimingMiddleware)

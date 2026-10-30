@@ -50,8 +50,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     _SKIP_PATHS = frozenset(("/healthz", "/api/v1/healthz", "/readyz", "/api/v1/readyz"))
     # Credential flows get their own tighter window so token spray attacks
-    # are throttled independently of normal browsing traffic.
-    _AUTH_PREFIX = "/api/v1/auth/"
+    # are throttled independently of normal browsing traffic. Values are
+    # route paths under the API prefix (see bucket_for).
     _AUTH_PATHS = frozenset(
         (
             "/auth/login",
@@ -62,10 +62,31 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             "/auth/otp/verify",
         )
     )
+    # The thousands-at-once crowd: on Indian mobile networks thousands of
+    # distinct shoppers legitimately share a handful of CGNAT IPs, so the
+    # cheap, cached browsing endpoints (list/detail/category/brand GETs)
+    # get a much larger single-IP window than writes/auth/admin.
+    _BROWSE_PATHS = frozenset(
+        (
+            "/modit/products",
+            "/modit/categories",
+            "/modit/brands",
+        )
+    )
 
-    def __init__(self, app, requests_per_minute: int = 120, burst: int = 30):
+    def __init__(self, app, requests_per_minute: int = 300, burst: int = 100, browse_rpm: int = 1200):
         super().__init__(app)
+        # 300 req/min/IP ≈ a fast human clicking/scrolling plus chart-bursts,
+        # yet renders a single-IP script useless. 120/min false-throttled
+        # shared office/CGNAT IPs during a real sales rush.
         self.rpm = requests_per_minute
+        self.browse_rpm = browse_rpm
+        try:
+            from backend.app.core.config import get_settings
+
+            self._api_v1 = get_settings().api_v1_prefix
+        except Exception:
+            self._api_v1 = "/api/v1"
         self.burst = burst
         self._local_counts: dict[str, list[float]] = {}
         self._last_cleanup = time.monotonic()
@@ -106,6 +127,28 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         bucket[client_ip] = times
         return len(times)
 
+    def bucket_for(self, method: str, path: str) -> tuple[str, str, int]:
+        """(bucket name, fully-qualified window key base, per-minute limit).
+
+        Pure — unit tested. The caller appends the client IP.
+        """
+        # Exact full-path matching against the configured API prefix: the
+        # old startswith/removeprefix pair silently never matched (prefix
+        # included /auth, suffixes did not), so credential endpoints were
+        # limited by the wide general window instead of the tight one.
+        if method == "POST" and path in {f"{self._api_v1}{p}" for p in self._AUTH_PATHS}:
+            return "auth", f"auth:{path}", 10
+        # Browse bucket: GET-only, read-only catalog endpoints (no writes,
+        # no admin) — cheap to serve, cacheable, and the surface a shared
+        # CGNAT IP can flood without any abuse.
+        is_browse = method == "GET" and any(
+            path == f"{self._api_v1}{p}" or path.startswith(f"{self._api_v1}{p}/")
+            for p in self._BROWSE_PATHS
+        )
+        if is_browse:
+            return "browse", "browse:", self.browse_rpm
+        return "general", "", self.rpm
+
     async def dispatch(
         self,
         request: Request,
@@ -120,13 +163,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         now = time.time()
         count: int | None = None
 
-        auth_path = (
-            request.url.path.startswith(self._AUTH_PREFIX)
-            and request.url.path.removeprefix(self._AUTH_PREFIX) in self._AUTH_PATHS
-            and request.method == "POST"
-        )
-        window_key = f"rl:auth:{client_ip}" if auth_path else f"rl:{client_ip}"
-        limit = 10 if auth_path else self.rpm
+        bucket, _, limit = self.bucket_for(request.method, request.url.path)
+        window_key = f"rl:{bucket}:{client_ip}" if bucket != "general" else f"rl:{client_ip}"
 
         # Circuit closed -> try Redis once; on failure the shared breaker
         # opens and every layer bypasses Redis for the cooldown.
@@ -137,11 +175,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 note_redis_failure(e)
 
         if count is None:
-            count = (
-                self._local_count(client_ip, now, bucket_key="auth")
-                if auth_path
-                else self._local_count(client_ip, now)
-            )
+            count = self._local_count(client_ip, now, bucket_key=bucket)
 
         if count > limit:
             logger.warning(
