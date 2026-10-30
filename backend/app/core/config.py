@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     sms_api_key: str | None = None
     sms_sender: str = "MODIT"
     otp_debug_to_logs: bool = False
+    # Unexpected-500 alerting: a Discord/Slack-style webhook that receives a
+    # message whenever the API logs a 500 (see app/services/alerting.py).
+    # Unset = disabled. Server-only value, never in git.
+    error_webhook_url: str | None = None
     # NoDecode: pydantic-settings JSON-decodes list fields at the source level,
     # which rejects plain "a,b,c" env values before validators run. Skip the
     # source decoding; parse_cors_origins below handles str -> list.

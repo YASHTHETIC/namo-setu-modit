@@ -138,7 +138,16 @@ def register_exception_handlers(app: FastAPI) -> None:
             f"Unexpected error [{error_id}]: {str(exc)} - Path: {request.url.path}\n"
             f"Traceback: {traceback.format_exc()}"
         )
-        
+        # Optional ops hook: push to ERROR_WEBHOOK_URL in the background so a
+        # solo dev hears about 500s without tailing pm2 logs. Must never slow
+        # down or fail the response itself.
+        try:
+            from backend.app.services.alerting import schedule_error_alert
+
+            schedule_error_alert(error_id, request.method, request.url.path, exc)
+        except Exception:
+            logger.warning("error alert scheduling failed", exc_info=True)
+
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
