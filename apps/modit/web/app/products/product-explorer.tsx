@@ -32,8 +32,6 @@ import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 import { useSubCategories } from "@/lib/modit-api";
 import { useDisplayProducts } from "@/lib/pricing";
-import { downloadPricelistCsv, downloadPricelistHtml, buildPricelistRows, getCategoryName } from "@/lib/pricelist";
-import { FileDown, Download } from "lucide-react";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -112,7 +110,6 @@ function ProductsContent() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
-  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Subcategory belongs to its category — reset on real category switches,
   // but never on first mount (deep links may carry a category+sub pair).
@@ -229,12 +226,7 @@ function ProductsContent() {
     return result;
   }, [products, search, effectiveSearch, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
-  // Pagination: render 24 at a time so thousand-product categories stay fast.
-  const PAGE_SIZE = 24;
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [search, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
-  const visibleProducts = filteredProducts.slice(0, visibleCount);
-
+  // Show every matching product — no client-side paging.</think><tool_call>edit<arg_key>newString</arg_key><arg_value>  // All matching products render at once — no client-side paging.
   const toggleBrand = useCallback((brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
@@ -269,28 +261,6 @@ function ProductsContent() {
   const activeHasSubs = selectedCategory
     ? countProducts.some((p) => normSlug(p.categorySlug) === normSlug(selectedCategory) && p.subCategorySlug)
     : false;
-
-  const handleExport = (kind: "html" | "csv") => {
-    const rows = buildPricelistRows(filteredProducts.map((p) => ({
-      sku: p.sku,
-      name: p.name,
-      brand: p.brand,
-      category: p.category,
-      unit: p.unit,
-      price: p.price,
-      mrp: p.mrp,
-      discount: p.discount,
-      bulkPrice: p.bulkPrice,
-      bulkMinQty: p.bulkMinQty,
-      inStock: p.inStock,
-    })));
-    const title = selectedCategory
-      ? `${getCategoryName(selectedCategory, Object.fromEntries(categories.map((c) => [c.slug, c.name])))} Catalogue`
-      : "MODIT Full Catalogue";
-    const subtitle = "B2B Building Material Price List — GST extra as applicable, bulk rates included";
-    if (kind === "html") downloadPricelistHtml(title, subtitle, rows);
-    else downloadPricelistCsv(title, rows);
-  };
 
   return (
     <div
@@ -694,31 +664,6 @@ function ProductsContent() {
                 </button>
               </div>
 
-              <div className="hidden items-center gap-1.5 sm:flex relative">
-                <button
-                  onClick={() => setShowExportMenu((v) => !v)}
-                  title="Download price list"
-                  className="flex items-center gap-1.5 rounded-xl border border-[#DDD6EE] bg-white px-3 py-2 text-micro font-bold text-[#2D1B69] hover:border-[#7CB518] hover:bg-[#F0F9E8] transition-all"
-                >
-                  <Download className="h-3.5 w-3.5" /> Export <ChevronDown className="h-3 w-3" />
-                </button>
-                {showExportMenu && (
-                  <div className="absolute right-0 top-full z-30 mt-2 w-48 overflow-hidden rounded-xl border border-[#DDD6EE] bg-white shadow-xl">
-                    <button
-                      onClick={() => { handleExport("html"); setShowExportMenu(false); }}
-                      className="flex w-full items-center gap-2 px-4 py-2.5 text-caption font-semibold text-[#150726] hover:bg-[#F0F9E8] transition-colors"
-                    >
-                      <Download className="h-3.5 w-3.5 text-[#7CB518]" /> Price List (HTML)
-                    </button>
-                    <button
-                      onClick={() => { handleExport("csv"); setShowExportMenu(false); }}
-                      className="flex w-full items-center gap-2 px-4 py-2.5 text-caption font-semibold text-[#150726] hover:bg-[#F0F9E8] transition-colors"
-                    >
-                      <FileDown className="h-3.5 w-3.5 text-[#7CB518]" /> Price List (CSV)
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
           </Reveal>
@@ -872,7 +817,7 @@ function ProductsContent() {
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
               <div className="product-grid grid grid-cols-2 gap-2 sm:hidden">
-                {visibleProducts.map((product) => (
+                {filteredProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -880,31 +825,18 @@ function ProductsContent() {
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
                   <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                    {visibleProducts.map((product) => (
+                    {filteredProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {visibleProducts.map((product) => (
+                    {filteredProducts.map((product) => (
                       <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 )}
               </div>
-              {visibleCount < filteredProducts.length && (
-                <div className="mt-6 text-center">
-                  <p className="mb-3 text-caption text-[var(--text-muted)]">
-                    Showing {visibleProducts.length} of {filteredProducts.length} products
-                  </p>
-                  <button
-                    onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                    className="rounded-full border-2 border-[#2D1B69] bg-white px-8 py-2.5 text-button font-bold text-[#2D1B69] transition-all hover:bg-[#2D1B69] hover:text-white active:scale-95"
-                  >
-                    Show more
-                  </button>
-                </div>
-              )}
             </>
           )}
         </div>
