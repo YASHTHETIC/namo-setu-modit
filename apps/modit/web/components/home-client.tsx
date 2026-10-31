@@ -412,7 +412,7 @@ export default function HomeClient() {
           <div className="section-header">
             <h2>Shop by Category</h2>
           </div>
-          <div className="flex gap-2.5 sm:gap-3.5 overflow-x-auto scrollbar-hide snap-x pb-2 pt-1 scroll-smooth">
+          <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3.5 lg:grid-cols-8 pb-2 pt-1">
             {visibleCategories.map((cat, i) => {
               const manual = TILE_IMAGES[cat.slug];
               const fallbackImg = !manual
@@ -425,7 +425,7 @@ export default function HomeClient() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="snap-start shrink-0 w-[78px] sm:w-[98px] flex flex-col items-center gap-1 group"
+                  className="flex w-full flex-col items-center gap-1 group"
                 >
                   <div
                     className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
