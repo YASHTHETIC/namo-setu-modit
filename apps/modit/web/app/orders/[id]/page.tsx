@@ -48,6 +48,9 @@ interface OrderDetail {
   total: number;
   invoiceNumber: string;
   specialInstructions?: string;
+  // Needed by the return flow: server return records are keyed by the
+  // underlying purchase order, not the display order id.
+  purchaseOrderId?: string;
 }
 
 const demoOrders: Record<string, OrderDetail> = {
@@ -161,6 +164,7 @@ function toOrderDetail(api: any): OrderDetail | null {
     total: Number(api.grand_total ?? api.total ?? 0),
     invoiceNumber: `${String(api.order_number || api.id)}-INV`,
     specialInstructions: typeof api.notes === "string" && api.notes ? api.notes : undefined,
+    purchaseOrderId: api.purchase_order_id ? String(api.purchase_order_id) : undefined,
   };
 }
 
@@ -705,7 +709,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           open={returnOpen}
           onClose={() => setReturnOpen(false)}
           orderId={order.id}
-          purchaseOrderId={(order as any).purchase_order_id ?? null}
+          purchaseOrderId={(order as any).purchase_order_id ?? (order as any).purchaseOrderId ?? null}
           items={(order.items || []).map((i: any) => ({
             sku: i.sku ?? i.product_id ?? "unknown",
             name: i.name ?? `Item ${(i.product_id ?? "").slice(0, 8)}`,

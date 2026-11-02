@@ -118,11 +118,14 @@ export default function AdminOrdersPage() {
                 // Delivered/cancelled orders are final server-side — no
                 // clickable dead buttons that would 400.
                 const final = o.status === "delivered" || o.status === "cancelled";
+                const preDispatch = !["dispatched", "in_transit", "delivered", "cancelled"].includes(o.status);
+                const dispatchWithDelivery =
+                  st === "dispatched" && Boolean(o.purchase_order_id) && preDispatch;
                 return (
                   <button
                     key={st}
-                    onClick={() => handleStatus(o, st)}
-                    disabled={final || o.status === st}
+                    onClick={() => (dispatchWithDelivery ? handleDispatch(o) : handleStatus(o, st))}
+                    disabled={final || o.status === st || (dispatchWithDelivery && busyId === o.id)}
                     className={`px-2.5 py-1.5 rounded-lg text-micro font-bold border-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                       o.status === st
                         ? "border-[#7CB518] bg-[#F0F9E8] text-[#5a8010]"
