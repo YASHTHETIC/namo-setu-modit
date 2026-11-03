@@ -34,6 +34,9 @@ import { useNearestWarehouse } from "@/lib/modit-api";
 import { ActiveOrderBanner } from "@/components/active-order-banner";
 import { categories as allCategories } from "@/lib/product-data";
 import { CategoryTileIcon } from "@/components/modit-shell";
+import { AppDownloadSection } from "@/components/app-download-section";
+import { SiteFooter } from "@/components/site-footer";
+import { BottomNav } from "@/components/bottom-nav";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -663,9 +666,20 @@ export default function HomeClient() {
         </div>
       </Reveal>
 
+      {/* ═══ BLINKIT-STYLE APP DOWNLOAD SECTION (Android / iOS 1-tap triggers + QR) ═══ */}
+      <Reveal>
+        <AppDownloadSection />
+      </Reveal>
+
+      {/* ═══ FOOTER (All links, trade policies, app download buttons) ═══ */}
+      <SiteFooter className="mt-4 pb-24 lg:pb-8" />
+
       {/* ═══ STICKY CART BAR + QUICK DRAWER ═══ */}
       <StickyCartBar itemCount={cartCount} total={cartTotal} />
       <CartDrawer />
+
+      {/* ═══ MOBILE BOTTOM NAVIGATION BAR (Home, Category, Orders, Account) ═══ */}
+      <BottomNav />
 
       {/* ═══ BACK TO TOP ═══ */}
       <button

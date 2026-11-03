@@ -230,58 +230,60 @@ async def _auto_create_catalog_product(session: AsyncSession, org: Organization,
     if not hasattr(session, "add"):
         return None
     try:
+        from sqlalchemy import or_
         from backend.app.models.modit import Brand, Category, GST, Unit, Product, Inventory
 
-        gst = (await session.execute(select(GST).where(GST.code == item_data["gst_code"]))).scalars().first()
-        if gst is None:
-            gst = GST(id=str(uuid4()), code=item_data["gst_code"], rate_percent=item_data["gst_rate"], is_active=True)
-            session.add(gst)
+        async with session.begin_nested():
+            gst = (await session.execute(select(GST).where(or_(GST.code == item_data["gst_code"], GST.id == item_data.get("gst_id"))))).scalars().first()
+            if gst is None:
+                gst = GST(id=str(uuid4()), code=item_data["gst_code"], rate_percent=item_data["gst_rate"], is_active=True)
+                session.add(gst)
+                if hasattr(session, "flush"):
+                    await session.flush()
+
+            unit = (await session.execute(select(Unit).where(or_(Unit.code == item_data["unit_code"], Unit.name == item_data["unit"])))).scalars().first()
+            if unit is None:
+                unit = Unit(id=str(uuid4()), code=item_data["unit_code"], name=item_data["unit"], is_active=True)
+                session.add(unit)
+                if hasattr(session, "flush"):
+                    await session.flush()
+
+            brand = (await session.execute(select(Brand).where(or_(Brand.slug == item_data["brand_slug"], Brand.name == item_data["brand"])))).scalars().first()
+            if brand is None:
+                brand = Brand(id=str(uuid4()), slug=item_data["brand_slug"], name=item_data["brand"], is_active=True)
+                session.add(brand)
+                if hasattr(session, "flush"):
+                    await session.flush()
+
+            category = (await session.execute(select(Category).where(or_(Category.slug == item_data["category_slug"], Category.name == item_data["category"])))).scalars().first()
+            if category is None:
+                category = Category(id=str(uuid4()), slug=item_data["category_slug"], name=item_data["category"], is_active=True)
+                session.add(category)
+                if hasattr(session, "flush"):
+                    await session.flush()
+
+            product = Product(
+                id=str(uuid4()),
+                organization_id=org.id,
+                sku=item_data["sku"],
+                name=item_data["name"],
+                slug=item_data["slug"],
+                description=item_data.get("description"),
+                brand_id=brand.id,
+                category_id=category.id,
+                unit_id=unit.id,
+                gst_id=gst.id,
+                mrp=item_data["mrp"],
+                list_price=item_data["price"],
+                approval_status="approved",
+                is_active=True,
+            )
+            product.gst = gst
+            product.category = category
+            session.add(product)
             if hasattr(session, "flush"):
                 await session.flush()
-
-        unit = (await session.execute(select(Unit).where(Unit.code == item_data["unit_code"]))).scalars().first()
-        if unit is None:
-            unit = Unit(id=str(uuid4()), code=item_data["unit_code"], name=item_data["unit"], is_active=True)
-            session.add(unit)
-            if hasattr(session, "flush"):
-                await session.flush()
-
-        brand = (await session.execute(select(Brand).where(Brand.slug == item_data["brand_slug"]))).scalars().first()
-        if brand is None:
-            brand = Brand(id=str(uuid4()), slug=item_data["brand_slug"], name=item_data["brand"], is_active=True)
-            session.add(brand)
-            if hasattr(session, "flush"):
-                await session.flush()
-
-        category = (await session.execute(select(Category).where(Category.slug == item_data["category_slug"]))).scalars().first()
-        if category is None:
-            category = Category(id=str(uuid4()), slug=item_data["category_slug"], name=item_data["category"], is_active=True)
-            session.add(category)
-            if hasattr(session, "flush"):
-                await session.flush()
-
-        product = Product(
-            id=str(uuid4()),
-            organization_id=org.id,
-            sku=item_data["sku"],
-            name=item_data["name"],
-            slug=item_data["slug"],
-            description=item_data.get("description"),
-            brand_id=brand.id,
-            category_id=category.id,
-            unit_id=unit.id,
-            gst_id=gst.id,
-            mrp=item_data["mrp"],
-            list_price=item_data["price"],
-            approval_status="approved",
-            is_active=True,
-        )
-        product.gst = gst
-        product.category = category
-        session.add(product)
-        if hasattr(session, "flush"):
-            await session.flush()
-        return product
+            return product
     except Exception as exc:
         logging.getLogger(__name__).warning("Could not auto-create catalog product for %s: %s", item_data.get("sku"), exc)
         return None
@@ -371,6 +373,23 @@ async def compute_checkout_totals(
             .scalars()
             .first()
         )
+        if hit is None:
+            # Check if product exists in DB under any active organization
+            hit = (
+                (
+                    await session.execute(
+                        select(Product)
+                        .options(selectinload(Product.category), selectinload(Product.gst))
+                        .where(
+                            Product.sku == item.sku,
+                            Product.is_active.is_(True),
+                            Product.deleted_at.is_(None),
+                        )
+                    )
+                )
+                .scalars()
+                .first()
+            )
         if hit is None:
             # Look up from bundled static catalog and auto-create in the DB so checkout never fails
             item_data = _get_catalog_item_by_sku(item.sku)
