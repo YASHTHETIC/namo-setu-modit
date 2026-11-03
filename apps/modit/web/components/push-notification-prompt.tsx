@@ -54,7 +54,8 @@ export function PushNotificationPrompt() {
 
   if ((!show && !confirming) || (permission !== "default" && !confirming)) return null;
   // Never interrupt checkout/payment.
-  if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
+  const currentPath = pathname ?? "";
+  if (currentPath.startsWith("/checkout") || currentPath.startsWith("/payment")) return null;
 
   return (
     <div className="fixed bottom-36 left-4 right-4 z-sheet max-w-[400px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[340px]">

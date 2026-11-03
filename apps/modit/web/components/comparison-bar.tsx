@@ -13,7 +13,8 @@ export function ComparisonBar() {
   const { items, removeFromCompare, clearCompare } = useComparisonStore();
 
   if (items.length === 0) return null;
-  if (HIDDEN_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) return null;
+  const currentPath = pathname ?? "";
+  if (HIDDEN_ROUTES.some((r) => currentPath === r || currentPath.startsWith(`${r}/`))) return null;
 
   return (
     <div className="dock-compare fixed left-0 right-0 z-40 px-4 pb-2">

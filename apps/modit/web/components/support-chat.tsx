@@ -51,7 +51,8 @@ export function SupportChat() {
   };
 
   // Buyer chat stays on the buyer platform — never inside ops surfaces.
-  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
+  const currentPath = pathname ?? "";
+  if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
   return (
     <>

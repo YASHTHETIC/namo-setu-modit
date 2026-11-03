@@ -74,7 +74,8 @@ export function AppInstallSheetHost() {
 
   // If already installed or closed or inside ops surfaces, do not render
   if (!open || installed || isStandalone()) return null;
-  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
+  const currentPath = pathname ?? "";
+  if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
   return (
     <div

@@ -72,13 +72,14 @@ export function CategoryTileIcon({ slug, className }: { slug: string; className?
 
 export function ModitShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const currentPath = pathname ?? "";
   const searchHint = useRotatingText(SEARCH_HINTS);
   const router = useRouter();
-  const isHome = pathname === "/";
-  const isAuth = pathname.startsWith("/auth");
+  const isHome = currentPath === "/";
+  const isAuth = currentPath.startsWith("/auth");
   // Ops platforms (staff admin, supplier hub) render their own chrome —
   // buyers never see buyer header/footer/nav there and vice versa.
-  const isOps = pathname.startsWith("/admin") || pathname.startsWith("/supplier");
+  const isOps = currentPath.startsWith("/admin") || currentPath.startsWith("/supplier");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);

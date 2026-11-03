@@ -29,8 +29,9 @@ export function PhoneVerificationModal() {
   const [verified, setVerified] = useState(false);
 
   useEffect(() => {
+    const currentPath = pathname ?? "";
     // Never interrupt ops dashboards or dedicated auth pages
-    if (pathname.startsWith("/admin") || pathname.startsWith("/supplier") || pathname.startsWith("/auth")) {
+    if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier") || currentPath.startsWith("/auth")) {
       return;
     }
 

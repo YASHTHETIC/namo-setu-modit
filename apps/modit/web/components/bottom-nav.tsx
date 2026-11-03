@@ -24,7 +24,8 @@ export function BottomNav() {
   const loggedIn = useAuthReady();
 
   // Buyer nav on all screens (desktop included) — never inside staff panel or supplier hub.
-  if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;
+  const currentPath = pathname ?? "";
+  if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
   return (
     <nav
@@ -35,7 +36,7 @@ export function BottomNav() {
       <div className="grid grid-cols-4 gap-0 w-full">
         {NAV_ITEMS.map((item) => {
           const href = "isAccount" in item && item.isAccount && loggedIn ? "/dashboard" : item.href;
-          const isActive = href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+          const isActive = href === "/" ? currentPath === "/" : currentPath === href || currentPath.startsWith(href + "/");
           const highlighted = isActive;
           return (
             <Link
