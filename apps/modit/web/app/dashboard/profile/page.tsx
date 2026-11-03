@@ -12,7 +12,6 @@ import { getAccessToken } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
 import { useAddressStore } from "@/lib/address-store";
-import { openAppSheet } from "@/components/app-install-sheet";
 import { AddressForm } from "@/components/address-form";
 import { useToast } from "@foundation/ui";
 
@@ -112,15 +111,7 @@ function OverviewTab() {
             <span className="text-caption font-bold text-[#150726] text-center leading-tight">{t.label}</span>
           </Link>
         ))}
-        <button
-          onClick={() => openAppSheet()}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#DDD6EE] bg-white p-3 sm:p-4 hover:border-[#2D1B69] transition-all text-left"
-        >
-          <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-[#F0F9E8] text-[#5A8010]">
-            <Smartphone className="h-5 w-5" />
-          </span>
-          <span className="text-caption font-bold text-[#150726] text-center leading-tight">Install App</span>
-        </button>
+
       </div>
 
       {/* Info grid */}

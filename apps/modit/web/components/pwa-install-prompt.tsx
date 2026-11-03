@@ -3,9 +3,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Download, X, Check, Smartphone } from "lucide-react";
-import { usePwaInstall, isStandalone } from "@/lib/pwa";
-import { openAppSheet } from "@/components/app-install-sheet";
+import { Download, X, Check } from "lucide-react";
+import { usePwaInstall, isStandalone, isAppInstalled } from "@/lib/pwa";
 
 export function PwaInstallPrompt() {
   const pathname = usePathname();
@@ -14,36 +13,40 @@ export function PwaInstallPrompt() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (isStandalone()) {
+    if (!canInstall || isStandalone() || isAppInstalled()) {
       setShow(false);
       return;
     }
     try {
-      if (localStorage.getItem("modit_pwa_dismissed")) return;
+      if (localStorage.getItem("modit_pwa_dismissed") === "true") return;
+      if (localStorage.getItem("modit_app_installed") === "true") return;
     } catch {
       /* ignore */
     }
-    // Stagger prompt after initial load (4 seconds)
-    const timer = setTimeout(() => setShow(true), 4000);
+    // Stagger prompt so it never collides or annoys
+    const timer = setTimeout(() => setShow(true), 45000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [canInstall]);
 
   const handleInstall = async () => {
-    if (canInstall) {
-      try {
-        const ok = await install();
-        if (ok) {
-          setDone(true);
-          setTimeout(() => setShow(false), 2000);
-          return;
-        }
-      } catch {
-        /* fallback to sheet */
-      }
+    if (!canInstall) {
+      setShow(false);
+      return;
     }
-    // For iOS Safari or when native prompt is dismissed: open tailored guide
-    openAppSheet();
-    setShow(false);
+    try {
+      const ok = await install();
+      if (ok) {
+        setDone(true);
+        try {
+          localStorage.setItem("modit_app_installed", "true");
+        } catch {
+          /* ignore */
+        }
+        setTimeout(() => setShow(false), 2000);
+      }
+    } catch {
+      setShow(false);
+    }
   };
 
   const handleDismiss = () => {
@@ -55,7 +58,7 @@ export function PwaInstallPrompt() {
     }
   };
 
-  if (!show || isStandalone()) return null;
+  if (!show || !canInstall || isStandalone() || isAppInstalled()) return null;
   // Never interrupt checkout/payment — or ops surfaces.
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/checkout") || currentPath.startsWith("/payment")) return null;

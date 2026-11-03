@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Play, Apple } from "lucide-react";
+import { Download } from "lucide-react";
 import { ModitLogo } from "@/components/modit-logo";
-import { openAppSheet } from "@/components/app-install-sheet";
 import { ReferralModal } from "@/components/referral-modal";
-import { useIsStandalone } from "@/lib/pwa";
+import { useIsStandalone, useIsAppInstalled, usePwaInstall } from "@/lib/pwa";
 
 /**
  * Shared site footer (all pages, including home) — Blinkit-style light
@@ -17,6 +16,16 @@ import { useIsStandalone } from "@/lib/pwa";
 export function SiteFooter({ className = "" }: { className?: string }) {
   const [showReferral, setShowReferral] = useState(false);
   const isApp = useIsStandalone();
+  const isInstalled = useIsAppInstalled();
+  const { canInstall, install } = usePwaInstall();
+
+  const handleInstall = async () => {
+    if (canInstall) {
+      await install();
+    }
+  };
+
+  const showAppCta = !isApp && !isInstalled;
 
   return (
     <>
@@ -35,26 +44,16 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">Verified suppliers</span>
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">7-day replacement</span>
               </div>
-              {!isApp && (
-                <div className="mt-4 flex flex-wrap gap-2">
+              {showAppCta && (
+                <div className="mt-4 hidden lg:flex flex-wrap gap-2">
                   <button
-                    onClick={() => openAppSheet("android")}
+                    onClick={handleInstall}
                     className="flex items-center gap-2.5 rounded-xl border border-[#DDD6EE] bg-white px-3.5 py-2 transition-all hover:border-[#2D1B69] hover:shadow-xs active:scale-95 cursor-pointer"
                   >
-                    <Play className="h-5 w-5 fill-current text-[#7CB518]" />
+                    <Download className="h-5 w-5 text-[#7CB518]" />
                     <span className="text-left leading-tight">
-                      <span className="block text-tiny font-semibold uppercase tracking-wider text-[#9B8CB5]">Install on</span>
-                      <span className="block text-body-sm font-bold text-[#150726]">Android</span>
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => openAppSheet("ios")}
-                    className="flex items-center gap-2.5 rounded-xl border border-[#DDD6EE] bg-white px-3.5 py-2 transition-all hover:border-[#2D1B69] hover:shadow-xs active:scale-95 cursor-pointer"
-                  >
-                    <Apple className="h-5 w-5 fill-current text-[#150726]" />
-                    <span className="text-left leading-tight">
-                      <span className="block text-tiny font-semibold uppercase tracking-wider text-[#9B8CB5]">Install on</span>
-                      <span className="block text-body-sm font-bold text-[#150726]">iPhone</span>
+                      <span className="block text-tiny font-semibold uppercase tracking-wider text-[#9B8CB5]">Install</span>
+                      <span className="block text-body-sm font-bold text-[#150726]">MODIT App</span>
                     </span>
                   </button>
                 </div>
@@ -96,7 +95,13 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <li><Link href="/auth/register" className="transition-colors hover:text-[#2D1B69]">Create account</Link></li>
                 <li><Link href="/dashboard/profile" className="transition-colors hover:text-[#2D1B69]">Profile settings</Link></li>
                 <li><Link href="/payment/history" className="transition-colors hover:text-[#2D1B69]">Payment history</Link></li>
-                <li><button onClick={() => openAppSheet()} className="transition-colors hover:text-[#2D1B69]">Get the app</button></li>
+                {showAppCta && (
+                  <li className="hidden lg:block">
+                    <button onClick={handleInstall} className="transition-colors hover:text-[#2D1B69]">
+                      Get the app
+                    </button>
+                  </li>
+                )}
                 <li><button onClick={() => setShowReferral(true)} className="font-semibold text-[#5A8010] transition-colors hover:text-[#2D1B69]">Refer & Earn ₹200</button></li>
               </ul>
             </div>

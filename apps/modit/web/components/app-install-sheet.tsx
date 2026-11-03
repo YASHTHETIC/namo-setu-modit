@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Play, Apple, X, QrCode, Smartphone, Share, PlusSquare, MoreVertical, Download, Check } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
-import { usePwaInstall, isStandalone } from "@/lib/pwa";
+import { Play, Apple, X, Smartphone, Share, PlusSquare, MoreVertical, Download, Check } from "lucide-react";
+import { usePwaInstall, isStandalone, isAppInstalled } from "@/lib/pwa";
 
 export type InstallTarget = "android" | "ios" | "any";
 
@@ -73,7 +72,7 @@ export function AppInstallSheetHost() {
   };
 
   // If already installed or closed or inside ops surfaces, do not render
-  if (!open || installed || isStandalone()) return null;
+  if (!open || installed || isStandalone() || isAppInstalled()) return null;
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
@@ -177,13 +176,7 @@ export function AppInstallSheetHost() {
               </ol>
             </div>
 
-            {/* Desktop QR helper */}
-            <div className="hidden sm:flex flex-col items-center gap-2 rounded-2xl bg-[#F8F6FC] border border-[#DDD6EE] p-3 text-center">
-              <QRCodeSVG value={currentOrigin} size={110} />
-              <p className="text-micro text-[#6B5B83] flex items-center gap-1">
-                <QrCode className="h-3.5 w-3.5" /> Scan with Android phone camera to open & install
-              </p>
-            </div>
+
           </div>
         )}
 
@@ -214,13 +207,7 @@ export function AppInstallSheetHost() {
               </ol>
             </div>
 
-            {/* Desktop QR helper for iPhone */}
-            <div className="hidden sm:flex flex-col items-center gap-2 rounded-2xl bg-[#F8F6FC] border border-[#DDD6EE] p-3 text-center">
-              <QRCodeSVG value={currentOrigin} size={110} />
-              <p className="text-micro text-[#6B5B83] flex items-center gap-1">
-                <QrCode className="h-3.5 w-3.5" /> Scan with iPhone Camera to open in Safari & install
-              </p>
-            </div>
+
           </div>
         )}
       </div>
