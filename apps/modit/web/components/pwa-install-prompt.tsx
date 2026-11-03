@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X, Check } from "lucide-react";
-import { usePwaInstall } from "@/lib/pwa";
+import { usePwaInstall, isStandalone } from "@/lib/pwa";
 
 export function PwaInstallPrompt() {
   const pathname = usePathname();
@@ -36,7 +36,7 @@ export function PwaInstallPrompt() {
     localStorage.setItem("modit_pwa_dismissed", "true");
   };
 
-  if (!show || !canInstall) return null;
+  if (!show || !canInstall || isStandalone()) return null;
   // Never interrupt checkout/payment — or ops surfaces.
   if (pathname.startsWith("/checkout") || pathname.startsWith("/payment")) return null;
   if (pathname.startsWith("/admin") || pathname.startsWith("/supplier")) return null;

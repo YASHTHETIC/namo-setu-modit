@@ -9,12 +9,21 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-function isStandalone(): boolean {
+export function isStandalone(): boolean {
   if (typeof window === "undefined") return false;
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as unknown as { standalone?: boolean }).standalone === true
+    (window.navigator as unknown as { standalone?: boolean }).standalone === true ||
+    (typeof document !== "undefined" && document.referrer.includes("android-app://"))
   );
+}
+
+export function useIsStandalone(): boolean {
+  const [standalone, setStandalone] = useState(false);
+  useEffect(() => {
+    setStandalone(isStandalone());
+  }, []);
+  return standalone;
 }
 
 /** PWA install prompt state (beforeinstallprompt). */

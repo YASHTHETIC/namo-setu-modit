@@ -1,11 +1,9 @@
-const CACHE_NAME = "modit-v5";
+const CACHE_NAME = "modit-v6";
 const STATIC_ASSETS = [
-  "/",
-  "/products",
-  "/cart",
-  "/orders",
   "/manifest.json",
   "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/apple-touch-icon.png",
   "/modit-logo.png",
 ];
 
@@ -27,41 +25,55 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
-  if (request.url.includes("/api/")) return;
 
-  // Navigations: network first, fall back to cached home shell offline
+  let url;
+  try {
+    url = new URL(request.url);
+  } catch {
+    return;
+  }
+
+  // Bypass API, data queries, and Next.js internal router requests so client-side navigation never gets blocked or stale
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_next/")) return;
+
+  // Navigations: always network-first to allow Next.js routing, falling back to cache only when truly offline
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
-        .catch(() => caches.match("/").then((cached) => cached || Response.error()))
+      fetch(request).catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        const homeCached = await caches.match("/");
+        return homeCached || Response.error();
+      })
     );
     return;
   }
 
-  // Everything else: network first, cached copy only as offline fallback.
-  // (Cache-first kept stale hashed chunks and RSC payloads alive forever,
-  // which froze phones on dead pages where clicks did nothing.)
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-        }
-        return response;
+  // Static media assets: cache-first with network background revalidation
+  if (
+    url.pathname.startsWith("/icons/") ||
+    url.pathname.startsWith("/products/") ||
+    url.pathname.endsWith(".png") ||
+    url.pathname.endsWith(".svg") ||
+    url.pathname.endsWith(".webp") ||
+    url.pathname.endsWith(".jpg")
+  ) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        });
       })
-      .catch(() => caches.match(request).then((cached) => cached || Response.error()))
-  );
+    );
+  }
 });
 
-// Push notification handlers (server push lands here once a backend/VAPID key exists)
+// Push notification handlers
 self.addEventListener("push", (event) => {
   let data = { title: "MODIT", body: "You have a new notification", icon: "/icons/icon-192.png", url: "/" };
   if (event.data) {

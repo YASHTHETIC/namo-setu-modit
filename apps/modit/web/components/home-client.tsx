@@ -14,11 +14,6 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { useAuthReady } from "@/lib/use-auth";
 import { ModitLogo } from "@/components/modit-logo";
-import { BottomNav } from "@/components/bottom-nav";
-import { SiteFooter } from "@/components/site-footer";
-import { ComparisonBar } from "@/components/comparison-bar";
-import { PushNotificationPrompt } from "@/components/push-notification-prompt";
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
@@ -671,14 +666,7 @@ export default function HomeClient() {
         <ChevronUp className="h-5 w-5" />
       </button>
 
-      {/* ═══ BOTTOM NAV ═══ */}
-      <SiteFooter className="pb-[calc(var(--chrome-nav)+20px)] lg:pb-8" />
-      <PushNotificationPrompt />
-      <PwaInstallPrompt />
-      <ComparisonBar />
-      <BottomNav />
-
-          {/* ═══ PINCODE MODAL ═══ */}
+      {/* ═══ PINCODE MODAL ═══ */}
       {showPincodeModal && (
         <div className="fixed inset-0 z-modal bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4" onClick={() => setShowPincodeModal(false)}>
           <div
