@@ -84,7 +84,7 @@ export function FlashDeals() {
               <div key={product.id} className="w-[152px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
                 <Link href={productLink(product)} className="block relative aspect-square bg-white/5 p-2">
                   {product.images[0] ? (
-                    <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 46vw, 180px" loading="lazy" draggable={false} className="object-contain pt-6 pb-1 px-1.5 animate-fade-in group-hover:scale-105 transition-transform" />
+                    <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 46vw, 180px" loading="lazy" draggable={false} className="object-contain p-2 animate-fade-in group-hover:scale-105 transition-transform" />
                   ) : (
                     <span className="flex h-full w-full items-center justify-center">
                       <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white/20" />

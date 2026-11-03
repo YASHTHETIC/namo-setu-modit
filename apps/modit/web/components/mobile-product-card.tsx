@@ -54,17 +54,17 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const stars = Math.max(0, Math.min(5, Math.round(product.rating)));
 
   return (
-    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full">
-      {/* Image */}
-      <div className="relative bg-[#F7F4FC] p-2">
-        <Link href={productLink(product)} className="relative block aspect-square">
+    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full shadow-[0_1px_3px_rgba(26,10,51,0.06)] hover:shadow-md transition-all">
+      {/* Image zone — clean & completely unobstructed */}
+      <div className="relative bg-[#F7F4FC] p-2 aspect-square">
+        <Link href={productLink(product)} className="relative block h-full w-full">
           <ImageGuard
             src={product.images?.[0]}
             alt={product.name}
             fill
             sizes="50vw"
             draggable={false}
-            className="object-contain pt-6 pb-1 px-1.5 animate-fade-in card3d-img"
+            className="object-contain p-1 animate-fade-in card3d-img"
           />
         </Link>
         {discountPct > 0 && (
@@ -79,81 +79,81 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         >
           <Heart className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "text-[#9B8CB5]"}`} />
         </button>
-        {/* Overlapping unit + ADD row */}
-        <div className="absolute -bottom-4 left-2 right-2 flex items-end justify-between gap-1">
-          <span className="rounded-md bg-white px-1.5 py-1 text-tiny font-bold text-[#150726] shadow-md border border-[#EDE7F6] whitespace-nowrap">
-            {product.unit}
-          </span>
-          {qty === 0 ? (
-            <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
-              disabled={blocked}
-              className="btn-shine rounded-lg bg-white px-5 py-1.5 text-caption font-black text-[#2D7B2D] shadow-md border border-[#2D7B2D]/40 active:scale-95 transition-transform disabled:opacity-40"
-            >
-              {blocked ? "N/A" : "ADD"}
-            </button>
-          ) : (
-            <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-md overflow-hidden">
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); stepDown(product.id, stepLine?.variantId); }}
-                className="px-2.5 py-1.5 text-body-md font-black leading-none"
-                aria-label="Decrease"
-              >
-                −
-              </button>
-              <span className="px-1 text-caption font-black tabular-nums min-w-[18px] text-center">{qty}</span>
-              <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
-                className="px-2.5 py-1.5 text-body-md font-black leading-none"
-                aria-label="Increase"
-              >
-                +
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Info */}
-      <div className="px-2 pt-5 pb-2 flex flex-col flex-1">
-        {optLabel ? (
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-            className="self-end -mt-1 text-tiny font-bold text-[#2D7B2D]"
-          >
-            {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
-          </button>
-        ) : <span className="h-[14px]" />}
-        {unitRate ? <p className="text-tiny text-[#6B5B83] min-h-[14px]">{unitRate}</p> : <p className="text-tiny min-h-[14px]" aria-hidden="true"> </p>}
-        <div className="flex items-baseline gap-1.5 mt-0.5">
-          <span className="text-body-lg font-black text-[#150726]">₹{product.price.toLocaleString("en-IN")}</span>
-          {product.mrp > product.price && (
-            <span className="text-tiny text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
+      {/* Info zone — Blinkit layout: ETA, Name, Unit, Bottom Price+ADD Row */}
+      <div className="p-2 sm:p-2.5 flex flex-col flex-1 gap-1">
+        <div className="flex items-center justify-between gap-1 text-tiny">
+          <span className="flex items-center gap-0.5 font-bold text-[#2D1B69] bg-[#F0ECF9] px-1.5 py-0.5 rounded">
+            <Clock className="h-2.5 w-2.5 text-[#7CB518]" /> 60 MINS
+          </span>
+          {optLabel && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+              className="text-tiny font-bold text-[#047857] hover:underline"
+            >
+              {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
+            </button>
           )}
         </div>
+
         <Link href={productLink(product)}>
-          <p className="text-micro font-semibold text-[#150726] leading-tight line-clamp-2 mt-0.5 min-h-[28px]">{product.name}</p>
+          <h3 className="text-body-sm font-semibold text-[#150726] leading-tight line-clamp-2 min-h-[32px] hover:text-[#2D1B69] transition-colors">
+            {product.name}
+          </h3>
         </Link>
-        <div className="flex items-center gap-0.5 mt-1">
-          <span className="flex items-center gap-[1px]">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`h-2 w-2 ${i < stars ? "fill-[#E8A800] text-[#E8A800]" : "fill-[#DDD6EE] text-[#DDD6EE]"}`} />
-            ))}
-          </span>
-          <span className="text-tiny text-[#9B8CB5] ml-0.5">{product.reviewCount.toLocaleString("en-IN")}</span>
-        </div>
-        <div className="flex items-center gap-1.5 mt-1">
-          <span className="flex items-center gap-0.5 text-tiny font-semibold text-[#6B5B83]">
-            <Clock className="h-2 w-2" /> {product.deliveryDays <= 1 ? "Tomorrow" : `${product.deliveryDays} days`}
-          </span>
-          {product.stockLevel <= 10 && (
-            <span className="text-tiny font-black text-[#E91E63] border border-[#E91E63]/40 rounded px-1">
-              {product.stockLevel} left
-            </span>
+
+        <p className="text-micro text-[#6B5B83] truncate">
+          {product.unit} {unitRate && <span className="text-[#9B8CB5]">({unitRate})</span>}
+          {product.stockLevel <= 10 && product.stockLevel > 0 && (
+            <span className="font-bold text-[#E91E63]"> · {product.stockLevel} left</span>
           )}
-          {blocked && (
-            <span className="text-tiny font-black text-[#E91E63]">Unavailable in your area</span>
-          )}
+        </p>
+
+        {/* Bottom row: Price on left, ADD button / Stepper on right */}
+        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1.5">
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1 flex-wrap">
+              <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
+                ₹{product.price.toLocaleString("en-IN")}
+              </span>
+              {product.mrp > product.price && (
+                <span className="text-micro text-[#9B8CB5] line-through tabular-nums">
+                  ₹{product.mrp.toLocaleString("en-IN")}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-shrink-0">
+            {qty === 0 ? (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
+                disabled={blocked}
+                className="btn-shine rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40"
+              >
+                {blocked ? "N/A" : "ADD"}
+              </button>
+            ) : (
+              <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-xs overflow-hidden">
+                <button
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); stepDown(product.id, stepLine?.variantId); }}
+                  className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
+                  aria-label="Decrease"
+                >
+                  −
+                </button>
+                <span className="px-1.5 text-caption font-black tabular-nums min-w-[16px] text-center">{qty}</span>
+                <button
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
+                  className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
+                  aria-label="Increase"
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

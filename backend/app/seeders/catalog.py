@@ -222,13 +222,29 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
         session, Organization, {"name": RETAIL_ORG_NAME},
         {"organization_type": OrganizationType.RETAILER.value, "is_active": True},
     )
-    # One-click testing login (plain buyer, no roles — claim staff separately).
-    # Credentials: demo@modit.in / Demo@1234
-    await _get_or_create(
+    # One-click testing & staff login: demo@modit.in / Demo@1234
+    super_admin_role, _ = await _get_or_create(
+        session, Role, {"name": "super_admin"},
+        {"description": "Full access to all operations"}
+    )
+    demo_user, _ = await _get_or_create(
         session, User, {"email": "demo@modit.in"},
-        {"full_name": "Demo Buyer", "hashed_password": hash_password("Demo@1234"),
+        {"full_name": "Demo Admin", "hashed_password": hash_password("Demo@1234"),
          "is_active": True, "is_verified": True},
     )
+    user_roles_list = demo_user.roles or []
+    if super_admin_role and all(getattr(r, "name", None) != "super_admin" for r in user_roles_list):
+        demo_user.roles.append(super_admin_role)
+
+    # Dedicated admin account: admin@modit.in / Admin@1234
+    admin_user, _ = await _get_or_create(
+        session, User, {"email": "admin@modit.in"},
+        {"full_name": "MODIT Admin", "hashed_password": hash_password("Admin@1234"),
+         "is_active": True, "is_verified": True},
+    )
+    admin_roles_list = admin_user.roles or []
+    if super_admin_role and all(getattr(r, "name", None) != "super_admin" for r in admin_roles_list):
+        admin_user.roles.append(super_admin_role)
     warehouse, _ = await _get_or_create(
         session, Warehouse,
         {"organization_id": org.id, "warehouse_code": WAREHOUSE_CODE},

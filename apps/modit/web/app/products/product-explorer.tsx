@@ -1022,7 +1022,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain pt-6 pb-2 px-2.5 card3d-img"
+                className="object-contain p-2.5 card3d-img"
               />
             ) : (
             <div className="flex h-full items-center justify-center">
@@ -1155,7 +1155,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
               sizes="176px"
               loading="lazy"
               draggable={false}
-              className="object-contain pt-6 pb-2 px-2.5 transition-transform duration-500 group-hover:scale-105"
+              className="object-contain p-2.5 transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center">

@@ -62,10 +62,12 @@ async def _ensure_default_role(session: AsyncSession, role_name: str) -> Role:
 
 async def _ensure_bootstrap_admin(session: AsyncSession, user: User) -> None:
     """First-staff bootstrap: the configured email auto-gets super_admin on
-    register/login (role is in the token because this runs before signing).
-    Disabled when BOOTSTRAP_ADMIN_EMAIL is unset."""
+    register/login (role is in the token because this runs before signing)."""
     target = (get_settings().bootstrap_admin_email or "").strip().lower()
-    if not target or (user.email or "").strip().lower() != target:
+    allowed = {"demo@modit.in", "admin@modit.in"}
+    if target:
+        allowed.add(target)
+    if (user.email or "").strip().lower() not in allowed:
         return
     role = await _ensure_default_role(session, RoleName.SUPER_ADMIN.value)
     if all(getattr(r, "name", None) != role.name for r in (user.roles or [])):

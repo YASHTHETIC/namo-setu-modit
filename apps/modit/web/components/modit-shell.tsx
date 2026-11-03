@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ImageGuard } from "@/components/product-thumb";
+import { openAppSheet } from "@/components/app-install-sheet";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -23,6 +24,7 @@ import {
   Plug,
   Search,
   ShieldCheck,
+  Smartphone,
   ShoppingCart,
   Store,
   User,
@@ -377,6 +379,17 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                       <Link href="/supplier" className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-subtle)]">
                         <Store className="h-4 w-4" /> Supplier Hub
                       </Link>
+                      <div className="my-2 border-t border-[var(--border-subtle)]" />
+                      <Link href="/admin" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-semibold text-[#150726] transition-colors hover:bg-[var(--brand-50)]">
+                        <ShieldCheck className="h-4 w-4 text-[#E91E63]" /> Staff Admin Panel
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => { setShowUserMenu(false); openAppSheet(); }}
+                        className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-semibold text-[#150726] transition-colors hover:bg-[var(--brand-50)] text-left"
+                      >
+                        <Smartphone className="h-4 w-4 text-[#7CB518]" /> Install MODIT App
+                      </button>
                     </div>
                   </div>
               )}

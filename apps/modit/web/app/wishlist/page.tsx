@@ -129,7 +129,7 @@ export default function WishlistPage() {
                     sizes="(max-width: 640px) 100vw, 400px"
                     loading="lazy"
                     draggable={false}
-                    className="object-contain pt-6 pb-2 px-2"
+                    className="object-contain p-2"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">

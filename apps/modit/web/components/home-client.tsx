@@ -9,11 +9,12 @@ import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
   ArrowRight, Star, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
-  BadgeCheck, Undo2, ReceiptIndianRupee, ShieldCheck
+  BadgeCheck, Undo2, ReceiptIndianRupee, ShieldCheck, Smartphone, Download
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useAuthReady } from "@/lib/use-auth";
 import { ModitLogo } from "@/components/modit-logo";
+import { openAppSheet } from "@/components/app-install-sheet";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
@@ -267,9 +268,20 @@ export default function HomeClient() {
               {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
             </span>
           )}
-          <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-            <span className="text-tiny font-medium">Live</span>
+          <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => openAppSheet()}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white text-tiny font-bold flex-shrink-0 active:scale-95 transition-all shadow-sm"
+              aria-label="Download App"
+            >
+              <Smartphone className="h-3.5 w-3.5 text-[#7CB518]" />
+              <span className="hidden sm:inline">Install App</span>
+              <span className="sm:hidden">App</span>
+            </button>
+            <div className="flex items-center gap-1.5 text-white/40">
+              <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+              <span className="text-tiny font-medium">Live</span>
+            </div>
           </div>
         </div>
       </div>
@@ -757,6 +769,31 @@ export default function HomeClient() {
                   <span className="text-body-md font-semibold">{item.label}</span>
                 </Link>
               ))}
+              <Link
+                href="/admin"
+                onClick={() => setShowMenu(false)}
+                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group"
+              >
+                <ShieldCheck className="h-5 w-5 text-[#E91E63]" />
+                <span className="text-body-md font-semibold">Admin Panel</span>
+              </Link>
+            </div>
+
+            {/* App Install Card */}
+            <div className="my-4 p-3 rounded-2xl bg-gradient-to-br from-[#2D1B69] to-[#1E1245] border border-white/15 text-white shadow-lg">
+              <div className="flex items-center gap-2.5">
+                <Image src="/icons/icon-192.png" alt="MODIT" width={36} height={36} className="h-9 w-9 rounded-xl flex-shrink-0 shadow-sm" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-body-sm font-extrabold leading-tight">MODIT App</p>
+                  <p className="text-micro text-[#7CB518] font-bold">Android & iOS</p>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowMenu(false); openAppSheet(); }}
+                className="mt-2.5 w-full py-2 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all"
+              >
+                <Download className="h-3.5 w-3.5" /> Install App
+              </button>
             </div>
             <div className="mt-6 pt-4 border-t border-white/10">
               <p className="text-tiny font-bold text-white/30 uppercase px-4 mb-3">Categories</p>

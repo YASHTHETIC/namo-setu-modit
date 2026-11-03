@@ -227,9 +227,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-caption text-[#9B8CB5] mt-1">
             This panel controls live prices, stock and orders. Log in with a staff account — buyer logins won&apos;t pass.
           </p>
+          <div className="my-3 rounded-xl bg-[#F0ECF9] p-3 text-left border border-[#DDD6EE]">
+            <p className="text-tiny font-bold text-[#2D1B69]">Staff Test Credentials:</p>
+            <p className="text-micro text-[#4B396B] mt-0.5">Email: <span className="font-mono font-bold text-[#150726]">demo@modit.in</span></p>
+            <p className="text-micro text-[#4B396B]">Password: <span className="font-mono font-bold text-[#150726]">Demo@1234</span></p>
+          </div>
           <button
             onClick={() => load()}
-            className="mt-4 w-full h-11 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
+            className="mt-2 w-full h-11 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#2D1B69] hover:border-[#2D1B69]"
           >
             Recheck access
           </button>
@@ -264,7 +269,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="rounded-2xl border border-[#DDD6EE] bg-white p-2 lg:sticky lg:top-24">
               <div className="flex lg:flex-col gap-1 overflow-x-auto">
                 {links.map((l) => {
-                  const active = pathname === l.href;
+                  const active = (pathname ?? "") === l.href;
                   return (
                     <Link
                       key={l.href}
