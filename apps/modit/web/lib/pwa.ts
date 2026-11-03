@@ -19,40 +19,12 @@ export function isStandalone(): boolean {
   );
 }
 
-export function isAppInstalled(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    if (localStorage.getItem("modit_app_installed") === "true") return true;
-  } catch {
-    /* ignore */
-  }
-  return isStandalone();
-}
-
 export function useIsStandalone(): boolean {
   const [standalone, setStandalone] = useState(false);
   useEffect(() => {
-    setStandalone(isAppInstalled());
+    setStandalone(isStandalone());
   }, []);
   return standalone;
-}
-
-export function useIsAppInstalled(): boolean {
-  const [installed, setInstalled] = useState(false);
-  useEffect(() => {
-    setInstalled(isAppInstalled());
-    const onInstalled = () => {
-      try {
-        localStorage.setItem("modit_app_installed", "true");
-      } catch {
-        /* ignore */
-      }
-      setInstalled(true);
-    };
-    window.addEventListener("appinstalled", onInstalled);
-    return () => window.removeEventListener("appinstalled", onInstalled);
-  }, []);
-  return installed;
 }
 
 /** PWA install prompt state (beforeinstallprompt). */
@@ -61,17 +33,12 @@ export function usePwaInstall() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    setInstalled(isAppInstalled());
+    setInstalled(isStandalone());
     const onPrompt = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
     };
     const onInstalled = () => {
-      try {
-        localStorage.setItem("modit_app_installed", "true");
-      } catch {
-        /* ignore */
-      }
       setInstalled(true);
       setDeferred(null);
     };
@@ -88,11 +55,6 @@ export function usePwaInstall() {
     await deferred.prompt();
     const choice = await deferred.userChoice;
     if (choice.outcome === "accepted") {
-      try {
-        localStorage.setItem("modit_app_installed", "true");
-      } catch {
-        /* ignore */
-      }
       setInstalled(true);
       setDeferred(null);
       return true;

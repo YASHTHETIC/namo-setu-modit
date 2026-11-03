@@ -36,6 +36,7 @@ import { CategoryTileIcon } from "@/components/modit-shell";
 import { AppDownloadSection } from "@/components/app-download-section";
 import { SiteFooter } from "@/components/site-footer";
 import { BottomNav } from "@/components/bottom-nav";
+import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -88,8 +89,21 @@ export default function HomeClient() {
   const { data: allProducts = [] } = useProducts({ page_size: 2000 });
   const products = allProducts as Product[];
   const { data: searchResults = [] } = useSearchProducts(searchQuery);
+  const isApp = useIsStandalone();
+  const { canInstall, install } = usePwaInstall();
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+
+  const handleInstallClick = async () => {
+    if (canInstall) {
+      await install();
+    } else {
+      const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+      if (isAndroid) {
+        alert("To install MODIT: Tap the 3 dots (⋮) in the top-right corner of Chrome, then tap 'Install app' or 'Add to Home screen'.");
+      }
+    }
+  };
   const [cartToast, setCartToast] = useState<{ name: string; price: number } | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
@@ -271,6 +285,17 @@ export default function HomeClient() {
             </span>
           )}
           <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+            {!isApp && (
+              <button
+                type="button"
+                onClick={handleInstallClick}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-md shadow-green-500/20 active:scale-95 transition-all"
+                aria-label="Download App"
+              >
+                <Download className="h-3 w-3" />
+                <span>Install App</span>
+              </button>
+            )}
             <div className="flex items-center gap-1.5 text-white/40">
               <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
               <span className="text-tiny font-medium">Live</span>
@@ -295,6 +320,29 @@ export default function HomeClient() {
           <span className="flex-shrink-0 rounded-md bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
         </div>
       </div>
+
+      {/* ═══ MOBILE SMART APP BANNER (Visible on phone browser only) ═══ */}
+      {!isApp && (
+        <div className="bg-[#150726] border-b border-white/10 px-4 py-2 flex items-center justify-between sm:hidden">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative h-8 w-8 rounded-lg overflow-hidden flex-shrink-0 shadow-sm ring-1 ring-white/10 bg-[#2D1B69]">
+              <Image src="/icons/icon-192.png" alt="MODIT" width={32} height={32} className="h-full w-full object-cover" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-caption font-extrabold text-white leading-tight">MODIT App</p>
+              <p className="text-micro text-[#7CB518] font-bold">⚡ 60-Min Site Delivery</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleInstallClick}
+            className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-black shadow-md shadow-green-500/25 active:scale-95 transition-all flex-shrink-0"
+          >
+            <Download className="h-3 w-3" />
+            <span>Install</span>
+          </button>
+        </div>
+      )}
 
       {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
@@ -782,6 +830,26 @@ export default function HomeClient() {
                 <span className="text-body-md font-semibold">Admin Panel</span>
               </Link>
             </div>
+
+            {/* Install App in mobile drawer if not running in standalone app */}
+            {!isApp && (
+              <div className="my-3 p-3 rounded-2xl bg-gradient-to-br from-[#2D1B69] to-[#1E1245] border border-white/15 text-white shadow-lg">
+                <div className="flex items-center gap-2.5">
+                  <Image src="/icons/icon-192.png" alt="MODIT" width={36} height={36} className="h-9 w-9 rounded-xl flex-shrink-0 shadow-sm" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-body-sm font-extrabold leading-tight">MODIT App</p>
+                    <p className="text-micro text-[#7CB518] font-bold">Android & iOS</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setShowMenu(false); handleInstallClick(); }}
+                  className="mt-2.5 w-full py-2.5 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all"
+                >
+                  <Download className="h-3.5 w-3.5" /> Install MODIT App
+                </button>
+              </div>
+            )}
 
 
             <div className="mt-6 pt-4 border-t border-white/10">

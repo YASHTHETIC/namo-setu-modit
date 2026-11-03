@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Play, Apple, X, Smartphone, Share, PlusSquare, MoreVertical, Download, Check } from "lucide-react";
-import { usePwaInstall, isStandalone, isAppInstalled } from "@/lib/pwa";
+import { usePwaInstall, isStandalone } from "@/lib/pwa";
 
 export type InstallTarget = "android" | "ios" | "any";
 
@@ -72,7 +72,7 @@ export function AppInstallSheetHost() {
   };
 
   // If already installed or closed or inside ops surfaces, do not render
-  if (!open || installed || isStandalone() || isAppInstalled()) return null;
+  if (!open || installed || isStandalone()) return null;
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 

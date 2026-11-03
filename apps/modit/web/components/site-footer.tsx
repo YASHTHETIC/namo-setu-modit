@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { ModitLogo } from "@/components/modit-logo";
 import { ReferralModal } from "@/components/referral-modal";
-import { useIsStandalone, useIsAppInstalled, usePwaInstall } from "@/lib/pwa";
+import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
 
 /**
  * Shared site footer (all pages, including home) — Blinkit-style light
@@ -16,16 +16,20 @@ import { useIsStandalone, useIsAppInstalled, usePwaInstall } from "@/lib/pwa";
 export function SiteFooter({ className = "" }: { className?: string }) {
   const [showReferral, setShowReferral] = useState(false);
   const isApp = useIsStandalone();
-  const isInstalled = useIsAppInstalled();
   const { canInstall, install } = usePwaInstall();
 
   const handleInstall = async () => {
     if (canInstall) {
       await install();
+    } else {
+      const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+      if (isAndroid) {
+        alert("To install MODIT: Tap the 3 dots (⋮) in the top-right corner of Chrome, then tap 'Install app' or 'Add to Home screen'.");
+      }
     }
   };
 
-  const showAppCta = !isApp && !isInstalled;
+  const showAppCta = !isApp;
 
   return (
     <>
@@ -45,7 +49,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">7-day replacement</span>
               </div>
               {showAppCta && (
-                <div className="mt-4 hidden lg:flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   <button
                     onClick={handleInstall}
                     className="flex items-center gap-2.5 rounded-xl border border-[#DDD6EE] bg-white px-3.5 py-2 transition-all hover:border-[#2D1B69] hover:shadow-xs active:scale-95 cursor-pointer"
@@ -96,7 +100,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <li><Link href="/dashboard/profile" className="transition-colors hover:text-[#2D1B69]">Profile settings</Link></li>
                 <li><Link href="/payment/history" className="transition-colors hover:text-[#2D1B69]">Payment history</Link></li>
                 {showAppCta && (
-                  <li className="hidden lg:block">
+                  <li>
                     <button onClick={handleInstall} className="transition-colors hover:text-[#2D1B69]">
                       Get the app
                     </button>

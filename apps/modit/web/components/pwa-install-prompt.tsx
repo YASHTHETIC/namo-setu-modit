@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X, Check } from "lucide-react";
-import { usePwaInstall, isStandalone, isAppInstalled } from "@/lib/pwa";
+import { usePwaInstall, isStandalone } from "@/lib/pwa";
 
 export function PwaInstallPrompt() {
   const pathname = usePathname();
@@ -13,18 +13,17 @@ export function PwaInstallPrompt() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (!canInstall || isStandalone() || isAppInstalled()) {
+    if (!canInstall || isStandalone()) {
       setShow(false);
       return;
     }
     try {
       if (localStorage.getItem("modit_pwa_dismissed") === "true") return;
-      if (localStorage.getItem("modit_app_installed") === "true") return;
     } catch {
       /* ignore */
     }
-    // Stagger prompt so it never collides or annoys
-    const timer = setTimeout(() => setShow(true), 45000);
+    // Stagger prompt on phone so user has time to browse first
+    const timer = setTimeout(() => setShow(true), 8000);
     return () => clearTimeout(timer);
   }, [canInstall]);
 
@@ -37,11 +36,6 @@ export function PwaInstallPrompt() {
       const ok = await install();
       if (ok) {
         setDone(true);
-        try {
-          localStorage.setItem("modit_app_installed", "true");
-        } catch {
-          /* ignore */
-        }
         setTimeout(() => setShow(false), 2000);
       }
     } catch {
@@ -58,7 +52,7 @@ export function PwaInstallPrompt() {
     }
   };
 
-  if (!show || !canInstall || isStandalone() || isAppInstalled()) return null;
+  if (!show || !canInstall || isStandalone()) return null;
   // Never interrupt checkout/payment — or ops surfaces.
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/checkout") || currentPath.startsWith("/payment")) return null;
