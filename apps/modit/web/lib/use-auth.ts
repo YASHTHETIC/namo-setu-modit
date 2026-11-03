@@ -15,8 +15,15 @@ export function useAuthReady(): boolean {
     const onStorage = (e: StorageEvent) => {
       if (e.key === "modit_access_token") setToken(e.newValue ?? undefined);
     };
+    const onAuthChange = () => {
+      setToken(getAccessToken());
+    };
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    window.addEventListener("modit:auth-change", onAuthChange);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("modit:auth-change", onAuthChange);
+    };
   }, []);
 
   void ready;

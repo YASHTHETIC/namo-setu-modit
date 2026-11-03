@@ -6,9 +6,23 @@ export function getAccessToken(): string | undefined {
 }
 
 export function setAccessToken(token: string): void {
+  if (typeof window === "undefined") return;
   localStorage.setItem(TOKEN_KEY, token);
+  try {
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new CustomEvent("modit:auth-change", { detail: { token } }));
+  } catch {
+    /* ignore */
+  }
 }
 
 export function clearAccessToken(): void {
+  if (typeof window === "undefined") return;
   localStorage.removeItem(TOKEN_KEY);
+  try {
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new CustomEvent("modit:auth-change", { detail: { token: null } }));
+  } catch {
+    /* ignore */
+  }
 }

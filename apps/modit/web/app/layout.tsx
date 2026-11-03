@@ -100,6 +100,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="MODIT" />
+        <meta name="application-name" content="MODIT" />
       </head>
       <body className="antialiased bg-[var(--bg)] text-[var(--text)]">
         <script
