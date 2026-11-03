@@ -332,7 +332,7 @@ server {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
-    location /products/ {
+    location ~* ^/products/.+\.(png|jpe?g|webp|svg|gif|ico|avif)$ {
         proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
@@ -340,6 +340,7 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         expires 7d;
+        add_header Cache-Control "public, max-age=604800";
     }
     location /api/ {
         proxy_pass http://127.0.0.1:8000;
@@ -393,7 +394,7 @@ server {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
-    location /products/ {
+    location ~* ^/products/.+\.(png|jpe?g|webp|svg|gif|ico|avif)$ {
         proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
@@ -401,6 +402,7 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         expires 7d;
+        add_header Cache-Control "public, max-age=604800";
     }
     location /api/ {
         proxy_pass http://127.0.0.1:8000;
@@ -465,19 +467,17 @@ echo "  backups: /var/backups/modit (daily 2am, keep 7) · self-heal: every 5 mi
 # ---------------------------------------------------------------------------
 if [ -n "$DOMAIN" ] && [ -n "$CERTBOT_EMAIL" ]; then
   stage "SSL (certbot)"
-  if certbot --nginx -d "$DOMAIN" -d "$API_SUBDOMAIN.$DOMAIN" \
+  # Single cert covering apex, www, and api subdomains with SANs
+  if certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" -d "$API_SUBDOMAIN.$DOMAIN" \
+      --non-interactive --agree-tos --no-eff-email -m "$CERTBOT_EMAIL" --redirect --expand; then
+    FRONTEND_URL="https://$DOMAIN"
+    echo "  SSL installed (HTTP -> HTTPS redirect on, covering $DOMAIN, www.$DOMAIN, $API_SUBDOMAIN.$DOMAIN)"
+  elif certbot --nginx -d "$DOMAIN" -d "$API_SUBDOMAIN.$DOMAIN" \
       --non-interactive --agree-tos --no-eff-email -m "$CERTBOT_EMAIL" --redirect; then
     FRONTEND_URL="https://$DOMAIN"
-    echo "  SSL installed (HTTP -> HTTPS redirect on)"
-    # Best-effort www cert so https://www.<domain> served from the VPS is
-    # not caught by cert-common-name errors. Non-fatal: if www's DNS points
-    # elsewhere (e.g. a CDN/managed host), HTTP-01 fails and we just warn.
-    if ! certbot --nginx -d "www.$DOMAIN" \
-        --non-interactive --agree-tos --no-eff-email -m "$CERTBOT_EMAIL" --redirect >/dev/null 2>&1; then
-      warn "No cert for www.$DOMAIN (its DNS likely points to another host) — fine if www redirects from there"
-    fi
+    echo "  SSL installed for apex and api"
   else
-    warn "Certbot failed — check DNS A records for $DOMAIN and $API_SUBDOMAIN.$DOMAIN, then re-run: certbot --nginx -d $DOMAIN -d $API_SUBDOMAIN.$DOMAIN -m $CERTBOT_EMAIL"
+    warn "Certbot failed — check DNS A records for $DOMAIN and $API_SUBDOMAIN.$DOMAIN, then re-run: certbot --nginx -d $DOMAIN -d www.$DOMAIN -d $API_SUBDOMAIN.$DOMAIN -m $CERTBOT_EMAIL"
   fi
 fi
 

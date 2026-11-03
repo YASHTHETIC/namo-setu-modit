@@ -43,6 +43,7 @@ jobs:
       - run: npm run typecheck --workspace=@modit/web
       - run: npm run check-images
       - run: npm run check-css-refs
+      - run: npm run check:ui
       - run: npm run build --workspace=@modit/web
 
   deploy-script:

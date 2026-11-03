@@ -10,7 +10,7 @@ orders, suppliers. No redesign of the existing look without asking.
 - Backend: FastAPI + SQLAlchemy async + asyncpg (`backend/`, `uvicorn --workers 2`)
 - DB: PostgreSQL (local on VPS, `modit` db) · Cache: Redis · Reverse proxy: nginx
 - Hosting: Hostinger VPS KVM 2 Ubuntu (`/opt/modit`, PM2 `modit-api`/`modit-web`)
-- Live: https://modit.in (+ https://api.modit.in) · Repo: private `YASHTHETIC/modit`
+- Live: https://modit.in (+ https://api.modit.in) · Repo: private `YASHTHETIC/namo-setu-modit`
 
 ## Rules
 - Never commit secrets. Server `.env` files are created by `deploy/setup.sh`

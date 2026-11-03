@@ -138,7 +138,7 @@ export default function WishlistPage() {
                 )}
               </Link>
               {product.discount > 0 && (
-                <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-white shadow-xs">
+                <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
                   {product.discount}% OFF
                 </span>
               )}

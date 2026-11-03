@@ -299,7 +299,7 @@ export default function HomeClient() {
         <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-3 sm:py-4 max-w-[1000px] mx-auto shadow-md">
           <div className="flex items-center justify-center gap-1.5 mb-2.5 sm:mb-3">
             <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#7CB518]" />
-            <p className="text-[11px] sm:text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
+            <p className="text-micro sm:text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
           </div>
           <div className="grid grid-cols-4 divide-x divide-white/10">
             {[
@@ -315,10 +315,10 @@ export default function HomeClient() {
                 >
                   <t.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: t.tint }} />
                 </span>
-                <span className="text-[9.5px] sm:text-tiny font-black leading-tight" style={{ color: t.tint }}>
+                <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>
                   {t.title}
                 </span>
-                <span className="text-[8px] sm:text-tiny text-white/55 leading-tight">
+                <span className="text-tiny text-white/55 leading-tight">
                   {t.sub}
                 </span>
               </div>

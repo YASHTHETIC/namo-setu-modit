@@ -91,7 +91,7 @@ export function FlashDeals() {
                     </span>
                   )}
                   {product.discount > 0 && (
-                    <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#7CB518] px-1.5 py-0.5 text-[9.5px] font-black tracking-tight text-[#150726] shadow-xs">
+                    <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#7CB518] px-1.5 py-0.5 text-tiny font-black tracking-tight text-[#150726] shadow-xs">
                       {product.discount}% OFF
                     </span>
                   )}

@@ -85,6 +85,45 @@
   --radius-lg: 20px;
   --radius-xl: 28px;
 
+  /* Extended palette tokens (verified status, category badges, brand accents) */
+  --emerald-700: #047857;
+  --emerald-200: #A7F3D0;
+  --emerald-50: #ECFDF5;
+  --purple-border-soft: #EDE7F6;
+  --purple-border-subtle: #E7DEF5;
+  --purple-border-card: #E5DCF3;
+  --purple-border-tint: #D9CDEF;
+  --purple-bg-soft: #F4F1FA;
+  --purple-bg-tint: #F4EFFC;
+  --purple-text-medium: #7B6A99;
+  --purple-text-deep: #4B396B;
+  --purple-gradient-start: #4A2D8A;
+  --purple-gradient-end: #8A1250;
+  --amber-dark: #B45309;
+  --amber-status: #b36400;
+  --amber-accent: #B26A00;
+  --amber-soft-bg: #FFF8E1;
+  --ruby-status: #b01946;
+  --ruby-soft-bg: #FFF5F8;
+  --red-border-soft: #FECACA;
+  --pink-border-soft: #F48FB1;
+  --pink-border-light: #F8BBD0;
+  --pink-bg-light: #FFF0F3;
+  --cyan-border-soft: #B2EBF2;
+  --cyan-bg-soft: #F0FCFD;
+  --green-border-soft: #C5E1A5;
+  --warm-bg-soft: #F0EBE3;
+  --rust-status: #9A3412;
+  --cat-blue-grey: #607D8B;
+  --cat-brown: #795548;
+  --cat-blue: #2196F3;
+  --cat-teal: #009688;
+  --cat-deep-purple: #673AB7;
+  --cat-indigo: #3F51B5;
+  --cat-deep-orange: #FF5722;
+  --cat-purple: #9C27B0;
+  --cat-green: #4CAF50;
+
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

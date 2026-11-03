@@ -9,7 +9,7 @@ below is the last mile only the operator can switch on.
 
 ```bash
 git push                      # CI runs: pytest + web checks + build
-# https://github.com/YASHTHETIC/modit/actions must be fully green
+# https://github.com/YASHTHETIC/namo-setu-modit/actions must be fully green
 ```
 
 ## 2. Deploy the latest build to the VPS
