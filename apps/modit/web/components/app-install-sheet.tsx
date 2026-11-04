@@ -20,7 +20,7 @@ export function openAppSheet(target: InstallTarget = "any") {
 
 /**
  * Tailored app install sheet: distinct flows for Android & iPhone.
- * Shows dynamic QR code for desktop scanning and native prompt on mobile.
+ * 1-click install prompt on mobile — zero QR codes or scanners.
  */
 export function AppInstallSheetHost() {
   const pathname = usePathname();
@@ -29,12 +29,8 @@ export function AppInstallSheetHost() {
   const [activeTab, setActiveTab] = useState<"android" | "ios">("android");
   const [installing, setInstalling] = useState(false);
   const [justInstalled, setJustInstalled] = useState(false);
-  const [currentOrigin, setCurrentOrigin] = useState("https://modit.in");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentOrigin(window.location.origin);
-    }
     const handleOpen = (e: Event) => {
       // Don't open if app is already running in standalone mode
       if (isStandalone()) return;
@@ -46,7 +42,7 @@ export function AppInstallSheetHost() {
         setActiveTab("android");
       } else {
         // Auto-detect device OS
-        const ua = navigator.userAgent || "";
+        const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
         if (/iPad|iPhone|iPod/.test(ua)) {
           setActiveTab("ios");
         } else {
@@ -61,13 +57,12 @@ export function AppInstallSheetHost() {
   }, []);
 
   const handleNativeInstall = async () => {
-    if (!canInstall) return;
     setInstalling(true);
     const ok = await install();
     setInstalling(false);
     if (ok) {
       setJustInstalled(true);
-      setTimeout(() => setOpen(false), 2500);
+      setTimeout(() => setOpen(false), 2000);
     }
   };
 
@@ -101,7 +96,7 @@ export function AppInstallSheetHost() {
           <button
             onClick={() => setOpen(false)}
             aria-label="Close"
-            className="rounded-full p-2 text-[#9B8CB5] hover:bg-[#F7F4FC] hover:text-[#150726] transition-colors"
+            className="rounded-full p-2 text-[#9B8CB5] hover:bg-[#F7F4FC] hover:text-[#150726] transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -111,7 +106,7 @@ export function AppInstallSheetHost() {
         <div className="flex rounded-xl bg-[#F4F1FA] p-1 my-4">
           <button
             onClick={() => setActiveTab("android")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-caption font-bold transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-caption font-bold transition-all cursor-pointer ${
               activeTab === "android"
                 ? "bg-white text-[#150726] shadow-xs"
                 : "text-[#6B5B83] hover:text-[#150726]"
@@ -122,7 +117,7 @@ export function AppInstallSheetHost() {
           </button>
           <button
             onClick={() => setActiveTab("ios")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-caption font-bold transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-caption font-bold transition-all cursor-pointer ${
               activeTab === "ios"
                 ? "bg-white text-[#150726] shadow-xs"
                 : "text-[#6B5B83] hover:text-[#150726]"
@@ -136,25 +131,23 @@ export function AppInstallSheetHost() {
         {/* Content for Android */}
         {activeTab === "android" && (
           <div className="space-y-4">
-            {canInstall && (
-              <button
-                onClick={handleNativeInstall}
-                disabled={installing}
-                className="flex w-full items-center justify-center gap-2 py-3.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-extrabold hover:bg-[#6A9C14] transition-all shadow-md active:scale-[0.98]"
-              >
-                {justInstalled ? (
-                  <>
-                    <Check className="h-5 w-5 text-white" /> Installed Successfully!
-                  </>
-                ) : installing ? (
-                  "Installing MODIT..."
-                ) : (
-                  <>
-                    <Download className="h-5 w-5" /> Tap to Install Now
-                  </>
-                )}
-              </button>
-            )}
+            <button
+              onClick={handleNativeInstall}
+              disabled={installing || justInstalled}
+              className="flex w-full items-center justify-center gap-2 py-3.5 rounded-xl bg-[#7CB518] text-white text-body-sm font-extrabold hover:bg-[#6A9C14] transition-all shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-80"
+            >
+              {justInstalled ? (
+                <>
+                  <Check className="h-5 w-5 text-white" /> Installed Successfully!
+                </>
+              ) : installing ? (
+                "Installing MODIT..."
+              ) : (
+                <>
+                  <Download className="h-5 w-5" /> Tap to Install Now
+                </>
+              )}
+            </button>
 
             <div className="rounded-2xl bg-[#F8F6FC] border border-[#DDD6EE] p-4 space-y-3">
               <p className="text-caption font-bold text-[#150726] uppercase tracking-wider flex items-center gap-1.5">
@@ -175,8 +168,6 @@ export function AppInstallSheetHost() {
                 </li>
               </ol>
             </div>
-
-
           </div>
         )}
 
@@ -206,8 +197,6 @@ export function AppInstallSheetHost() {
                 </li>
               </ol>
             </div>
-
-
           </div>
         )}
       </div>

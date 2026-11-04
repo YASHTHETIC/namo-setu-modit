@@ -193,8 +193,12 @@ def _patch_redis() -> None:
     def _fake_client():
         return shim
 
-    redis_mod.get_redis_client = _fake_client  # middleware direct calls
-    redis_mod.get_redis = _fake_client  # FastAPI dependency
+    async def _fake_dep_client():
+        # Matches the real `async def get_redis()` contract — callers await it.
+        return shim
+
+    redis_mod.get_redis_client = _fake_client  # sync call sites
+    redis_mod.get_redis = _fake_dep_client  # FastAPI dependency (awaited)
 
 
 async def _prepare_db() -> None:

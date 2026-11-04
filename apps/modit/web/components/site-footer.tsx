@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 import { ModitLogo } from "@/components/modit-logo";
 import { ReferralModal } from "@/components/referral-modal";
 import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
+import { openAppSheet } from "@/components/app-install-sheet";
 
 /**
  * Shared site footer (all pages, including home) — Blinkit-style light
@@ -22,10 +23,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     if (canInstall) {
       await install();
     } else {
-      const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
-      if (isAndroid) {
-        alert("To install MODIT: Tap the 3 dots (⋮) in the top-right corner of Chrome, then tap 'Install app' or 'Add to Home screen'.");
-      }
+      openAppSheet();
     }
   };
 

@@ -9,6 +9,7 @@ import {
   Bell,
   ChevronDown,
   ChevronRight,
+  Download,
   Droplets,
   GitCompare,
   Hammer,
@@ -50,6 +51,8 @@ import { HighlightedText } from "@/components/highlighted-text";
 import { SiteFooter } from "@/components/site-footer";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { SaleBanner } from "@/components/sale-banner";
+import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
+import { openAppSheet } from "@/components/app-install-sheet";
 
 /** Trade icon per category slug (mega menu + mobile menu). Falls back to Package. */
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -81,6 +84,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   // Ops platforms (staff admin, supplier hub) render their own chrome —
   // buyers never see buyer header/footer/nav there and vice versa.
   const isOps = currentPath.startsWith("/admin") || currentPath.startsWith("/supplier");
+  const isApp = useIsStandalone();
+  const { canInstall, install } = usePwaInstall();
+  const handleInstallClick = async () => {
+    if (canInstall) {
+      await install();
+    } else {
+      openAppSheet();
+    }
+  };
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -389,8 +401,19 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Mobile: search + cart + menu */}
+          {/* Mobile: app + search + cart + menu */}
           <div className="flex items-center gap-1 lg:hidden ml-auto">
+            {!isApp && (
+              <button
+                type="button"
+                onClick={handleInstallClick}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-sm active:scale-95 transition-all cursor-pointer"
+                aria-label="Install App"
+              >
+                <Download className="h-3 w-3" />
+                <span>App</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setShowMobileSearch(true)}
@@ -437,6 +460,15 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <Link href="/auth" className="btn-gold w-full justify-center">
                   Sign in
                 </Link>
+                {!isApp && (
+                  <button
+                    type="button"
+                    onClick={() => { setShowMobileMenu(false); handleInstallClick(); }}
+                    className="mt-2.5 w-full py-2.5 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Install MODIT App
+                  </button>
+                )}
                 <div className="mt-4 grid gap-2">
                   {megaMenuItems.map((category) => (
                     <Link

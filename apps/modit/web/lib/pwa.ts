@@ -4,23 +4,49 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getAccessToken } from "@/lib/auth";
 
-interface BeforeInstallPromptEvent extends Event {
+export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+declare global {
+  interface Window {
+    __moditInstallPrompt?: BeforeInstallPromptEvent | null;
+    __modit_is_standalone?: boolean;
+  }
+}
+
 export function isStandalone(): boolean {
   if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as unknown as { standalone?: boolean }).standalone === true ||
-    (typeof document !== "undefined" && document.referrer.includes("android-app://")) ||
-    (typeof window !== "undefined" && window.location.search.includes("source=pwa"))
-  );
+  try {
+    if (window.__modit_is_standalone) return true;
+    if (window.sessionStorage && window.sessionStorage.getItem("modit_is_standalone") === "true") {
+      window.__modit_is_standalone = true;
+      return true;
+    }
+    const isStand =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.matchMedia("(display-mode: fullscreen)").matches ||
+      window.matchMedia("(display-mode: minimal-ui)").matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone === true ||
+      (typeof document !== "undefined" && Boolean(document.referrer && document.referrer.includes("android-app://"))) ||
+      window.location.search.includes("source=pwa") ||
+      window.location.search.includes("utm_source=pwa") ||
+      window.location.search.includes("pwa=1");
+
+    if (isStand) {
+      window.__modit_is_standalone = true;
+      try {
+        window.sessionStorage.setItem("modit_is_standalone", "true");
+      } catch {}
+      return true;
+    }
+  } catch {}
+  return false;
 }
 
 export function useIsStandalone(): boolean {
-  const [standalone, setStandalone] = useState(false);
+  const [standalone, setStandalone] = useState(() => isStandalone());
   useEffect(() => {
     setStandalone(isStandalone());
   }, []);
@@ -29,40 +55,98 @@ export function useIsStandalone(): boolean {
 
 /** PWA install prompt state (beforeinstallprompt). */
 export function usePwaInstall() {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [installed, setInstalled] = useState(false);
+  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(() => {
+    if (typeof window !== "undefined" && window.__moditInstallPrompt) {
+      return window.__moditInstallPrompt;
+    }
+    return null;
+  });
+  const [installed, setInstalled] = useState(() => isStandalone());
 
   useEffect(() => {
-    setInstalled(isStandalone());
+    const isApp = isStandalone();
+    let hasInstalledFlag = false;
+    try {
+      hasInstalledFlag = localStorage.getItem("modit_app_installed") === "true";
+    } catch {}
+
+    setInstalled(isApp || (isApp && hasInstalledFlag));
+
+    // Hydrate cached prompt from window if early head script caught it
+    if (window.__moditInstallPrompt && !deferred) {
+      setDeferred(window.__moditInstallPrompt);
+    }
+
     const onPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
+      const p = e as BeforeInstallPromptEvent;
+      window.__moditInstallPrompt = p;
+      setDeferred(p);
     };
+
+    const onPromptReady = () => {
+      if (window.__moditInstallPrompt) {
+        setDeferred(window.__moditInstallPrompt);
+      }
+    };
+
     const onInstalled = () => {
       setInstalled(true);
       setDeferred(null);
+      if (typeof window !== "undefined") {
+        window.__moditInstallPrompt = null;
+        window.__modit_is_standalone = true;
+        try {
+          localStorage.setItem("modit_app_installed", "true");
+          sessionStorage.setItem("modit_is_standalone", "true");
+        } catch {}
+      }
     };
+
     window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("modit:pwa-prompt-ready", onPromptReady);
     window.addEventListener("appinstalled", onInstalled);
+    window.addEventListener("modit:pwa-installed", onInstalled);
+
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("modit:pwa-prompt-ready", onPromptReady);
       window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("modit:pwa-installed", onInstalled);
     };
-  }, []);
-
-  const install = useCallback(async () => {
-    if (!deferred) return false;
-    await deferred.prompt();
-    const choice = await deferred.userChoice;
-    if (choice.outcome === "accepted") {
-      setInstalled(true);
-      setDeferred(null);
-      return true;
-    }
-    return false;
   }, [deferred]);
 
-  return { canInstall: Boolean(deferred) && !installed, installed, install };
+  const install = useCallback(async () => {
+    const promptEvent = deferred || (typeof window !== "undefined" ? window.__moditInstallPrompt : null);
+    if (!promptEvent) return false;
+    try {
+      await promptEvent.prompt();
+      const choice = await promptEvent.userChoice;
+      if (choice && choice.outcome === "accepted") {
+        setInstalled(true);
+        setDeferred(null);
+        if (typeof window !== "undefined") {
+          window.__moditInstallPrompt = null;
+          window.__modit_is_standalone = true;
+          try {
+            localStorage.setItem("modit_app_installed", "true");
+            sessionStorage.setItem("modit_is_standalone", "true");
+          } catch {}
+        }
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.warn("PWA install error:", err);
+      return false;
+    }
+  }, [deferred]);
+
+  return {
+    canInstall: Boolean(deferred || (typeof window !== "undefined" && window.__moditInstallPrompt)) && !installed,
+    installed,
+    install,
+  };
 }
 
 export function notificationsSupported(): boolean {

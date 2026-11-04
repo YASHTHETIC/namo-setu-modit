@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Download, Check, Star, Zap, ShieldCheck, FileText, CheckCircle2, Play, Apple, Share, X } from "lucide-react";
+import { Check, Star, Zap, ShieldCheck, FileText, CheckCircle2, Play, Apple } from "lucide-react";
 import { usePwaInstall, useIsStandalone } from "@/lib/pwa";
+import { openAppSheet } from "@/components/app-install-sheet";
 
 /**
  * Universal App Download Showcase Banner (Mobile & Desktop).
@@ -16,7 +17,6 @@ export function AppDownloadSection() {
   const { canInstall, install } = usePwaInstall();
   const [installing, setInstalling] = useState(false);
   const [justInstalled, setJustInstalled] = useState(false);
-  const [showIosTip, setShowIosTip] = useState(false);
 
   // If running inside the installed standalone app, hide completely
   if (isApp) {
@@ -32,18 +32,14 @@ export function AppDownloadSection() {
         setJustInstalled(true);
       }
     } else {
-      // In mobile Chrome when prompt already handled or not yet triggered
-      const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
-      if (isAndroid) {
-        alert("To install MODIT: Tap the 3 dots (⋮) in the top-right corner of Chrome, then tap 'Install app' or 'Add to Home screen'.");
-      } else {
-        setJustInstalled(true);
-      }
+      // Native prompt unavailable (iOS/unsupported/covered): open the guided
+      // install sheet with the Android steps instead of an alert.
+      openAppSheet("android");
     }
   };
 
   const handleIosClick = () => {
-    setShowIosTip(true);
+    openAppSheet("ios");
   };
 
   return (
@@ -162,66 +158,6 @@ export function AppDownloadSection() {
           </div>
         </div>
       </div>
-
-      {/* iOS Safari Tip Modal — simple 2-step prompt without any scanner */}
-      {showIosTip && (
-        <div
-          className="fixed inset-0 z-modal bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in"
-          onClick={() => setShowIosTip(false)}
-        >
-          <div
-            className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl text-[#150726] animate-slide-in-up"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-[#F0ECF9]">
-              <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl bg-[#150726] flex items-center justify-center">
-                  <Apple className="h-5 w-5 fill-current text-white" />
-                </div>
-                <div>
-                  <h3 className="text-body-md font-black text-[#150726]">Install on iPhone (iOS)</h3>
-                  <p className="text-micro text-[#6B5B83]">Add MODIT to your home screen</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowIosTip(false)}
-                aria-label="Close"
-                className="p-1 text-[#9B8CB5] hover:text-[#150726] transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <ol className="mt-4 space-y-3 text-caption text-[#4B396B]">
-              <li className="flex items-start gap-3">
-                <span className="flex h-5 w-5 rounded-full bg-[#2D1B69] text-white text-micro font-bold items-center justify-center flex-shrink-0 mt-0.5">1</span>
-                <span>Open this site in <strong className="text-[#150726]">Safari</strong> on your iPhone.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex h-5 w-5 rounded-full bg-[#2D1B69] text-white text-micro font-bold items-center justify-center flex-shrink-0 mt-0.5">2</span>
-                <span>Tap the <strong className="text-[#150726]">Share</strong> button <Share className="inline h-3.5 w-3.5 text-blue-600" /> at the bottom bar.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex h-5 w-5 rounded-full bg-[#2D1B69] text-white text-micro font-bold items-center justify-center flex-shrink-0 mt-0.5">3</span>
-                <span>Scroll down and tap <strong className="text-[#150726] font-extrabold">&ldquo;Add to Home Screen&rdquo;</strong>.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex h-5 w-5 rounded-full bg-[#7CB518] text-white text-micro font-bold items-center justify-center flex-shrink-0 mt-0.5">4</span>
-                <span>Tap <strong className="text-[#7CB518] font-extrabold">&ldquo;Add&rdquo;</strong> in the top-right. MODIT will appear as an app on your home screen!</span>
-              </li>
-            </ol>
-
-            <button
-              type="button"
-              onClick={() => setShowIosTip(false)}
-              className="mt-5 w-full py-3 rounded-xl bg-[#2D1B69] hover:bg-[#150726] text-white text-caption font-bold transition-all shadow-md active:scale-98"
-            >
-              Got it
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

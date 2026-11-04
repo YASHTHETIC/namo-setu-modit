@@ -55,8 +55,9 @@ def money(value: float) -> float:
     return float(Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
 # Mirror of the storefront's built-in coupons — used only while the
-# platform_coupons table has no rows (e.g. a DB that hasn't run the
-# 20261022_0001 seed). Once admin-managed rows exist they are the truth.
+# platform_coupons table is empty AND as a permanent fallback behind
+# admin-managed rows (DB rows override their own code; built-ins stay
+# valid for codes no admin row covers).
 BUILT_IN_COUPONS: tuple[dict, ...] = (
     {"code": "FIRST100", "type": "flat", "value": 100.0, "max": None, "min_order": 1000.0, "till": "2026-12-31", "category": None},
     {"code": "BULK10", "type": "percent", "value": 10.0, "max": 500.0, "min_order": 5000.0, "till": "2026-12-31", "category": None},
@@ -116,13 +117,16 @@ def validate_coupon(
 async def validate_coupon_db(
     session: AsyncSession, code: str | None, subtotal: float, category_slugs: set[str], today: date | None = None
 ) -> tuple[float, bool, str | None]:
-    """Checkout validation: admin-managed platform_coupons first, built-in
-    mirror while the table is empty. Returns the matched coupon row id so
-    place_checkout_order can count usage."""
+    """Checkout validation: DB rows override their own code, built-in
+    mirror codes remain valid for everything else. Returns the matched
+    coupon row id (None for mirror codes) so place_checkout_order can
+    count usage."""
     if not code:
         return 0.0, False, None
     today = today or date.today()
-    rows: list[dict] = []
+    # Start from the built-in mirror so codes like FREESHIP keep working
+    # even after admins add their own coupons; DB rows override per-code.
+    rows: list[dict] = [dict(c) for c in BUILT_IN_COUPONS]
     row_ids: dict[str, str] = {}
     try:
         result = await session.execute(
@@ -143,11 +147,14 @@ async def validate_coupon_db(
                 "used_count": getattr(c, "used_count", 0) or 0,
             }
             if normalized["code"] and normalized["type"] in ("flat", "percent", "ship"):
+                # Admin row wins for its own code; other built-ins remain.
+                rows = [r for r in rows if r["code"] != normalized["code"]]
                 rows.append(normalized)
                 row_ids[normalized["code"]] = getattr(c, "id", None)
     except Exception:
-        # Table not migrated yet / read issues → fall back to built-ins.
-        rows = []
+        # Table not migrated yet / read issues → built-ins alone.
+        rows = [dict(c) for c in BUILT_IN_COUPONS]
+        row_ids = {}
     if rows:
         discount, free_ship = _validate_coupon_rows(rows, code, subtotal, category_slugs, today)
         return discount, free_ship, row_ids.get(code.strip().upper())

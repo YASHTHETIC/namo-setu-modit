@@ -21,6 +21,7 @@ import {
   ShoppingCart,
   Zap,
   Heart,
+  GitCompareArrows,
   Tag,
   TrendingDown,
 } from "lucide-react";
@@ -29,6 +30,7 @@ import { Reveal } from "@/components/reveal";
 import { ReplaceBadge } from "@/components/fx";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
+import { useCompareToggle } from "@/lib/use-compare-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 import { useSubCategories } from "@/lib/modit-api";
 import { useDisplayProducts } from "@/lib/pricing";
@@ -972,6 +974,33 @@ function useAreaBlocked() {
   return Boolean(pincode) && !isServiceablePin(pincode);
 }
 
+/** Compare toggle for grid-positioned cards (pill, top-right like the heart
+ *  in list mode). Unpersisted via the shared comparison store, which drives
+ *  the ComparisonBar and /compare page. */
+function GridCompareButton({ product }: { product: Product }) {
+  const { comparing, canAdd, toggle } = useCompareToggle(product);
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!comparing && !canAdd) return;
+    toggle();
+  };
+  return (
+    <button
+      onClick={handleCompare}
+      disabled={!comparing && !canAdd}
+      className="absolute top-2 right-2 z-20 flex h-7 w-7 items-center justify-center rounded-full transition-all disabled:opacity-40"
+      style={{
+        background: comparing ? '#2D1B69' : 'rgba(255,255,255,0.92)',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.14)',
+      }}
+      title={comparing ? "Remove from Compare" : canAdd ? "Add to Compare" : "Compare is full (4 products)"}
+    >
+      <GitCompareArrows className={`h-3.5 w-3.5 ${comparing ? "text-white" : "text-gray-500"}`} />
+    </button>
+  );
+}
+
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
   const [added, setAdded] = useState(false);
   const tryAdd = useAddToCart();
@@ -1044,6 +1073,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         <div className="absolute bottom-3 left-3 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
           <span className="text-tiny font-bold text-[#00BCD4]">60 MINS</span>
         </div>
+        <GridCompareButton product={product} />
       </div>
 
       {/* Info — Blinkit anatomy: name, unit, bottom price+ADD row */}
@@ -1106,6 +1136,7 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
   const [optionsOpen, setOptionsOpen] = useState(false);
   const optLabel = optionsLabel(product);
   const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
+  const { comparing, canAdd, toggle: toggleCompare } = useCompareToggle(product);
   const catColor = getCatColor(product.categorySlug);
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
 
@@ -1122,6 +1153,13 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist();
+  };
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!comparing && !canAdd) return;
+    toggleCompare();
   };
 
   return (
@@ -1178,6 +1216,18 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
           title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         >
           <Heart className={`h-3.5 w-3.5 ${wishlisted ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+        </button>
+        <button
+          onClick={handleCompare}
+          disabled={!comparing && !canAdd}
+          className="absolute bottom-2 right-2 z-20 flex h-8 w-8 items-center justify-center rounded-full transition-all disabled:opacity-40"
+          style={{
+            background: comparing ? '#EDE7F6' : 'rgba(255,255,255,0.92)',
+            boxShadow: comparing ? '0 2px 8px rgba(45,27,105,0.3)' : '0 2px 8px rgba(0,0,0,0.1)',
+          }}
+          title={comparing ? "Remove from Compare" : canAdd ? "Add to Compare" : "Compare is full (4 products)"}
+        >
+          <GitCompareArrows className={`h-4 w-4 ${comparing ? "text-[#2D1B69]" : "text-gray-400"}`} />
         </button>
       </div>
 

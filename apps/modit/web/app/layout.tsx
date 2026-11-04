@@ -102,6 +102,62 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="MODIT" />
         <meta name="application-name" content="MODIT" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                window.__moditInstallPrompt = null;
+                try {
+                  var isStand = (
+                    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+                    (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) ||
+                    (window.matchMedia && window.matchMedia('(display-mode: minimal-ui)').matches) ||
+                    window.navigator.standalone === true ||
+                    (document.referrer && document.referrer.indexOf('android-app://') !== -1) ||
+                    window.location.search.indexOf('source=pwa') !== -1 ||
+                    window.location.search.indexOf('utm_source=pwa') !== -1 ||
+                    (window.sessionStorage && window.sessionStorage.getItem('modit_is_standalone') === 'true')
+                  );
+                  if (isStand) {
+                    window.__modit_is_standalone = true;
+                    if (window.sessionStorage) window.sessionStorage.setItem('modit_is_standalone', 'true');
+                  }
+                } catch(e) {}
+
+                window.addEventListener('beforeinstallprompt', function(e) {
+                  e.preventDefault();
+                  window.__moditInstallPrompt = e;
+                  try {
+                    window.dispatchEvent(new CustomEvent('modit:pwa-prompt-ready'));
+                  } catch(_) {}
+                });
+
+                window.addEventListener('appinstalled', function() {
+                  window.__moditInstallPrompt = null;
+                  window.__modit_is_standalone = true;
+                  try {
+                    localStorage.setItem('modit_app_installed', 'true');
+                    sessionStorage.setItem('modit_is_standalone', 'true');
+                  } catch(_) {}
+                  try {
+                    window.dispatchEvent(new CustomEvent('modit:pwa-installed'));
+                  } catch(_) {}
+                });
+
+                if ('serviceWorker' in navigator) {
+                  function registerSW() {
+                    navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  }
+                  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    registerSW();
+                  } else {
+                    window.addEventListener('load', registerSW);
+                  }
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="antialiased bg-[var(--bg)] text-[var(--text)]">
         <script
@@ -148,17 +204,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <WebVitalsReporter />
           </PincodeProvider>
         </Providers>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js').catch(() => {});
-                });
-              }
-            `,
-          }}
-        />
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="lazyOnload"

@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useOrder, useOrderDelivery, useUpdateOrderStatus } from "@/lib/modit-api";
 import { useCartStore } from "@/lib/cart-store";
 import { createRazorpayOrder, verifyRazorpayPayment } from "@/lib/hybrid-api";
+import { createApiClient } from "@foundation/api-client";
+import { getAccessToken } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { getProductById, getProductBySku } from "@/lib/product-data";
 import { resolveReorderProduct, reorderQuantity } from "@/lib/order-reorder";
 import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
@@ -177,7 +180,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const orderStatus = String((apiOrder as { status?: string } | null)?.status ?? "");
   const { data: liveDelivery } = useOrderDelivery(id, DISPATCHED_STATUSES.has(orderStatus));
   const [rating, setRating] = useState(0);
+  const [ratingBusy, setRatingBusy] = useState(false);
   const [rated, setRated] = useState(false);
+  const [ratingError, setRatingError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
   const [cancelArmed, setCancelArmed] = useState(false);
@@ -190,8 +195,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   // One-tap reorder: real catalog products only (same honesty rule as the list).
   // Server lines carry a DB UUID in product_id that never matches static ids —
   // resolveReorderProduct falls back to the shared SKU.
-  const handleReorderAll = () => {
-    const lines = (order?.items ?? []) as Array<{ productId?: string; sku?: string; quantity?: number }>;
+  const handleReorderAll = () => {    const lines = (order?.items ?? []) as Array<{ productId?: string; sku?: string; quantity?: number }>;
     let added = 0;
     lines.forEach((line) => {
       const p = resolveReorderProduct(line);
@@ -212,6 +216,30 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     setTimeout(() => router.push("/cart"), 600);
   };
   const existingReturn = useReturnStore((s) => s.getReturnForOrder(id));
+
+  // Persist delivery rating through the reviews API (target_type "delivery").
+  const handleRateDelivery = async () => {
+    if (rating <= 0 || ratingBusy) return;
+    setRatingBusy(true);
+    setRatingError(false);
+    try {
+      const client = createApiClient({
+        baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
+        accessToken: getAccessToken(),
+      });
+      await client.request("/reviews", {
+        method: "POST",
+        body: JSON.stringify({ target_type: "delivery", target_id: id, rating }),
+      });
+      setRated(true);
+    } catch {
+      // Persist failed (e.g. duplicate review): keep the stars up so the
+      // user can retry rather than silently faking success.
+      setRatingBusy(false);
+      setRatingError(true);
+    }
+  };
+
 
   const order = useMemo(() => {
     // Demo showcase ids keep their built-in data; every real server order
@@ -495,9 +523,18 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               ))}
             </div>
             {rating > 0 && (
-              <button onClick={() => setRated(true)} className="px-5 py-2 rounded-lg bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] transition-all">
-                Submit Rating
+              <button
+                onClick={handleRateDelivery}
+                disabled={ratingBusy}
+                className="px-5 py-2 rounded-lg bg-[#7CB518] text-white text-caption font-bold hover:bg-[#6A9C14] transition-all disabled:opacity-60"
+              >
+                {ratingBusy ? "Saving…" : "Submit Rating"}
               </button>
+            )}
+            {ratingError && (
+              <p className="text-caption text-red-500 mt-2 font-semibold">
+                Couldn&apos;t save your rating — please try again.
+              </p>
             )}
           </div>
         )}

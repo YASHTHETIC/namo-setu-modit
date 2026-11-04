@@ -3,7 +3,7 @@
   "name": "MODIT - Construction Materials",
   "short_name": "MODIT",
   "description": "Construction materials delivered to your site. Blinkit for construction.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#150726",
   "theme_color": "#2D1B69",
@@ -36,17 +36,17 @@
   "shortcuts": [
     {
       "name": "Shop products",
-      "url": "/products",
+      "url": "/products?source=pwa",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "My cart",
-      "url": "/cart",
+      "url": "/cart?source=pwa",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Track orders",
-      "url": "/orders",
+      "url": "/orders?source=pwa",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]

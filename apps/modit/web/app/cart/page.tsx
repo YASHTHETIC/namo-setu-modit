@@ -21,6 +21,7 @@ import {
 import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useCouponStore } from "@/lib/coupon-store";
+import { computeBill } from "@/lib/bill";
 import { useServerCoupons } from "@/lib/modit-api";
 import { resolveProduct } from "@/lib/pricing";
 import { formatINR, productLink } from "@/lib/utils";
@@ -64,10 +65,13 @@ export default function CartPage() {
     applyCoupon(couponCode.trim(), getCartTotal());
   };
 
-  const couponDiscount = appliedCoupon ? getCouponDiscount(getCartTotal()) : 0;
+  // Shared bill math (mirrors the server: FREESHIP zeroes delivery, etc.)
+  // — keep this instead of re-deriving totals from the raw cart store.
+  const bill = computeBill();
+  const couponDiscount = bill.couponDiscount;
   const couponApplied = Boolean(appliedCoupon);
 
-  const grandTotal = getCartGrandTotal() - (couponApplied ? couponDiscount : 0);
+  const grandTotal = bill.total;
 
   if (items.length === 0) {
     return (
@@ -367,13 +371,13 @@ export default function CartPage() {
                   )}
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Delivery</span>
-                    <span className={getCartShipping() === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726] font-medium"}>
-                      {getCartShipping() === 0 ? "FREE" : `₹${getCartShipping()}`}
+                    <span className={bill.shipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726] font-medium"}>
+                      {bill.shipping === 0 ? "FREE" : `₹${bill.shipping}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">GST (estimated)</span>
-                    <span className="text-[#150726] font-medium">₹{getCartGST().toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
+                    <span className="text-[#150726] font-medium">₹{bill.gst.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
                   </div>
                   {couponApplied && (
                     <div className="flex justify-between text-body-sm">

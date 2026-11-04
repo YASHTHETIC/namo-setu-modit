@@ -58,9 +58,17 @@ export const useCouponStore = create<CouponState>()(
       availableCoupons: defaultCoupons,
 
       applyCoupon: (code, orderTotal) => {
-        const coupon = get().availableCoupons.find(
-          (c) => c.code.toUpperCase() === code.toUpperCase() && c.active
-        );
+        // Validate against the live list AND the baked-in defaults: the
+        // persisted store may hold a server-hydrated list without the
+        // built-in codes, while the backend still honours them at checkout.
+        const pool = [...get().availableCoupons, ...defaultCoupons];
+        const seen = new Set<string>();
+        const coupon = pool.find((c) => {
+          const key = c.code.toUpperCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return key === code.toUpperCase() && c.active;
+        });
         if (!coupon) {
           set({ couponError: "Invalid coupon code" });
           return { success: false, message: "Invalid coupon code" };
@@ -166,10 +174,17 @@ export const useCouponStore = create<CouponState>()(
           })
           .filter((c): c is Coupon => c !== null);
         if (mapped.length > 0) {
+          // Merge: server truth wins per-code, built-in defaults survive so
+          // codes like FREESHIP/FIRST100 stay applicable in the UI
+          // (backend checkout remains the authoritative validator).
+          const byCode = new Map<string, Coupon>();
+          for (const c of defaultCoupons) byCode.set(c.code.toUpperCase(), c);
+          for (const c of mapped) byCode.set(c.code.toUpperCase(), c);
+          const merged = Array.from(byCode.values());
           set((state) => ({
-            availableCoupons: mapped,
+            availableCoupons: merged,
             appliedCoupon:
-              state.appliedCoupon && mapped.some((c) => c.code === state.appliedCoupon!.code)
+              state.appliedCoupon && merged.some((c) => c.code === state.appliedCoupon!.code)
                 ? state.appliedCoupon
                 : null,
           }));
