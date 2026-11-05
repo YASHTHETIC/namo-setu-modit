@@ -301,7 +301,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
         body: JSON.stringify({ phone: digits }),
       });
       setSent(true);
-      setCode("");
+      setCode(digits === "9999900001" ? "123456" : "");
       setCooldown(30);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send OTP.");
@@ -377,6 +377,11 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
               className={`${field} pl-[70px] tabular-nums tracking-wider`}
             />
           </div>
+          {digits === "9999900001" && (
+            <div className="rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] p-2.5 text-tiny font-bold text-[#5A8010] flex items-center justify-between gap-2">
+              <span>⚡ Demo Account: OTP will be <strong>123456</strong></span>
+            </div>
+          )}
         </div>
 
         {sent && (
@@ -387,7 +392,7 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
               <input
                 type="tel"
                 inputMode="numeric"
-                placeholder="••••••"
+                placeholder="123456"
                 value={code}
                 onChange={(e) => setCode(onlyDigits(e.target.value, 6))}
                 onKeyDown={(e) => {
@@ -396,6 +401,18 @@ function OtpForm({ onSuccess }: { onSuccess: (data: { access_token: string }) =>
                 className={`${field} text-center tracking-[0.4em] font-extrabold tabular-nums`}
               />
             </div>
+            {digits === "9999900001" && (
+              <div className="rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] p-2 text-tiny font-bold text-[#5A8010] flex items-center justify-between gap-2">
+                <span>⚡ Demo OTP: <strong>123456</strong></span>
+                <button
+                  type="button"
+                  onClick={() => setCode("123456")}
+                  className="text-tiny font-black underline text-[#2D1B69] hover:text-[#7CB518]"
+                >
+                  Auto-fill
+                </button>
+              </div>
+            )}
           </div>
         )}
 

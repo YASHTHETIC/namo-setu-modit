@@ -23,6 +23,9 @@ OTP_TTL_SECONDS = 300
 OTP_MAX_ATTEMPTS = 5
 OTP_RESEND_COOLDOWN_SECONDS = 30
 
+DEMO_PHONE_NUMBERS = {"9999900001", "9999900000"}
+DEMO_OTP_CODE = "123456"
+
 _INDIA_MOBILE = re.compile(r"^[6-9]\d{9}$")
 
 
@@ -50,16 +53,21 @@ async def request_login_otp(redis, phone: str, gateway_url: str | None, api_key:
 
     Raises 429 while in cooldown, 503 when no delivery channel exists.
     """
+    is_demo = phone in DEMO_PHONE_NUMBERS
     now_ttl = await redis.ttl(_key(phone))
-    if now_ttl is not None and now_ttl > OTP_TTL_SECONDS - OTP_RESEND_COOLDOWN_SECONDS:
+    if not is_demo and now_ttl is not None and now_ttl > OTP_TTL_SECONDS - OTP_RESEND_COOLDOWN_SECONDS:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"OTP already sent. Retry in {now_ttl - (OTP_TTL_SECONDS - OTP_RESEND_COOLDOWN_SECONDS)}s.",
         )
-    code = f"{secrets.randbelow(900000) + 100000:06d}"
+    code = DEMO_OTP_CODE if is_demo else f"{secrets.randbelow(900000) + 100000:06d}"
     digest = hashlib.sha256(code.encode()).hexdigest()
     await redis.hset(_key(phone), mapping={"code_hash": digest, "attempts": 0})
     await redis.expire(_key(phone), OTP_TTL_SECONDS)
+
+    if is_demo:
+        logger.info("Demo OTP for +91 %s: %s (instant demo login)", phone, code)
+        return 0
 
     if gateway_url:
         try:
@@ -96,6 +104,14 @@ async def request_login_otp(redis, phone: str, gateway_url: str | None, api_key:
 
 async def verify_login_otp(redis, phone: str, code: str) -> bool:
     """True + consumes the code on match. False on missing/expired/wrong/locked."""
+    if phone in DEMO_PHONE_NUMBERS and code.strip() == DEMO_OTP_CODE:
+        if redis:
+            try:
+                await redis.delete(_key(phone))
+            except Exception:
+                pass
+        return True
+
     entry = await redis.hgetall(_key(phone))
     if not entry:
         return False

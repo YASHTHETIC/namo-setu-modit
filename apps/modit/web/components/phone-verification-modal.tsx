@@ -91,7 +91,7 @@ export function PhoneVerificationModal() {
         body: JSON.stringify({ phone: digits }),
       });
       setSent(true);
-      setCode("");
+      setCode(digits === "9999900001" ? "123456" : "");
       setCooldown(30);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send OTP. Try demo number.");
@@ -221,6 +221,11 @@ export function PhoneVerificationModal() {
                       className="w-full h-12 rounded-xl border-2 border-[#E8E0F0] pl-14 pr-4 text-body-lg font-bold text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
                     />
                   </div>
+                  {digits === "9999900001" && (
+                    <div className="rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] p-2.5 text-tiny font-bold text-[#5A8010] flex items-center justify-between gap-2 animate-fade-in">
+                      <span>⚡ Demo Account: OTP code will be <strong>123456</strong></span>
+                    </div>
+                  )}
                 </div>
 
                 <button
@@ -264,6 +269,18 @@ export function PhoneVerificationModal() {
                     autoFocus
                     className="w-full h-12 text-center tracking-[0.35em] rounded-xl border-2 border-[#E8E0F0] px-4 text-title-md font-black text-[#150726] placeholder:text-[#B8A9CC] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
                   />
+                  {digits === "9999900001" && (
+                    <div className="rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] p-2.5 text-tiny font-bold text-[#5A8010] flex items-center justify-between gap-2 animate-fade-in">
+                      <span>⚡ Demo OTP: <strong>123456</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setCode("123456")}
+                        className="text-tiny font-black underline text-[#2D1B69] hover:text-[#7CB518]"
+                      >
+                        Auto-fill
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <button
