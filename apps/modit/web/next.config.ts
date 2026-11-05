@@ -85,6 +85,12 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: `${API_ORIGIN}/api/:path*`,
       },
+      {
+        // Play Store / Digital Asset Links — dot-folders are not served from
+        // public/ by the Next dev server, so route it to a handler instead.
+        source: "/.well-known/assetlinks.json",
+        destination: "/assetlinks.json",
+      },
     ];
   },
 };

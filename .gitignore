@@ -84,3 +84,6 @@ portfolio-check/
 # TypeScript build cache
 *.tsbuildinfo
 modit-v2/
+
+# Android/Play Store signing keys + local secrets
+playstore/keys/

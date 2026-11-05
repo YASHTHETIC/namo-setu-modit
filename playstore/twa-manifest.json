@@ -1,0 +1,40 @@
+{
+  "targetUrl": "https://modit.in",
+  "packageName": "in.modit.app",
+  "name": "MODIT - Construction Materials",
+  "shortName": "MODIT",
+  "display": [
+    "standalone"
+  ],
+  "themeColor": {
+    "extractedColor": "#2D1B69",
+    "hashColor": "#2D1B69"
+  },
+  "backgroundColor": "#150726",
+  "splashColor": "#2D1B69",
+  "enableNotifications": true,
+  "retainedBundles": [],
+  "signingKey": {
+    "path": "playstore/keys/modit-upload.keystore",
+    "alias": "modit-upload"
+  },
+  "fallbackType": "customtabs",
+  "orientation": "portrait",
+  "enableSiteSettingsShortcut": true,
+  "webManifestUrl": "https://modit.in/manifest.json",
+  "shortcuts": [
+    {
+      "name": "Shop products",
+      "short_name": "Shop",
+      "url": "/products",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Track order",
+      "short_name": "Track",
+      "url": "/orders",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "features": {}
+}
