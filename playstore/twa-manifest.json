@@ -1,5 +1,5 @@
 {
-  "targetUrl": "https://modit.in",
+  "targetUrl": "https://modit.in/?source=pwa&utm_source=playstore",
   "packageName": "in.modit.app",
   "name": "MODIT - Construction Materials",
   "shortName": "MODIT",
@@ -26,13 +26,13 @@
     {
       "name": "Shop products",
       "short_name": "Shop",
-      "url": "/products",
+      "url": "/products?source=pwa&utm_source=playstore",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Track order",
       "short_name": "Track",
-      "url": "/orders",
+      "url": "/orders?source=pwa&utm_source=playstore",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ],

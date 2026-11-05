@@ -43,7 +43,7 @@ export function AppDownloadSection() {
   };
 
   return (
-    <section aria-label="Download MODIT App" className="w-full">
+    <section aria-label="Download MODIT App" className="w-full hide-in-app install-app-cta" data-hide-in-app="true">
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 py-6 sm:py-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#150726] via-[#1e1245] to-[#0b0318] p-5 sm:p-10 border border-white/15 shadow-2xl shadow-purple-950/40">
           {/* Subtle background glow */}

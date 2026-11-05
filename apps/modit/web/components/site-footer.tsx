@@ -98,7 +98,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <li><Link href="/dashboard/profile" className="transition-colors hover:text-[#2D1B69]">Profile settings</Link></li>
                 <li><Link href="/payment/history" className="transition-colors hover:text-[#2D1B69]">Payment history</Link></li>
                 {showAppCta && (
-                  <li>
+                  <li className="hide-in-app install-app-cta" data-hide-in-app="true">
                     <button onClick={handleInstall} className="transition-colors hover:text-[#2D1B69]">
                       Get the app
                     </button>

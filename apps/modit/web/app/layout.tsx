@@ -108,19 +108,39 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               (function() {
                 window.__moditInstallPrompt = null;
                 try {
+                  var nav = window.navigator || {};
+                  var ua = nav.userAgent || '';
                   var isStand = (
                     (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
                     (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) ||
                     (window.matchMedia && window.matchMedia('(display-mode: minimal-ui)').matches) ||
-                    window.navigator.standalone === true ||
-                    (document.referrer && document.referrer.indexOf('android-app://') !== -1) ||
+                    (window.matchMedia && window.matchMedia('(display-mode: window-controls-overlay)').matches) ||
+                    nav.standalone === true ||
+                    (document.referrer && (
+                      document.referrer.indexOf('android-app://') !== -1 ||
+                      document.referrer.indexOf('in.modit.app') !== -1
+                    )) ||
                     window.location.search.indexOf('source=pwa') !== -1 ||
                     window.location.search.indexOf('utm_source=pwa') !== -1 ||
-                    (window.sessionStorage && window.sessionStorage.getItem('modit_is_standalone') === 'true')
+                    window.location.search.indexOf('utm_source=playstore') !== -1 ||
+                    window.location.search.indexOf('pwa=1') !== -1 ||
+                    window.location.search.indexOf('twa=1') !== -1 ||
+                    window.location.search.indexOf('source=twa') !== -1 ||
+                    window.location.search.indexOf('app=1') !== -1 ||
+                    window.location.search.indexOf('package=in.modit.app') !== -1 ||
+                    window.location.search.indexOf('standalone=1') !== -1 ||
+                    (window.sessionStorage && window.sessionStorage.getItem('modit_is_standalone') === 'true') ||
+                    /;\s*wv\b/i.test(ua) ||
+                    (/Android/i.test(ua) && /Version\/[\d.]+/i.test(ua) && /Chrome\/[\d.]+/i.test(ua)) ||
+                    /in\.modit\.app|MODIT-APP|Bubblewrap/i.test(ua)
                   );
                   if (isStand) {
                     window.__modit_is_standalone = true;
                     if (window.sessionStorage) window.sessionStorage.setItem('modit_is_standalone', 'true');
+                    if (document.documentElement) {
+                      document.documentElement.classList.add('is-standalone', 'is-app');
+                      document.documentElement.setAttribute('data-is-app', 'true');
+                    }
                   }
                 } catch(e) {}
 
@@ -138,6 +158,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   try {
                     localStorage.setItem('modit_app_installed', 'true');
                     sessionStorage.setItem('modit_is_standalone', 'true');
+                    if (document.documentElement) {
+                      document.documentElement.classList.add('is-standalone', 'is-app');
+                      document.documentElement.setAttribute('data-is-app', 'true');
+                    }
                   } catch(_) {}
                   try {
                     window.dispatchEvent(new CustomEvent('modit:pwa-installed'));

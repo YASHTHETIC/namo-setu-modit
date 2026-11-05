@@ -3491,4 +3491,28 @@ button { touch-action: manipulation; }
 
   .btn-shine::after {
     display: none;
-  }}
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   APP STANDALONE GUARDS — Never show "Install / Download App" in-app
+   ══════════════════════════════════════════════════════════════════ */
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui), (display-mode: window-controls-overlay) {
+  .hide-in-app,
+  [data-hide-in-app="true"],
+  .install-app-cta {
+    display: none !important;
+  }
+}
+
+html.is-standalone .hide-in-app,
+html.is-standalone [data-hide-in-app="true"],
+html.is-standalone .install-app-cta,
+html.is-app .hide-in-app,
+html.is-app [data-hide-in-app="true"],
+html.is-app .install-app-cta,
+html[data-is-app="true"] .hide-in-app,
+html[data-is-app="true"] [data-hide-in-app="true"],
+html[data-is-app="true"] .install-app-cta {
+  display: none !important;
+}

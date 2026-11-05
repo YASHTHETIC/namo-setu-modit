@@ -35,7 +35,9 @@ DB_PATH = DB_DIR / "modit.db"
 
 def _setup_env() -> None:
     DB_DIR.mkdir(exist_ok=True)
-    os.environ.setdefault("DATABASE_URL", f"sqlite+aiosqlite:///{DB_PATH.as_posix()}")
+    # FORCE the local SQLite file: an ambient DATABASE_URL (left over in a
+    # shell/IDE env) must not silently repoint this QA stack at another DB.
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{DB_PATH.as_posix()}"
     os.environ.setdefault("JWT_SECRET_KEY", "local-e2e-secret-" + "x" * 40)
     os.environ.setdefault("ENVIRONMENT", "development")
     os.environ.setdefault("OTP_DEBUG_TO_LOGS", "true")
@@ -260,7 +262,7 @@ async def main_async(reset: bool, seed_only: bool) -> None:
 
     from backend.app.main import app
 
-    config = uvicorn.Config(app, host="127.0.0.1", port=8000, log_level="info", workers=1)
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info", workers=1)
     await uvicorn.Server(config).serve()
 
 

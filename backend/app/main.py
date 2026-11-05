@@ -28,16 +28,18 @@ async def lifespan(app: FastAPI):
     logger.info("Starting MODIT backend...")
     logger.info(f"Environment: {settings.environment}")
 
-    # Fail fast + loud: probe Postgres once at boot so a bad DATABASE_URL is
+    # Fail fast + loud: probe the DB once at boot so a bad DATABASE_URL is
     # visible immediately instead of surfacing as 30s hangs per request.
+    # The log names the actual dialect — Postgres vs SQLite matters when
+    # debugging local runs (a stale "Postgres: OK" sent QA down a rabbit hole).
     try:
         conn = await engine.connect()
         await conn.execute(text("SELECT 1"))
         await conn.close()
-        logger.info("Postgres: OK")
+        logger.info("Database connected: %s", engine.dialect.name)
     except Exception as e:
         logger.error(
-            "Postgres UNREACHABLE (%s). DB-backed endpoints will fail fast. "
+            "Database UNREACHABLE (%s). DB-backed endpoints will fail fast. "
             "Check DATABASE_URL.", e,
         )
 

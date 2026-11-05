@@ -59,7 +59,7 @@ export function PwaInstallPrompt() {
   if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-6 left-4 right-4 z-sheet max-w-[420px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[360px]">
+    <div className="fixed bottom-20 sm:bottom-6 left-4 right-4 z-sheet max-w-[420px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[360px] hide-in-app install-app-cta" data-hide-in-app="true">
       <div className="bg-[#150726] rounded-2xl border border-white/15 p-4 shadow-2xl shadow-purple-950/60 relative animate-slide-in-up">
         <button
           onClick={handleDismiss}

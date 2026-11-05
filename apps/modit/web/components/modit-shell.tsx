@@ -407,8 +407,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={handleInstallClick}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-sm active:scale-95 transition-all cursor-pointer hide-in-app install-app-cta"
                 aria-label="Install App"
+                data-hide-in-app="true"
               >
                 <Download className="h-3 w-3" />
                 <span>App</span>
@@ -464,7 +465,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   <button
                     type="button"
                     onClick={() => { setShowMobileMenu(false); handleInstallClick(); }}
-                    className="mt-2.5 w-full py-2.5 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all cursor-pointer"
+                    className="mt-2.5 w-full py-2.5 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all cursor-pointer hide-in-app install-app-cta"
+                    data-hide-in-app="true"
                   >
                     <Download className="h-3.5 w-3.5" /> Install MODIT App
                   </button>

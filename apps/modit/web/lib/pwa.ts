@@ -24,20 +24,51 @@ export function isStandalone(): boolean {
       window.__modit_is_standalone = true;
       return true;
     }
+    if (
+      typeof document !== "undefined" &&
+      document.documentElement &&
+      (document.documentElement.classList.contains("is-standalone") ||
+        document.documentElement.classList.contains("is-app") ||
+        document.documentElement.getAttribute("data-is-app") === "true")
+    ) {
+      window.__modit_is_standalone = true;
+      return true;
+    }
+
+    const nav = window.navigator as unknown as { standalone?: boolean; userAgent?: string };
+    const ua = nav.userAgent || "";
     const isStand =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.matchMedia("(display-mode: fullscreen)").matches ||
-      window.matchMedia("(display-mode: minimal-ui)").matches ||
-      (window.navigator as unknown as { standalone?: boolean }).standalone === true ||
-      (typeof document !== "undefined" && Boolean(document.referrer && document.referrer.includes("android-app://"))) ||
+      Boolean(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+      Boolean(window.matchMedia && window.matchMedia("(display-mode: fullscreen)").matches) ||
+      Boolean(window.matchMedia && window.matchMedia("(display-mode: minimal-ui)").matches) ||
+      Boolean(window.matchMedia && window.matchMedia("(display-mode: window-controls-overlay)").matches) ||
+      nav.standalone === true ||
+      (typeof document !== "undefined" &&
+        Boolean(
+          document.referrer &&
+            (document.referrer.includes("android-app://") || document.referrer.includes("in.modit.app"))
+        )) ||
       window.location.search.includes("source=pwa") ||
       window.location.search.includes("utm_source=pwa") ||
-      window.location.search.includes("pwa=1");
+      window.location.search.includes("utm_source=playstore") ||
+      window.location.search.includes("pwa=1") ||
+      window.location.search.includes("twa=1") ||
+      window.location.search.includes("source=twa") ||
+      window.location.search.includes("app=1") ||
+      window.location.search.includes("package=in.modit.app") ||
+      window.location.search.includes("standalone=1") ||
+      /;\s*wv\b/i.test(ua) ||
+      (/Android/i.test(ua) && /Version\/[\d.]+/i.test(ua) && /Chrome\/[\d.]+/i.test(ua)) ||
+      /in\.modit\.app|MODIT-APP|Bubblewrap/i.test(ua);
 
     if (isStand) {
       window.__modit_is_standalone = true;
       try {
         window.sessionStorage.setItem("modit_is_standalone", "true");
+        if (typeof document !== "undefined" && document.documentElement) {
+          document.documentElement.classList.add("is-standalone", "is-app");
+          document.documentElement.setAttribute("data-is-app", "true");
+        }
       } catch {}
       return true;
     }

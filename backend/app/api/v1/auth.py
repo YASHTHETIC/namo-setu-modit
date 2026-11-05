@@ -62,12 +62,14 @@ async def _ensure_default_role(session: AsyncSession, role_name: str) -> Role:
 
 async def _ensure_bootstrap_admin(session: AsyncSession, user: User) -> None:
     """First-staff bootstrap: the configured email auto-gets super_admin on
-    register/login (role is in the token because this runs before signing)."""
+    register/login (role is in the token because this runs before signing).
+
+    Only the configured bootstrap email may receive this grant. Demo accounts
+    must stay plain buyers — an auto-granted staff role lets a demo login kill
+    orders and list admin users, which is exactly what the e2e journey guards.
+    """
     target = (get_settings().bootstrap_admin_email or "").strip().lower()
-    allowed = {"demo@modit.in", "admin@modit.in"}
-    if target:
-        allowed.add(target)
-    if (user.email or "").strip().lower() not in allowed:
+    if not target or (user.email or "").strip().lower() != target:
         return
     role = await _ensure_default_role(session, RoleName.SUPER_ADMIN.value)
     if all(getattr(r, "name", None) != role.name for r in (user.roles or [])):
