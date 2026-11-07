@@ -97,12 +97,19 @@ export const useCartStore = create<CartState>()(
         set((state) => {
           const variant = variantId ? product.variants?.find((v) => v.id === variantId) : null;
           const unitPrice = variant?.price ?? product.price;
-          const key = `${product.id}:${variantId || "default"}`;
-          const existing = state.items.find((i) => `${i.product.id}:${i.variantId || "default"}` === key);
+          // Merge identity must survive the TWO product sources that can feed
+          // the cart (static catalog slugs vs backend UUIDs share a SKU but
+          // differ in id). SKU is the stable key; id is the fallback for
+          // sources without one.
+          const keyOf = (p: { sku?: string; id: string }) => p.sku || p.id;
+          const key = `${keyOf(product)}:${variantId || "default"}`;
+          const sameLine = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
+            `${keyOf(i.product)}:${i.variantId || "default"}` === key;
+          const existing = state.items.find(sameLine);
           if (existing) {
             return {
               items: state.items.map((i) =>
-                `${i.product.id}:${i.variantId || "default"}` === key
+                sameLine(i)
                   ? { ...i, quantity: Math.min(i.quantity + quantity, variant?.stockLevel ?? product.stockLevel), unitPrice, shade: shade || i.shade }
                   : i
               ),
@@ -115,29 +122,33 @@ export const useCartStore = create<CartState>()(
       },
 
       removeItem: (productId, variantId) => {
+        // productId may originate from either product source; match on id OR
+        // sku so a static-catalog id can still remove a backend-keyed line.
+        const matches = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
+          i.product.id === productId || i.product.sku === productId;
         set((state) => ({
           items: state.items.filter((i) => {
-            if (variantId) return !(i.product.id === productId && i.variantId === variantId);
-            return i.product.id !== productId;
+            if (variantId) return !(matches(i) && i.variantId === variantId);
+            return !matches(i);
           }),
         }));
       },
 
       updateQuantity: (productId, quantity, variantId) => {
         set((state) => {
+          const matches = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
+            i.product.id === productId || i.product.sku === productId;
           if (quantity <= 0) {
             return {
               items: state.items.filter((i) => {
-                if (variantId) return !(i.product.id === productId && i.variantId === variantId);
-                return i.product.id !== productId;
+                if (variantId) return !(matches(i) && i.variantId === variantId);
+                return !matches(i);
               }),
             };
           }
           return {
             items: state.items.map((i) => {
-              const match = variantId
-                ? i.product.id === productId && i.variantId === variantId
-                : i.product.id === productId;
+              const match = matches(i) && (variantId ? i.variantId === variantId : true);
               return match
                 ? { ...i, quantity: Math.min(quantity, i.variantId ? (i.product.variants?.find((v) => v.id === i.variantId)?.stockLevel ?? i.product.stockLevel) : i.product.stockLevel) }
                 : i;
@@ -151,7 +162,9 @@ export const useCartStore = create<CartState>()(
       stepDown: (productId, variantId) => {
         set((state) => {
           const idx = state.items.findIndex(
-            (i) => i.product.id === productId && (i.variantId ?? null) === (variantId ?? null)
+            (i) =>
+              (i.product.id === productId || i.product.sku === productId) &&
+              (i.variantId ?? null) === (variantId ?? null)
           );
           if (idx < 0) return state;
           const line = state.items[idx];
@@ -166,12 +179,12 @@ export const useCartStore = create<CartState>()(
 
       saveForLater: (productId) => {
         set((state) => {
-          const item = state.items.find((i) => i.product.id === productId);
+          const item = state.items.find((i) => i.product.id === productId || i.product.sku === productId);
           if (!item) return state;
           return {
-            items: state.items.filter((i) => i.product.id !== productId),
+            items: state.items.filter((i) => !(i.product.id === productId || i.product.sku === productId)),
             savedItems: [
-              ...state.savedItems.filter((s) => s.product.id !== productId),
+              ...state.savedItems.filter((s) => !(s.product.id === productId || s.product.sku === productId)),
               { product: item.product, savedAt: Date.now(), variantId: item.variantId, shade: item.shade, unitPrice: item.unitPrice },
             ],
           };
@@ -180,16 +193,16 @@ export const useCartStore = create<CartState>()(
 
       moveToCart: (productId) => {
         set((state) => {
-          const saved = state.savedItems.find((s) => s.product.id === productId);
+          const saved = state.savedItems.find((s) => s.product.id === productId || s.product.sku === productId);
           if (!saved) return state;
-          const existing = state.items.find((i) => i.product.id === productId);
+          const existing = state.items.find((i) => i.product.id === productId || i.product.sku === productId);
           if (existing) {
             return {
-              savedItems: state.savedItems.filter((s) => s.product.id !== productId),
+              savedItems: state.savedItems.filter((s) => !(s.product.id === productId || s.product.sku === productId)),
             };
           }
           return {
-            savedItems: state.savedItems.filter((s) => s.product.id !== productId),
+            savedItems: state.savedItems.filter((s) => !(s.product.id === productId || s.product.sku === productId)),
             items: [...state.items, { product: saved.product, quantity: 1, addedAt: Date.now(), variantId: saved.variantId, shade: saved.shade, unitPrice: saved.unitPrice }],
           };
         });
