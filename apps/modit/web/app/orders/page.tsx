@@ -12,12 +12,6 @@ import { Reveal } from "@/components/reveal";
 import { useToast } from "@foundation/ui";
 import { ShoppingCart, Package, Truck, CheckCircle2, Clock, ChevronRight, ArrowLeft, FileText, IndianRupee, Repeat, Check, CalendarClock } from "lucide-react";
 
-const fallbackOrders = [
-  { id: "ORD-2026-08001", order_number: "ORD-2026-08001", status: "delivered", placed_at: "2026-07-28T10:30:00Z", total: 507835, items_count: 3, expected_delivery: "2026-08-02T14:00:00Z", items: [{ productId: "cement-acc", quantity: 200 }, { productId: "paint-asian-apex", quantity: 5 }, { productId: "hardware-tools-stanley-94-248-65-piece-homeowner-s-22", quantity: 500 }] },
-  { id: "ORD-2026-08002", order_number: "ORD-2026-08002", status: "in_transit", placed_at: "2026-08-03T09:15:00Z", total: 178450, items_count: 2, expected_delivery: "2026-08-07T14:00:00Z", items: [{ productId: "cement-ultratech", quantity: 100 }, { productId: "tile-kajaria-1", quantity: 200 }] },
-  { id: "ORD-2026-08003", order_number: "ORD-2026-08003", status: "confirmed", placed_at: "2026-08-05T14:00:00Z", total: 21560, items_count: 1, expected_delivery: "2026-08-10T14:00:00Z", items: [{ productId: "tile-drfixit", quantity: 20 }] },
-];
-
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof Package; dot: string }> = {
   delivered: { label: "Delivered", color: "text-[#7CB518]", bg: "bg-[#F0F9E8]", border: "border-[#7CB518]/20", icon: CheckCircle2, dot: "bg-[#7CB518]" },
   in_transit: { label: "In Transit", color: "text-[#00BCD4]", bg: "bg-[#E8F9FC]", border: "border-[#00BCD4]/20", icon: Truck, dot: "bg-[#00BCD4]" },
@@ -34,8 +28,10 @@ export default function OrdersPage() {
   const addItem = useCartStore((s) => s.addItem);
   const [reorderedId, setReorderedId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "delivered" | "cancelled">("all");
-  const { data: orders, isLoading } = useOrders(undefined, fallbackOrders);
-  const orderList = orders ?? fallbackOrders;
+  // No mock fallback: fake orders flashed for ~1s (wrong ₹ totals + fake
+  // reorder rows that 404 at checkout). Skeleton shows until real data lands.
+  const { data: orders, isLoading } = useOrders(undefined);
+  const orderList = orders ?? [];
 
   const totalSpent = orderList.reduce((sum, o) => sum + ((o as any).total || 0), 0);
   const deliveredCount = orderList.filter(o => o.status === "delivered").length;
@@ -44,8 +40,7 @@ export default function OrdersPage() {
   const handleReorder = async (order: any) => {
     // Only real catalog products — never invent a placeholder item (it would
     // fail at server checkout with an unknown SKU). The orders list endpoint
-    // returns ids and totals but no line items, so fetch full detail first
-    // when the row doesn't carry items (demo fallback rows do).
+    // returns ids and totals but no line items, so fetch full detail first.
     let lines = (order.items ?? []) as Array<any>;
     if (lines.length === 0) {
       try {

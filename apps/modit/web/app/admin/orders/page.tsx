@@ -106,7 +106,7 @@ export default function AdminOrdersPage() {
                 <ChevronRight className="h-4 w-4 text-[#9B8CB5]" />
               </Link>
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-caption font-extrabold text-[#2D1B69]">₹{(o.total || 0).toLocaleString("en-IN")}</span>
+                <span className="text-caption font-extrabold text-[#2D1B69]">₹{(o.total || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 <span className="text-micro text-[#9B8CB5]">{o.items_count ?? "?"} items</span>
                 {savedId === o.id && (
                   <span className="flex items-center gap-1 rounded-full bg-[#F0F9E8] px-2 py-0.5 text-tiny font-bold text-[#7CB518]"><Check className="h-3 w-3" /> Saved</span>
