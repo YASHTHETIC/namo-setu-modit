@@ -1,10 +1,35 @@
 import type { NextConfig } from "next";
 
 // Same-origin /api/* forwarding to the backend. The frontend uses a relative
-// API base; on Vercel this rewrite connects the app to api.modit.in
-// (override with MODIT_API_ORIGIN at build time). On the VPS, nginx proxies
-// /api/ directly so this never triggers there.
-const API_ORIGIN = process.env.MODIT_API_ORIGIN || "https://api.modit.in";
+// API base; on Vercel (or when MODIT_API_ORIGIN is exported at build time,
+// as DEPLOY.md does on the VPS) this rewrite connects the app to the API.
+// On the VPS, nginx proxies /api/ directly so this never triggers there.
+//
+// FALLBACK IS DELIBERATELY SAFE: only Vercel deployments (which always run
+// behind the real API) may default to https://api.modit.in. Anywhere else
+// (local QA, self-hosted build without env) defaults to the local stack —
+// a bare "https://api.modit.in" fallback once baked a LOCAL build to PROD
+// and silently created live orders while testing.
+const API_ORIGIN =
+  process.env.MODIT_API_ORIGIN ||
+  (process.env.VERCEL ? "https://api.modit.in" : "http://127.0.0.1:8000");
+
+// Build-time trap: fail a production build that would bake the public API
+// into the renderer unless it is genuinely a Vercel deployment. Keeps the
+// "test site quietly talking to prod" class of accident out of reach.
+function assertSafeApiOrigin() {
+  if (
+    API_ORIGIN.startsWith("https://api.modit.in") &&
+    process.env.NODE_ENV === "production" &&
+    !process.env.VERCEL
+  ) {
+    throw new Error(
+      "Refusing to bake https://api.modit.in into a non-Vercel production build. " +
+        "Set MODIT_API_ORIGIN explicitly, or deploy on Vercel.",
+    );
+  }
+}
+assertSafeApiOrigin();
 
 // Baseline CSP: 'unsafe-inline' scripts/styles are required by Next.js RSC
 // hydration inline payloads and Tailwind-injected styles; Razorpay hosts are
