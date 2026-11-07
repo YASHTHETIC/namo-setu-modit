@@ -23,7 +23,12 @@ async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db),
 ) -> User:
-    payload = decode_token(token)
+    # Expired/malformed tokens must be a clean 401 (the UI auto-logs-out on
+    # 401), not an unhandled ExpiredSignatureError → 500 stacktrace.
+    try:
+        payload = decode_token(token)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
     if payload.get("type") != "access":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token type")
 
