@@ -128,6 +128,51 @@ export default function HomeClient() {
       if (stored) setRecentSearches(JSON.parse(stored));
     } catch {}
   }, []);
+  // ═══ AUTO-SLIDE: the promo deals rail rotates by itself (manager request:
+  // "Auto slide nhi ho rhi"). Pauses while hovered/touched, resumes after
+  // 8s idle, loops back to start, never fights prefers-reduced-motion. ═══
+  const promoRef = useRef<HTMLDivElement>(null);
+  const promoPauseUntilRef = useRef(0);
+  const promoHoverRef = useRef(false);
+
+  useEffect(() => {
+    const el = promoRef.current;
+    if (!el) return;
+    // Reduced motion: still advance (so the rail isn't stuck), just without
+    // the smooth animation those users asked to avoid.
+    const behavior: ScrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+    const touch = () => { promoPauseUntilRef.current = Date.now() + 8000; };
+    const enter = () => { promoHoverRef.current = true; };
+    const leave = () => { promoHoverRef.current = false; };
+    el.addEventListener("pointerdown", touch, { passive: true });
+    el.addEventListener("wheel", touch, { passive: true });
+    el.addEventListener("mouseenter", enter);
+    el.addEventListener("mouseleave", leave);
+    const timer = window.setInterval(() => {
+      const paused =
+        promoHoverRef.current || Date.now() < promoPauseUntilRef.current;
+      if (paused || document.hidden) return;
+      const card = el.querySelector<HTMLElement>("a[data-promo-card]");
+      const step = card ? card.offsetWidth + 12 : el.clientWidth * 0.6;
+      const max = el.scrollWidth - el.clientWidth - 4;
+      if (max <= 0) return;
+      if (el.scrollLeft >= max) {
+        el.scrollTo({ left: 0, behavior });
+      } else {
+        el.scrollBy({ left: step, behavior });
+      }
+    }, 4000);
+    return () => {
+      window.clearInterval(timer);
+      el.removeEventListener("pointerdown", touch);
+      el.removeEventListener("wheel", touch);
+      el.removeEventListener("mouseenter", enter);
+      el.removeEventListener("mouseleave", leave);
+    };
+  }, []);
+
   // Cart toast subscription
   const prevCartCount = useRef(cartCount);
   useEffect(() => {
@@ -434,7 +479,10 @@ export default function HomeClient() {
       <div className="section-header !pb-1">
         <h2>Site essentials, top deals</h2>
       </div>
-      <div className="flex gap-2.5 sm:gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 scroll-smooth">
+      <div
+        ref={promoRef}
+        className="flex gap-2.5 sm:gap-3 overflow-x-auto scrollbar-hide snap-x pb-1 scroll-smooth"
+      >
         {[
           { title: "Bulk Cement, Site Rates", sub: "Truck-load deals from top brands", tag: "BULK RATES", img: "/products/cement/Ambuja Cement.png", alt: "Cement", href: "/products?category=cement", bg: "#7CB518", dark: false, cta: "Order Now" },
           { title: "Paints & Waterproofing", sub: "Asian Paints, Dr Fixit & more", tag: "TOP BRANDS", img: "/products/painting/Asian Paint.png", alt: "Paint", href: "/products?category=painting", bg: "#2D1B69", dark: false, cta: "Order Now" },
@@ -444,6 +492,7 @@ export default function HomeClient() {
           <Link
             key={p.title}
             href={p.href}
+            data-promo-card
             className="snap-start shrink-0 w-[222px] sm:w-[320px] rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3 transition-transform hover:scale-[1.02] active:scale-[0.99]"
             style={{ background: p.bg }}
           >
