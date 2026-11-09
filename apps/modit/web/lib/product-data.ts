@@ -20437,3 +20437,81 @@ export function getProductBySku(sku: string): Product | undefined {
   if (!sku) return undefined;
   return products.find((p) => p.sku === sku);
 }
+
+/**
+ * Image pool per category, built once (static catalog is frozen at build
+ * time). Feeds fallbackImageFor below.
+ */
+const IMAGE_POOL_BY_CATEGORY: Map<string, string[]> = (() => {
+  const pool = new Map<string, string[]>();
+  for (const p of products) {
+    if (!p.images?.length) continue;
+    const list = pool.get(p.categorySlug) ?? [];
+    list.push(p.images[0]);
+    pool.set(p.categorySlug, list);
+  }
+  return pool;
+})();
+
+/** FNV-1a-ish string hash — stable across builds, good enough to vary picks. */
+function stableHash(text: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+function nameTokens(text: string): Set<string> {
+  return new Set(
+    text
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((t) => t.length > 1)
+  );
+}
+
+/**
+ * Image fallback for API rows that arrive with no images (stale DBs seeded
+ * before product_images backfill). Two stages, so a rails full of same-
+ * category products never renders the same photo six times:
+ *   1. Best name-token-overlap match inside the same category — recovers
+ *      real product photos for renamed/reslugged variants.
+ *   2. Otherwise a deterministic per-product pick from that category's
+ *      image pool (same product always gets the same tile, different
+ *      products get different tiles).
+ */
+export function fallbackImageFor(name: string, slug: string, categorySlug: string): string[] {
+  const tokens = nameTokens(name);
+  const pool = IMAGE_POOL_BY_CATEGORY.get(categorySlug) ?? [];
+  if (tokens.size > 0 && pool.length > 0) {
+    let bestIdx = -1;
+    let bestOverlap = 0;
+    for (const p of products) {
+      if (p.categorySlug !== categorySlug || !p.images?.length) continue;
+      const cand = nameTokens(p.name);
+      if (cand.size === 0) continue;
+      let shared = 0;
+      for (const t of tokens) if (cand.has(t)) shared++;
+      const overlap = shared / (tokens.size + cand.size - shared);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
+        bestIdx = pool.indexOf(p.images[0]);
+        if (bestOverlap === 1) break;
+      }
+    }
+    if (bestIdx >= 0 && bestOverlap >= 0.5) {
+      return [pool[bestIdx]];
+    }
+  }
+  // Deterministic varied pick (slug or name) — river of identical photos
+  // is exactly what QA flags as "many image similar".
+  const key = slug || name;
+  if (pool.length > 0) {
+    return [pool[stableHash(key) % pool.length]];
+  }
+  // Ultimate fallback: any category pool, still varied per product.
+  const any = [...IMAGE_POOL_BY_CATEGORY.values()].flat();
+  return any.length ? [any[stableHash(key) % any.length]] : [];
+}

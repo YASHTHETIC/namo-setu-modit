@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useProducts as useApiProducts, useProduct as useApiProduct, useCategories as useApiCategories, useBrands as useApiBrands, useUnits as useApiUnits } from "./modit-api";
-import { products as staticProducts, categories as staticCategories, getProductById, searchProducts, type Product, type Category } from "./product-data";
+import { products as staticProducts, categories as staticCategories, getProductById, searchProducts, fallbackImageFor, type Product, type Category } from "./product-data";
 
 const fastQueryOpts = { retry: false, staleTime: 30_000, gcTime: 60_000 } as const;
 
@@ -162,16 +162,19 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
   // The DB seed carries no product_images rows, so API rows arrive
   // imageless. The products exist identically in the static catalog
   // (same slug/sku/name) — borrow their images so cards/rails render.
-  // If no direct product match, borrow the category's hero image so
-  // no product ever renders as a blank box.
+  // Without an exact row match, diversify: best name-token match in the
+  // category, else a deterministic per-product tile — never "first
+  // imageable row in category" for every product (that is how the whole
+  // Pipes & Tanks rail collapsed to one repeated ball-valve photo).
   if (images.length === 0) {
     const staticMatch =
       staticProducts.find((s) => p.slug && s.slug === p.slug) ??
       staticProducts.find((s) => p.sku && s.sku === p.sku) ??
-      staticProducts.find((s) => s.name && cleanName(s.name).toLowerCase() === name.toLowerCase()) ??
-      staticProducts.find((s) => categorySlug && s.categorySlug === categorySlug && Array.isArray(s.images) && s.images.length > 0);
+      staticProducts.find((s) => s.name && cleanName(s.name).toLowerCase() === name.toLowerCase());
     if (staticMatch && Array.isArray(staticMatch.images) && staticMatch.images.length > 0) {
       images = [...staticMatch.images];
+    } else {
+      images = fallbackImageFor(name, String(p.slug ?? p.id ?? ""), categorySlug);
     }
   }
 

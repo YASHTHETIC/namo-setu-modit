@@ -1,4 +1,4 @@
-import { searchProducts as staticSearch, getProductById as staticGetById } from "./product-data";
+import { searchProducts as staticSearch, getProductById as staticGetById, fallbackImageFor } from "./product-data";
 import { env } from "./env";
 
 // Single source of truth for the API base (production-first default lives
@@ -110,7 +110,7 @@ function mapApiProduct(p: any): HybridProduct {
     seller: { name: "MODIT Verified", rating: 4.5, isVerified: true },
     images: p.images?.length > 0
       ? p.images.map((img: any) => `/api/v1/media/${img.media_id}`)
-      : ["/products/cement/Ambuja Cement.png"],
+      : fallbackImageFor(p.name || p.slug || "", p.slug || "", p.category?.slug || ""),
     specifications: p.specification_json ? JSON.parse(p.specification_json) : {},
     features: [],
     tags: [],
