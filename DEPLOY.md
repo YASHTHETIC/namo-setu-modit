@@ -57,8 +57,12 @@ cd /opt/modit
 git pull
 npm install --legacy-peer-deps
 .venv/bin/python -m alembic -c backend/alembic.ini upgrade head
-# first time / empty catalog only (seeds the static catalog ~1,100
-# products + inventory + demo users; safe to re-run):
+# UPDATE 2026-11: the live DB predates the image backfill (products from
+# Oct-12 carry NO product_images rows — that is why some rails show the
+# same stock photo repeated). After `git pull` in this update, run the
+# catalog seeder ONCE; it is idempotent: attaches images, adds missing
+# catalog products (~1,100 total), deactivates SKUs that left the catalog
+# (orders/line-items keep working — they snapshot price and join by id):
 cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog && cd /opt/modit
 npm run build --workspace=@modit/web
 pm2 restart modit-web modit-api
