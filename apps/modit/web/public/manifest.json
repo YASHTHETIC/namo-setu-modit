@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "MODIT - Construction Materials",
+  "name": "MODIT",
   "short_name": "MODIT",
-  "description": "Construction materials delivered to your site. Blinkit for construction.",
+  "description": "Construction materials delivered to your site in 60 minutes.",
   "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#150726",
