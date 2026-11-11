@@ -37,6 +37,7 @@ import { AppDownloadSection } from "@/components/app-download-section";
 import { openAppSheet } from "@/components/app-install-sheet";
 import { SiteFooter } from "@/components/site-footer";
 import { BottomNav } from "@/components/bottom-nav";
+import { AiProjectKitsSection } from "@/components/ai-project-kits";
 import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
@@ -578,6 +579,11 @@ export default function HomeClient() {
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
+
+      {/* ═══ AI PROJECT KITS (Blinkit Recipe-to-Cart for Construction) ═══ */}
+      <Reveal>
+        <AiProjectKitsSection />
+      </Reveal>
 
       {/* ═══ PRODUCT RAILS + FEATURE BAR — same shared edge ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
