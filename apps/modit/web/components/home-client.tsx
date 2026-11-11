@@ -737,8 +737,8 @@ export default function HomeClient() {
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-caption sm:text-body-md font-extrabold text-[#150726] leading-tight">Material Calculator</h3>
-                <p className="text-caption text-[#9B8CB5] hidden sm:block">Estimate paint, putty, primer & more for your room</p>
+                <h3 className="text-caption sm:text-body-md font-extrabold text-[#150726] leading-tight">Smart Material Estimator</h3>
+                <p className="text-caption text-[#9B8CB5] hidden sm:block">Instant estimates for cement, paint, tiles & steel with 1-tap cart addition</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0">
                 Calculate <ArrowRight className="h-3.5 w-3.5" />
@@ -753,8 +753,8 @@ export default function HomeClient() {
               className="rounded-2xl bg-[#150726] px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
             >
               <div className="flex-1 min-w-0">
-                <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Buying in bulk for a project?</h3>
-                <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Get negotiated quotes from verified suppliers with GST invoicing</p>
+                <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Project & Bulk RFQ Procurement</h3>
+                <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Direct mill pricing, verified supplier quotes & automated GST invoicing</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0">
                 Start RFQ <ArrowRight className="h-4 w-4" />
