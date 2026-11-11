@@ -19,11 +19,11 @@ module.exports = {
     {
       name: "modit-web",
       cwd: "/opt/modit/apps/modit/web",
-      # PM2 cluster: next's HTTP server runs IN the worker process, so N
-      # workers share one listening socket on :3001 — thousands of
-      # concurrent SSR views instead of queuing on a single Node loop.
-      # (Forking `npm run start` cannot cluster: each worker spawns its
-      # own child server and they fight over the port.)
+      // PM2 cluster: next's HTTP server runs IN the worker process, so N
+      // workers share one listening socket on :3001 — thousands of
+      // concurrent SSR views instead of queuing on a single Node loop.
+      // (Forking `npm run start` cannot cluster: each worker spawns its
+      // own child server and they fight over the port.)
       script: "node_modules/next/dist/bin/next",
       args: "start -p 3001",
       instances: 2,
