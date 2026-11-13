@@ -30,9 +30,11 @@ import {
   Palette,
   Ruler,
   X,
+  Sparkles,
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
+import { AiRoomVisualizer } from "@/components/ai-room-visualizer";
 import { ProductZoom3DViewer } from "@/components/product-zoom-3d-viewer";
 import { Reveal } from "@/components/reveal";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
@@ -101,7 +103,8 @@ export default function ProductDetailPage({
   const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
-  const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  const [selectedShade, setSelectedShade] = useState<string | null>("Soft Lilac");
+  const [visualizerOpen, setVisualizerOpen] = useState(false);
   const [rfqOpen, setRfqOpen] = useState(false);
   const [stockEmail, setStockEmail] = useState("");
   const [stockNotifyAsked, setStockNotifyAsked] = useState(false);
@@ -396,8 +399,25 @@ export default function ProductDetailPage({
         {/* Right: Product Info + Buy Box */}
         <div className="lg:col-span-7 space-y-6">
           <Reveal direction="right">
-          {/* Brand & Title */}
+          {/* Brand & Title (Canva Style for Paints from Pic 3) */}
           <div>
+            {(product.categorySlug === "painting" || product.hasShades) && (
+              <div className="mb-3 rounded-2xl bg-gradient-to-br from-[#2D1B69]/5 to-[#7CB518]/5 border border-[#2D1B69]/10 p-4">
+                <span className="text-micro font-black uppercase tracking-wider text-[#7CB518]">
+                  — THE ULTIMATE EXTERIOR FINISH
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#150726] tracking-tight mt-1">
+                  Walls that <span className="bg-gradient-to-r from-[#2D1B69] via-[#4A2D8A] to-[#7CB518] bg-clip-text text-transparent">stand out.</span>
+                </h2>
+                <p className="text-body-sm text-[#6B5B83] mt-1.5 leading-relaxed">
+                  Meet {product.name} — a premium emulsion crafted to bring exceptional beauty, rich depth, and lasting confidence to every wall.
+                </p>
+                <div className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-tiny font-extrabold text-[#2D1B69] shadow-xs border border-[#EDE7F6]">
+                  <span className="text-amber-500 font-black">★★★★★</span>
+                  <span>Premium finish · {activeVariant?.label || product.unit}</span>
+                </div>
+              </div>
+            )}
             {product.brand && (
               <Link href={`/products?brand=${product.brandSlug}`} className="text-sm font-semibold text-[var(--brand)] hover:underline">
                 {product.brand}
@@ -533,21 +553,42 @@ export default function ProductDetailPage({
             </div>
           )}
 
-          {/* Shade/Color Picker — only for paint products with shades */}
+          {/* Shade/Color Picker (Canva Style from Pic 3: Choose your backdrop shade) */}
           {product.hasShades && product.shades && product.shades.length > 0 && (
-            <div id="shade-picker-section" className={`rounded-xl transition-all ${shadeWarning ? "ring-2 ring-amber-400 p-2 bg-amber-50/30" : ""}`}>
+            <div id="shade-picker-section" className={`rounded-2xl border border-[#EDE7F6] bg-[#F5F2FC] p-4 transition-all shadow-xs ${shadeWarning ? "ring-2 ring-amber-400 p-4 bg-amber-50/30" : ""}`}>
               {shadeWarning && (
-                <div className="mb-2.5 p-2.5 rounded-lg bg-amber-50 border border-amber-300 text-caption font-bold text-amber-800 text-center animate-bounce">
+                <div className="mb-3 p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-caption font-bold text-amber-800 text-center animate-bounce">
                   ⚠️ Please select a paint shade or enter a color code before adding to cart
                 </div>
               )}
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="text-body-sm font-extrabold text-[#150726]">
+                  Choose your backdrop shade
+                </span>
+                <span className="text-body-sm font-black text-[#2D1B69] bg-[#F0ECF9] px-3 py-0.5 rounded-full border border-[#2D1B69]/10">
+                  {selectedShade || (customColorCode ? `Code ${customColorCode}` : "Soft Lilac")}
+                </span>
+              </div>
               <ShadePicker
                 shades={product.shades}
-                selectedShade={selectedShade}
+                selectedShade={selectedShade || "Soft Lilac"}
                 onSelectShade={(s) => { setSelectedShade(s); setShadeWarning(false); }}
                 customColorCode={customColorCode}
                 onCustomColorCodeChange={(c) => { setCustomColorCode(c); setShadeWarning(false); }}
               />
+
+              {/* Canva Pic 3: Product Exposure Button (Launches AI Room Visualizer) */}
+              <div className="mt-4 pt-3.5 border-t border-[#EDE7F6]">
+                <button
+                  type="button"
+                  onClick={() => setVisualizerOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#1E1245] hover:from-[#1E1245] hover:to-[#2D1B69] text-white text-body-sm font-black shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  <Sparkles className="h-4 w-4 text-[#F8CB46] animate-pulse" />
+                  <span>Product Exposure · AI Room Visualizer</span>
+                  <ChevronRight className="h-4 w-4 text-white/60 ml-1" />
+                </button>
+              </div>
             </div>
           )}
 

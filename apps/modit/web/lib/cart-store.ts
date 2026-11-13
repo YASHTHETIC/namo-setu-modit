@@ -65,9 +65,9 @@ interface CartState {
   pincode: string;
 
   addItem: (product: Product, quantity?: number, variantId?: string, shade?: string) => void;
-  removeItem: (productId: string, variantId?: string) => void;
-  updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
-  stepDown: (productId: string, variantId?: string) => void;
+  removeItem: (productId: string, variantId?: string, shade?: string) => void;
+  updateQuantity: (productId: string, quantity: number, variantId?: string, shade?: string) => void;
+  stepDown: (productId: string, variantId?: string, shade?: string) => void;
   clearCart: () => void;
 
   saveForLater: (productId: string) => void;
@@ -102,9 +102,9 @@ export const useCartStore = create<CartState>()(
           // differ in id). SKU is the stable key; id is the fallback for
           // sources without one.
           const keyOf = (p: { sku?: string; id: string }) => p.sku || p.id;
-          const key = `${keyOf(product)}:${variantId || "default"}`;
-          const sameLine = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
-            `${keyOf(i.product)}:${i.variantId || "default"}` === key;
+          const key = `${keyOf(product)}:${variantId || "default"}:${shade || "default"}`;
+          const sameLine = (i: { product: { sku?: string; id: string }; variantId?: string; shade?: string }) =>
+            `${keyOf(i.product)}:${i.variantId || "default"}:${i.shade || "default"}` === key;
           const existing = state.items.find(sameLine);
           if (existing) {
             return {
@@ -121,34 +121,36 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      removeItem: (productId, variantId) => {
-        // productId may originate from either product source; match on id OR
-        // sku so a static-catalog id can still remove a backend-keyed line.
-        const matches = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
-          i.product.id === productId || i.product.sku === productId;
+      removeItem: (productId, variantId, shade) => {
+        const matches = (i: { product: { sku?: string; id: string }; variantId?: string; shade?: string }) => {
+          const idMatch = i.product.id === productId || i.product.sku === productId;
+          if (!idMatch) return false;
+          if (variantId !== undefined && (i.variantId || null) !== (variantId || null)) return false;
+          if (shade !== undefined && (i.shade || null) !== (shade || null)) return false;
+          return true;
+        };
         set((state) => ({
-          items: state.items.filter((i) => {
-            if (variantId) return !(matches(i) && i.variantId === variantId);
-            return !matches(i);
-          }),
+          items: state.items.filter((i) => !matches(i)),
         }));
       },
 
-      updateQuantity: (productId, quantity, variantId) => {
+      updateQuantity: (productId, quantity, variantId, shade) => {
         set((state) => {
-          const matches = (i: { product: { sku?: string; id: string }; variantId?: string }) =>
-            i.product.id === productId || i.product.sku === productId;
+          const matches = (i: { product: { sku?: string; id: string }; variantId?: string; shade?: string }) => {
+            const idMatch = i.product.id === productId || i.product.sku === productId;
+            if (!idMatch) return false;
+            if (variantId !== undefined && (i.variantId || null) !== (variantId || null)) return false;
+            if (shade !== undefined && (i.shade || null) !== (shade || null)) return false;
+            return true;
+          };
           if (quantity <= 0) {
             return {
-              items: state.items.filter((i) => {
-                if (variantId) return !(matches(i) && i.variantId === variantId);
-                return !matches(i);
-              }),
+              items: state.items.filter((i) => !matches(i)),
             };
           }
           return {
             items: state.items.map((i) => {
-              const match = matches(i) && (variantId ? i.variantId === variantId : true);
+              const match = matches(i);
               return match
                 ? { ...i, quantity: Math.min(quantity, i.variantId ? (i.product.variants?.find((v) => v.id === i.variantId)?.stockLevel ?? i.product.stockLevel) : i.product.stockLevel) }
                 : i;
@@ -159,12 +161,13 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
 
-      stepDown: (productId, variantId) => {
+      stepDown: (productId, variantId, shade) => {
         set((state) => {
           const idx = state.items.findIndex(
             (i) =>
               (i.product.id === productId || i.product.sku === productId) &&
-              (i.variantId ?? null) === (variantId ?? null)
+              (variantId !== undefined ? (i.variantId ?? null) === (variantId ?? null) : true) &&
+              (shade !== undefined ? (i.shade ?? null) === (shade ?? null) : true)
           );
           if (idx < 0) return state;
           const line = state.items[idx];

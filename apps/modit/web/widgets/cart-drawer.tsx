@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ShoppingCart, Trash2, Timer, Share2, ArrowLeft } from "lucide-react";
 
@@ -14,6 +14,8 @@ import { formatINR2 } from "@/lib/utils";
 import { useAuthReady } from "@/lib/use-auth";
 import { useToast } from "@foundation/ui";
 import { ProductThumb } from "@/components/product-thumb";
+import { resolveProduct, isPaintProduct, type DisplayProduct } from "@/lib/pricing";
+import { VariantOptionsModal } from "@/components/variant-options-modal";
 
 /**
  * Blinkit-style quick cart drawer (DisplayCartItem architecture, MODIT theme):
@@ -27,6 +29,8 @@ export function CartDrawer() {
   const items = useCartStore((s) => s.items);
   const addItem = useCartStore((s) => s.addItem);
   const removeItem = useCartStore((s) => s.removeItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const [fixShadeProduct, setFixShadeProduct] = useState<DisplayProduct | null>(null);
   const appliedCoupon = useCouponStore((s) => s.appliedCoupon);
   const getSlot = useDeliveryStore((s) => s.getSelected);
   const loggedIn = useAuthReady();
@@ -173,9 +177,33 @@ export function CartDrawer() {
                         <p className="text-caption font-semibold text-[#150726] leading-snug line-clamp-2">{item.product.name}</p>
                         <p className="text-micro text-[#9B8CB5] mt-0.5">
                           {item.product.unit}
-                          {item.shade ? ` · ${item.shade}` : ""}
                         </p>
-                        <p className="text-body-sm font-extrabold text-[#150726] mt-0.5 tabular-nums">
+                        {item.shade ? (
+                          <div className="mt-1 flex items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1 rounded-md bg-[#2D1B69]/10 border border-[#2D1B69]/20 px-2 py-0.5 text-tiny font-black text-[#2D1B69]">
+                              <span
+                                className="h-2.5 w-2.5 rounded-full border border-black/15 shadow-xs"
+                                style={{
+                                  backgroundColor:
+                                    item.product.shades?.find((s: any) => s.name === item.shade)?.code ??
+                                    (item.shade.startsWith("#") ? item.shade : (item.product.shades?.[0]?.code ?? "#2D1B69")),
+                                }}
+                              />
+                              {item.shade}
+                            </span>
+                          </div>
+                        ) : isPaintProduct(item.product) || item.product.hasShades ? (
+                          <div className="mt-1">
+                            <button
+                              type="button"
+                              onClick={() => setFixShadeProduct(resolveProduct(item.product))}
+                              className="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-300 px-2 py-0.5 text-tiny font-black text-amber-800 hover:bg-amber-100 animate-pulse"
+                            >
+                              ⚠️ Pick Colour Shade ▾
+                            </button>
+                          </div>
+                        ) : null}
+                        <p className="text-body-sm font-extrabold text-[#150726] mt-1 tabular-nums">
                           {formatINR2(unitPrice)}{" "}
                           {mrp != null && mrp > unitPrice && (
                             <span className="line-through text-[#9B8CB5] text-caption font-semibold">
@@ -187,7 +215,7 @@ export function CartDrawer() {
                       <div className="flex flex-col items-end justify-between flex-shrink-0">
                         <div className="stepper">
                           <button
-                            onClick={() => removeItem(item.product.id, item.variantId)}
+                            onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variantId, item.shade)}
                             aria-label="Decrease quantity"
                           >
                             −
@@ -201,7 +229,7 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.product.id, item.variantId)}
+                          onClick={() => removeItem(item.product.id, item.variantId, item.shade)}
                           aria-label="Remove item"
                           className="p-1 text-[#9B8CB5] hover:text-red-500 transition-colors"
                         >
@@ -292,6 +320,13 @@ export function CartDrawer() {
           </>
         )}
       </aside>
+      {fixShadeProduct && (
+        <VariantOptionsModal
+          open={Boolean(fixShadeProduct)}
+          onClose={() => setFixShadeProduct(null)}
+          product={fixShadeProduct}
+        />
+      )}
     </div>
   );
 }

@@ -124,6 +124,37 @@
   --cat-purple: #9C27B0;
   --cat-green: #4CAF50;
 
+  /* Canva Paint Showcase & AI Visualizer Tokens */
+  --paint-lilac: #8A6FA0;
+  --paint-offwhite: #F4EEDB;
+  --paint-skymist: #D6E4F0;
+  --paint-night-dark: #0C0313;
+  --paint-night-deep: #0A0210;
+  --paint-night-mid: #1E0D36;
+  --paint-night-subtle: #120521;
+  --paint-dark-edge: #111;
+  --paint-dark-border: #222;
+  --room-wall: #E8E4DF;
+  --room-wall-ext: #DED9D2;
+  --room-wall-bed: #EDE8E1;
+  --room-wall-kit: #F2EFEB;
+  --room-ceiling: #EAE5DF;
+  --room-wall-left: #D3CCC4;
+  --room-wall-right: #BDB5AC;
+  --room-floor: #8B5A2B;
+  --room-sofa: #2C3E50;
+  --room-cushion: #34495E;
+  --room-plant-pot: #5D4037;
+  --room-plant-stem: #2E7D32;
+  --room-plant-leaf: #388E3C;
+  --room-bed-frame: #3E2723;
+  --room-bed-sheet: #ECEFF1;
+  --room-bed-pillow: #CFD8DC;
+  --room-light-warm: #FFF9E6;
+  --paint-btn-hover: #6EA414;
+  --paint-btn-start: #689E13;
+  --paint-btn-dark: #5E8E11;
+
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

@@ -25,6 +25,9 @@ export interface PaintShade {
 
 /** Shared Asian-Paints-style shade card applied to every tintable emulsion. */
 export const COMMON_EMULSION_SHADES: PaintShade[] = [
+  { name: "Soft Lilac", code: "#8A6FA0", family: "Purple" },
+  { name: "Off White", code: "#F4EEDB", family: "White" },
+  { name: "Sky Mist", code: "#D6E4F0", family: "Blue" },
   { name: "White", code: "#FFFFFF", family: "White" },
   { name: "Decimal White", code: "#F5F2EB", family: "White" },
   { name: "Soft Cream", code: "#F5E6C8", family: "Cream" },

@@ -58,13 +58,19 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       setOptionsOpen(true);
       return;
     }
-    tryAdd(live, 1, selectedVariantId ?? undefined);
+    const ok = tryAdd(live, 1, selectedVariantId ?? undefined);
+    if (!ok) setOptionsOpen(true);
   };
 
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(live, 1, selectedVariantId ?? undefined);
+    if (optLabel) {
+      setOptionsOpen(true);
+      return;
+    }
+    const ok = tryAdd(live, 1, selectedVariantId ?? undefined);
+    if (!ok) setOptionsOpen(true);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {

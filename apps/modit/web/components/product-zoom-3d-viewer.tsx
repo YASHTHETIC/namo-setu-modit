@@ -146,32 +146,49 @@ export function ProductZoom3DViewer({
           perspective: 1000,
         }}
       >
-        {/* Dynamic paint splash aura / ambient liquid glow */}
+        {/* Canva-style Organic Fluid Paint Splash Shape (from Pic 3) */}
         {isPaintProduct && (
-          <div
-            className="pointer-events-none absolute inset-0 z-0 transition-all duration-700 opacity-60"
-            style={{
-              background: `radial-gradient(circle at 50% 55%, ${auraColor}33 0%, ${auraColor}15 45%, transparent 75%)`,
-            }}
-          />
-        )}
+          <>
+            <svg
+              viewBox="0 0 400 400"
+              className="pointer-events-none absolute inset-0 m-auto h-[88%] w-[88%] z-0 transition-all duration-700 opacity-85"
+              style={{
+                filter: `drop-shadow(0 20px 35px ${auraColor}40)`,
+              }}
+            >
+              <path
+                d="M 200 40 C 290 30, 360 110, 350 200 C 340 280, 290 360, 190 350 C 90 340, 40 270, 50 180 C 60 90, 110 50, 200 40 Z"
+                fill={auraColor}
+                opacity="0.3"
+              />
+              <path
+                d="M 210 70 C 280 60, 330 130, 320 210 C 310 270, 260 320, 180 310 C 100 300, 70 230, 80 160 C 90 90, 140 80, 210 70 Z"
+                fill={auraColor}
+                opacity="0.55"
+              />
+              {/* Organic splash droplets from Canva design */}
+              <circle cx="75" cy="115" r="15" fill={auraColor} opacity="0.65" />
+              <circle cx="330" cy="125" r="13" fill={auraColor} opacity="0.55" />
+              <circle cx="340" cy="280" r="18" fill={auraColor} opacity="0.7" />
+              <circle cx="85" cy="295" r="16" fill={auraColor} opacity="0.55" />
+            </svg>
 
-        {/* Ambient paint droplet splashes */}
-        {isPaintProduct && (
-          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-            <span
-              className="absolute top-6 left-8 h-4 w-4 rounded-full blur-[1px] opacity-75 animate-bounce"
-              style={{ backgroundColor: auraColor, animationDuration: "3.2s" }}
-            />
-            <span
-              className="absolute bottom-12 right-10 h-3 w-3 rounded-full blur-[0.5px] opacity-60 animate-pulse"
-              style={{ backgroundColor: auraColor, animationDuration: "2.4s" }}
-            />
-            <span
-              className="absolute top-1/3 right-8 h-2.5 w-2.5 rounded-full blur-[1px] opacity-70 animate-bounce"
-              style={{ backgroundColor: auraColor, animationDuration: "4s" }}
-            />
-          </div>
+            {/* Canva Pic 3: Floating Prompt "MOVE TO EXPLORE ↗" */}
+            <div className="pointer-events-none absolute top-3.5 left-3.5 z-20 flex items-center gap-1 text-tiny sm:text-micro font-black uppercase tracking-wider text-[#2D1B69] bg-white/80 backdrop-blur-md px-2.5 py-1 rounded-full shadow-xs border border-white/60">
+              <span>MOVE TO EXPLORE ↗</span>
+            </div>
+
+            {/* Canva Pic 3: Floating Standout Finish Badge */}
+            <div className="pointer-events-none absolute top-3.5 right-3.5 z-20 flex items-center gap-2 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-md border border-[#EDE7F6]">
+              <div className="h-6 w-6 rounded-lg bg-[#2D1B69]/10 flex items-center justify-center text-[#2D1B69]">
+                <Sparkles className="h-3.5 w-3.5 text-[#7CB518]" />
+              </div>
+              <div className="text-left">
+                <p className="text-tiny sm:text-micro font-black text-[#150726] leading-none">Standout finish</p>
+                <p className="text-micro font-medium text-[#9B8CB5] leading-none mt-0.5">Made to impress</p>
+              </div>
+            </div>
+          </>
         )}
 
         {/* Product image container with 3D or Zoom transforms */}

@@ -23,11 +23,13 @@ import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { useCouponStore } from "@/lib/coupon-store";
 import { computeBill } from "@/lib/bill";
 import { useServerCoupons } from "@/lib/modit-api";
-import { resolveProduct } from "@/lib/pricing";
+import { resolveProduct, isPaintProduct, type DisplayProduct } from "@/lib/pricing";
 import { formatINR, productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
+import { VariantOptionsModal } from "@/components/variant-options-modal";
 
 export default function CartPage() {
+  const [fixShadeProduct, setFixShadeProduct] = useState<DisplayProduct | null>(null);
   const items = useCartStore((s) => s.items);
   const savedItems = useCartStore((s) => s.savedItems);
   const removeItem = useCartStore((s) => s.removeItem);
@@ -164,7 +166,7 @@ export default function CartPage() {
                   ? Math.round(((basePrice - itemPrice) / basePrice) * 100)
                   : 0;
               return (
-                <Reveal key={`${item.product.id}:${item.variantId || "default"}`} delay={Math.min(idx * 60, 300)}>
+                <Reveal key={`${item.product.id}:${item.variantId || "default"}:${item.shade || "default"}`} delay={Math.min(idx * 60, 300)}>
                 <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
@@ -186,11 +188,27 @@ export default function CartPage() {
                             Size: {variant.label} · {variant.unit}
                           </span>
                         )}
-                        {item.shade && (
-                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#F0ECF9] text-tiny font-bold text-[#2D1B69]">
+                        {item.shade ? (
+                          <span className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full bg-[#2D1B69]/10 text-tiny font-black text-[#2D1B69] border border-[#2D1B69]/20">
+                            <span
+                              className="h-2.5 w-2.5 rounded-full border border-black/15 shadow-xs"
+                              style={{
+                                backgroundColor:
+                                  item.product.shades?.find((s: any) => s.name === item.shade)?.code ??
+                                  (item.shade.startsWith("#") ? item.shade : (item.product.shades?.[0]?.code ?? "#2D1B69")),
+                              }}
+                            />
                             Shade: {item.shade}
                           </span>
-                        )}
+                        ) : isPaintProduct(item.product) || item.product.hasShades ? (
+                          <button
+                            type="button"
+                            onClick={() => setFixShadeProduct(resolveProduct(item.product))}
+                            className="inline-flex items-center gap-1 mt-1 rounded-md bg-amber-50 border border-amber-300 px-2 py-0.5 text-tiny font-black text-amber-800 hover:bg-amber-100 animate-pulse"
+                          >
+                            ⚠️ Pick Colour Shade ▾
+                          </button>
+                        ) : null}
                         <p className="text-micro text-[#9B8CB5] mt-0.5">Seller: {item.product.seller.name}</p>
                       </div>
                       <p className="text-title-md font-extrabold text-[#150726] whitespace-nowrap">
@@ -226,7 +244,7 @@ export default function CartPage() {
                         {/* Quantity selector */}
                         <div className="flex items-center border-2 border-[#DDD6EE] rounded-lg overflow-hidden">
                           <button
-                            onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1), item.variantId)}
+                            onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1), item.variantId, item.shade)}
                             disabled={item.quantity <= item.product.moq}
                             className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
@@ -236,7 +254,7 @@ export default function CartPage() {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1), item.variantId)}
+                            onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1), item.variantId, item.shade)}
                             className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors"
                           >
                             <Plus className="h-3.5 w-3.5" />
@@ -261,7 +279,7 @@ export default function CartPage() {
                           <Heart className="h-3.5 w-3.5" /> Save for later
                         </button>
                         <button
-                          onClick={() => removeItem(item.product.id, item.variantId)}
+                          onClick={() => removeItem(item.product.id, item.variantId, item.shade)}
                           className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-micro font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Remove
@@ -445,6 +463,13 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+      {fixShadeProduct && (
+        <VariantOptionsModal
+          open={Boolean(fixShadeProduct)}
+          onClose={() => setFixShadeProduct(null)}
+          product={fixShadeProduct}
+        />
+      )}
     </div>
   );
 }

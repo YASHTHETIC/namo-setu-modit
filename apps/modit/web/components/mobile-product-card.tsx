@@ -135,7 +135,8 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                   if (optLabel) {
                     setOptionsOpen(true);
                   } else {
-                    tryAdd(product);
+                    const added = tryAdd(product);
+                    if (!added) setOptionsOpen(true);
                   }
                 }}
                 disabled={blocked}
@@ -146,15 +147,39 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
             ) : (
               <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-xs overflow-hidden">
                 <button
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); stepDown(product.id, stepLine?.variantId); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    stepDown(product.id, stepLine?.variantId, stepLine?.shade);
+                  }}
                   className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
                   aria-label="Decrease"
                 >
                   −
                 </button>
-                <span className="px-1.5 text-caption font-black tabular-nums min-w-[16px] text-center">{qty}</span>
                 <button
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (optLabel) setOptionsOpen(true);
+                  }}
+                  className="px-1.5 text-caption font-black tabular-nums min-w-[16px] text-center hover:underline"
+                  title={optLabel ? "Choose Options / Colours" : undefined}
+                >
+                  {qty}
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (blocked) return;
+                    if (optLabel) {
+                      setOptionsOpen(true);
+                    } else {
+                      const added = tryAdd(product, 1, stepLine?.variantId, stepLine?.shade);
+                      if (!added) setOptionsOpen(true);
+                    }
+                  }}
                   className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
                   aria-label="Increase"
                 >

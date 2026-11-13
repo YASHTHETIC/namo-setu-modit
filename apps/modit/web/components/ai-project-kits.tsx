@@ -22,6 +22,7 @@ import {
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@foundation/ui";
 import { formatINR2 } from "@/lib/utils";
+import { isPaintProduct } from "@/lib/pricing";
 import {
   PROJECT_KITS,
   resolveKit,
@@ -115,7 +116,9 @@ export function AiProjectKitsSection() {
       const pid = item.product.id;
       if (checkedItems[pid]) {
         const qty = kitQuantities[pid] ?? item.quantity;
-        addItem(item.product, qty);
+        const isPaint = isPaintProduct(item.product) || Boolean(item.product.hasShades);
+        const shade = isPaint ? (item.product.shades?.[0]?.name || "Soft Lilac") : undefined;
+        addItem(item.product, qty, undefined, shade);
         itemsAdded += 1;
       }
     });

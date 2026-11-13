@@ -33,15 +33,25 @@ export function ShadePicker({ shades, selectedShade, onSelectShade, customColorC
       )}
 
       {/* Shade family tabs */}
-      <div className="flex gap-1 mb-3 overflow-x-auto scrollbar-hide pb-1">
+      <div className="flex gap-1.5 mb-3 overflow-x-auto scrollbar-hide pb-1">
+        <button
+          onClick={() => setActiveFamily("All")}
+          className={`shrink-0 rounded-full px-3 py-1 text-micro font-bold transition-all cursor-pointer ${
+            activeFamily === "All"
+              ? "bg-[#2D1B69] text-white shadow-xs"
+              : "bg-[#F0ECF9] text-[#2D1B69] hover:bg-[#DDD6EE]"
+          }`}
+        >
+          All Shades
+        </button>
         {families.map((fam) => (
           <button
             key={fam}
-            onClick={() => { setActiveFamily(fam); onSelectShade(null); }}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-micro font-semibold transition-all ${
+            onClick={() => setActiveFamily(fam)}
+            className={`shrink-0 rounded-full px-3 py-1 text-micro font-bold transition-all cursor-pointer ${
               activeFamily === fam
-                ? "bg-[var(--brand)] text-white"
-                : "bg-[var(--bg-subtle)] text-[var(--text-muted)] hover:bg-[var(--brand-50)]"
+                ? "bg-[#2D1B69] text-white shadow-xs"
+                : "bg-[#F0ECF9] text-[#6B5B83] hover:bg-[#DDD6EE]"
             }`}
           >
             {fam}
@@ -49,27 +59,33 @@ export function ShadePicker({ shades, selectedShade, onSelectShade, customColorC
         ))}
       </div>
 
-      {/* Shade grid */}
-      <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
-        {filteredShades.map((shade) => (
-          <button
-            key={shade.name}
-            onClick={() => onSelectShade(shade.name)}
-            className={`group/shade relative flex flex-col items-center gap-1 rounded-lg p-2 transition-all ${
-              selectedShade === shade.name
-                ? "ring-2 ring-[var(--brand)] ring-offset-2 bg-[var(--brand-50)]"
-                : "hover:bg-[var(--bg-subtle)]"
-            }`}
-          >
-            <div
-              className="h-8 w-8 rounded-full border border-black/10 shadow-sm group-hover/shade:scale-110 transition-transform"
-              style={{ backgroundColor: shade.code }}
-            />
-            <span className="text-tiny font-medium text-[var(--text-muted)] leading-tight text-center truncate w-full">
-              {shade.name}
-            </span>
-          </button>
-        ))}
+      {/* Shade grid (Canva style: clean circular swatches) */}
+      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5 max-h-56 overflow-y-auto thin-scroll p-1">
+        {(activeFamily === "All" ? shades : filteredShades).map((shade) => {
+          const isSelected = selectedShade === shade.name;
+          return (
+            <button
+              key={shade.name}
+              type="button"
+              onClick={() => onSelectShade(shade.name)}
+              className={`group/shade relative flex flex-col items-center gap-1.5 rounded-xl p-2 transition-all cursor-pointer ${
+                isSelected
+                  ? "bg-[#F0ECF9] ring-2 ring-[#2D1B69] shadow-sm"
+                  : "hover:bg-[#F7F4FC]"
+              }`}
+            >
+              <div
+                className={`relative flex items-center justify-center rounded-full border border-black/10 transition-transform ${
+                  isSelected ? "h-10 w-10 ring-2 ring-[#2D1B69] ring-offset-1 scale-105" : "h-9 w-9 group-hover/shade:scale-110 shadow-xs"
+                }`}
+                style={{ backgroundColor: shade.code }}
+              />
+              <span className="text-micro font-bold text-[#150726] leading-tight text-center truncate w-full">
+                {shade.name}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Custom color code input */}

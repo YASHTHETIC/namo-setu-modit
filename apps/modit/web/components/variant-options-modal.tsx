@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { X, Check, ShoppingCart, Palette } from "lucide-react";
+import { X, Check, ShoppingCart, Palette, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import type { DisplayProduct } from "@/lib/pricing";
@@ -13,57 +13,78 @@ interface VariantOptionsModalProps {
   product: DisplayProduct;
 }
 
+function isLightColor(hex: string): boolean {
+  const c = hex.replace("#", "");
+  if (c.length !== 6) return false;
+  const r = parseInt(c.slice(0, 2), 16);
+  const g = parseInt(c.slice(2, 4), 16);
+  const b = parseInt(c.slice(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 > 180;
+}
+
 /**
- * HomeRun-style options picker: pack-size rows with per-row Add buttons,
- * plus a colour/shade list for paint products. Adds the exact
- * variant/shade to the cart.
+ * Canva-style options picker: circular colour shades with active ring,
+ * custom tint code, plus pack-size rows with per-row Add buttons.
+ * Guarantees that paint products cannot be added without a chosen colour shade.
  */
 export function VariantOptionsModal({ open, onClose, product }: VariantOptionsModalProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [addedKey, setAddedKey] = useState<string | null>(null);
-  const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  const [selectedShade, setSelectedShade] = useState<string | null>("Soft Lilac");
+  const [customColorCode, setCustomColorCode] = useState("");
+  const [showAllShades, setShowAllShades] = useState(false);
   const [shadeRequiredError, setShadeRequiredError] = useState(false);
   useModalBehavior(open, onClose);
 
   const variants = useMemo(() => product.variants ?? [], [product]);
   const shades = useMemo(() => product.shades ?? [], [product]);
 
+  // Set default shade if available and none selected yet
+  const effectiveShade = selectedShade || (customColorCode ? `Code ${customColorCode}` : null);
+
   if (!open) return null;
 
   const handleAddVariant = (variantId: string) => {
-    if (shades.length > 0 && !selectedShade) {
+    if (shades.length > 0 && !effectiveShade) {
       setShadeRequiredError(true);
       return;
     }
     setShadeRequiredError(false);
-    addItem(product, 1, variantId, selectedShade ?? undefined);
+    addItem(product, 1, variantId, effectiveShade ?? undefined);
     setAddedKey(`v:${variantId}`);
-    setTimeout(() => setAddedKey(null), 1500);
+    setTimeout(() => {
+      setAddedKey(null);
+      onClose();
+    }, 1200);
   };
 
   const handleAddShade = () => {
-    if (!selectedShade) {
+    if (!effectiveShade) {
       setShadeRequiredError(true);
       return;
     }
     setShadeRequiredError(false);
     const defaultVariant = variants[0]?.id;
-    addItem(product, 1, defaultVariant, selectedShade);
+    addItem(product, 1, defaultVariant, effectiveShade);
     setAddedKey("shade");
     setTimeout(() => {
       setAddedKey(null);
       onClose();
-    }, 900);
+    }, 1200);
   };
 
   const handleSelectShade = (name: string) => {
     setSelectedShade(name);
+    setCustomColorCode("");
     setShadeRequiredError(false);
   };
 
+  const heroShades = shades.slice(0, 6);
+  const remainingShades = shades.slice(6);
+
   return (
     <div
-      className="fixed inset-0 z-sheet flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
+      className="fixed inset-0 z-sheet flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
       onClick={onClose}
     >
       <div
@@ -75,7 +96,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
           <div>
             <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
             {shades.length > 0 && (
-              <p className="text-micro font-medium text-[#7CB518] mt-0.5">Please choose your color shade</p>
+              <p className="text-micro font-bold text-[#2D1B69] mt-0.5">Choose your backdrop shade & pack size</p>
             )}
           </div>
           <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
@@ -83,69 +104,108 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
           </button>
         </div>
 
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-4">
           {shadeRequiredError && (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 p-2.5 text-center text-caption font-bold text-amber-800 animate-pulse">
-              ⚠️ Please select a color shade first!
+            <div className="rounded-xl bg-amber-50 border border-amber-300 p-2.5 text-center text-caption font-bold text-amber-800 animate-pulse">
+              ⚠️ Please select a paint shade before adding to cart!
             </div>
           )}
 
-          {/* Shade / colour list — shown prominently when product has shades */}
+          {/* Canva-style Shade Picker: "Choose your backdrop shade" + Large Circles */}
           {shades.length > 0 && (
-            <div className={`rounded-xl border p-3 transition-colors ${shadeRequiredError ? "border-amber-400 bg-amber-50/30" : "border-[#F0ECF9]"}`}>
-              <p className="text-caption font-bold text-[#150726] flex items-center gap-1.5 mb-2">
-                <Palette className="h-3.5 w-3.5 text-[#2D1B69]" />
-                {variants.length > 0 ? "1. Select Colour" : "Select Colour"}
-                {selectedShade && <span className="font-bold text-[#047857]">— {selectedShade}</span>}
-              </p>
-              <div className="max-h-48 overflow-y-auto thin-scroll space-y-1 pr-1">
-                {shades.map((sh) => (
-                  <button
-                    key={sh.name}
-                    onClick={() => handleSelectShade(sh.name)}
-                    className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all ${
-                      selectedShade === sh.name ? "bg-[#F0ECF9] ring-2 ring-[#2D1B69]" : "hover:bg-[#F7F4FC]"
-                    }`}
-                  >
-                    <span
-                      className="h-5 w-5 rounded-full border border-black/10 flex-shrink-0"
-                      style={{ backgroundColor: sh.code }}
-                    />
-                    <span className="text-caption font-semibold text-[#150726]">{sh.name}</span>
-                    {selectedShade === sh.name && <Check className="h-4 w-4 text-[#7CB518] ml-auto" />}
-                  </button>
-                ))}
+            <div className={`rounded-2xl border p-4 transition-colors ${shadeRequiredError ? "border-amber-400 bg-amber-50/20" : "border-[#EDE7F6] bg-[#F5F2FC]"}`}>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="text-caption font-extrabold text-[#150726] tracking-tight">
+                  Choose your backdrop shade
+                </span>
+                <span className="text-caption font-black text-[#2D1B69] bg-[#F0ECF9] px-2.5 py-0.5 rounded-full">
+                  {effectiveShade || "Select"}
+                </span>
               </div>
-              {variants.length === 0 && (
+
+              {/* Large Circular Swatches (Canva Style) */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                {(showAllShades ? shades : heroShades).map((sh) => {
+                  const isSelected = selectedShade === sh.name;
+                  return (
+                    <button
+                      key={sh.name}
+                      type="button"
+                      onClick={() => handleSelectShade(sh.name)}
+                      className={`relative flex items-center justify-center rounded-full transition-all cursor-pointer ${
+                        isSelected
+                          ? "h-11 w-11 ring-3 ring-[#2D1B69] ring-offset-2 scale-105 shadow-md"
+                          : "h-9 w-9 hover:scale-110 border-2 border-white shadow-xs opacity-90 hover:opacity-100"
+                      }`}
+                      style={{ backgroundColor: sh.code }}
+                      title={`${sh.name} (${sh.code})`}
+                      aria-label={sh.name}
+                    >
+                      {isSelected && (
+                        <Check className={`h-4 w-4 ${isLightColor(sh.code) ? 'text-black' : 'text-white'}`} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Toggle to view all 20+ fan-deck shades */}
+              {remainingShades.length > 0 && (
                 <button
-                  onClick={handleAddShade}
-                  disabled={!selectedShade}
-                  className={`mt-3 w-full py-3 rounded-xl text-body-sm font-bold transition-all flex items-center justify-center gap-2 ${
-                    addedKey === "shade"
-                      ? "bg-[#7CB518]/15 text-[#7CB518]"
-                      : "bg-[#2D1B69] text-white hover:bg-[#1E1245] active:scale-[0.98] disabled:opacity-40"
-                  }`}
+                  type="button"
+                  onClick={() => setShowAllShades(!showAllShades)}
+                  className="mt-3 inline-flex items-center gap-1 text-tiny font-bold text-[#2D1B69] hover:underline"
                 >
-                  {addedKey === "shade" ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> Add Selected Colour</>}
+                  {showAllShades ? (
+                    <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>
+                  ) : (
+                    <>View All {shades.length} Fan-Deck Shades <ChevronDown className="h-3.5 w-3.5" /></>
+                  )}
                 </button>
               )}
+
+              {/* Custom Tint Code Input */}
+              <div className="mt-3 pt-2.5 border-t border-[#EDE7F6] flex items-center gap-2">
+                <span className="text-micro font-bold text-[#6B5B83]">Or Tint Code:</span>
+                <div className="relative flex-1">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-micro font-bold text-[#9B8CB5]">#</span>
+                  <input
+                    type="text"
+                    placeholder="E8D5B7"
+                    value={customColorCode.replace("#", "")}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^A-Za-z0-9]/g, "").slice(0, 6);
+                      setCustomColorCode(val ? `#${val}` : "");
+                      if (val) {
+                        setSelectedShade(null);
+                        setShadeRequiredError(false);
+                      }
+                    }}
+                    className="w-full h-8 rounded-lg border border-[#DDD6EE] bg-white pl-6 pr-2 text-micro font-mono uppercase focus:outline-none focus:ring-1 focus:ring-[#2D1B69]"
+                  />
+                </div>
+                {customColorCode && customColorCode.length >= 4 && (
+                  <span
+                    className="h-8 w-8 rounded-lg border border-[#DDD6EE] flex-shrink-0 shadow-xs"
+                    style={{ backgroundColor: customColorCode }}
+                  />
+                )}
+              </div>
             </div>
           )}
 
           {/* Pack-size / variant rows */}
           {variants.length > 0 && (
             <div className="space-y-2">
-              {shades.length > 0 && (
-                <p className="text-caption font-bold text-[#150726] px-1 pt-1">
-                  2. Select Pack Size
-                </p>
-              )}
+              <p className="text-caption font-extrabold text-[#150726] px-1">
+                {shades.length > 0 ? "Select Pack Size" : "Available Options"}
+              </p>
               {variants.map((v) => {
                 const key = `v:${v.id}`;
                 const added = addedKey === key;
                 const discount = v.mrp > v.price ? Math.round(((v.mrp - v.price) / v.mrp) * 100) : 0;
                 return (
-                  <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors">
+                  <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors bg-white">
                     {product.images[0] && (
                       <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                     )}
@@ -154,29 +214,39 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                         {v.label}
                         <span className="ml-1.5 text-micro font-medium text-[#9B8CB5]">{v.unit}</span>
                       </p>
-                      <p className="text-caption mt-0.5">
+                      <div className="flex items-baseline gap-1.5 mt-0.5">
+                        <span className="text-body-sm font-extrabold text-[#150726]">
+                          ₹{v.price.toLocaleString("en-IN")}
+                        </span>
                         {v.mrp > v.price && (
-                          <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString("en-IN")}</span>
+                          <span className="text-micro text-[#9B8CB5] line-through">
+                            ₹{v.mrp.toLocaleString("en-IN")}
+                          </span>
                         )}
-                        <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString("en-IN")}</span>
                         {discount > 0 && (
-                          <span className="ml-1.5 text-tiny font-bold text-[#E91E63]">{discount}% off</span>
+                          <span className="text-tiny font-bold text-[#047857]">
+                            {discount}% OFF
+                          </span>
                         )}
-                      </p>
-                      {v.stockLevel <= 10 && (
-                        <p className="text-tiny font-bold text-[#FF9800]">Only {v.stockLevel} left</p>
-                      )}
+                      </div>
                     </div>
                     <button
                       onClick={() => handleAddVariant(v.id)}
-                      disabled={v.stockLevel <= 0}
-                      className={`px-5 h-9 rounded-lg text-caption font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
+                      className={`px-4 py-2 rounded-xl text-caption font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                         added
-                          ? "bg-[#7CB518] border-[#7CB518] text-white"
-                          : "bg-white border-[#7CB518] text-[#5A8010] hover:bg-[#F0F9E8] active:scale-95"
-                      } disabled:opacity-40`}
+                          ? "bg-[#7CB518] text-white"
+                          : "bg-[#2D1B69] hover:bg-[#1E1245] text-white active:scale-95"
+                      }`}
                     >
-                      {added ? <><Check className="h-3.5 w-3.5" /> Added</> : "ADD"}
+                      {added ? (
+                        <>
+                          <Check className="h-3.5 w-3.5" /> Added
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="h-3.5 w-3.5" /> ADD
+                        </>
+                      )}
                     </button>
                   </div>
                 );
@@ -184,8 +254,23 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
             </div>
           )}
 
-          {variants.length === 0 && shades.length === 0 && (
-            <p className="text-center text-caption text-[#9B8CB5] py-4">No options for this product.</p>
+          {/* Single pack size with shades only */}
+          {variants.length === 0 && shades.length > 0 && (
+            <button
+              onClick={handleAddShade}
+              disabled={!effectiveShade}
+              className={`w-full py-3 rounded-xl text-body-sm font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md ${
+                addedKey === "shade"
+                  ? "bg-[#7CB518] text-white"
+                  : "bg-[#2D1B69] hover:bg-[#1E1245] text-white active:scale-95 disabled:opacity-40"
+              }`}
+            >
+              {addedKey === "shade" ? (
+                <><Check className="h-4 w-4" /> Added to Cart</>
+              ) : (
+                <><ShoppingCart className="h-4 w-4" /> Add with {effectiveShade || "Chosen Colour"}</>
+              )}
+            </button>
           )}
         </div>
       </div>
