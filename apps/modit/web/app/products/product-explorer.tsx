@@ -241,7 +241,7 @@ function ProductsContent() {
     return result;
   }, [products, search, effectiveSearch, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
-  // Show every matching product — no client-side paging.</think><tool_call>edit<arg_key>newString</arg_key><arg_value>  // All matching products render at once — no client-side paging.
+  // All matching products render at once — no client-side paging.
   const toggleBrand = useCallback((brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]

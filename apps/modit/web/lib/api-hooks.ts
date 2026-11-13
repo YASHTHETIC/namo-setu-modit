@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useProducts as useApiProducts, useProduct as useApiProduct, useCategories as useApiCategories, useBrands as useApiBrands, useUnits as useApiUnits } from "./modit-api";
+import { resolveProduct } from "./pricing";
 import { products as staticProducts, categories as staticCategories, getProductById, searchProducts, fallbackImageFor, type Product, type Category } from "./product-data";
 
 const fastQueryOpts = { retry: false, staleTime: 30_000, gcTime: 60_000 } as const;
@@ -140,6 +141,10 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
   const unitSymbol: string | null = p.unit?.symbol ?? lookupUnit?.symbol ?? p.unitSymbol ?? null;
 
   const name = cleanName(String(p.name));
+  const staticMatch =
+    staticProducts.find((s) => p.slug && s.slug === p.slug) ??
+    staticProducts.find((s) => p.sku && s.sku === p.sku) ??
+    staticProducts.find((s) => s.name && cleanName(s.name).toLowerCase() === name.toLowerCase());
 
   let images: string[] = [];
   if (Array.isArray(p.images) && p.images.length > 0) {
@@ -167,10 +172,6 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
   // imageable row in category" for every product (that is how the whole
   // Pipes & Tanks rail collapsed to one repeated ball-valve photo).
   if (images.length === 0) {
-    const staticMatch =
-      staticProducts.find((s) => p.slug && s.slug === p.slug) ??
-      staticProducts.find((s) => p.sku && s.sku === p.sku) ??
-      staticProducts.find((s) => s.name && cleanName(s.name).toLowerCase() === name.toLowerCase());
     if (staticMatch && Array.isArray(staticMatch.images) && staticMatch.images.length > 0) {
       images = [...staticMatch.images];
     } else {
@@ -224,6 +225,13 @@ export function mapApiProductToFrontend(p: any, lookups?: CatalogLookups): Produ
     specifications: p.specifications ?? parseSpecs(p.specification_json),
     features: Array.isArray(p.features) ? p.features : [],
     tags: derivedTags,
+    variants: (Array.isArray(p.variants) && p.variants.length > 0) ? p.variants : staticMatch?.variants,
+    shades: (Array.isArray(p.shades) && p.shades.length > 0) ? p.shades : staticMatch?.shades,
+    hasShades: p.hasShades ?? staticMatch?.hasShades,
+    deliveryMinutes: p.deliveryMinutes ?? staticMatch?.deliveryMinutes ?? 60,
+    cashbackPercent: p.cashbackPercent ?? staticMatch?.cashbackPercent ?? 0,
+    pincodeStock: p.pincodeStock ?? staticMatch?.pincodeStock,
+    substitutes: p.substitutes ?? staticMatch?.substitutes,
   };
 }
 
@@ -279,7 +287,7 @@ export function useProducts(params?: { search?: string; category_id?: string; br
       const chosen = match ?? sp;
       if (!seenIds.has(chosen.id)) {
         seenIds.add(chosen.id);
-        combined.push(chosen);
+        combined.push(resolveProduct(chosen));
       }
     }
 
@@ -287,7 +295,7 @@ export function useProducts(params?: { search?: string; category_id?: string; br
     for (const ap of apiProducts) {
       if (!seenIds.has(ap.id)) {
         seenIds.add(ap.id);
-        combined.push(ap);
+        combined.push(resolveProduct(ap));
       }
     }
 
@@ -340,18 +348,22 @@ export function useProduct(productId: string | undefined) {
   const lookups = useCatalogLookups();
   const rawProduct = apiQuery.data as unknown;
   const apiProduct = (Array.isArray(rawProduct) ? null : mapApiProductToFrontend(rawProduct as any, lookups)) ?? undefined;
+  const resolvedApiProduct = apiProduct ? resolveProduct(apiProduct) : undefined;
 
-  const findStatic = (id: string | undefined) =>
-    !id ? null : getProductById(id) ?? staticProducts.find((p) => p.slug === id) ?? null;
+  const findStatic = (id: string | undefined) => {
+    if (!id) return null;
+    const s = getProductById(id) ?? staticProducts.find((p) => p.slug === id);
+    return s ? resolveProduct(s) : null;
+  };
   const fallbackQuery = useQuery({
     queryKey: ["fallback", "product", productId],
     queryFn: () => findStatic(productId),
     ...fastQueryOpts,
-    enabled: apiQuery.isError || (apiQuery.isSuccess && !apiProduct),
+    enabled: apiQuery.isError || (apiQuery.isSuccess && !resolvedApiProduct),
   });
 
-  if (apiQuery.isSuccess && apiProduct) {
-    return { ...apiQuery, data: apiProduct, isFromApi: true };
+  if (apiQuery.isSuccess && resolvedApiProduct) {
+    return { ...apiQuery, data: resolvedApiProduct, isFromApi: true };
   }
   if (fallbackQuery.isSuccess) {
     return { ...apiQuery, data: fallbackQuery.data, isFromApi: false, isSuccess: true, isPending: false };

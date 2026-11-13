@@ -193,12 +193,4 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   );
 }
 
-/** Label + count for the card button, e.g. "4 Options" / "12 Colours". */
-export function optionsLabel(product: { variants?: unknown[]; shades?: unknown[]; hasShades?: boolean }): string | null {
-  const vCount = product.variants?.length ?? 0;
-  const sCount = product.shades?.length ?? 0;
-  if (vCount > 1) return `${vCount} Options`;
-  if (vCount === 1 && sCount > 0) return `${sCount} Colours`;
-  if (sCount > 0) return `${sCount} Colours`;
-  return null;
-}
+export { optionsLabel } from "@/lib/pricing";
