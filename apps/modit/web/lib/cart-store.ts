@@ -2,8 +2,8 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Product } from "./product-data";
-import { resolveProduct } from "./pricing";
+import type { Product } from "./product-data.ts";
+import { resolveProduct } from "./pricing.ts";
 
 export interface CartItem {
   product: Product;

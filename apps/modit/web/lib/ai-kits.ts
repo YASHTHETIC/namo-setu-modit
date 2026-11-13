@@ -1,4 +1,5 @@
-import { getProductById, type Product } from "./product-data.ts";
+import { getProductById } from "./product-data.ts";
+import { resolveProduct, type DisplayProduct } from "./pricing.ts";
 
 export interface KitItem {
   productId: string;
@@ -22,7 +23,7 @@ export interface ProjectKit {
 }
 
 export interface ResolvedKitItem {
-  product: Product;
+  product: DisplayProduct;
   quantity: number;
   role: string;
   unitPrice: number;
@@ -141,8 +142,9 @@ export function resolveKit(kit: ProjectKit): ResolvedKit {
   let totalMrp = 0;
 
   for (const item of kit.items) {
-    const product = getProductById(item.productId);
-    if (!product) continue;
+    const raw = getProductById(item.productId);
+    if (!raw) continue;
+    const product = resolveProduct(raw);
 
     const unitPrice = product.price;
     const mrp = product.mrp > product.price ? product.mrp : Math.round(product.price * 1.15);
