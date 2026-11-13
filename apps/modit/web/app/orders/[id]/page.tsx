@@ -70,7 +70,7 @@ const demoOrders: Record<string, OrderDetail> = {
   },
   "ORD-2026-08002": {
     id: "ORD-2026-08002", status: "in_transit", placedAt: "2026-08-03T09:15:00Z", expectedDelivery: "2026-08-07T14:00:00Z",
-    address: { name: "Rajesh Kumar", phone: "+91 98765 43210", line1: "Construction Site B, Sector 15", city: "Mumbai", state: "Maharashtra", pincode: "400065" },
+    address: { name: "Rajesh Kumar", phone: "+91 98765 43210", line1: "Project Site B, Sector 15", city: "Mumbai", state: "Maharashtra", pincode: "400065" },
     payment: { method: "Credit Terms — 30 days", status: "pending" },
     items: [
       { name: "MS Pipes ERW 2 inch (50mm) x 6m", sku: "PIP-MS-ERW-2x6", quantity: 100, unitPrice: 1250, unitCode: "PCS", gstRate: 18, brand: "Surya Roshni", total: 125000 },

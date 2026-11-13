@@ -476,7 +476,7 @@ export default function HomeClient() {
         </div>
       </Reveal>
 
-      {/* ═══ PROMO CARDS — Blinkit solid-color row, construction edition ═══ */}
+      {/* ═══ PROMO CARDS — Blinkit solid-color row, Materials on Door edition ═══ */}
       <div className="section-header !pb-1">
         <h2>Site essentials, top deals</h2>
       </div>
@@ -580,7 +580,7 @@ export default function HomeClient() {
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
 
-      {/* ═══ AI PROJECT KITS (Blinkit Recipe-to-Cart for Construction) ═══ */}
+      {/* ═══ AI PROJECT KITS (Blinkit Recipe-to-Cart for Materials on Door) ═══ */}
       <Reveal>
         <AiProjectKitsSection />
       </Reveal>
