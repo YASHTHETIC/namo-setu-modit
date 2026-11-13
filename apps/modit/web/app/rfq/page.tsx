@@ -8,6 +8,7 @@ import { useSearchProducts } from "@/lib/api-hooks";
 import { Plus, FileText, Calendar, X, CheckCircle2, Trophy } from "lucide-react";
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
 import { useToast } from "@foundation/ui";
+import { PaperListUploader } from "@/components/paper-list-uploader";
 
 export default function RFQPage() {
   const toast = useToast();
@@ -169,6 +170,34 @@ export default function RFQPage() {
               <FormRow label="Due Date">
                 <Input type="date" value={newRFQ.due_date} onChange={(e) => setNewRFQ({ ...newRFQ, due_date: e.target.value })} />
               </FormRow>
+              {/* Handwritten Paper / Slip Upload */}
+              <PaperListUploader
+                onExtracted={(extracted) => {
+                  setItemDrafts((prev) => {
+                    const next = [...prev];
+                    for (const item of extracted) {
+                      const existingIdx = next.findIndex((d) => d.product_id === item.productId);
+                      if (existingIdx >= 0) {
+                        next[existingIdx].requested_quantity += item.quantity;
+                      } else {
+                        next.push({
+                          product_id: item.productId,
+                          requested_quantity: item.quantity,
+                          name: item.name,
+                        });
+                      }
+                    }
+                    return next;
+                  });
+                  if (!newRFQ.notes) {
+                    setNewRFQ((prev) => ({
+                      ...prev,
+                      notes: `Scanned from paper list: ${extracted.map((e) => `${e.quantity} ${e.name}`).join(", ")}`,
+                    }));
+                  }
+                }}
+              />
+
               <div>
                 <p className="text-sm font-semibold text-[var(--text-primary)] mb-2">Items ({itemDrafts.length})</p>
                 {itemDrafts.map((d, i) => (

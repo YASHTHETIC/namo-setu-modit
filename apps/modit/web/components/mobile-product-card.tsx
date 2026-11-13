@@ -128,11 +128,20 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           <div className="flex-shrink-0">
             {qty === 0 ? (
               <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!blocked) tryAdd(product); }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (blocked) return;
+                  if (optLabel) {
+                    setOptionsOpen(true);
+                  } else {
+                    tryAdd(product);
+                  }
+                }}
                 disabled={blocked}
                 className="btn-shine rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40"
               >
-                {blocked ? "N/A" : "ADD"}
+                {blocked ? "N/A" : optLabel ? "OPTIONS ▾" : "ADD"}
               </button>
             ) : (
               <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-xs overflow-hidden">

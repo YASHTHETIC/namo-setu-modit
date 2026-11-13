@@ -1054,6 +1054,10 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
     e.preventDefault();
     e.stopPropagation();
     if (blocked) return;
+    if (optLabel) {
+      setOptionsOpen(true);
+      return;
+    }
     if (!tryAdd(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -1146,7 +1150,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
               title={blocked ? "Not serving your pincode yet" : undefined}
               className={added ? "rounded-full bg-[#7CB518] text-white px-4 py-1.5 text-xs font-black transition-all disabled:opacity-50" : "btn-add"}
             >
-              {added ? "Added ✓" : "ADD"}
+              {added ? "Added ✓" : optLabel ? "OPTIONS ▾" : "ADD"}
             </button>
             {optLabel && (
               <button
@@ -1184,6 +1188,10 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
     e.preventDefault();
     e.stopPropagation();
     if (blocked) return;
+    if (optLabel) {
+      setOptionsOpen(true);
+      return;
+    }
     if (!tryAdd(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);

@@ -256,42 +256,83 @@ export function useProducts(params?: { search?: string; category_id?: string; br
     [apiQuery.data, lookups]
   );
 
-  const fallbackQuery = useQuery({
-    queryKey: ["fallback", "products", params],
-    queryFn: () => {
-      let result = [...staticProducts];
-      if (params?.search) {
-        const q = params.search.toLowerCase();
-        result = result.filter((p) =>
+  // Seamlessly merge live API products with the full 1,120-product static catalog
+  // so buyers can always browse the entire catalog even while seeder syncs.
+  const mergedProducts = useMemo(() => {
+    const apiMap = new Map<string, Product>();
+    for (const p of apiProducts) {
+      if (p.slug) apiMap.set(p.slug.toLowerCase(), p);
+      if (p.sku) apiMap.set(p.sku.toLowerCase(), p);
+      apiMap.set(p.id.toLowerCase(), p);
+    }
+
+    const seenIds = new Set<string>();
+    const combined: Product[] = [];
+
+    // Walk full catalog: enriched live API data wins if present, otherwise catalog item
+    for (const sp of staticProducts) {
+      const match =
+        (sp.slug && apiMap.get(sp.slug.toLowerCase())) ||
+        (sp.sku && apiMap.get(sp.sku.toLowerCase())) ||
+        apiMap.get(sp.id.toLowerCase());
+
+      const chosen = match ?? sp;
+      if (!seenIds.has(chosen.id)) {
+        seenIds.add(chosen.id);
+        combined.push(chosen);
+      }
+    }
+
+    // Add any server-exclusive products
+    for (const ap of apiProducts) {
+      if (!seenIds.has(ap.id)) {
+        seenIds.add(ap.id);
+        combined.push(ap);
+      }
+    }
+
+    // Apply query filters
+    let result = combined;
+    if (params?.search) {
+      const q = params.search.toLowerCase().trim();
+      result = result.filter(
+        (p) =>
           p.name.toLowerCase().includes(q) ||
           p.brand?.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q))
-        );
-      }
-      const catFilter = params?.category_slug || params?.category_id;
-      if (catFilter) {
-        const catId = catFilter;
-        result = result.filter((p) => p.categorySlug === catId || p.category.toLowerCase() === catId.toLowerCase());
-      }
-      const brandFilter = params?.brand_slug || params?.brand_id;
-      if (brandFilter) {
-        const brandId = brandFilter;
-        result = result.filter((p) => p.brandSlug === brandId);
-      }
-      return result;
-    },
+          p.tags?.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+    const catFilter = params?.category_slug || params?.category_id;
+    if (catFilter) {
+      const catId = catFilter.toLowerCase();
+      result = result.filter(
+        (p) => p.categorySlug.toLowerCase() === catId || p.category.toLowerCase() === catId
+      );
+    }
+    const brandFilter = params?.brand_slug || params?.brand_id;
+    if (brandFilter) {
+      const brandId = brandFilter.toLowerCase();
+      result = result.filter((p) => p.brandSlug?.toLowerCase() === brandId);
+    }
+
+    return result;
+  }, [apiProducts, params?.search, params?.category_slug, params?.category_id, params?.brand_slug, params?.brand_id]);
+
+  const fallbackQuery = useQuery({
+    queryKey: ["fallback", "products", params],
+    queryFn: () => mergedProducts,
     ...fastQueryOpts,
     enabled: apiQuery.isError || (apiQuery.isSuccess && apiProducts.length === 0),
   });
 
-  if (apiQuery.isSuccess && apiProducts.length > 0) {
-    return { ...apiQuery, data: apiProducts, didYouMean, isFromApi: true };
+  if (apiQuery.isSuccess) {
+    return { ...apiQuery, data: mergedProducts, didYouMean, isFromApi: true };
   }
   if (fallbackQuery.isSuccess) {
     return { ...apiQuery, data: fallbackQuery.data, didYouMean: null, isFromApi: false, isSuccess: true, isPending: false };
   }
-  return { ...apiQuery, data: staticProducts, didYouMean: null, isFromApi: false };
+  return { ...apiQuery, data: mergedProducts, didYouMean: null, isFromApi: false };
 }
 
 export function useProduct(productId: string | undefined) {

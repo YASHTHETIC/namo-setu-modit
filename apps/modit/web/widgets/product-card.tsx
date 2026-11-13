@@ -54,6 +54,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (optLabel) {
+      setOptionsOpen(true);
+      return;
+    }
     tryAdd(live, 1, selectedVariantId ?? undefined);
   };
 
@@ -145,7 +149,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 onClick={handleAdd}
                 className="btn-add"
               >
-                ADD
+                {optLabel ? "OPTIONS ▾" : "ADD"}
               </button>
             ) : (
               <div className="stepper shadow-md shadow-green-500/25">

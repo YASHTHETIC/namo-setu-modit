@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { ShadePicker } from "@/components/shade-picker";
+import { ProductZoom3DViewer } from "@/components/product-zoom-3d-viewer";
 import { Reveal } from "@/components/reveal";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
@@ -108,6 +109,7 @@ export default function ProductDetailPage({
   const hasStockAlert = useStockAlertStore((s) => s.hasAlert(product?.id ?? ""));
   const removeStockAlert = useStockAlertStore((s) => s.removeAlert);
   const [customColorCode, setCustomColorCode] = useState("");
+  const [shadeWarning, setShadeWarning] = useState(false);
 
   useEffect(() => {
     if (product) addRecentlyViewed(product);
@@ -151,16 +153,32 @@ export default function ProductDetailPage({
 
   const handleAddToCart = useCallback(() => {
     if (!product) return;
-    if (!tryAdd(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined)) return;
+    if (product.hasShades && product.shades && product.shades.length > 0 && !selectedShade && !customColorCode) {
+      setShadeWarning(true);
+      const el = document.getElementById("shade-picker-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setShadeWarning(false);
+    const chosenColor = (selectedShade || customColorCode) || undefined;
+    if (!tryAdd(product, quantity, selectedVariant ?? undefined, chosenColor)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 3000);
-  }, [product, quantity, tryAdd, selectedVariant, selectedShade]);
+  }, [product, quantity, tryAdd, selectedVariant, selectedShade, customColorCode]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
-    if (!tryAdd(product, quantity, selectedVariant ?? undefined, selectedShade ?? undefined)) return;
+    if (product.hasShades && product.shades && product.shades.length > 0 && !selectedShade && !customColorCode) {
+      setShadeWarning(true);
+      const el = document.getElementById("shade-picker-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setShadeWarning(false);
+    const chosenColor = (selectedShade || customColorCode) || undefined;
+    if (!tryAdd(product, quantity, selectedVariant ?? undefined, chosenColor)) return;
     window.location.href = "/checkout";
-  }, [product, quantity, tryAdd, selectedVariant, selectedShade]);
+  }, [product, quantity, tryAdd, selectedVariant, selectedShade, customColorCode]);
 
   // Blinkit stepper: current selection's cart qty, adjustable in place.
   const cartLines = useCartStore((s) => s.items);
@@ -259,64 +277,24 @@ export default function ProductDetailPage({
         {/* Left: Image Gallery */}
         <div className="lg:col-span-5">
           <div className="sticky top-24">
-            {/* Main Image — swipe on touch, tap for fullscreen */}
-            <div
-              className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9]"
-              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                if (touchStartX.current === null) return;
-                const dx = e.changedTouches[0].clientX - touchStartX.current;
-                touchStartX.current = null;
-                if (Math.abs(dx) < 40 || product.images.length < 2) return;
-                setSelectedImage((i) => (i + (dx < 0 ? 1 : product.images.length - 1)) % product.images.length);
-              }}
-              onClick={() => setLightboxOpen(true)}
-            >  {product.images[safeImageIndex] ? (
-                <Image
-                  src={product.images[safeImageIndex]}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 560px"
-                  priority
-                  draggable={false}
-                  className="object-contain animate-fade-in"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <Package className="h-32 w-32 text-[var(--text-muted)]/20" />
-                </div>
-              )}
-              {/* Wishlist + Share on image */}
-              <div className="absolute top-3 right-3 flex flex-col gap-2">
-                <button
-                  onClick={(e) => { e.stopPropagation(); toggleWishlist(); }}
-                  title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                  className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
-                    wishlisted ? "bg-[#FCE4EC] text-[#E91E63]" : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
-                  }`}
-                >
-                  <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#E91E63]" : ""}`} />
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                  title="Share this product"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[var(--text-secondary)] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
-                >
-                  {shared ? <Check className="h-5 w-5 text-[#7CB518]" /> : <Share2 className="h-5 w-5" />}
-                </button>
-              </div>
-              {shared && (
-                <span className="absolute top-3 right-[52px] rounded-full bg-[#150726]/85 backdrop-blur-sm px-3 py-1.5 text-micro font-bold text-white animate-[fadeIn_0.2s_ease-out]">
-                  Link copied
-                </span>
-              )}
-              {/* Image counter */}
-              {product.images.length > 1 && (
-                <span className="absolute bottom-3 right-3 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-micro font-semibold text-white">
-                  {safeImageIndex + 1} / {product.images.length}
-                </span>
-              )}
-            </div>
+            {/* Main Image with Interactive Amazon-style Zoom & 3D Look */}
+            <ProductZoom3DViewer
+              images={product.images}
+              productName={product.name}
+              safeImageIndex={safeImageIndex}
+              setSelectedImage={setSelectedImage}
+              wishlisted={wishlisted}
+              toggleWishlist={toggleWishlist}
+              shared={shared}
+              handleShare={handleShare}
+              onOpenLightbox={() => setLightboxOpen(true)}
+              isPaintProduct={product.categorySlug === "painting" || Boolean(product.hasShades)}
+              selectedShadeColor={
+                product.shades?.find((s) => s.name === selectedShade)?.code ??
+                (customColorCode ? `#${customColorCode.replace("#", "")}` : null)
+              }
+              selectedShadeName={selectedShade || (customColorCode ? `Code ${customColorCode}` : null)}
+            />
 
             {/* Thumbnails — horizontal scroll on mobile */}
             {product.images.length > 1 && (
@@ -557,13 +535,20 @@ export default function ProductDetailPage({
 
           {/* Shade/Color Picker — only for paint products with shades */}
           {product.hasShades && product.shades && product.shades.length > 0 && (
-            <ShadePicker
-              shades={product.shades}
-              selectedShade={selectedShade}
-              onSelectShade={setSelectedShade}
-              customColorCode={customColorCode}
-              onCustomColorCodeChange={setCustomColorCode}
-            />
+            <div id="shade-picker-section" className={`rounded-xl transition-all ${shadeWarning ? "ring-2 ring-amber-400 p-2 bg-amber-50/30" : ""}`}>
+              {shadeWarning && (
+                <div className="mb-2.5 p-2.5 rounded-lg bg-amber-50 border border-amber-300 text-caption font-bold text-amber-800 text-center animate-bounce">
+                  ⚠️ Please select a paint shade or enter a color code before adding to cart
+                </div>
+              )}
+              <ShadePicker
+                shades={product.shades}
+                selectedShade={selectedShade}
+                onSelectShade={(s) => { setSelectedShade(s); setShadeWarning(false); }}
+                customColorCode={customColorCode}
+                onCustomColorCodeChange={(c) => { setCustomColorCode(c); setShadeWarning(false); }}
+              />
+            </div>
           )}
 
           {/* Delivery status — location comes from login auto-fetch, no manual entry */}

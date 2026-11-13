@@ -22,6 +22,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   const addItem = useCartStore((s) => s.addItem);
   const [addedKey, setAddedKey] = useState<string | null>(null);
   const [selectedShade, setSelectedShade] = useState<string | null>(null);
+  const [shadeRequiredError, setShadeRequiredError] = useState(false);
   useModalBehavior(open, onClose);
 
   const variants = useMemo(() => product.variants ?? [], [product]);
@@ -30,13 +31,22 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   if (!open) return null;
 
   const handleAddVariant = (variantId: string) => {
+    if (shades.length > 0 && !selectedShade) {
+      setShadeRequiredError(true);
+      return;
+    }
+    setShadeRequiredError(false);
     addItem(product, 1, variantId, selectedShade ?? undefined);
     setAddedKey(`v:${variantId}`);
     setTimeout(() => setAddedKey(null), 1500);
   };
 
   const handleAddShade = () => {
-    if (!selectedShade) return;
+    if (!selectedShade) {
+      setShadeRequiredError(true);
+      return;
+    }
+    setShadeRequiredError(false);
     const defaultVariant = variants[0]?.id;
     addItem(product, 1, defaultVariant, selectedShade);
     setAddedKey("shade");
@@ -44,6 +54,11 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
       setAddedKey(null);
       onClose();
     }, 900);
+  };
+
+  const handleSelectShade = (name: string) => {
+    setSelectedShade(name);
+    setShadeRequiredError(false);
   };
 
   return (
@@ -57,70 +72,39 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
       >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10">
-          <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
+          <div>
+            <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
+            {shades.length > 0 && (
+              <p className="text-micro font-medium text-[#7CB518] mt-0.5">Please choose your color shade</p>
+            )}
+          </div>
           <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
             <X className="h-5 w-5 text-[#9B8CB5]" />
           </button>
         </div>
 
-        <div className="p-4 space-y-2.5">
-          {/* Pack-size / variant rows */}
-          {variants.map((v) => {
-            const key = `v:${v.id}`;
-            const added = addedKey === key;
-            const discount = v.mrp > v.price ? Math.round(((v.mrp - v.price) / v.mrp) * 100) : 0;
-            return (
-              <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors">
-                {product.images[0] && (
-                  <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-body-sm font-bold text-[#150726]">
-                    {v.label}
-                    <span className="ml-1.5 text-micro font-medium text-[#9B8CB5]">{v.unit}</span>
-                  </p>
-                  <p className="text-caption mt-0.5">
-                    {v.mrp > v.price && (
-                      <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString("en-IN")}</span>
-                    )}
-                    <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString("en-IN")}</span>
-                    {discount > 0 && (
-                      <span className="ml-1.5 text-tiny font-bold text-[#E91E63]">{discount}% off</span>
-                    )}
-                  </p>
-                  {v.stockLevel <= 10 && (
-                    <p className="text-tiny font-bold text-[#FF9800]">Only {v.stockLevel} left</p>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleAddVariant(v.id)}
-                  disabled={v.stockLevel <= 0}
-                  className={`px-5 h-9 rounded-lg text-caption font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
-                    added
-                      ? "bg-[#7CB518] border-[#7CB518] text-white"
-                      : "bg-white border-[#7CB518] text-[#5A8010] hover:bg-[#F0F9E8] active:scale-95"
-                  } disabled:opacity-40`}
-                >
-                  {added ? <><Check className="h-3.5 w-3.5" /> Added</> : "ADD"}
-                </button>
-              </div>
-            );
-          })}
+        <div className="p-4 space-y-3">
+          {shadeRequiredError && (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 p-2.5 text-center text-caption font-bold text-amber-800 animate-pulse">
+              ⚠️ Please select a color shade first!
+            </div>
+          )}
 
-          {/* Shade / colour list */}
+          {/* Shade / colour list — shown prominently when product has shades */}
           {shades.length > 0 && (
-            <div className="rounded-xl border border-[#F0ECF9] p-3">
+            <div className={`rounded-xl border p-3 transition-colors ${shadeRequiredError ? "border-amber-400 bg-amber-50/30" : "border-[#F0ECF9]"}`}>
               <p className="text-caption font-bold text-[#150726] flex items-center gap-1.5 mb-2">
-                <Palette className="h-3.5 w-3.5 text-[#2D1B69]" /> Select Colour
-                {selectedShade && <span className="font-medium text-[#9B8CB5]">— {selectedShade}</span>}
+                <Palette className="h-3.5 w-3.5 text-[#2D1B69]" />
+                {variants.length > 0 ? "1. Select Colour" : "Select Colour"}
+                {selectedShade && <span className="font-bold text-[#047857]">— {selectedShade}</span>}
               </p>
               <div className="max-h-48 overflow-y-auto thin-scroll space-y-1 pr-1">
                 {shades.map((sh) => (
                   <button
                     key={sh.name}
-                    onClick={() => setSelectedShade(sh.name)}
+                    onClick={() => handleSelectShade(sh.name)}
                     className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all ${
-                      selectedShade === sh.name ? "bg-[#F0ECF9] ring-1 ring-[#2D1B69]" : "hover:bg-[#F7F4FC]"
+                      selectedShade === sh.name ? "bg-[#F0ECF9] ring-2 ring-[#2D1B69]" : "hover:bg-[#F7F4FC]"
                     }`}
                   >
                     <span
@@ -132,17 +116,71 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                   </button>
                 ))}
               </div>
-              <button
-                onClick={handleAddShade}
-                disabled={!selectedShade}
-                className={`mt-3 w-full py-3 rounded-xl text-body-sm font-bold transition-all flex items-center justify-center gap-2 ${
-                  addedKey === "shade"
-                    ? "bg-[#7CB518]/15 text-[#7CB518]"
-                    : "bg-[#2D1B69] text-white hover:bg-[#1E1245] active:scale-[0.98] disabled:opacity-40"
-                }`}
-              >
-                {addedKey === "shade" ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> Add Selected Colour</>}
-              </button>
+              {variants.length === 0 && (
+                <button
+                  onClick={handleAddShade}
+                  disabled={!selectedShade}
+                  className={`mt-3 w-full py-3 rounded-xl text-body-sm font-bold transition-all flex items-center justify-center gap-2 ${
+                    addedKey === "shade"
+                      ? "bg-[#7CB518]/15 text-[#7CB518]"
+                      : "bg-[#2D1B69] text-white hover:bg-[#1E1245] active:scale-[0.98] disabled:opacity-40"
+                  }`}
+                >
+                  {addedKey === "shade" ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> Add Selected Colour</>}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Pack-size / variant rows */}
+          {variants.length > 0 && (
+            <div className="space-y-2">
+              {shades.length > 0 && (
+                <p className="text-caption font-bold text-[#150726] px-1 pt-1">
+                  2. Select Pack Size
+                </p>
+              )}
+              {variants.map((v) => {
+                const key = `v:${v.id}`;
+                const added = addedKey === key;
+                const discount = v.mrp > v.price ? Math.round(((v.mrp - v.price) / v.mrp) * 100) : 0;
+                return (
+                  <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors">
+                    {product.images[0] && (
+                      <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-body-sm font-bold text-[#150726]">
+                        {v.label}
+                        <span className="ml-1.5 text-micro font-medium text-[#9B8CB5]">{v.unit}</span>
+                      </p>
+                      <p className="text-caption mt-0.5">
+                        {v.mrp > v.price && (
+                          <span className="text-[#9B8CB5] line-through mr-1.5">₹{v.mrp.toLocaleString("en-IN")}</span>
+                        )}
+                        <span className="font-extrabold text-[#150726]">₹{v.price.toLocaleString("en-IN")}</span>
+                        {discount > 0 && (
+                          <span className="ml-1.5 text-tiny font-bold text-[#E91E63]">{discount}% off</span>
+                        )}
+                      </p>
+                      {v.stockLevel <= 10 && (
+                        <p className="text-tiny font-bold text-[#FF9800]">Only {v.stockLevel} left</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleAddVariant(v.id)}
+                      disabled={v.stockLevel <= 0}
+                      className={`px-5 h-9 rounded-lg text-caption font-bold transition-all flex-shrink-0 flex items-center gap-1.5 border-2 ${
+                        added
+                          ? "bg-[#7CB518] border-[#7CB518] text-white"
+                          : "bg-white border-[#7CB518] text-[#5A8010] hover:bg-[#F0F9E8] active:scale-95"
+                      } disabled:opacity-40`}
+                    >
+                      {added ? <><Check className="h-3.5 w-3.5" /> Added</> : "ADD"}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
 
