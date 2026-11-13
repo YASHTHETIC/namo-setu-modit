@@ -95,7 +95,7 @@ export function AddressForm({
             onChange={(e) => setForm({ ...form, type: e.target.value as Address["type"] })}
             className="col-span-2 px-3 py-2 rounded-lg border border-[#DDD6EE] text-body-lg focus:outline-none focus:border-[#2D1B69]"
           >
-            <option value="site">Construction Site</option>
+            <option value="site">Site / Project</option>
             <option value="home">Home</option>
             <option value="warehouse">Warehouse</option>
             <option value="office">Office</option>

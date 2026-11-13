@@ -23,7 +23,7 @@ export default function TermsPage() {
           <div className="space-y-4 text-body-sm text-[#6B5B83] leading-relaxed">
             <section>
               <h2 className="text-body-md font-bold text-[#150726] mb-1">1. About MODIT</h2>
-              <p>MODIT (“Materials On Door”) is a B2B marketplace for construction materials. By placing an order you agree to these terms. Prices are in INR and include GST breakup shown at checkout and on your invoice.</p>
+              <p>MODIT (“Materials On Door”) is an on-demand marketplace delivering materials directly to your doorstep. By placing an order you agree to these terms. Prices are in INR and include GST breakup shown at checkout and on your invoice.</p>
             </section>
             <section>
               <h2 className="text-body-md font-bold text-[#150726] mb-1">2. Orders & pricing</h2>

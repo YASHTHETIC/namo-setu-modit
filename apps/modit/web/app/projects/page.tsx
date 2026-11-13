@@ -36,13 +36,13 @@ export default function ProjectsPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-h1 text-[var(--text-primary)]">Projects</h1>
-          <p className="text-[var(--text-secondary)]">Manage construction projects and sites</p>
+          <p className="text-[var(--text-secondary)]">Manage site projects and orders</p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}><Plus className="h-4 w-4" /> New Project</Button>
       </div>
 
       {projectList.length === 0 ? (
-        <EmptyState icon={<FolderOpen className="h-8 w-8" />} title="No projects yet" description="Create your first construction project to get started" action={<Button onClick={() => setShowCreateModal(true)}>Create Project</Button>} />
+        <EmptyState icon={<FolderOpen className="h-8 w-8" />} title="No projects yet" description="Create your first project to get started" action={<Button onClick={() => setShowCreateModal(true)}>Create Project</Button>} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projectList.map((project) => (

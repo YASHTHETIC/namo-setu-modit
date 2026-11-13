@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = (
     short.length >= 80
       ? short
-      : `${p.name} — ${p.brand ? `${p.brand} ` : ""}${p.category || "construction material"} at ₹${p.price} on MODIT. 60-minute delivery, GST invoice, COD available.`
+      : `${p.name} — ${p.brand ? `${p.brand} ` : ""}${p.category || "materials on door"} at ₹${p.price} on MODIT. 60-minute delivery, GST invoice, COD available.`
   ).slice(0, 160);
   const url = `/products/${p.slug || p.id}`;
   // Price display = price charged (checkout re-validates against the DB).

@@ -63,7 +63,7 @@ export function AppDownloadSection() {
                   Download the MODIT App
                 </h2>
                 <p className="mt-1.5 sm:mt-2 text-caption sm:text-body-md text-white/75 leading-relaxed">
-                  Get construction materials delivered directly to your site in <span className="font-bold text-[#7CB518]">60 minutes</span>.
+                  Get materials delivered directly to your door in <span className="font-bold text-[#7CB518]">60 minutes</span>.
                   Enjoy live GPS delivery tracking, trade discounts, and instant GST invoices.
                 </p>
               </div>

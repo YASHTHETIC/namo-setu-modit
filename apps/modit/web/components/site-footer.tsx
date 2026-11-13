@@ -39,7 +39,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <ModitLogo className="h-[42px] w-auto" />
               </div>
               <p className="mt-4 max-w-md text-sm leading-6 text-[#6B5B83]">
-                Construction materials at your doorstep — cement, paint, tiles, lights and more, with same-day dispatch and GST invoices.
+                Materials on Door — cement, paint, tiles, lights and more, with 60-minute dispatch and GST invoices.
               </p>
               <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">GST invoices</span>

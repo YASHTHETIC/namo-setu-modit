@@ -95,7 +95,7 @@ function LoginForm() {
               Materials On<br />Door
             </h2>
             <p className="mt-3 text-body-md text-white/50 leading-relaxed">
-              Construction materials delivered to your site in 60 minutes. Cement, paint, lighting, tiling — genuine products from verified sellers.
+              Materials on Door delivered in 60 minutes. Cement, paint, lighting, tiling — genuine products from verified sellers.
             </p>
           </div>
 

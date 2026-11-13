@@ -43,7 +43,7 @@ export function CartDrawer() {
 
   const shareCart = async () => {
     const bill = computeBill();
-    const text = `My MODIT cart: ${bill.count} items, ${formatINR2(bill.total)} — construction materials on door.`;
+    const text = `My MODIT cart: ${bill.count} items, ${formatINR2(bill.total)} — Materials on Door.`;
     try {
       if (typeof navigator !== "undefined" && (navigator as Navigator & { share?: unknown }).share) {
         await (navigator as Navigator & { share: (d: Record<string, string>) => Promise<void> }).share({

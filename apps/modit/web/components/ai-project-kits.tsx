@@ -187,7 +187,7 @@ export function AiProjectKitsSection() {
         {/* AI Intent Search Input */}
         <div className="relative mb-4">
           <label htmlFor={searchInputId} className="sr-only">
-            Describe your construction or repair project
+            Describe your project or repair needs
           </label>
           <div className="relative flex items-center rounded-2xl border border-[#DDD6EE] bg-white shadow-xs px-3.5 py-2.5 focus-within:border-[#2D1B69] focus-within:ring-2 focus-within:ring-[#2D1B69]/10">
             <Sparkles className="h-4 w-4 text-[#7CB518] flex-shrink-0 mr-2.5" />

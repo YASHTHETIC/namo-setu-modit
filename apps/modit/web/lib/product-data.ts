@@ -1569,7 +1569,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-1-1", name: "Curtain Wire Spring 5 Meter Loom Creations", slug: "conduits-gi-boxes-item-1-1", sku: "CON-1-1",
-    description: "Curtain Wire Spring 5 Meter Loom Creations - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Curtain Wire Spring 5 Meter Loom Creations - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1587,7 +1587,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-2-2", name: "Round VIP PVC Surface Junction Box", slug: "conduits-gi-boxes-item-2-2", sku: "CON-2-2",
-    description: "Round VIP PVC Surface Junction Box - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Round VIP PVC Surface Junction Box - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1605,7 +1605,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-4-4", name: "Achem Wonder PVC Solvent Cement", slug: "conduits-gi-boxes-item-4-4", sku: "CON-4-4",
-    description: "Achem Wonder PVC Solvent Cement - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Achem Wonder PVC Solvent Cement - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1623,7 +1623,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-aipl-bopp-packaging-brown-tape-48mm-10", name: "AIPL BOPP Packaging Brown Tape 48MM X 50 Meter Pack of 2", slug: "aipl-bopp-packaging-brown-tape-48mm-x-50-meter-pack-of-2-10", sku: "CON-10-10",
-    description: "AIPL BOPP Packaging Brown Tape 48MM X 50 Meter Pack of 2 - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "AIPL BOPP Packaging Brown Tape 48MM X 50 Meter Pack of 2 - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1641,7 +1641,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-12-12", name: "Electrical Junction Box", slug: "conduits-gi-boxes-item-12-12", sku: "CON-12-12",
-    description: "Electrical Junction Box - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Electrical Junction Box - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1659,7 +1659,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-14-14", name: "Medium Duty Conduit Bend", slug: "conduits-gi-boxes-item-14-14", sku: "CON-14-14",
-    description: "Medium Duty Conduit Bend - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Medium Duty Conduit Bend - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1677,7 +1677,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-pidilite-m-seal-pvc-heavy-body-solv-17", name: "Pidilite M-Seal PVC Heavy Body Solvent, Larger Dia Pipes", slug: "pidilite-m-seal-pvc-heavy-body-solvent-for-pvc-larger-dia-pi-17", sku: "CON-17-17",
-    description: "Pidilite M-Seal PVC Heavy Body Solvent, Larger Dia Pipes - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Pidilite M-Seal PVC Heavy Body Solvent, Larger Dia Pipes - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Pidilite", brandSlug: "pidilite", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1695,7 +1695,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-precision-upvc-trunking-accessories-18", name: "Precision Upvc Trunking Accessories", slug: "precision-upvc-trunking-accessories-icon-18", sku: "CON-18-18",
-    description: "Precision Upvc Trunking Accessories - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Precision Upvc Trunking Accessories - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1713,7 +1713,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-19-19", name: "PRINS PVC Conduit Pipe 20 mm Heavy for Electrical Fittings", slug: "conduits-gi-boxes-item-19-19", sku: "CON-19-19",
-    description: "PRINS PVC Conduit Pipe 20 mm Heavy for Electrical Fittings - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "PRINS PVC Conduit Pipe 20 mm Heavy for Electrical Fittings - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1731,7 +1731,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-pvc-circular-box-icon-20", name: "Round PVC Surface Junction Box", slug: "pvc-circular-box-icon-20", sku: "CON-20-20",
-    description: "Round PVC Surface Junction Box - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Round PVC Surface Junction Box - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1749,7 +1749,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-pvc-casing-pipes-21", name: "Pvc Casing Pipes", slug: "pvc-casing-pipes-21", sku: "CON-21-21",
-    description: "Pvc Casing Pipes - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Pvc Casing Pipes - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1767,7 +1767,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-sylix-25mm-flexible-pvc-corrugated-24", name: "Sylix 25 mm Flexible PVC Corrugated Conduit Pipe, 25 mm (Per Meter)", slug: "sylix-25mm-flexible-pvc-corrugated-conduit-pipe-black-electr-24", sku: "CON-24-24",
-    description: "Sylix 25 mm Flexible PVC Corrugated Conduit Pipe, 25 mm (Per Meter) - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Sylix 25 mm Flexible PVC Corrugated Conduit Pipe, 25 mm (Per Meter) - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1785,7 +1785,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-white-pvc-junction-box-27", name: "White PVC Junction Box", slug: "white-pvc-junction-box-27", sku: "CON-27-27",
-    description: "White PVC Junction Box - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "White PVC Junction Box - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1803,7 +1803,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-conduits-gi-boxes-item-28-28", name: "Wireshield PVC Conduit Pipe LMS, 25 mm x 0.75 mm", slug: "conduits-gi-boxes-item-28-28", sku: "CON-28-28",
-    description: "Wireshield PVC Conduit Pipe LMS, 25 mm x 0.75 mm - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Wireshield PVC Conduit Pipe LMS, 25 mm x 0.75 mm - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1821,7 +1821,7 @@ export const products: Product[] = [
   },
   {
     id: "conduits-zinc-curtain-wire-29", name: "Zinc Curtain Wire", slug: "zinc-curtain-wire-29", sku: "CON-29-29",
-    description: "Zinc Curtain Wire - PVC conduits, junction boxes, cable ties for construction and home use.",
+    description: "Zinc Curtain Wire - PVC conduits, junction boxes, cable ties for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Generic", brandSlug: "generic", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -1839,7 +1839,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-agam-plumbing-tool-set-with-pipe-wr-4", name: "Agam Plumbing Tool Set With Pipe Wrench, Pliers", slug: "agam-plumbing-tool-set-with-pipe-wrench-pliers-4", sku: "HAR-4-33",
-    description: "Agam Plumbing Tool Set With Pipe Wrench, Pliers - Hand tools, power tools, measuring for construction and home use.",
+    description: "Agam Plumbing Tool Set With Pipe Wrench, Pliers - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1857,7 +1857,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-bosch-gks-190-professional-corded-c-5", name: "Bosch GKS 190 Professional Corded Circular Saw, 1400W Motor", slug: "bosch-gks-190-professional-corded-circular-saw-1400w-motor-5", sku: "HAR-5-34",
-    description: "Bosch GKS 190 Professional Corded Circular Saw, 1400W Motor - Hand tools, power tools, measuring for construction and home use.",
+    description: "Bosch GKS 190 Professional Corded Circular Saw, 1400W Motor - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Bosch", brandSlug: "bosch", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1875,7 +1875,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-bosch-gsr-185-li-professional-kit-b-6", name: "BOSCH GSR 185 Li Professional Kit Brushless Motor", slug: "bosch-gsr-185-li-professional-kit-brushless-motor-6", sku: "HAR-6-35",
-    description: "BOSCH GSR 185 Li Professional Kit Brushless Motor - Hand tools, power tools, measuring for construction and home use.",
+    description: "BOSCH GSR 185 Li Professional Kit Brushless Motor - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Bosch", brandSlug: "bosch", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1893,7 +1893,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-dowell-measuring-tape-25ft-7", name: "DOWELL Measuring Tape 25ft", slug: "dowell-measuring-tape-25ft-7", sku: "HAR-7-36",
-    description: "DOWELL Measuring Tape 25ft - Hand tools, power tools, measuring for construction and home use.",
+    description: "DOWELL Measuring Tape 25ft - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Dowell", brandSlug: "dowell", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1911,7 +1911,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-edward-tools-combination-pliers-8-m-10", name: "Edward Tools Combination Pliers 8” Machined Extra Strength Gripping Jaws Heavy Du", slug: "edward-tools-combination-pliers-8-machined-extra-strength-gr-10", sku: "HAR-10-39",
-    description: "Edward Tools Combination Pliers 8” Machined Extra Strength Gripping Jaws Heavy Du - Hand tools, power tools, measuring for construction and home use.",
+    description: "Edward Tools Combination Pliers 8” Machined Extra Strength Gripping Jaws Heavy Du - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1929,7 +1929,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-fevicol-craft-and-general-adhesives-11", name: "Fevicol Fevistik Glue Sticks 15 g (Pack of 4)", slug: "fevicol-craft-and-general-adhesives-2-fevistik-15gm-2-11", sku: "HAR-11-40",
-    description: "Fevicol Fevistik Glue Sticks 15 g (Pack of 4) - Hand tools, power tools, measuring for construction and home use.",
+    description: "Fevicol Fevistik Glue Sticks 15 g (Pack of 4) - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1947,7 +1947,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-hillgrove-hgcm1590m1-1100w-100-copp-12", name: "Hillgrove HGCM1590M1 1100W Paint & Putty Mixer", slug: "hillgrove-hgcm1590m1-1100w-100-copper-paint-wall-putty-12", sku: "HAR-12-41",
-    description: "Hillgrove HGCM1590M1 1100W Paint & Putty Mixer - Hand tools, power tools, measuring for construction and home use.",
+    description: "Hillgrove HGCM1590M1 1100W Paint & Putty Mixer - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1965,7 +1965,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-hot-dipped-galvanized-iron-chain-li-13", name: "Hot Dipped Galvanized Iron Chain Link Fence Roll – 5 Feet", slug: "hot-dipped-galvanized-iron-chain-link-fence-roll-5-feet-13", sku: "HAR-13-42",
-    description: "Hot Dipped Galvanized Iron Chain Link Fence Roll – 5 Feet - Hand tools, power tools, measuring for construction and home use.",
+    description: "Hot Dipped Galvanized Iron Chain Link Fence Roll – 5 Feet - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -1983,7 +1983,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-inditradition-a-type-aluminium-tele-14", name: "Inditradition A Type Aluminium Telescopic Ladder 2 in 1 Single & Double Side", slug: "inditradition-a-type-aluminium-telescopic-ladder-2-in-1-sing-14", sku: "HAR-14-43",
-    description: "Inditradition A Type Aluminium Telescopic Ladder 2 in 1 Single & Double Side - Hand tools, power tools, measuring for construction and home use.",
+    description: "Inditradition A Type Aluminium Telescopic Ladder 2 in 1 Single & Double Side - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2001,7 +2001,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-makita-ga4030k-4-inch-angle-grinder-16", name: "Makita GA4030K 4 inch Angle Grinder", slug: "makita-ga4030k-4-inch-angle-grinder-16", sku: "HAR-16-45",
-    description: "Makita GA4030K 4 inch Angle Grinder - Hand tools, power tools, measuring for construction and home use.",
+    description: "Makita GA4030K 4 inch Angle Grinder - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Makita", brandSlug: "makita", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2019,7 +2019,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-mld-800w-26mm-heavy-duty-variable-s-17", name: "MLD 800W 26 mm Rotary Hammer Drill", slug: "mld-800w-26mm-heavy-duty-variable-speed-reversible-rotary-17", sku: "HAR-17-46",
-    description: "MLD 800W 26 mm Rotary Hammer Drill - Hand tools, power tools, measuring for construction and home use.",
+    description: "MLD 800W 26 mm Rotary Hammer Drill - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2037,7 +2037,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-phh-1-combination-screwdriver-set-p-18", name: "Phh 1 Combination Screwdriver Set", slug: "phh-1-combination-screwdriver-set-price-in-india-buy-phh-1-18", sku: "HAR-18-47",
-    description: "Phh 1 Combination Screwdriver Set - Hand tools, power tools, measuring for construction and home use.",
+    description: "Phh 1 Combination Screwdriver Set - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2055,7 +2055,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-power-tec-91371-stainless-steel-wir-19", name: "Power Tec Stainless Steel Wire Brush", slug: "power-tec-91371-stainless-steel-wire-brush-19", sku: "HAR-19-48",
-    description: "Power Tec Stainless Steel Wire Brush - Hand tools, power tools, measuring for construction and home use.",
+    description: "Power Tec Stainless Steel Wire Brush - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2073,7 +2073,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-round-head-stainless-steel-drywall-20", name: "Round Head Drywall Chipboard Screws 3.5 mm (Pack of 100)", slug: "round-head-stainless-steel-drywall-chipboard-screw-3-5-mm-20", sku: "HAR-20-49",
-    description: "Round Head Drywall Chipboard Screws 3.5 mm (Pack of 100) - Hand tools, power tools, measuring for construction and home use.",
+    description: "Round Head Drywall Chipboard Screws 3.5 mm (Pack of 100) - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2091,7 +2091,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-stanley-15-mx-long-measuring-tape-y-21", name: "Stanley Measuring Tape 15 m STHT38515", slug: "stanley-15-mx-long-measuring-tape-yellow-stht38515-812-21", sku: "HAR-21-50",
-    description: "Stanley Measuring Tape 15 m STHT38515 - Hand tools, power tools, measuring for construction and home use.",
+    description: "Stanley Measuring Tape 15 m STHT38515 - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Stanley", brandSlug: "stanley", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2109,7 +2109,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-stanley-94-248-65-piece-homeowner-s-22", name: "Stanley 94 248 65 Piece Homeowner's Tool Kit", slug: "stanley-94-248-65-piece-homeowner-s-tool-kit-22", sku: "HAR-22-51",
-    description: "Stanley 94 248 65 Piece Homeowner's Tool Kit - Hand tools, power tools, measuring for construction and home use.",
+    description: "Stanley 94 248 65 Piece Homeowner's Tool Kit - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Stanley", brandSlug: "stanley", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2127,7 +2127,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-themisto-th-t08-8-in-1-combination-24", name: "THEMISTO TH T08 8 IN 1 COMBINATION SCREWDRIVER", slug: "themisto-th-t08-8-in-1-combination-screwdriver-24", sku: "HAR-24-53",
-    description: "THEMISTO TH T08 8 IN 1 COMBINATION SCREWDRIVER - Hand tools, power tools, measuring for construction and home use.",
+    description: "THEMISTO TH T08 8 IN 1 COMBINATION SCREWDRIVER - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2145,7 +2145,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-walkers-hand-tool-kit-34-tools-25", name: "Walkers Hand Tool Kit (34 Tools)", slug: "walkers-hand-tool-kit-34-tools-25", sku: "HAR-25-54",
-    description: "Walkers Hand Tool Kit (34 Tools) - Hand tools, power tools, measuring for construction and home use.",
+    description: "Walkers Hand Tool Kit (34 Tools) - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2163,7 +2163,7 @@ export const products: Product[] = [
   },
   {
     id: "hardware-tools-zailand-plaster-trowelstainless-ste-27", name: "Stainless Steel Plaster Trowel", slug: "zailand-plaster-trowelstainless-steel-27", sku: "HAR-27-56",
-    description: "Stainless Steel Plaster Trowel - Hand tools, power tools, measuring for construction and home use.",
+    description: "Stainless Steel Plaster Trowel - Hand tools, power tools, measuring for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -2181,7 +2181,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-aluminium-profile-cabinet-edge-2", name: "Ebco Aluminium Profile Cabinet Edge, Length 3m", slug: "ebco-aluminium-profile-cabinet-edge-length-3m-2", sku: "HIN-2-58",
-    description: "Ebco Aluminium Profile Cabinet Edge, Length 3m - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Aluminium Profile Cabinet Edge, Length 3m - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2199,7 +2199,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-aluminium-profile-shutter-hand-3", name: "Ebco Aluminium Profile Shutter Handle End Cap, EC 1935 AB, Anodised Black, L R Set", slug: "ebco-aluminium-profile-shutter-handle-end-cap-ec-1935-ab-ano-3", sku: "HIN-3-59",
-    description: "Ebco Aluminium Profile Shutter Handle End Cap, EC 1935 AB, Anodised Black, L R Set - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Aluminium Profile Shutter Handle End Cap, EC 1935 AB, Anodised Black, L R Set - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2217,7 +2217,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-aluminium-profile-shutter-hand-4", name: "Ebco Aluminium Profile Shutter Handle, SH1 1935 3M AB, Anodised Black, 19mm X 35mm, 3", slug: "ebco-aluminium-profile-shutter-handle-sh1-1935-3m-ab-anodise-4", sku: "HIN-4-60",
-    description: "Ebco Aluminium Profile Shutter Handle, SH1 1935 3M AB, Anodised Black, 19mm X 35mm, 3 - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Aluminium Profile Shutter Handle, SH1 1935 3M AB, Anodised Black, 19mm X 35mm, 3 - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2235,7 +2235,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-hinge-drilling-template-for-ha-5", name: "Ebco Hinge Drilling Template for HAP", slug: "ebco-hinge-drilling-template-for-hap-5", sku: "HIN-5-61",
-    description: "Ebco Hinge Drilling Template for HAP - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Hinge Drilling Template for HAP - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2253,7 +2253,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-sleek-telescopic-drawer-channe-6", name: "Ebco Sleek Telescopic Drawer Channel, Regular Close, 35 Kg Capacity, 450 mm", slug: "ebco-sleek-telescopic-drawer-channel-regular-close-35-kg-cap-6", sku: "HIN-6-62",
-    description: "Ebco Sleek Telescopic Drawer Channel, Regular Close, 35 Kg Capacity, 450 mm - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Sleek Telescopic Drawer Channel, Regular Close, 35 Kg Capacity, 450 mm - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2271,7 +2271,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-ebco-slip-on-hinge-regular-close-1-8", name: "Ebco Slip On Hinge, Regular Close, 1 Set (2 Nos)", slug: "ebco-slip-on-hinge-regular-close-1-set-2-nos-8", sku: "HIN-8-64",
-    description: "Ebco Slip On Hinge, Regular Close, 1 Set (2 Nos) - Hinges, drawer channels, handles for construction and home use.",
+    description: "Ebco Slip On Hinge, Regular Close, 1 Set (2 Nos) - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2289,7 +2289,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-hettich-galvanized-steel-soft-closi-10", name: "Hettich Galvanized Steel Soft Closing Telescopic Ball Bearing Drawer Channel", slug: "hettich-galvanized-steel-soft-closing-telescopic-ball-bearin-10", sku: "HIN-10-66",
-    description: "Hettich Galvanized Steel Soft Closing Telescopic Ball Bearing Drawer Channel - Hinges, drawer channels, handles for construction and home use.",
+    description: "Hettich Galvanized Steel Soft Closing Telescopic Ball Bearing Drawer Channel - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2307,7 +2307,7 @@ export const products: Product[] = [
   },
   {
     id: "hinges-hettich-slide-on-2333-regular-close-18", name: "Hettich Slide On 2333 Regular Close Hinges, 1 Set (2 Nos)", slug: "hettich-slide-on-2333-regular-close-hinges-1-set-2-nos-18", sku: "HIN-18-74",
-    description: "Hettich Slide On 2333 Regular Close Hinges, 1 Set (2 Nos) - Hinges, drawer channels, handles for construction and home use.",
+    description: "Hettich Slide On 2333 Regular Close Hinges, 1 Set (2 Nos) - Hinges, drawer channels, handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -2325,7 +2325,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-ball-v-8", name: "Ashirvad Flowguard Plus CPVC Ball Valve", slug: "ashirvad-flowguard-plus-cpvc-ball-valve-8", sku: "PIP-8-83",
-    description: "Ashirvad Flowguard Plus CPVC Ball Valve - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Ball Valve - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2343,7 +2343,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-brass-9", name: "Ashirvad Flowguard Plus CPVC Brass Female Extension 90 Degree Elbow, (Brass Elbow Lon", slug: "ashirvad-flowguard-plus-cpvc-brass-female-extension-90-degre-9", sku: "PIP-9-84",
-    description: "Ashirvad Flowguard Plus CPVC Brass Female Extension 90 Degree Elbow, (Brass Elbow Lon - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Brass Female Extension 90 Degree Elbow, (Brass Elbow Lon - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2361,7 +2361,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-couple-11", name: "Ashirvad Flowguard Plus CPVC Coupler", slug: "ashirvad-flowguard-plus-cpvc-coupler-11", sku: "PIP-11-86",
-    description: "Ashirvad Flowguard Plus CPVC Coupler - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Coupler - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2379,7 +2379,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-step-o-17", name: "Ashirvad Flowguard Plus CPVC Step Over Bend", slug: "ashirvad-flowguard-plus-cpvc-step-over-bend-17", sku: "PIP-17-92",
-    description: "Ashirvad Flowguard Plus CPVC Step Over Bend - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Step Over Bend - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2397,7 +2397,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-union-19", name: "Ashirvad Flowguard Plus CPVC Union", slug: "ashirvad-flowguard-plus-cpvc-union-19", sku: "PIP-19-94",
-    description: "Ashirvad Flowguard Plus CPVC Union - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Union - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2415,7 +2415,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cross-tee-20", name: "Ashirvad Flowguard Plus Cross Tee", slug: "ashirvad-flowguard-plus-cross-tee-20", sku: "PIP-20-95",
-    description: "Ashirvad Flowguard Plus Cross Tee - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus Cross Tee - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2433,7 +2433,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-metal-pipe-23", name: "Ashirvad Flowguard Plus Metal Pipe Clamp or Strap", slug: "ashirvad-flowguard-plus-metal-pipe-clamp-or-strap-23", sku: "PIP-23-98",
-    description: "Ashirvad Flowguard Plus Metal Pipe Clamp or Strap - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus Metal Pipe Clamp or Strap - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2451,7 +2451,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-reduce-27", name: "Ashirvad Flowguard Plus CPVC Reducer Coupler", slug: "ashirvad-flowguard-plus-cpvc-reducer-coupler-27", sku: "PIP-27-102",
-    description: "Ashirvad Flowguard Plus CPVC Reducer Coupler - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Reducer Coupler - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2469,7 +2469,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-ashirvad-flowguard-plus-cpvc-tee-92-28", name: "Ashirvad Flowguard Plus CPVC Tee", slug: "ashirvad-flowguard-plus-cpvc-tee-28", sku: "PIP-28-103",
-    description: "Ashirvad Flowguard Plus CPVC Tee - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Ashirvad Flowguard Plus CPVC Tee - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2487,7 +2487,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-trim-cut-hacksaw-blade-31", name: "Trim Cut Hacksaw Blade", slug: "trim-cut-hacksaw-blade-31", sku: "PIP-31-106",
-    description: "Trim Cut Hacksaw Blade - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Trim Cut Hacksaw Blade - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2505,7 +2505,7 @@ export const products: Product[] = [
   },
   {
     id: "pipes-viking-ptfe-teflon-thread-seal-tape-32", name: "Viking PTFE Teflon Thread Seal Tape, 12mm X 10m", slug: "viking-ptfe-teflon-thread-seal-tape-12mm-x-10m-32", sku: "PIP-32-107",
-    description: "Viking PTFE Teflon Thread Seal Tape, 12mm X 10m - CPVC pipes, fittings, overhead tanks for construction and home use.",
+    description: "Viking PTFE Teflon Thread Seal Tape, 12mm X 10m - CPVC pipes, fittings, overhead tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -2523,7 +2523,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-sanitary-bath-item-1-1", name: "Wash Basin Over Counter for Bathroom 45 x 32 x 10 cm", slug: "sanitary-bath-item-1-1", sku: "SAN-1-108",
-    description: "Wash Basin Over Counter for Bathroom 45 x 32 x 10 cm - Wash basins, faucets, showers for construction and home use.",
+    description: "Wash Basin Over Counter for Bathroom 45 x 32 x 10 cm - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2541,7 +2541,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-51e7mas6ell-ac-uf1000-1000-ql80-2", name: "Concealed Bath Diverter Body, Brass", slug: "51e7mas6ell-ac-uf1000-1000-ql80-2", sku: "SAN-2-109",
-    description: "Concealed Bath Diverter Body, Brass - Wash basins, faucets, showers for construction and home use.",
+    description: "Concealed Bath Diverter Body, Brass - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2559,7 +2559,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-51h-2fkksel-3", name: "Wall-Hung WC Cistern Frame", slug: "51h-2fkksel-3", sku: "SAN-3-110",
-    description: "Wall-Hung WC Cistern Frame - Wash basins, faucets, showers for construction and home use.",
+    description: "Wall-Hung WC Cistern Frame - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2577,7 +2577,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-616ricdchil-ac-ul600-sr600-600-4", name: "Designer Table-Top Wash Basin, Black Gold Marble", slug: "616ricdchil-ac-ul600-sr600-600-4", sku: "SAN-4-111",
-    description: "Designer Table-Top Wash Basin, Black Gold Marble - Wash basins, faucets, showers for construction and home use.",
+    description: "Designer Table-Top Wash Basin, Black Gold Marble - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Ososam", brandSlug: "ososam", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2595,7 +2595,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-61ag2e6vyul-sx679-5", name: "One-Piece Water Closet, Black", slug: "61ag2e6vyul-sx679-5", sku: "SAN-5-112",
-    description: "One-Piece Water Closet, Black - Wash basins, faucets, showers for construction and home use.",
+    description: "One-Piece Water Closet, Black - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2613,7 +2613,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-61agyjynzol-sx679-6", name: "One-Piece Water Closet, Modern White", slug: "61agyjynzol-sx679-6", sku: "SAN-6-113",
-    description: "One-Piece Water Closet, Modern White - Wash basins, faucets, showers for construction and home use.",
+    description: "One-Piece Water Closet, Modern White - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2631,7 +2631,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-61gsy-nctil-ac-ul600-sr600-600-7", name: "Stainless Steel Floor Drain", slug: "61gsy-nctil-ac-ul600-sr600-600-7", sku: "SAN-7-114",
-    description: "Stainless Steel Floor Drain - Wash basins, faucets, showers for construction and home use.",
+    description: "Stainless Steel Floor Drain - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Alton", brandSlug: "alton", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2649,7 +2649,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-61qgnys-hzl-8", name: "Round Floor Drain Jali, Stainless Steel", slug: "61qgnys-hzl-8", sku: "SAN-8-115",
-    description: "Round Floor Drain Jali, Stainless Steel - Wash basins, faucets, showers for construction and home use.",
+    description: "Round Floor Drain Jali, Stainless Steel - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2667,7 +2667,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-61uofbc-2jl-sx679-9", name: "Bathroom Storage Basket with Suction Cups", slug: "61uofbc-2jl-sx679-9", sku: "SAN-9-116",
-    description: "Bathroom Storage Basket with Suction Cups - Wash basins, faucets, showers for construction and home use.",
+    description: "Bathroom Storage Basket with Suction Cups - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2685,7 +2685,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-7195xhaklnl-sx679-10", name: "One-Piece Water Closet, Classic White", slug: "7195xhaklnl-sx679-10", sku: "SAN-10-117",
-    description: "One-Piece Water Closet, Classic White - Wash basins, faucets, showers for construction and home use.",
+    description: "One-Piece Water Closet, Classic White - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2703,7 +2703,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-alton-shr20855-health-faucet-with-s-11", name: "ALTON SHR20855, Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe and Wal", slug: "alton-shr20855-health-faucet-with-ss-304-grade-1-25-meter-fl-11", sku: "SAN-11-118",
-    description: "ALTON SHR20855, Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe and Wal - Wash basins, faucets, showers for construction and home use.",
+    description: "ALTON SHR20855, Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe and Wal - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Alton", brandSlug: "alton", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2721,7 +2721,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-alton-shr20910-abs-health-faucet-wi-12", name: "ALTON SHR20910 ABS Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe", slug: "alton-shr20910-abs-health-faucet-with-ss-304-grade-1-25-mete-12", sku: "SAN-12-119",
-    description: "ALTON SHR20910 ABS Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe - Wash basins, faucets, showers for construction and home use.",
+    description: "ALTON SHR20910 ABS Health Faucet with SS 304 Grade 1.25 Meter Flexible Hose Pipe - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Alton", brandSlug: "alton", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2739,7 +2739,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-alton-shr22305-abs-5-inch-rain-over-13", name: "ALTON SHR22305, ABS, 5 INCH Rain Overhead Shower with Arm and Wall", slug: "alton-shr22305-abs-5-inch-rain-overhead-shower-with-arm-and-13", sku: "SAN-13-120",
-    description: "ALTON SHR22305, ABS, 5 INCH Rain Overhead Shower with Arm and Wall - Wash basins, faucets, showers for construction and home use.",
+    description: "ALTON SHR22305, ABS, 5 INCH Rain Overhead Shower with Arm and Wall - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Alton", brandSlug: "alton", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2757,7 +2757,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-sanitary-bath-item-14-14", name: "Aquant Wash Basins 10 05 2023 133", slug: "sanitary-bath-item-14-14", sku: "SAN-14-121",
-    description: "Aquant Wash Basins 10 05 2023 133 - Wash basins, faucets, showers for construction and home use.",
+    description: "Aquant Wash Basins 10 05 2023 133 - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Aquant", brandSlug: "aquant", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2775,7 +2775,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-aria-high-flow-divertor-exposed-par-15", name: "Jaquar Aria High Flow Divertor Exposed Parts ALD 079", slug: "aria-high-flow-divertor-exposed-parts-ald-079-15", sku: "SAN-15-122",
-    description: "Jaquar Aria High Flow Divertor Exposed Parts ALD 079 - Wash basins, faucets, showers for construction and home use.",
+    description: "Jaquar Aria High Flow Divertor Exposed Parts ALD 079 - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2793,7 +2793,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-sanitary-bath-item-18-18", name: "Toilet Roll Holder with Shelf", slug: "sanitary-bath-item-18-18", sku: "SAN-18-125",
-    description: "Toilet Roll Holder with Shelf - Wash basins, faucets, showers for construction and home use.",
+    description: "Toilet Roll Holder with Shelf - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2811,7 +2811,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-cara-mark-ceramic-pedestal-wash-bas-19", name: "CARA MARK Ceramic Pedestal Wash Basin Glossy Finish Modern", slug: "cara-mark-ceramic-pedestal-wash-basin-glossy-finish-modern-19", sku: "SAN-19-126",
-    description: "CARA MARK Ceramic Pedestal Wash Basin Glossy Finish Modern - Wash basins, faucets, showers for construction and home use.",
+    description: "CARA MARK Ceramic Pedestal Wash Basin Glossy Finish Modern - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2829,7 +2829,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-ceramic-pedestal-wash-basin-free-st-20", name: "Ceramic Pedestal Wash Basin, Rose Gold Finish", slug: "ceramic-pedestal-wash-basin-free-standing-wash-basin-rossgol-20", sku: "SAN-20-127",
-    description: "Ceramic Pedestal Wash Basin, Rose Gold Finish - Wash basins, faucets, showers for construction and home use.",
+    description: "Ceramic Pedestal Wash Basin, Rose Gold Finish - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2847,7 +2847,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-overhead-shower-with-arm-and-wall-22", name: "Overhead Shower With Arm and Wall", slug: "overhead-shower-with-arm-and-wall-22", sku: "SAN-22-129",
-    description: "Overhead Shower With Arm and Wall - Wash basins, faucets, showers for construction and home use.",
+    description: "Overhead Shower With Arm and Wall - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2865,7 +2865,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-qufa-mirror-stainless-steel-304-rou-23", name: "Qufa Mirror Stainless Steel 304 Round Ultra Slim High", slug: "qufa-mirror-stainless-steel-304-round-ultra-slim-high-23", sku: "SAN-23-130",
-    description: "Qufa Mirror Stainless Steel 304 Round Ultra Slim High - Wash basins, faucets, showers for construction and home use.",
+    description: "Qufa Mirror Stainless Steel 304 Round Ultra Slim High - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Qufa", brandSlug: "qufa", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2883,7 +2883,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-strength-strd-54-stainless-steel-to-24", name: "Strength STRD 54 Stainless Steel Towel Ring for Bathroom Wash Basin Napkin Towel Hanger", slug: "strength-strd-54-stainless-steel-towel-ring-for-bathroomwash-24", sku: "SAN-24-131",
-    description: "Strength STRD 54 Stainless Steel Towel Ring for Bathroom Wash Basin Napkin Towel Hanger - Wash basins, faucets, showers for construction and home use.",
+    description: "Strength STRD 54 Stainless Steel Towel Ring for Bathroom Wash Basin Napkin Towel Hanger - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2901,7 +2901,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-table-mounted-wash-basin-at-25", name: "Table Mounted Wash Basin", slug: "table-mounted-wash-basin-at-25", sku: "SAN-25-132",
-    description: "Table Mounted Wash Basin - Wash basins, faucets, showers for construction and home use.",
+    description: "Table Mounted Wash Basin - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2919,7 +2919,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-wash-basin-27", name: "Ceramic Wash Basin", slug: "wash-basin-27", sku: "SAN-27-134",
-    description: "Ceramic Wash Basin - Wash basins, faucets, showers for construction and home use.",
+    description: "Ceramic Wash Basin - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2937,7 +2937,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-wash-basin-with-glossyu-29", name: "Glossy Ceramic Wash Basin", slug: "wash-basin-with-glossyu-29", sku: "SAN-29-136",
-    description: "Glossy Ceramic Wash Basin - Wash basins, faucets, showers for construction and home use.",
+    description: "Glossy Ceramic Wash Basin - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2955,7 +2955,7 @@ export const products: Product[] = [
   },
   {
     id: "sanitary-wb-444-img1-30", name: "Designer Table-Top Wash Basin, Black Marble", slug: "wb-444-img1-30", sku: "SAN-30-137",
-    description: "Designer Table-Top Wash Basin, Black Marble - Wash basins, faucets, showers for construction and home use.",
+    description: "Designer Table-Top Wash Basin, Black Marble - Wash basins, faucets, showers for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -2973,7 +2973,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-asian-paints-smartcare-damp-proof-a-1", name: "Asian Paints SmartCare Damp Proof Advanced, 4 L", slug: "asian-paints-smartcare-damp-proof-advanced-1", sku: "WAT-1-138",
-    description: "Asian Paints SmartCare Damp Proof Advanced, 4 L - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Asian Paints SmartCare Damp Proof Advanced, 4 L - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -2991,7 +2991,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-101-pidiproof-lw-1-ltr-5", name: "Dr Fixit 101 Pidiproof LW 1 ltr", slug: "dr-fixit-101-pidiproof-lw-1-ltr-5", sku: "WAT-5-142",
-    description: "Dr Fixit 101 Pidiproof LW 1 ltr - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 101 Pidiproof LW 1 ltr - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3009,7 +3009,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-101-pidiproof-lw-20-ltr-6", name: "Dr Fixit 101 Pidiproof LW 20 ltr", slug: "dr-fixit-101-pidiproof-lw-20-ltr-6", sku: "WAT-6-143",
-    description: "Dr Fixit 101 Pidiproof LW 20 ltr - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 101 Pidiproof LW 20 ltr - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3027,7 +3027,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-101-pidiproof-lw-5-ltr-7", name: "Dr Fixit 101 Pidiproof LW 5 ltr", slug: "dr-fixit-101-pidiproof-lw-5-ltr-7", sku: "WAT-7-144",
-    description: "Dr Fixit 101 Pidiproof LW 5 ltr - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 101 Pidiproof LW 5 ltr - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3045,7 +3045,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-112-pidifin-2k-waterproof-8", name: "Dr Fixit 112 Pidifin 2K Waterproof Coating 15 kg", slug: "dr-fixit-112-pidifin-2k-waterproof-coating-15-kg-8", sku: "WAT-8-145",
-    description: "Dr Fixit 112 Pidifin 2K Waterproof Coating 15 kg - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 112 Pidifin 2K Waterproof Coating 15 kg - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3063,7 +3063,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-201-crack-x-paste-1-kg-10", name: "Dr Fixit 201 Crack X Paste 1 kg", slug: "dr-fixit-201-crack-x-paste-1-kg-10", sku: "WAT-10-147",
-    description: "Dr Fixit 201 Crack X Paste 1 kg - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 201 Crack X Paste 1 kg - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3081,7 +3081,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-201-crack-x-paste-5-kg-11", name: "Dr Fixit 201 Crack X Paste 5 kg", slug: "dr-fixit-201-crack-x-paste-5-kg-11", sku: "WAT-11-148",
-    description: "Dr Fixit 201 Crack X Paste 5 kg - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 201 Crack X Paste 5 kg - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3099,7 +3099,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-301-pidicrete-urp-sbr-late-14", name: "Dr Fixit 301 Pidicrete URP SBR Latex 5 kg", slug: "dr-fixit-301-pidicrete-urp-sbr-latex-5-kg-14", sku: "WAT-14-151",
-    description: "Dr Fixit 301 Pidicrete URP SBR Latex 5 kg - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit 301 Pidicrete URP SBR Latex 5 kg - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3117,7 +3117,7 @@ export const products: Product[] = [
   },
   {
     id: "waterproofing-dr-fixit-raincoat-wpc-waterproof-co-15", name: "Dr Fixit Raincoat WPC Waterproof Coating, 1 L", slug: "dr-fixit-raincoat-wpc-waterproof-coating-1-ltr-4-ltr-15", sku: "WAT-15-152",
-    description: "Dr Fixit Raincoat WPC Waterproof Coating, 1 L - Dr Fixit waterproof coatings for construction and home use.",
+    description: "Dr Fixit Raincoat WPC Waterproof Coating, 1 L - Dr Fixit waterproof coatings for professional and home use.",
     shortDescription: "Waterproofing product",
     brand: "Dr Fixit", brandSlug: "dr-fixit", category: "Waterproofing", categorySlug: "waterproofing",
     subCategory: null, subCategorySlug: null,
@@ -3135,7 +3135,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-0016977-hunter-bayport-bright-brass-1", name: "Hunter Bayport Bright Brass Finish with Walnut Blades Designer Ceiling Fan 60", slug: "0016977-hunter-bayport-bright-brass-finish-with-walnut-blade-1", sku: "FAN-1-154",
-    description: "Hunter Bayport Bright Brass Finish with Walnut Blades Designer Ceiling Fan 60 - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Hunter Bayport Bright Brass Finish with Walnut Blades Designer Ceiling Fan 60 - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Hunter", brandSlug: "hunter", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3153,7 +3153,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-51k-u26z8ll-photoroom-2", name: "Havells Ventilator Fan", slug: "51k-u26z8ll-photoroom-2", sku: "FAN-2-155",
-    description: "Havells Ventilator Fan - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Havells Ventilator Fan - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Havells", brandSlug: "havells", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3171,7 +3171,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-61rkgpmdxdl-ac-uf894-1000-ql80-phot-3", name: "Havells Wall Fan", slug: "61rkgpmdxdl-ac-uf894-1000-ql80-photoroom-3", sku: "FAN-3-156",
-    description: "Havells Wall Fan - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Havells Wall Fan - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Havells", brandSlug: "havells", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3189,7 +3189,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-aero-400-4", name: "Aero 400 Ceiling Fan, Dark Brown", slug: "aero-400-4", sku: "FAN-4-157",
-    description: "Aero 400 Ceiling Fan, Dark Brown - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Aero 400 Ceiling Fan, Dark Brown - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3207,7 +3207,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-aero-400-5", name: "Aero 400 Ceiling Fan, Maroon", slug: "aero-400-5", sku: "FAN-5-158",
-    description: "Aero 400 Ceiling Fan, Maroon - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Aero 400 Ceiling Fan, Maroon - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3225,7 +3225,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-app-exh-822056040-1696599879047-pho-6", name: "Crompton Exhaust Fan", slug: "app-exh-822056040-1696599879047-photoroom-6", sku: "FAN-6-159",
-    description: "Crompton Exhaust Fan - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Crompton Exhaust Fan - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Crompton", brandSlug: "crompton", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3243,7 +3243,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-auto-clean-filter-less-kitchen-chim-7", name: "Auto Clean Filter less Kitchen Chimney, Motion Sensor with Touch Control 60cm, 1200", slug: "auto-clean-filter-less-kitchen-chimney-motion-sensor-with-to-7", sku: "FAN-7-160",
-    description: "Auto Clean Filter less Kitchen Chimney, Motion Sensor with Touch Control 60cm, 1200 - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Auto Clean Filter less Kitchen Chimney, Motion Sensor with Touch Control 60cm, 1200 - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3261,7 +3261,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-crown-9", name: "Crown Designer Ceiling Fan, Light Blue", slug: "crown-9", sku: "FAN-9-162",
-    description: "Crown Designer Ceiling Fan, Light Blue - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Crown Designer Ceiling Fan, Light Blue - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3279,7 +3279,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-ele-tab-728234190-1734517537853-pho-10", name: "Standard Pedestal Fan", slug: "ele-tab-728234190-1734517537853-photoroom-10", sku: "FAN-10-163",
-    description: "Standard Pedestal Fan - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Standard Pedestal Fan - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Standard", brandSlug: "standard", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3297,7 +3297,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-prism-29", name: "Prism Designer Ceiling Fan, White", slug: "prism-29", sku: "FAN-29-182",
-    description: "Prism Designer Ceiling Fan, White - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Prism Designer Ceiling Fan, White - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3315,7 +3315,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-pyramid-shaped-electric-kitchen-chi-30", name: "Pyramid Kitchen Chimney, 60 cm", slug: "pyramid-shaped-electric-kitchen-chimney-in-kitchen-look-30", sku: "FAN-30-183",
-    description: "Pyramid Kitchen Chimney, 60 cm - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Pyramid Kitchen Chimney, 60 cm - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3333,7 +3333,7 @@ export const products: Product[] = [
   },
   {
     id: "fans-shopping-photoroom-3-31", name: "Designer Ceiling Fan, Midnight Blue", slug: "shopping-photoroom-3-31", sku: "FAN-31-184",
-    description: "Designer Ceiling Fan, Midnight Blue - Ceiling fans, exhaust fans for construction and home use.",
+    description: "Designer Ceiling Fan, Midnight Blue - Ceiling fans, exhaust fans for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Generic", brandSlug: "generic", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -3351,7 +3351,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-600x600-1", name: "Triple Bolt Rim Door Lock", slug: "600x600-1", sku: "LOC-1-185",
-    description: "Triple Bolt Rim Door Lock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Triple Bolt Rim Door Lock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3369,7 +3369,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-atom-2", name: "Speedy Biometric Smart Door Lock", slug: "atom-2", sku: "LOC-2-186",
-    description: "Speedy Biometric Smart Door Lock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Speedy Biometric Smart Door Lock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Speedy", brandSlug: "speedy", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3387,7 +3387,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-bronze-finish-modern-brass-mortise-3", name: "Bronze Finish Modern Brass Mortise Interior Door Handle", slug: "bronze-finish-modern-brass-mortise-interior-door-handle-3", sku: "LOC-3-187",
-    description: "Bronze Finish Modern Brass Mortise Interior Door Handle - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Bronze Finish Modern Brass Mortise Interior Door Handle - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3405,7 +3405,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-buckler-door-lock-heavy-duty-mortis-4", name: "BUCKLER Door Lock, Heavy Duty Mortise Lock with Door Handle", slug: "buckler-door-lock-heavy-duty-mortise-lock-with-door-handle-4", sku: "LOC-4-188",
-    description: "BUCKLER Door Lock, Heavy Duty Mortise Lock with Door Handle - Mortise locks, handles, digital locks for construction and home use.",
+    description: "BUCKLER Door Lock, Heavy Duty Mortise Lock with Door Handle - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3423,7 +3423,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-dflv8-11-5", name: "Denler Face Recognition Smart Door Lock", slug: "dflv8-11-5", sku: "LOC-5-189",
-    description: "Denler Face Recognition Smart Door Lock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Denler Face Recognition Smart Door Lock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Denler", brandSlug: "denler", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3441,7 +3441,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-godrej-rim-lock-tribolt-compact-1ck-6", name: "Godrej Rim Lock Tribolt Compact 1CK Door Lock Triple", slug: "godrej-rim-lock-tribolt-compact-1ck-door-lock-triple-6", sku: "LOC-6-190",
-    description: "Godrej Rim Lock Tribolt Compact 1CK Door Lock Triple - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Godrej Rim Lock Tribolt Compact 1CK Door Lock Triple - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Godrej", brandSlug: "godrej", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3459,7 +3459,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-door-locks-hardware-item-7-7", name: "Glass Door Patch Lock, Stainless Steel", slug: "door-locks-hardware-item-7-7", sku: "LOC-7-191",
-    description: "Glass Door Patch Lock, Stainless Steel - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Glass Door Patch Lock, Stainless Steel - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3477,7 +3477,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lock-d-8", name: "Rim Night Latch, Antique Brass", slug: "lock-d-8", sku: "LOC-8-192",
-    description: "Rim Night Latch, Antique Brass - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Rim Night Latch, Antique Brass - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3495,7 +3495,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lock-dd-9", name: "Smart Keypad Knob Lock, Black Gold", slug: "lock-dd-9", sku: "LOC-9-193",
-    description: "Smart Keypad Knob Lock, Black Gold - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Smart Keypad Knob Lock, Black Gold - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3513,7 +3513,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lock-gat-11", name: "Godrej Cylindrical Knob Lock", slug: "lock-gat-11", sku: "LOC-11-195",
-    description: "Godrej Cylindrical Knob Lock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Godrej Cylindrical Knob Lock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Godrej", brandSlug: "godrej", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3531,7 +3531,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lock-12", name: "Link Hi-Tech 12-Pin Padlock", slug: "lock-12", sku: "LOC-12-196",
-    description: "Link Hi-Tech 12-Pin Padlock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Link Hi-Tech 12-Pin Padlock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Link", brandSlug: "link", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3549,7 +3549,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lockddd-13", name: "Rim Deadbolt Night Latch", slug: "lockddd-13", sku: "LOC-13-197",
-    description: "Rim Deadbolt Night Latch - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Rim Deadbolt Night Latch - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3567,7 +3567,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lockdfsd-15", name: "Mortise Handle Lock Set, Rose Gold", slug: "lockdfsd-15", sku: "LOC-15-199",
-    description: "Mortise Handle Lock Set, Rose Gold - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Mortise Handle Lock Set, Rose Gold - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3585,7 +3585,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-lockg-16", name: "Brass Padlocks, Set of 2", slug: "lockg-16", sku: "LOC-16-200",
-    description: "Brass Padlocks, Set of 2 - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Brass Padlocks, Set of 2 - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3603,7 +3603,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-main-door-lever-secureye-spl100-blu-17", name: "Main Door Lever Secureye SPL100 Bluetooth Fingerprint Lock", slug: "main-door-lever-secureye-spl100-bluetooth-fingerprint-lock-17", sku: "LOC-17-201",
-    description: "Main Door Lever Secureye SPL100 Bluetooth Fingerprint Lock - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Main Door Lever Secureye SPL100 Bluetooth Fingerprint Lock - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Secureye", brandSlug: "secureye", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3621,7 +3621,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-nickel-entry-door-knob-and-single-c-18", name: "Nickel Entry Door Knob and Single Cylinder Deadbolt Combo", slug: "nickel-entry-door-knob-and-single-cylinder-deadbolt-combo-18", sku: "LOC-18-202",
-    description: "Nickel Entry Door Knob and Single Cylinder Deadbolt Combo - Mortise locks, handles, digital locks for construction and home use.",
+    description: "Nickel Entry Door Knob and Single Cylinder Deadbolt Combo - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3639,7 +3639,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-volo-aluminium-tower-bolt-with-stai-20", name: "VOLO Aluminium Tower Bolt with Stainless Steel Rod Heavy Duty Door Window", slug: "volo-aluminium-tower-bolt-with-stainless-steel-rod-heavy-dut-20", sku: "LOC-20-204",
-    description: "VOLO Aluminium Tower Bolt with Stainless Steel Rod Heavy Duty Door Window - Mortise locks, handles, digital locks for construction and home use.",
+    description: "VOLO Aluminium Tower Bolt with Stainless Steel Rod Heavy Duty Door Window - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "VOLO", brandSlug: "volo", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3657,7 +3657,7 @@ export const products: Product[] = [
   },
   {
     id: "locks-xmhf-home-safety-vertical-keyway-cy-21", name: "XMHF Home Safety Vertical Keyway Cylinder Deadbolt Rim", slug: "xmhf-home-safety-vertical-keyway-cylinder-deadbolt-rim-21", sku: "LOC-21-205",
-    description: "XMHF Home Safety Vertical Keyway Cylinder Deadbolt Rim - Mortise locks, handles, digital locks for construction and home use.",
+    description: "XMHF Home Safety Vertical Keyway Cylinder Deadbolt Rim - Mortise locks, handles, digital locks for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "XMHF", brandSlug: "xmhf", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -3675,7 +3675,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-heatx-heatproof-adhesive-1-2", name: "Fevicol Heat X Heatproof Adhesive 1 ltr", slug: "fevicol-heatx-heatproof-adhesive-1-ltr-2", sku: "FEV-2-207",
-    description: "Fevicol Heat X Heatproof Adhesive 1 ltr - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Heat X Heatproof Adhesive 1 ltr - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3693,7 +3693,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-heatx-heatproof-adhesive-5-3", name: "Fevicol Heat X Heatproof Adhesive 5 ltr", slug: "fevicol-heatx-heatproof-adhesive-5-ltr-3", sku: "FEV-3-208",
-    description: "Fevicol Heat X Heatproof Adhesive 5 ltr - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Heat X Heatproof Adhesive 5 ltr - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3711,7 +3711,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-hi-per-anti-bubble-waterpro-5", name: "Fevicol HI PER Anti Bubble Waterproof Adhesive 10 K G", slug: "fevicol-hi-per-anti-bubble-waterproof-adhesive-10-kg-5", sku: "FEV-5-210",
-    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 10 K G - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 10 K G - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3729,7 +3729,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-hi-per-anti-bubble-waterpro-6", name: "Fevicol HI PER Anti Bubble Waterproof Adhesive 20 K G", slug: "fevicol-hi-per-anti-bubble-waterproof-adhesive-20-kg-6", sku: "FEV-6-211",
-    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 20 K G - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 20 K G - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3747,7 +3747,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-hi-per-anti-bubble-waterpro-8", name: "Fevicol HI PER Anti Bubble Waterproof Adhesive 50 KG", slug: "fevicol-hi-per-anti-bubble-waterproof-adhesive-50-kg-8", sku: "FEV-8-213",
-    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 50 KG - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol HI PER Anti Bubble Waterproof Adhesive 50 KG - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3765,7 +3765,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-marine-waterproof-adhesive-10", name: "Fevicol Marine Waterproof Adhesive 10 Kg", slug: "fevicol-marine-waterproof-adhesive-10-kg-10", sku: "FEV-10-215",
-    description: "Fevicol Marine Waterproof Adhesive 10 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Marine Waterproof Adhesive 10 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3783,7 +3783,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-marine-waterproof-adhesive-11", name: "Fevicol Marine Waterproof Adhesive 2 Kg", slug: "fevicol-marine-waterproof-adhesive-2-kg-11", sku: "FEV-11-216",
-    description: "Fevicol Marine Waterproof Adhesive 2 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Marine Waterproof Adhesive 2 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3801,7 +3801,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-marine-waterproof-adhesive-12", name: "Fevicol Marine Waterproof Adhesive 20 Kg", slug: "fevicol-marine-waterproof-adhesive-20-kg-12", sku: "FEV-12-217",
-    description: "Fevicol Marine Waterproof Adhesive 20 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Marine Waterproof Adhesive 20 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3819,7 +3819,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-marine-waterproof-adhesive-13", name: "Fevicol Marine Waterproof Adhesive 5 Kg", slug: "fevicol-marine-waterproof-adhesive-5-kg-13", sku: "FEV-13-218",
-    description: "Fevicol Marine Waterproof Adhesive 5 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Marine Waterproof Adhesive 5 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3837,7 +3837,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-marine-waterproof-adhesive-14", name: "Fevicol Marine Waterproof Adhesive 50 Kg", slug: "fevicol-marine-waterproof-adhesive-50-kg-14", sku: "FEV-14-219",
-    description: "Fevicol Marine Waterproof Adhesive 50 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Marine Waterproof Adhesive 50 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3855,7 +3855,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-sh-10-kg-17", name: "Fevicol SH 10 kg", slug: "fevicol-sh-10-kg-17", sku: "FEV-17-222",
-    description: "Fevicol SH 10 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol SH 10 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3873,7 +3873,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-sh-2-kg-18", name: "Fevicol SH 2 kg", slug: "fevicol-sh-2-kg-18", sku: "FEV-18-223",
-    description: "Fevicol SH 2 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol SH 2 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3891,7 +3891,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-sh-20-kg-19", name: "Fevicol SH 20 kg", slug: "fevicol-sh-20-kg-19", sku: "FEV-19-224",
-    description: "Fevicol SH 20 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol SH 20 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3909,7 +3909,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-sh-5-kg-20", name: "Fevicol SH 5 kg", slug: "fevicol-sh-5-kg-20", sku: "FEV-20-225",
-    description: "Fevicol SH 5 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol SH 5 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3927,7 +3927,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-sh-50-kg-21", name: "Fevicol SH 50 Kg", slug: "fevicol-sh-50-kg-21", sku: "FEV-21-226",
-    description: "Fevicol SH 50 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol SH 50 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3945,7 +3945,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-fevicol-woodlok-pro-moisture-resist-22", name: "Fevicol Wood Lok Pro, Moisture Resistant Synthetic Resin Adhesive, 60 kg", slug: "fevicol-woodlok-pro-moisture-resistant-synthetic-resin-adhes-22", sku: "FEV-22-227",
-    description: "Fevicol Wood Lok Pro, Moisture Resistant Synthetic Resin Adhesive, 60 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Fevicol Wood Lok Pro, Moisture Resistant Synthetic Resin Adhesive, 60 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3963,7 +3963,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-loctite-universal-synthetic-resin-a-23", name: "Loctite Universal Synthetic Resin Adhesive, 10 kg", slug: "loctite-universal-synthetic-resin-adhesive-10-20-50-kg-23", sku: "FEV-23-228",
-    description: "Loctite Universal Synthetic Resin Adhesive, 10 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Loctite Universal Synthetic Resin Adhesive, 10 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Loctite", brandSlug: "loctite", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3981,7 +3981,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-loctite-waterproof-synthetic-resin-24", name: "Loctite Waterproof Synthetic Resin Adhesive, 1 kg", slug: "loctite-waterproof-synthetic-resin-adhesive-24", sku: "FEV-24-229",
-    description: "Loctite Waterproof Synthetic Resin Adhesive, 1 kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Loctite Waterproof Synthetic Resin Adhesive, 1 kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Loctite", brandSlug: "loctite", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -3999,7 +3999,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-pidilite-fevicol-probond-special-ad-26", name: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes 5 Kg", slug: "pidilite-fevicol-probond-special-adhesive-for-pvc-sheets-tap-26", sku: "FEV-26-231",
-    description: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes 5 Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes 5 Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -4017,7 +4017,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-pidilite-fevicol-probond-special-ad-27", name: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes, 500 ml", slug: "pidilite-fevicol-probond-special-adhesive-for-pvc-sheets-tap-27", sku: "FEV-27-232",
-    description: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes, 500 ml - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Pidilite Fevicol Probond Special Adhesive for PVC sheets & Tapes, 500 ml - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -4035,7 +4035,7 @@ export const products: Product[] = [
   },
   {
     id: "fevicol-pidilite-masterlok-synthetic-wood-a-28", name: "Pidilite Masterlok Synthetic Wood Adhesive, 50Kg", slug: "pidilite-masterlok-synthetic-wood-adhesive-50kg-28", sku: "FEV-28-233",
-    description: "Pidilite Masterlok Synthetic Wood Adhesive, 50Kg - Wood adhesives, marine, HeatX for construction and home use.",
+    description: "Pidilite Masterlok Synthetic Wood Adhesive, 50Kg - Wood adhesives, marine, HeatX for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Pidilite", brandSlug: "pidilite", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -4053,7 +4053,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-21q4cqdwkfl-photoroom-1", name: "V-Guard Voltage Stabilizer for AC", slug: "21q4cqdwkfl-photoroom-1", sku: "APP-1-234",
-    description: "V-Guard Voltage Stabilizer for AC - Inverters, batteries, UPS for construction and home use.",
+    description: "V-Guard Voltage Stabilizer for AC - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "V-Guard", brandSlug: "v-guard", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4071,7 +4071,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-61ur5fcievl-3", name: "Exide Invamaster Battery with Inverter Combo", slug: "61ur5fcievl-3", sku: "APP-3-236",
-    description: "Exide Invamaster Battery with Inverter Combo - Inverters, batteries, UPS for construction and home use.",
+    description: "Exide Invamaster Battery with Inverter Combo - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Exide", brandSlug: "exide", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4089,7 +4089,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-81-eco-watt-850-home-ups-and-lumino-4", name: "Eco Watt 850 Home UPS and Luminous Red Charge TT18000", slug: "81-eco-watt-850-home-ups-and-luminous-red-charge-tt18000-4", sku: "APP-4-237",
-    description: "Eco Watt 850 Home UPS and Luminous Red Charge TT18000 - Inverters, batteries, UPS for construction and home use.",
+    description: "Eco Watt 850 Home UPS and Luminous Red Charge TT18000 - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4107,7 +4107,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-arnoneo6l2022packagingfrontview-1-6", name: "Crompton Arno Neo Water Heater", slug: "arnoneo6l2022packagingfrontview-1-6", sku: "APP-6-239",
-    description: "Crompton Arno Neo Water Heater - Inverters, batteries, UPS for construction and home use.",
+    description: "Crompton Arno Neo Water Heater - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Crompton", brandSlug: "crompton", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4125,7 +4125,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-dc1af72b-84b6-4209-b29d-8d97580a923-7", name: "Luminous Evo D 900 Inverter", slug: "dc1af72b-84b6-4209-b29d-8d97580a9230-evo-d-900-7", sku: "APP-7-240",
-    description: "Luminous Evo D 900 Inverter - Inverters, batteries, UPS for construction and home use.",
+    description: "Luminous Evo D 900 Inverter - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4143,7 +4143,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-luminous-power-sine-800-700va-12v-i-11", name: "Luminous Power Sine 800 700VA 12V Inverter & Red Charge RC18000ST PRO 150Ah Short Tub", slug: "luminous-power-sine-800-700va-12v-inverter-red-charge-rc1800-11", sku: "APP-11-244",
-    description: "Luminous Power Sine 800 700VA 12V Inverter & Red Charge RC18000ST PRO 150Ah Short Tub - Inverters, batteries, UPS for construction and home use.",
+    description: "Luminous Power Sine 800 700VA 12V Inverter & Red Charge RC18000ST PRO 150Ah Short Tub - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4161,7 +4161,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-home-appliances-power-item-12-12", name: "Microtek UPS EB 900 Square Wave Home UPS and EB1700 140 Ah Tubular Battery", slug: "home-appliances-power-item-12-12", sku: "APP-12-245",
-    description: "Microtek UPS EB 900 Square Wave Home UPS and EB1700 140 Ah Tubular Battery - Inverters, batteries, UPS for construction and home use.",
+    description: "Microtek UPS EB 900 Square Wave Home UPS and EB1700 140 Ah Tubular Battery - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Microtek", brandSlug: "microtek", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4179,7 +4179,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-mic-sebz-1100-com-13", name: "Microtek Inverter Battery EB1800T", slug: "mic-sebz-1100-com-13", sku: "APP-13-246",
-    description: "Microtek Inverter Battery EB1800T - Inverters, batteries, UPS for construction and home use.",
+    description: "Microtek Inverter Battery EB1800T - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Microtek", brandSlug: "microtek", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4197,7 +4197,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-shopping-photoroom-4-14", name: "Crompton Classic DLX Water Heater", slug: "shopping-photoroom-4-14", sku: "APP-14-247",
-    description: "Crompton Classic DLX Water Heater - Inverters, batteries, UPS for construction and home use.",
+    description: "Crompton Classic DLX Water Heater - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Crompton", brandSlug: "crompton", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4215,7 +4215,7 @@ export const products: Product[] = [
   },
   {
     id: "appliances-thumbnail-1a321a-15", name: "Livguard Invertuff 200Ah Battery with Inverter", slug: "thumbnail-1a321a-15", sku: "APP-15-248",
-    description: "Livguard Invertuff 200Ah Battery with Inverter - Inverters, batteries, UPS for construction and home use.",
+    description: "Livguard Invertuff 200Ah Battery with Inverter - Inverters, batteries, UPS for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Livguard", brandSlug: "livguard", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -4233,7 +4233,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-curovit-pvc-chrome-plated-1-14-heav-3", name: "CUROVIT PVC Chrome Plated Heavy Duty Flexible Waste Pipe, 1-1/4 Inch", slug: "curovit-pvc-chrome-plated-1-14-heavy-duty-flexible-waste-pip-3", sku: "KIT-3-252",
-    description: "CUROVIT PVC Chrome Plated Heavy Duty Flexible Waste Pipe, 1-1/4 Inch - Steel sinks, faucets, accessories for construction and home use.",
+    description: "CUROVIT PVC Chrome Plated Heavy Duty Flexible Waste Pipe, 1-1/4 Inch - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Generic", brandSlug: "generic", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4251,7 +4251,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-florentine-prime-sink-cock-table-mo-5", name: "Jaquar Florentine Prime Table Mounted Sink Cock, Swinging Spout", slug: "florentine-prime-sink-cock-table-mounted-swinging-spout-5", sku: "KIT-5-254",
-    description: "Jaquar Florentine Prime Table Mounted Sink Cock, Swinging Spout - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Jaquar Florentine Prime Table Mounted Sink Cock, Swinging Spout - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4269,7 +4269,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-futura-dura-kitchen-sinks-dura-51-x-6", name: "Futura Dura Kitchen Sink, 51 x 18 DDB", slug: "futura-dura-kitchen-sinks-dura-51-x-18-ddb-in-bangalore-at-1-6", sku: "KIT-6-255",
-    description: "Futura Dura Kitchen Sink, 51 x 18 DDB - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Futura Dura Kitchen Sink, 51 x 18 DDB - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4287,7 +4287,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-futura-stainless-steel-sinks-decure-7", name: "Futura Decure Stainless Steel Kitchen Sink", slug: "futura-stainless-steel-sinks-decure-in-7", sku: "KIT-7-256",
-    description: "Futura Decure Stainless Steel Kitchen Sink - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Futura Decure Stainless Steel Kitchen Sink - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4305,7 +4305,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-handmade-nano-waterfall-kitchen-sin-8", name: "Handmade Nano Waterfall Kitchen Sink (30 x 18 x 9 Inches) with Pull Out Mixer Faucet", slug: "handmade-nano-waterfall-kitchen-sink-30-x-18-x-9-inches-with-8", sku: "KIT-8-257",
-    description: "Handmade Nano Waterfall Kitchen Sink (30 x 18 x 9 Inches) with Pull Out Mixer Faucet - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Handmade Nano Waterfall Kitchen Sink (30 x 18 x 9 Inches) with Pull Out Mixer Faucet - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Lipka", brandSlug: "lipka", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4323,7 +4323,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-hansgrohe-raindance-e-complete-show-9", name: "hansgrohe Raindance E Complete Shower System Shower Set", slug: "hansgrohe-raindance-e-complete-shower-system-shower-set-9", sku: "KIT-9-258",
-    description: "hansgrohe Raindance E Complete Shower System Shower Set - Steel sinks, faucets, accessories for construction and home use.",
+    description: "hansgrohe Raindance E Complete Shower System Shower Set - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Hansgrohe", brandSlug: "hansgrohe", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4341,7 +4341,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-hindware-kitchen-sink-mixer-tap-wit-10", name: "Hindware Kitchen Sink Mixer Tap with Pull Down Sprayer Single Handle High Arc Pull Ou", slug: "hindware-kitchen-sink-mixer-tap-with-pull-down-sprayer-singl-10", sku: "KIT-10-259",
-    description: "Hindware Kitchen Sink Mixer Tap with Pull Down Sprayer Single Handle High Arc Pull Ou - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Hindware Kitchen Sink Mixer Tap with Pull Down Sprayer Single Handle High Arc Pull Ou - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Hindware", brandSlug: "hindware", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4359,7 +4359,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-intelligent-kitchen-sink-29x17-futu-11", name: "Futura Intelligent Kitchen Sink, 29 x 17 in", slug: "intelligent-kitchen-sink-29x17-futura-11", sku: "KIT-11-260",
-    description: "Futura Intelligent Kitchen Sink, 29 x 17 in - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Futura Intelligent Kitchen Sink, 29 x 17 in - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4377,7 +4377,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-kitchen-sinks-faucets-item-12-12", name: "Futura Intelligent Handcarved Kitchen Sink Series", slug: "kitchen-sinks-faucets-item-12-12", sku: "KIT-12-261",
-    description: "Futura Intelligent Handcarved Kitchen Sink Series - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Futura Intelligent Handcarved Kitchen Sink Series - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4395,7 +4395,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-jaquar-florentine-prime-sink-cock-w-13", name: "Jaquar Florentine Prime Sink Cock with Regular Swinging Spout", slug: "jaquar-florentine-prime-sink-cock-with-regular-swinging-spou-13", sku: "KIT-13-262",
-    description: "Jaquar Florentine Prime Sink Cock with Regular Swinging Spout - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Jaquar Florentine Prime Sink Cock with Regular Swinging Spout - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4413,7 +4413,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-jaquar-wall-mounted-regular-kitchen-14", name: "Jaquar Wall Mounted Kitchen Sink Mixer, Florentine Prime", slug: "jaquar-wall-mounted-regular-kitchen-sink-mixer-florentine-pr-14", sku: "KIT-14-263",
-    description: "Jaquar Wall Mounted Kitchen Sink Mixer, Florentine Prime - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Jaquar Wall Mounted Kitchen Sink Mixer, Florentine Prime - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4431,7 +4431,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-kohinoor-633-stainless-steel-floor-15", name: "Kohinoor 633 Stainless Steel Floor Waste Coupling 32 mm", slug: "kohinoor-633-stainless-steel-floor-waste-coupling-32-mm-15", sku: "KIT-15-264",
-    description: "Kohinoor 633 Stainless Steel Floor Waste Coupling 32 mm - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Kohinoor 633 Stainless Steel Floor Waste Coupling 32 mm - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4449,7 +4449,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-new-s-r-internationals-5-button-wat-16", name: "New S R Internationals 5 Button Waterfall Kitchen Sink", slug: "new-s-r-internationals-5-button-waterfall-kitchen-sink-with-16", sku: "KIT-16-265",
-    description: "New S R Internationals 5 Button Waterfall Kitchen Sink - Steel sinks, faucets, accessories for construction and home use.",
+    description: "New S R Internationals 5 Button Waterfall Kitchen Sink - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Generic", brandSlug: "generic", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4467,7 +4467,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-pvc-waste-pipe-32mm-905mm-for-effic-17", name: "PVC Waste Pipe 32mm (905mm) for Efficient Drainage", slug: "pvc-waste-pipe-32mm-905mm-for-efficient-drainage-17", sku: "KIT-17-266",
-    description: "PVC Waste Pipe 32mm (905mm) for Efficient Drainage - Steel sinks, faucets, accessories for construction and home use.",
+    description: "PVC Waste Pipe 32mm (905mm) for Efficient Drainage - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Generic", brandSlug: "generic", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4485,7 +4485,7 @@ export const products: Product[] = [
   },
   {
     id: "kitchen-ruhe-opera-smart-kitchen-sink-304-s-19", name: "Ruhe Opera Smart Kitchen Sink 304 SS Single Bowl Black Waterproof", slug: "ruhe-opera-smart-kitchen-sink-304-ss-single-bowl-black-water-19", sku: "KIT-19-268",
-    description: "Ruhe Opera Smart Kitchen Sink 304 SS Single Bowl Black Waterproof - Steel sinks, faucets, accessories for construction and home use.",
+    description: "Ruhe Opera Smart Kitchen Sink 304 SS Single Bowl Black Waterproof - Steel sinks, faucets, accessories for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Ruhe", brandSlug: "ruhe", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -4503,7 +4503,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-0-8mm-laminates-9158-kamet-walnut-1", name: "0.8mm Laminates 9158 Kamet Walnut", slug: "0-8mm-laminates-9158-kamet-walnut-1", sku: "PLY-1-271",
-    description: "0.8mm Laminates 9158 Kamet Walnut - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "0.8mm Laminates 9158 Kamet Walnut - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Action Tesa", brandSlug: "action-tesa", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4521,7 +4521,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-0-8mm-laminates-9159-dark-kamet-wal-2", name: "0.8mm Laminates 9159 Dark Kamet Walnut", slug: "0-8mm-laminates-9159-dark-kamet-walnut-2", sku: "PLY-2-272",
-    description: "0.8mm Laminates 9159 Dark Kamet Walnut - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "0.8mm Laminates 9159 Dark Kamet Walnut - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Action Tesa", brandSlug: "action-tesa", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4539,7 +4539,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-12mm-sainik-710-plywood-board-8x4-f-3", name: "12mm Sainik 710 Plywood Board, 8x 4 ft", slug: "12mm-sainik-710-plywood-board-8x4-ft-at-3", sku: "PLY-3-273",
-    description: "12mm Sainik 710 Plywood Board, 8x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "12mm Sainik 710 Plywood Board, 8x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "CenturyPly", brandSlug: "centuryply", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4557,7 +4557,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-plywood-mdf-hdhmr-item-5-5", name: "18 mm Poplar BWP Waterproof Plywood, 8 x 4 ft", slug: "plywood-mdf-hdhmr-item-5-5", sku: "PLY-5-275",
-    description: "18 mm Poplar BWP Waterproof Plywood, 8 x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "18 mm Poplar BWP Waterproof Plywood, 8 x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Generic", brandSlug: "generic", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4575,7 +4575,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-aag-se-bachaye-e0a482c490-6", name: "CenturyPly Firewall Plywood", slug: "aag-se-bachaye-e0a482c490-6", sku: "PLY-6-276",
-    description: "CenturyPly Firewall Plywood - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "CenturyPly Firewall Plywood - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "CenturyPly", brandSlug: "centuryply", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4593,7 +4593,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-action-tesa-hdhmr-green-color-8ft-x-7", name: "Action Tesa HDHMR Board, Green, 8 x 4 ft", slug: "action-tesa-hdhmr-green-color-8ft-x-4ft-7", sku: "PLY-7-277",
-    description: "Action Tesa HDHMR Board, Green, 8 x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Action Tesa HDHMR Board, Green, 8 x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Action Tesa", brandSlug: "action-tesa", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4611,7 +4611,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-commercial-plywood-2-10", name: "Commercial MR Grade Plywood, 18 mm, 8 x 4 ft", slug: "commercial-plywood-2-10", sku: "PLY-10-280",
-    description: "Commercial MR Grade Plywood, 18 mm, 8 x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Commercial MR Grade Plywood, 18 mm, 8 x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Generic", brandSlug: "generic", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4629,7 +4629,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-dark-brown-bwp-plywood-18mm-11", name: "Dark Brown BWP Plywood 18mm", slug: "dark-brown-bwp-plywood-18mm-11", sku: "PLY-11-281",
-    description: "Dark Brown BWP Plywood 18mm - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Dark Brown BWP Plywood 18mm - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Generic", brandSlug: "generic", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4647,7 +4647,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-fire-ply-1-12", name: "Rajlaxmi Fire Safe Plywood", slug: "fire-ply-1-12", sku: "PLY-12-282",
-    description: "Rajlaxmi Fire Safe Plywood - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Rajlaxmi Fire Safe Plywood - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Rajlaxmi", brandSlug: "rajlaxmi", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4665,7 +4665,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-green-panel-exterior-mdf-plain-boar-14", name: "Action Tesa Green Panel Exterior MDF Plain Board, 8 x 4 ft", slug: "green-panel-exterior-mdf-plain-board-8x4-feet-sheet-14", sku: "PLY-14-284",
-    description: "Action Tesa Green Panel Exterior MDF Plain Board, 8 x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Action Tesa Green Panel Exterior MDF Plain Board, 8 x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Action Tesa", brandSlug: "action-tesa", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4683,7 +4683,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-greenply-green-marine-grade-710-ply-15", name: "Greenply Green Marine Grade 710 Plywood 4MM Teak Wood Veneer (8 cm x 4 cm)", slug: "greenply-green-marine-grade-710-plywood-4mm-teak-wood-veneer-15", sku: "PLY-15-285",
-    description: "Greenply Green Marine Grade 710 Plywood 4MM Teak Wood Veneer (8 cm x 4 cm) - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Greenply Green Marine Grade 710 Plywood 4MM Teak Wood Veneer (8 cm x 4 cm) - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Greenply", brandSlug: "greenply", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4701,7 +4701,7 @@ export const products: Product[] = [
   },
   {
     id: "plywood-plywood-18mm-navkar-plywood-20", name: "Navkar Plywood, 18 mm, 8 x 4 ft", slug: "plywood-18mm-navkar-plywood-20", sku: "PLY-20-290",
-    description: "Navkar Plywood, 18 mm, 8 x 4 ft - Plywood boards, laminates, HDHMR for construction and home use.",
+    description: "Navkar Plywood, 18 mm, 8 x 4 ft - Plywood boards, laminates, HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Generic", brandSlug: "generic", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -4719,7 +4719,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-switches-sockets-item-15-15", name: "Havells Ampere 6 A Rectangular Modular Switch", slug: "switches-sockets-item-15-15", sku: "SWI-15-307",
-    description: "Havells Ampere 6 A Rectangular Modular Switch - Modular switches, sockets, boards for construction and home use.",
+    description: "Havells Ampere 6 A Rectangular Modular Switch - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Havells", brandSlug: "havells", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4737,7 +4737,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-switches-sockets-item-17-17", name: "Bell Push Switch, 2 Module", slug: "switches-sockets-item-17-17", sku: "SWI-17-309",
-    description: "Bell Push Switch, 2 Module - Modular switches, sockets, boards for construction and home use.",
+    description: "Bell Push Switch, 2 Module - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Legrand", brandSlug: "legrand", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4755,7 +4755,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-bseed-wall-switched-universal-socke-18", name: "BSEED Wall Switched Universal Socket, Glass Panel", slug: "bseed-wall-switched-universal-socket-glass-panel-powe-18", sku: "SWI-18-310",
-    description: "BSEED Wall Switched Universal Socket, Glass Panel - Modular switches, sockets, boards for construction and home use.",
+    description: "BSEED Wall Switched Universal Socket, Glass Panel - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Generic", brandSlug: "generic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4773,7 +4773,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-buy-legrand-myrius-nextgen-charcoal-19", name: "Legrand Myrius Nextgen Charcoal Grey Socket, 6/10/13 A, 2 Module", slug: "buy-legrand-myrius-nextgen-charcoal-grey-3-pin-6-a-10-a-13-a-19", sku: "SWI-19-311",
-    description: "Legrand Myrius Nextgen Charcoal Grey Socket, 6/10/13 A, 2 Module - Modular switches, sockets, boards for construction and home use.",
+    description: "Legrand Myrius Nextgen Charcoal Grey Socket, 6/10/13 A, 2 Module - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Legrand", brandSlug: "legrand", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4791,7 +4791,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-dazvi-16a-extension-board-with-mcb-20", name: "Dazvi 16A Extension Board with MCB Switch", slug: "dazvi-16a-extension-board-with-mcb-switch-16-amp-3-pin-plug-20", sku: "SWI-20-312",
-    description: "Dazvi 16A Extension Board with MCB Switch - Modular switches, sockets, boards for construction and home use.",
+    description: "Dazvi 16A Extension Board with MCB Switch - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Generic", brandSlug: "generic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4809,7 +4809,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-heavy-duty-extension-board-single-1-22", name: "Heavy Duty Extension Board, 16 A Switch + Socket, 2 m Cable", slug: "heavy-duty-extension-board-single-16a-switch-with-16a-socket-22", sku: "SWI-22-314",
-    description: "Heavy Duty Extension Board, 16 A Switch + Socket, 2 m Cable - Modular switches, sockets, boards for construction and home use.",
+    description: "Heavy Duty Extension Board, 16 A Switch + Socket, 2 m Cable - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Generic", brandSlug: "generic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4827,7 +4827,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-switches-sockets-item-25-25", name: "Legrand Myrius Nextgen Charcoal Grey Switch, 16 A, 1 Module", slug: "switches-sockets-item-25-25", sku: "SWI-25-317",
-    description: "Legrand Myrius Nextgen Charcoal Grey Switch, 16 A, 1 Module - Modular switches, sockets, boards for construction and home use.",
+    description: "Legrand Myrius Nextgen Charcoal Grey Switch, 16 A, 1 Module - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Legrand", brandSlug: "legrand", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4845,7 +4845,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-switches-sockets-item-26-26", name: "Legrand Nextgen Myrius Fan Step Regulator, 1 Module, White", slug: "switches-sockets-item-26-26", sku: "SWI-26-318",
-    description: "Legrand Nextgen Myrius Fan Step Regulator, 1 Module, White - Modular switches, sockets, boards for construction and home use.",
+    description: "Legrand Nextgen Myrius Fan Step Regulator, 1 Module, White - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Legrand", brandSlug: "legrand", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4863,7 +4863,7 @@ export const products: Product[] = [
   },
   {
     id: "switches-switches-sockets-item-28-28", name: "Modular Switch Socket Combination, 2 Module", slug: "switches-sockets-item-28-28", sku: "SWI-28-320",
-    description: "Modular Switch Socket Combination, 2 Module - Modular switches, sockets, boards for construction and home use.",
+    description: "Modular Switch Socket Combination, 2 Module - Modular switches, sockets, boards for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Legrand", brandSlug: "legrand", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -4881,7 +4881,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-designer-tiles-item-1-1", name: "Beige Marble Bathroom Tiles", slug: "designer-tiles-item-1-1", sku: "TIL-1-323",
-    description: "Beige Marble Bathroom Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Beige Marble Bathroom Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4899,7 +4899,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-designer-tiles-item-2-2", name: "Beige Travertine Bathroom Tiles", slug: "designer-tiles-item-2-2", sku: "TIL-2-324",
-    description: "Beige Travertine Bathroom Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Beige Travertine Bathroom Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4917,7 +4917,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-blue-granite-5", name: "Blue Granite Floor Tiles", slug: "blue-granite-5", sku: "TIL-5-327",
-    description: "Blue Granite Floor Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Blue Granite Floor Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4935,7 +4935,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-download-6-6", name: "White Marble Floor Tiles", slug: "download-6-6", sku: "TIL-6-328",
-    description: "White Marble Floor Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "White Marble Floor Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4953,7 +4953,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-imagemfundo-14", name: "Grey Marble Bathroom Tiles", slug: "imagemfundo-14", sku: "TIL-14-336",
-    description: "Grey Marble Bathroom Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Grey Marble Bathroom Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4971,7 +4971,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-rossolavante-15", name: "Rosso Levanto Red Marble Tiles", slug: "rossolavante-15", sku: "TIL-15-337",
-    description: "Rosso Levanto Red Marble Tiles - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Rosso Levanto Red Marble Tiles - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -4989,7 +4989,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-tiles-16", name: "Grey Marble Tile", slug: "tiles-16", sku: "TIL-16-338",
-    description: "Grey Marble Tile - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Grey Marble Tile - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -5007,7 +5007,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-tiles-png-01-17", name: "Blue Grey Marble Tile", slug: "tiles-png-01-17", sku: "TIL-17-339",
-    description: "Blue Grey Marble Tile - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Blue Grey Marble Tile - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -5025,7 +5025,7 @@ export const products: Product[] = [
   },
   {
     id: "tiles-tiles-png-02-18", name: "Grey Veined Marble Tile", slug: "tiles-png-02-18", sku: "TIL-18-340",
-    description: "Grey Veined Marble Tile - Floor & wall designer tiles, marble for construction and home use.",
+    description: "Grey Veined Marble Tile - Floor & wall designer tiles, marble for professional and home use.",
     shortDescription: "Designer Tiles product",
     brand: "Generic", brandSlug: "generic", category: "Designer Tiles", categorySlug: "tiles",
     subCategory: null, subCategorySlug: null,
@@ -5043,7 +5043,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-oil-proof-multipurpose-sheet-45-x-5-1", name: "Oil Proof Multipurpose Sheet, 45 x 500 cm (5 m x 18 Inch), Black", slug: "oil-proof-multipurpose-sheet-45-x-500-cm5-mtr-x-18-inch-blac-1", sku: "WAR-1-342",
-    description: "Oil Proof Multipurpose Sheet, 45 x 500 cm (5 m x 18 Inch), Black - Channels, handles, rails for construction and home use.",
+    description: "Oil Proof Multipurpose Sheet, 45 x 500 cm (5 m x 18 Inch), Black - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5061,7 +5061,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-3-3", name: "45mm Telescopic Channel", slug: "wardrobe-bed-fittings-item-3-3", sku: "WAR-3-344",
-    description: "45mm Telescopic Channel - Channels, handles, rails for construction and home use.",
+    description: "45mm Telescopic Channel - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5079,7 +5079,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-5-meter-reel-ip20-2835-120led-warm-4", name: "2835 LED Strip Light, 120 LED/m, Warm White, 5 m Reel (IP20)", slug: "5-meter-reel-ip20-2835-120led-warm-white-led-strip-online-4", sku: "WAR-4-345",
-    description: "2835 LED Strip Light, 120 LED/m, Warm White, 5 m Reel (IP20) - Channels, handles, rails for construction and home use.",
+    description: "2835 LED Strip Light, 120 LED/m, Warm White, 5 m Reel (IP20) - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5097,7 +5097,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-aas-copula-6-inches-damru-main-door-6", name: "AAS COPULA 6 Inches Damru Main Door Pull Handle", slug: "aas-copula-6-inches-damru-main-door-pull-handle-6", sku: "WAR-6-347",
-    description: "AAS COPULA 6 Inches Damru Main Door Pull Handle - Channels, handles, rails for construction and home use.",
+    description: "AAS COPULA 6 Inches Damru Main Door Pull Handle - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5115,7 +5115,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-budwill-stainless-steel-telescopic-7", name: "Budwill STAINLESS STEEL TELESCOPIC CHANNEL", slug: "budwill-stainless-steel-telescopic-channel-7", sku: "WAR-7-348",
-    description: "Budwill STAINLESS STEEL TELESCOPIC CHANNEL - Channels, handles, rails for construction and home use.",
+    description: "Budwill STAINLESS STEEL TELESCOPIC CHANNEL - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5133,7 +5133,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-chrome-finish-hph-144-hardwyn-h-sha-8", name: "Chrome Finish HPH 144 Hardwyn H Shape Aluminium Glass Door Handle", slug: "chrome-finish-hph-144-hardwyn-h-shape-aluminium-glass-door-h-8", sku: "WAR-8-349",
-    description: "Chrome Finish HPH 144 Hardwyn H Shape Aluminium Glass Door Handle - Channels, handles, rails for construction and home use.",
+    description: "Chrome Finish HPH 144 Hardwyn H Shape Aluminium Glass Door Handle - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5151,7 +5151,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-clothes-rail-wall-bracket-6-pcs-war-9", name: "Clothes Rail Wall Bracket, 6 PCS Wardrobe Rail Rod Bracket, Wardrobe Rail Fittings, R", slug: "clothes-rail-wall-bracket-6-pcs-wardrobe-rail-rod-bracket-wa-9", sku: "WAR-9-350",
-    description: "Clothes Rail Wall Bracket, 6 PCS Wardrobe Rail Rod Bracket, Wardrobe Rail Fittings, R - Channels, handles, rails for construction and home use.",
+    description: "Clothes Rail Wall Bracket, 6 PCS Wardrobe Rail Rod Bracket, Wardrobe Rail Fittings, R - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5169,7 +5169,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-11-11", name: "Fabric Rack Hanging Rod", slug: "wardrobe-bed-fittings-item-11-11", sku: "WAR-11-352",
-    description: "Fabric Rack Hanging Rod - Channels, handles, rails for construction and home use.",
+    description: "Fabric Rack Hanging Rod - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5187,7 +5187,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-14-14", name: "Wall Mounted Clothes Rack, Double Rod", slug: "wardrobe-bed-fittings-item-14-14", sku: "WAR-14-355",
-    description: "Wall Mounted Clothes Rack, Double Rod - Channels, handles, rails for construction and home use.",
+    description: "Wall Mounted Clothes Rack, Double Rod - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5205,7 +5205,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-15-15", name: "Freestanding Garment Rack with Shelves", slug: "wardrobe-bed-fittings-item-15-15", sku: "WAR-15-356",
-    description: "Freestanding Garment Rack with Shelves - Channels, handles, rails for construction and home use.",
+    description: "Freestanding Garment Rack with Shelves - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5223,7 +5223,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-17-17", name: "Modular Wardrobe Organizer Set", slug: "wardrobe-bed-fittings-item-17-17", sku: "WAR-17-358",
-    description: "Modular Wardrobe Organizer Set - Channels, handles, rails for construction and home use.",
+    description: "Modular Wardrobe Organizer Set - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5241,7 +5241,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-18-18", name: "Wall Mounted Coat Hook Rail, 4 Hooks", slug: "wardrobe-bed-fittings-item-18-18", sku: "WAR-18-359",
-    description: "Wall Mounted Coat Hook Rail, 4 Hooks - Channels, handles, rails for construction and home use.",
+    description: "Wall Mounted Coat Hook Rail, 4 Hooks - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5259,7 +5259,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-19-19", name: "Wall Mounted Folding Clothes Hooks", slug: "wardrobe-bed-fittings-item-19-19", sku: "WAR-19-360",
-    description: "Wall Mounted Folding Clothes Hooks - Channels, handles, rails for construction and home use.",
+    description: "Wall Mounted Folding Clothes Hooks - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5277,7 +5277,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-wardrobe-bed-fittings-item-20-20", name: "Gold Wall Mounted Valet Hooks", slug: "wardrobe-bed-fittings-item-20-20", sku: "WAR-20-361",
-    description: "Gold Wall Mounted Valet Hooks - Channels, handles, rails for construction and home use.",
+    description: "Gold Wall Mounted Valet Hooks - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5295,7 +5295,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-images-21", name: "Wardrobe Hanging Rod with Wooden Hangers", slug: "images-21", sku: "WAR-21-362",
-    description: "Wardrobe Hanging Rod with Wooden Hangers - Channels, handles, rails for construction and home use.",
+    description: "Wardrobe Hanging Rod with Wooden Hangers - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5313,7 +5313,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-max-hydraulic-gas-strut-lift-suppor-23", name: "Max Hydraulic Gas Strut Lift Support Kitchen Door Cabinet Hinge Spring 60N", slug: "max-hydraulic-gas-strut-lift-support-kitchen-door-cabinet-hi-23", sku: "WAR-23-364",
-    description: "Max Hydraulic Gas Strut Lift Support Kitchen Door Cabinet Hinge Spring 60N - Channels, handles, rails for construction and home use.",
+    description: "Max Hydraulic Gas Strut Lift Support Kitchen Door Cabinet Hinge Spring 60N - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5331,7 +5331,7 @@ export const products: Product[] = [
   },
   {
     id: "wardrobe-uf50720-double-magnetic-touch-catch-24", name: "Double Magnetic Touch Catch, White", slug: "uf50720-double-magnetic-touch-catch-white-cabinet-and-24", sku: "WAR-24-365",
-    description: "Double Magnetic Touch Catch, White - Channels, handles, rails for construction and home use.",
+    description: "Double Magnetic Touch Catch, White - Channels, handles, rails for professional and home use.",
     shortDescription: "Wardrobe & Bed Fittings product",
     brand: "Generic", brandSlug: "generic", category: "Wardrobe & Bed Fittings", categorySlug: "wardrobe",
     subCategory: null, subCategorySlug: null,
@@ -5349,7 +5349,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-0020082-havells-25-sq-mm-180-mtr-fr-1", name: "Havells Life Guard FR-LSH Wire, 2.5 Sqmm, 180 m", slug: "0020082-havells-25-sq-mm-180-mtr-frls-house-wire-600-photoro-1", sku: "ELE-1-367",
-    description: "Havells Life Guard FR-LSH Wire, 2.5 Sqmm, 180 m - House wires, MCB, distribution for construction and home use.",
+    description: "Havells Life Guard FR-LSH Wire, 2.5 Sqmm, 180 m - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Havells", brandSlug: "havells", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5367,7 +5367,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-anchor-by-panasonic-99004-uno-6ka-2-3", name: "Anchor By Panasonic UNO 20 A DP Curve Single Pole MCB, Pack of 2", slug: "anchor-by-panasonic-99004-uno-6ka-20-ampere-c-curve-single-p-3", sku: "ELE-3-369",
-    description: "Anchor By Panasonic UNO 20 A DP Curve Single Pole MCB, Pack of 2 - House wires, MCB, distribution for construction and home use.",
+    description: "Anchor By Panasonic UNO 20 A DP Curve Single Pole MCB, Pack of 2 - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Anchor", brandSlug: "anchor", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5385,7 +5385,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-anchor-by-panasonic-penta-1-mm-pvc-4", name: "Anchor Penta 1 Sq mm PVC Insulated Copper Wire, 45 m", slug: "anchor-by-panasonic-penta-1-mm-pvc-insulated-45-meter-copper-4", sku: "ELE-4-370",
-    description: "Anchor Penta 1 Sq mm PVC Insulated Copper Wire, 45 m - House wires, MCB, distribution for construction and home use.",
+    description: "Anchor Penta 1 Sq mm PVC Insulated Copper Wire, 45 m - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Anchor", brandSlug: "anchor", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5403,7 +5403,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-finolex-cat6-lan-cable-305m-blue-23-7", name: "Finolex CAT6 Lan Cable 305m (Blue) 23AWG", slug: "finolex-cat6-lan-cable-305m-blue-23awg-7", sku: "ELE-7-373",
-    description: "Finolex CAT6 Lan Cable 305m (Blue) 23AWG - House wires, MCB, distribution for construction and home use.",
+    description: "Finolex CAT6 Lan Cable 305m (Blue) 23AWG - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Finolex", brandSlug: "finolex", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5421,7 +5421,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-wires-mcb-boards-item-9-9", name: "Havells Life Line Plus Wire HRFR 1mm 90m Black", slug: "wires-mcb-boards-item-9-9", sku: "ELE-9-375",
-    description: "Havells Life Line Plus Wire HRFR 1mm 90m Black - House wires, MCB, distribution for construction and home use.",
+    description: "Havells Life Line Plus Wire HRFR 1mm 90m Black - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Havells", brandSlug: "havells", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5439,7 +5439,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-rr-kabel-superex-fr-pvc-insulated-4-14", name: "RR Kabel Superex FR PVC Insulated 4 Sq mm Single Core Flexible Copper Wire, 90 m", slug: "rr-kabel-superex-fr-pvc-insulated-4mm-single-core-flexible-c-14", sku: "ELE-14-380",
-    description: "RR Kabel Superex FR PVC Insulated 4 Sq mm Single Core Flexible Copper Wire, 90 m - House wires, MCB, distribution for construction and home use.",
+    description: "RR Kabel Superex FR PVC Insulated 4 Sq mm Single Core Flexible Copper Wire, 90 m - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "RR Kabel", brandSlug: "rr-kabel", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5457,7 +5457,7 @@ export const products: Product[] = [
   },
   {
     id: "electrical-schneider-electric-acti9-spn-db-dou-15", name: "Schneider Electric Acti 9 SPN DB, Double Door", slug: "schneider-electric-acti9-spn-db-double-door-15", sku: "ELE-15-381",
-    description: "Schneider Electric Acti 9 SPN DB, Double Door - House wires, MCB, distribution for construction and home use.",
+    description: "Schneider Electric Acti 9 SPN DB, Double Door - House wires, MCB, distribution for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Schneider Electric", brandSlug: "schneider-electric", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -5476,7 +5476,7 @@ export const products: Product[] = [
 
   {
     id: "tiling-new-asian-paints-smartcare-tile-adhesiv-3", name: "Asian Paints Smart Care Tile Adhesive, Grey, 30 kg Bag", slug: "asian-paints-smartcare-tile-adhesive-grey-30-kg-bag-3", sku: "NEW-5003",
-    description: "Asian Paints Smart Care Tile Adhesive, Grey, 30 kg Bag - Tiling product for construction use.",
+    description: "Asian Paints Smart Care Tile Adhesive, Grey, 30 kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5494,7 +5494,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-birla-white-tx1-tile-adhesive-white-4", name: "Birla White TX1 Tile Adhesive, White, 20 kg Bag", slug: "birla-white-tx1-tile-adhesive-white-20-kg-bag-4", sku: "NEW-5004",
-    description: "Birla White TX1 Tile Adhesive, White, 20 kg Bag - Tiling product for construction use.",
+    description: "Birla White TX1 Tile Adhesive, White, 20 kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Birla White", brandSlug: "birla-white", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5512,7 +5512,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-birla-white-tx2-tile-adhesive-white-5", name: "Birla White TX2 Tile Adhesive, White, 20 Kg Bag", slug: "birla-white-tx2-tile-adhesive-white-20-kg-bag-5", sku: "NEW-5005",
-    description: "Birla White TX2 Tile Adhesive, White, 20 Kg Bag - Tiling product for construction use.",
+    description: "Birla White TX2 Tile Adhesive, White, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Birla White", brandSlug: "birla-white", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5530,7 +5530,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-jon-bhandari-two-way-soft-face-mall-6", name: "Jon Bhandari Two Way Soft Face Mallet", slug: "jon-bhandari-two-way-soft-face-mallet-6", sku: "NEW-5006",
-    description: "Jon Bhandari Two Way Soft Face Mallet - Tiling product for construction use.",
+    description: "Jon Bhandari Two Way Soft Face Mallet - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Generic", brandSlug: "generic", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5548,7 +5548,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-loctite-general-purpose-sealant-whi-7", name: "Loctite General Purpose Sealant, White", slug: "loctite-general-purpose-sealant-white-7", sku: "NEW-5007",
-    description: "Loctite General Purpose Sealant, White - Tiling product for construction use.",
+    description: "Loctite General Purpose Sealant, White - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Loctite", brandSlug: "loctite", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5566,7 +5566,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-loctite-powergrab-all-purpose-const-8", name: "LOCTITE Powergrab All Purpose Construction Adhesive, 380g", slug: "loctite-powergrab-all-purpose-construction-adhesive-380g-8", sku: "NEW-5008",
-    description: "LOCTITE Powergrab All Purpose Construction Adhesive, 380g - Tiling product for construction use.",
+    description: "LOCTITE Powergrab All Purpose Construction Adhesive, 380g - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Loctite", brandSlug: "loctite", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5584,7 +5584,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-loctite-powergrab-mirror-constructi-9", name: "LOCTITE Powergrab Mirror Construction Adhesive, 440g", slug: "loctite-powergrab-mirror-construction-adhesive-440g-9", sku: "NEW-5009",
-    description: "LOCTITE Powergrab Mirror Construction Adhesive, 440g - Tiling product for construction use.",
+    description: "LOCTITE Powergrab Mirror Construction Adhesive, 440g - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Loctite", brandSlug: "loctite", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5602,7 +5602,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-loctite-powergrab-ultimate-construc-10", name: "LOCTITE Powergrab Ultimate Construction Adhesive, 460g", slug: "loctite-powergrab-ultimate-construction-adhesive-460g-10", sku: "NEW-5010",
-    description: "LOCTITE Powergrab Ultimate Construction Adhesive, 460g - Tiling product for construction use.",
+    description: "LOCTITE Powergrab Ultimate Construction Adhesive, 460g - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Loctite", brandSlug: "loctite", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5620,7 +5620,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-loctite-professional-instant-super-11", name: "LOCTITE Professional Instant Super Glue, 20g", slug: "loctite-professional-instant-super-glue-20g-11", sku: "NEW-5011",
-    description: "LOCTITE Professional Instant Super Glue, 20g - Tiling product for construction use.",
+    description: "LOCTITE Professional Instant Super Glue, 20g - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Loctite", brandSlug: "loctite", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5638,7 +5638,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-307-ceramic-tile-adhe-12", name: "MYK Laticrete 307 Ceramic Tile Adhesive, Grey, 20 Kg Bag", slug: "myk-laticrete-307-ceramic-tile-adhesive-grey-20-kg-bag-12", sku: "NEW-5012",
-    description: "MYK Laticrete 307 Ceramic Tile Adhesive, Grey, 20 Kg Bag - Tiling product for construction use.",
+    description: "MYK Laticrete 307 Ceramic Tile Adhesive, Grey, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5656,7 +5656,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-315-plus-tile-adhesiv-15", name: "MYK Laticrete 315 Plus Tile Adhesive, White, 20 Kg Bag", slug: "myk-laticrete-315-plus-tile-adhesive-white-20-kg-bag-15", sku: "NEW-5015",
-    description: "MYK Laticrete 315 Plus Tile Adhesive, White, 20 Kg Bag - Tiling product for construction use.",
+    description: "MYK Laticrete 315 Plus Tile Adhesive, White, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5674,7 +5674,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-325-high-flex-tile-st-16", name: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, Grey, 20 Kg Bag", slug: "myk-laticrete-325-high-flex-tile-stone-adhesive-grey-20-kg-b-16", sku: "NEW-5016",
-    description: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, Grey, 20 Kg Bag - Tiling product for construction use.",
+    description: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, Grey, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5692,7 +5692,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-325-high-flex-tile-st-17", name: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, White, 20 Kg Bag", slug: "myk-laticrete-325-high-flex-tile-stone-adhesive-white-20-kg-17", sku: "NEW-5017",
-    description: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, White, 20 Kg Bag - Tiling product for construction use.",
+    description: "MYK Laticrete 325 High Flex Tile & Stone Adhesive, White, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5710,7 +5710,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-335-super-flex-tile-s-19", name: "MYK Laticrete 335 Super Flex Tile & Stone Adhesive, White, 20 Kg Bag", slug: "myk-laticrete-335-super-flex-tile-stone-adhesive-white-20-kg-19", sku: "NEW-5019",
-    description: "MYK Laticrete 335 Super Flex Tile & Stone Adhesive, White, 20 Kg Bag - Tiling product for construction use.",
+    description: "MYK Laticrete 335 Super Flex Tile & Stone Adhesive, White, 20 Kg Bag - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5728,7 +5728,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-notch-trowel-20", name: "MYK Laticrete Notch Trowel, Econ 4 (6 mm)", slug: "myk-laticrete-notch-trowel-20", sku: "NEW-5020",
-    description: "MYK Laticrete Notch Trowel, Econ 4 (6 mm) - Tiling product for construction use.",
+    description: "MYK Laticrete Notch Trowel, Econ 4 (6 mm) - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5746,7 +5746,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-pua-212-modified-pu-a-21", name: "MYK Laticrete PUA 212 Modified PU Adhesive, 4 kg", slug: "myk-laticrete-pua-212-modified-pu-adhesive-21", sku: "NEW-5021",
-    description: "MYK Laticrete PUA 212 Modified PU Adhesive, 4 kg - Tiling product for construction use.",
+    description: "MYK Laticrete PUA 212 Modified PU Adhesive, 4 kg - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5764,7 +5764,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-myk-laticrete-tile-levelling-clips-24", name: "MYK Laticrete Tile Levelling Clips with Wedges, 2 mm (Pack of 50)", slug: "myk-laticrete-tile-levelling-clips-with-wedges-24", sku: "NEW-5024",
-    description: "MYK Laticrete Tile Levelling Clips with Wedges, 2 mm (Pack of 50) - Tiling product for construction use.",
+    description: "MYK Laticrete Tile Levelling Clips with Wedges, 2 mm (Pack of 50) - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK", brandSlug: "myk", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5782,7 +5782,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-roff-t16-cera-tile-ceramic-cleaner-31", name: "Roff T16 Cera Tile & Ceramic Cleaner, 1 L", slug: "roff-t16-cera-tile-ceramic-cleaner-31", sku: "NEW-5031",
-    description: "Roff T16 Cera Tile & Ceramic Cleaner, 1 L - Tiling product for construction use.",
+    description: "Roff T16 Cera Tile & Ceramic Cleaner, 1 L - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Roff", brandSlug: "roff", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5800,7 +5800,7 @@ export const products: Product[] = [
   },
   {
     id: "tiling-new-roff-t34-starlike-epoxy-tile-grout-33", name: "Roff T34 Starlike Epoxy Tile Grout, 1 kg", slug: "roff-t34-starlike-epoxy-tile-grout-33", sku: "NEW-5033",
-    description: "Roff T34 Starlike Epoxy Tile Grout, 1 kg - Tiling product for construction use.",
+    description: "Roff T34 Starlike Epoxy Tile Grout, 1 kg - Tiling product for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Roff", brandSlug: "roff", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -5818,7 +5818,7 @@ export const products: Product[] = [
   },
   {
     id: "painting-new-birla-white-cement-1-kg-3", name: "Birla White Cement, 1 kg", slug: "birla-white-cement-1-kg-3", sku: "NEW-5038",
-    description: "Birla White Cement, 1 kg - Painting product for construction use.",
+    description: "Birla White Cement, 1 kg - Painting product for professional and home use.",
     shortDescription: "Painting product",
     brand: "Birla White", brandSlug: "birla-white", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5836,7 +5836,7 @@ export const products: Product[] = [
   },
   {
     id: "painting-new-birla-white-cement-25-kg-4", name: "Birla White Cement, 25 kg", slug: "birla-white-cement-25-kg-4", sku: "NEW-5039",
-    description: "Birla White Cement, 25 kg - Painting product for construction use.",
+    description: "Birla White Cement, 25 kg - Painting product for professional and home use.",
     shortDescription: "Painting product",
     brand: "Birla White", brandSlug: "birla-white", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5854,7 +5854,7 @@ export const products: Product[] = [
   },
   {
     id: "painting-new-birla-white-cement-5-kg-5", name: "Birla White Cement, 5 kg", slug: "birla-white-cement-5-kg-5", sku: "NEW-5040",
-    description: "Birla White Cement, 5 kg - Painting product for construction use.",
+    description: "Birla White Cement, 5 kg - Painting product for professional and home use.",
     shortDescription: "Painting product",
     brand: "Birla White", brandSlug: "birla-white", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5872,7 +5872,7 @@ export const products: Product[] = [
   },
   {
     id: "painting-new-birla-white-cement-50-kg-6", name: "Birla White Cement, 50 kg", slug: "birla-white-cement-50-kg-6", sku: "NEW-5041",
-    description: "Birla White Cement, 50 kg - Painting product for construction use.",
+    description: "Birla White Cement, 50 kg - Painting product for professional and home use.",
     shortDescription: "Painting product",
     brand: "Birla White", brandSlug: "birla-white", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5890,7 +5890,7 @@ export const products: Product[] = [
   },
   {
     id: "painting-new-birla-white-cement-7", name: "Birla White Cement, 10 kg", slug: "birla-white-cement-7", sku: "NEW-5042",
-    description: "Birla White Cement, 10 kg - Painting product for construction use.",
+    description: "Birla White Cement, 10 kg - Painting product for professional and home use.",
     shortDescription: "Painting product",
     brand: "Birla White", brandSlug: "birla-white", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5909,7 +5909,7 @@ export const products: Product[] = [
 
   {
     id: "fxy-0-72mm-off-white-liner-laminate-8x4-ft", name: "0.72mm Off White Liner Laminate 8x4 ft", slug: "0-72mm-off-white-liner-laminate-8x4-ft", sku: "WNL-LMT-00000094",
-    description: "0.72mm Off White Liner Laminate 8x4 ft - Plywood, MDF & HDHMR for construction and home use.",
+    description: "0.72mm Off White Liner Laminate 8x4 ft - Plywood, MDF & HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Generic", brandSlug: "generic", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -5927,7 +5927,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-1-5mtr-cleaning-dhoti-cloth-for-painting-work", name: "Cleaning Dhoti Cloth for painting work 1.5m", slug: "1-5mtr-cleaning-dhoti-cloth-for-painting-work", sku: "PNA-PPS-00000096",
-    description: "Cleaning Dhoti Cloth for painting work 1.5m - Painting for construction and home use.",
+    description: "Cleaning Dhoti Cloth for painting work 1.5m - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -5945,7 +5945,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-1-inch-premium-black-hair-pro-pvc-paint-brush", name: "1 Inch Premium Black Hair Pro PVC Paint Brush", slug: "1-inch-premium-black-hair-pro-pvc-paint-brush", sku: "PNA-PPS-00000124",
-    description: "1 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for construction and home use.",
+    description: "1 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -5963,7 +5963,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-14mm-x-1-1-4-inch-heavy-duty-steel-nails-250-grams", name: "Heavy Duty Steel Nails, 250 grams", slug: "14mm-x-1-1-4-inch-heavy-duty-steel-nails-250-grams", sku: "HNF-BSF-00000021",
-    description: "Heavy Duty Steel Nails, 250 grams - Pipes & Tanks for construction and home use.",
+    description: "Heavy Duty Steel Nails, 250 grams - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -5981,7 +5981,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-17mm-x-1-inch-heavy-duty-head-less-steel-nails-250-gram", name: "Heavy Duty Head less Steel Nails, 250 Grams", slug: "17mm-x-1-inch-heavy-duty-head-less-steel-nails-250-grams", sku: "HNF-BSF-00000025",
-    description: "Heavy Duty Head less Steel Nails, 250 Grams - Pipes & Tanks for construction and home use.",
+    description: "Heavy Duty Head less Steel Nails, 250 Grams - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -6035,7 +6035,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-2-inch-premium-black-hair-pro-pvc-paint-brush", name: "2 Inch Premium Black Hair Pro PVC Paint Brush", slug: "2-inch-premium-black-hair-pro-pvc-paint-brush", sku: "PNA-PPS-00000125",
-    description: "2 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for construction and home use.",
+    description: "2 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -6053,7 +6053,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-2-inch-premium-yellow-line-mini-paint-roller-std-combo", name: "2 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle)", slug: "2-inch-premium-yellow-line-mini-paint-roller-std-combo-pack-3-roller-1-handle", sku: "PNA-PPS-00000118",
-    description: "2 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "2 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6071,7 +6071,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-2-inch-premium-yellow-line-mini-paint-roller-std-refill", name: "2 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 20 Pcs Refill)", slug: "2-inch-premium-yellow-line-mini-paint-roller-std-refill-pouch-20-pcs-refill", sku: "PNA-PPS-00000121",
-    description: "2 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 20 Pcs Refill) - Painting for construction and home use.",
+    description: "2 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 20 Pcs Refill) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6089,7 +6089,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-3-inch-premium-black-hair-pro-pvc-paint-brush", name: "3 Inch Premium Black Hair Pro PVC Paint Brush", slug: "3-inch-premium-black-hair-pro-pvc-paint-brush", sku: "PNA-PPS-00000126",
-    description: "3 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for construction and home use.",
+    description: "3 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -6125,7 +6125,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-3inch-clear-tape-45-mtr", name: "3inch Clear Tape, 45 mtr", slug: "3inch-clear-tape-45-mtr", sku: "ANW-TWC-000108",
-    description: "3inch Clear Tape, 45 mtr - Sanitary & Bath for construction and home use.",
+    description: "3inch Clear Tape, 45 mtr - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -6197,7 +6197,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-4-inch-premium-black-hair-pro-long-hair-paint-brush", name: "4 Inch Premium Black Hair Pro - Long Hair Paint Brush", slug: "4-inch-premium-black-hair-pro-long-hair-paint-brush", sku: "PNA-PPS-00000128",
-    description: "4 Inch Premium Black Hair Pro - Long Hair Paint Brush - Painting for construction and home use.",
+    description: "4 Inch Premium Black Hair Pro - Long Hair Paint Brush - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6215,7 +6215,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-4-inch-premium-black-hair-pro-pvc-paint-brush", name: "4 Inch Premium Black Hair Pro PVC Paint Brush", slug: "4-inch-premium-black-hair-pro-pvc-paint-brush", sku: "PNA-PPS-00000127",
-    description: "4 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for construction and home use.",
+    description: "4 Inch Premium Black Hair Pro PVC Paint Brush - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -6233,7 +6233,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-4-inch-premium-patti-blade", name: "4 Inch Premium Patti Blade", slug: "4-inch-premium-patti-blade", sku: "PNA-PPS-PA-000009",
-    description: "4 Inch Premium Patti Blade - Painting for construction and home use.",
+    description: "4 Inch Premium Patti Blade - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6251,7 +6251,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-4-inch-premium-yellow-line-mini-paint-roller-std-combo", name: "4 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle)", slug: "4-inch-premium-yellow-line-mini-paint-roller-std-combo-pack-3-roller-1-handle", sku: "PNA-PPS-00000119",
-    description: "4 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "4 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (3 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6269,7 +6269,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-4-inch-premium-yellow-line-mini-paint-roller-std-refill", name: "4 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill)", slug: "4-inch-premium-yellow-line-mini-paint-roller-std-refill-pouch-10-pcs-refill", sku: "PNA-PPS-00000122",
-    description: "4 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill) - Painting for construction and home use.",
+    description: "4 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6287,7 +6287,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-6-inch-premium-patti-blade", name: "6 Inch Premium Patti Blade", slug: "6-inch-premium-patti-blade", sku: "PNA-PPS-PA-000010",
-    description: "6 Inch Premium Patti Blade - Painting for construction and home use.",
+    description: "6 Inch Premium Patti Blade - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6305,7 +6305,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-6-inch-premium-yellow-line-mini-paint-roller-std-combo", name: "6 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (2 Roller + 1 Handle)", slug: "6-inch-premium-yellow-line-mini-paint-roller-std-combo-pack-2-roller-1-handle", sku: "PNA-PPS-00000120",
-    description: "6 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (2 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "6 inch Premium Yellow Line Mini Paint Roller STD Combo Pack (2 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6323,7 +6323,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-6-inch-premium-yellow-line-mini-paint-roller-std-refill", name: "6 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill)", slug: "6-inch-premium-yellow-line-mini-paint-roller-std-refill-pouch-10-pcs-refill", sku: "PNA-PPS-00000123",
-    description: "6 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill) - Painting for construction and home use.",
+    description: "6 inch Premium Yellow Line Mini Paint Roller STD Refill (Pouch 10 Pcs Refill) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6359,7 +6359,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-8-inch-premium-medium-patti-blade", name: "8 Inch Premium Medium Patti Blade", slug: "8-inch-premium-medium-patti-blade", sku: "PNA-PPS-PA-000011",
-    description: "8 Inch Premium Medium Patti Blade - Painting for construction and home use.",
+    description: "8 Inch Premium Medium Patti Blade - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6377,7 +6377,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-9-inch-5mm-premium-easy-fix-royal-pure-white-push-type", name: "9 inch 5mm Premium Easy Fix Royal Pure White - Push Type Interior Paint Roller (1 Roller + 1 Handle)", slug: "9-inch-5mm-premium-easy-fix-royal-pure-white-push-type-interior-paint-roller-1-roller-1-handle", sku: "PNA-PPS-00000116",
-    description: "9 inch 5mm Premium Easy Fix Royal Pure White - Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "9 inch 5mm Premium Easy Fix Royal Pure White - Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6431,7 +6431,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-9-inch-premium-easy-fix-green-thread-push-type-exterior", name: "9 inch Premium Easy Fix Green Thread -Push Type Exterior Paint Roller (1 Roller + 1 Handle)", slug: "9-inch-premium-easy-fix-green-thread-push-type-exterior-paint-roller-1-roller-1-handle", sku: "PNA-PPS-00000117",
-    description: "9 inch Premium Easy Fix Green Thread -Push Type Exterior Paint Roller (1 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "9 inch Premium Easy Fix Green Thread -Push Type Exterior Paint Roller (1 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6449,7 +6449,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-9-inch-premium-easy-fix-yellow-double-line-push-type-in", name: "9 inch Premium Easy Fix Yellow Double Line -Push Type Interior Paint Roller (1 Roller + 1 Handle)", slug: "9-inch-premium-easy-fix-yellow-double-line-push-type-interior-paint-roller-1-roller-1-handle", sku: "PNA-PPS-00000115",
-    description: "9 inch Premium Easy Fix Yellow Double Line -Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "9 inch Premium Easy Fix Yellow Double Line -Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6467,7 +6467,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-9-inch-premium-easy-fix-yellow-line-push-type-interior", name: "9 inch Premium Easy Fix Yellow Line - Push Type Interior Paint Roller (1 Roller + 1 Handle)", slug: "9-inch-premium-easy-fix-yellow-line-push-type-interior-paint-roller-1-roller-1-handle", sku: "PNA-PPS-00000114",
-    description: "9 inch Premium Easy Fix Yellow Line - Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for construction and home use.",
+    description: "9 inch Premium Easy Fix Yellow Line - Push Type Interior Paint Roller (1 Roller + 1 Handle) - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -6539,7 +6539,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-aluminium-tower-bolt-4-inch", name: "Aluminium Tower Bolt", slug: "aluminium-tower-bolt-4-inch", sku: "HNF-DLH-00000065",
-    description: "Aluminium Tower Bolt - Door Locks & Hardware for construction and home use.",
+    description: "Aluminium Tower Bolt - Door Locks & Hardware for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -6809,7 +6809,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-deko-white-1m-single-mounting-plate", name: "Anchor By Panasonic Deko Single Mounting Plates, White", slug: "anchor-by-panasonic-deko-white-1m-single-mounting-plates-21317wh", sku: "ELE-SSP-00000015",
-    description: "Anchor By Panasonic Deko Single Mounting Plates, White - Switches & Sockets for construction and home use.",
+    description: "Anchor By Panasonic Deko Single Mounting Plates, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7007,7 +7007,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-roma-classic-10ax-100w-sbl-load-2-w", name: "Anchor Roma Classic 10AX 2 Way Switch", slug: "anchor-by-panasonic-roma-classic-10ax-100w-sbl-load-2-way-switch-21022", sku: "ELE-SWS-00000099",
-    description: "Anchor Roma Classic 10AX 2 Way Switch - Switches & Sockets for construction and home use.",
+    description: "Anchor Roma Classic 10AX 2 Way Switch - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7079,7 +7079,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-roma-classic-dura-isi-10a-bell-push", name: "Anchor Roma Classic 2M Bell Push", slug: "anchor-by-panasonic-roma-classic-dura-isi-10a-bell-push-switches-21554", sku: "ELE-SWS-00000100",
-    description: "Anchor Roma Classic 2M Bell Push - Switches & Sockets for construction and home use.",
+    description: "Anchor Roma Classic 2M Bell Push - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7097,7 +7097,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-roma-classic-red-neon-indicator-211", name: "Anchor Roma Classic Neon Indicator Red", slug: "anchor-by-panasonic-roma-classic-red-neon-indicator-21180r", sku: "ELE-SWS-00000102",
-    description: "Anchor Roma Classic Neon Indicator Red - Hardware & Tools for construction and home use.",
+    description: "Anchor Roma Classic Neon Indicator Red - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -7115,7 +7115,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-roma-classic-single-blank-plate-215", name: "Anchor Roma Classic Blank Plate", slug: "anchor-by-panasonic-roma-classic-single-blank-plate-21598", sku: "ELE-SWS-00000101",
-    description: "Anchor Roma Classic Blank Plate - Switches & Sockets for construction and home use.",
+    description: "Anchor Roma Classic Blank Plate - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7133,7 +7133,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-roma-tresa-16-module-solid-plate-34", name: "Anchor Roma Classic Tresa 16M Cover Plate", slug: "anchor-by-panasonic-roma-tresa-16-module-solid-plate-34680wh", sku: "ELE-SWS-00000103",
-    description: "Anchor Roma Classic Tresa 16M Cover Plate - Switches & Sockets for construction and home use.",
+    description: "Anchor Roma Classic Tresa 16M Cover Plate - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7151,7 +7151,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-by-panasonic-tresa-matt-black-1m-solid-plates-30", name: "Anchor By Panasonic Tresa Solid Plates, Matt Black", slug: "anchor-by-panasonic-tresa-matt-black-1m-solid-plates-30216mb", sku: "ELE-SSP-00000005",
-    description: "Anchor By Panasonic Tresa Solid Plates, Matt Black - Switches & Sockets for construction and home use.",
+    description: "Anchor By Panasonic Tresa Solid Plates, Matt Black - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7349,7 +7349,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-anchor-roma-classic-deko-8-module-white-cover-plate", name: "Anchor Roma Classic Deko 8 Module White Cover Plate", slug: "anchor-roma-classic-deko-8-module-white-cover-plate", sku: "ELE-ELA-00000033",
-    description: "Anchor Roma Classic Deko 8 Module White Cover Plate - Switches & Sockets for construction and home use.",
+    description: "Anchor Roma Classic Deko 8 Module White Cover Plate - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Anchor by Panasonic", brandSlug: "anchor-by-panasonic", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7475,7 +7475,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-1-1-4inch-6-kg-cm-class-3-upvc-pipes-10-ft", name: "Ashirvad 1-1/4inch 6 Kg/cm PVC Pipes, 10 Ft", slug: "ashirvad-1-1-4inch-6-kg-cm-class-3-upvc-pipes-10-ft", sku: "PLB-PFT-00000292",
-    description: "Ashirvad 1-1/4inch 6 Kg/cm PVC Pipes, 10 Ft - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad 1-1/4inch 6 Kg/cm PVC Pipes, 10 Ft - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7493,7 +7493,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-2-1-2inch-solfit-pvc-type-a-4kg-single-socket", name: "Ashirvad 2-1/2inch Solfit PVC Type-A 4Kg Single Socket PVC Pipe, 10 ft", slug: "ashirvad-2-1-2inch-solfit-pvc-type-a-4kg-single-socket-pvc-pipe-10-ft", sku: "PLB-PFT-00000290",
-    description: "Ashirvad 2-1/2inch Solfit PVC Type-A 4Kg Single Socket PVC Pipe, 10 ft - Switches & Sockets for construction and home use.",
+    description: "Ashirvad 2-1/2inch Solfit PVC Type-A 4Kg Single Socket PVC Pipe, 10 ft - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7565,7 +7565,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-4inch-solfit-type-a-4kg-single-socket-pvc-pipe", name: "Ashirvad 4inch Solfit Type-A 4Kg Single Socket PVC Pipe,10 ft", slug: "ashirvad-4inch-solfit-type-a-4kg-single-socket-pvc-pipe-10-ft", sku: "PLB-PFT-00000289",
-    description: "Ashirvad 4inch Solfit Type-A 4Kg Single Socket PVC Pipe,10 ft - Switches & Sockets for construction and home use.",
+    description: "Ashirvad 4inch Solfit Type-A 4Kg Single Socket PVC Pipe,10 ft - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -7691,7 +7691,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-bushing", name: "Ashirvad FlowGuard Plus CPVC Bushing", slug: "ashirvad-flowguard-plus-cpvc-bushing", sku: "PLB-PFT-00000147",
-    description: "Ashirvad FlowGuard Plus CPVC Bushing - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC Bushing - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7709,7 +7709,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-end-cap", name: "Ashirvad FlowGuard Plus CPVC End Cap", slug: "ashirvad-flowguard-plus-cpvc-end-cap", sku: "PLB-PFT-00000081",
-    description: "Ashirvad FlowGuard Plus CPVC End Cap - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC End Cap - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7799,7 +7799,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-reducer-tee", name: "Ashirvad FlowGuard Plus CPVC Reducer Tee", slug: "ashirvad-flowguard-plus-cpvc-reducer-tee", sku: "PLB-PFT-00000112",
-    description: "Ashirvad FlowGuard Plus CPVC Reducer Tee - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC Reducer Tee - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7835,7 +7835,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-solvent", name: "Ashirvad FlowGuard Plus CPVC Solvent", slug: "ashirvad-flowguard-plus-cpvc-solvent", sku: "PLB-PFT-00000186",
-    description: "Ashirvad FlowGuard Plus CPVC Solvent - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC Solvent - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7853,7 +7853,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-sweep-bend", name: "Ashirvad FlowGuard Plus CPVC Sweep Bend", slug: "ashirvad-flowguard-plus-cpvc-sweep-bend", sku: "PLB-PFT-00000105",
-    description: "Ashirvad FlowGuard Plus CPVC Sweep Bend - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC Sweep Bend - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7871,7 +7871,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-flowguard-plus-cpvc-tank-nipple", name: "Ashirvad FlowGuard Plus CPVC Tank Nipple", slug: "ashirvad-flowguard-plus-cpvc-tank-nipple", sku: "PLB-PFT-00000169",
-    description: "Ashirvad FlowGuard Plus CPVC Tank Nipple - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad FlowGuard Plus CPVC Tank Nipple - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7925,7 +7925,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-plain-bend-2-inch-75mm", name: "Ashirvad Pushfit PVC Washer Type Plain Bend, 2½ Inch (75mm), 70001138", slug: "ashirvad-pushfit-pvc-washer-type-plain-bend-2-inch-75mm-70001138", sku: "PLB-PFT-00000260",
-    description: "Ashirvad Pushfit PVC Washer Type Plain Bend, 2½ Inch (75mm), 70001138 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Plain Bend, 2½ Inch (75mm), 70001138 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7943,7 +7943,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-plain-bend-4-inch-110m", name: "Ashirvad Pushfit PVC Washer Type Plain Bend, 4 Inch (110mm), 70001140", slug: "ashirvad-pushfit-pvc-washer-type-plain-bend-4-inch-110mm-70001140", sku: "PLB-PFT-00000252",
-    description: "Ashirvad Pushfit PVC Washer Type Plain Bend, 4 Inch (110mm), 70001140 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Plain Bend, 4 Inch (110mm), 70001140 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7961,7 +7961,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-shoe-bend-2-inch-75mm", name: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 2½ Inch (75mm), 70001156", slug: "ashirvad-pushfit-pvc-washer-type-shoe-bend-2-inch-75mm-70001156", sku: "PLB-PFT-00000261",
-    description: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 2½ Inch (75mm), 70001156 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 2½ Inch (75mm), 70001156 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7979,7 +7979,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-shoe-bend-4-inch-110mm", name: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 4 Inch (110mm), 70001158", slug: "ashirvad-pushfit-pvc-washer-type-shoe-bend-4-inch-110mm-70001158", sku: "PLB-PFT-00000253",
-    description: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 4 Inch (110mm), 70001158 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Shoe Bend, 4 Inch (110mm), 70001158 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -7997,7 +7997,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-single-plain-tee-2-inc", name: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 2½ Inch (75mm), 70001161", slug: "ashirvad-pushfit-pvc-washer-type-single-plain-tee-2-inch-75mm-70001161", sku: "PLB-PFT-00000262",
-    description: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 2½ Inch (75mm), 70001161 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 2½ Inch (75mm), 70001161 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8015,7 +8015,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-single-plain-tee-4-inc", name: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 4 Inch (110mm), 70001163", slug: "ashirvad-pushfit-pvc-washer-type-single-plain-tee-4-inch-110mm-70001163", sku: "PLB-PFT-00000254",
-    description: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 4 Inch (110mm), 70001163 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Single Plain Tee, 4 Inch (110mm), 70001163 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8033,7 +8033,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-single-plain-y-2-1-2-i", name: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 2-1/2 inch, 70011605", slug: "ashirvad-pushfit-pvc-washer-type-single-plain-y-2-1-2-inch-70001198", sku: "PLB-PFT-00000287",
-    description: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 2-1/2 inch, 70011605 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 2-1/2 inch, 70011605 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8051,7 +8051,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pushfit-pvc-washer-type-single-plain-y-4-inch", name: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 4 Inch (110mm), 70001200", slug: "ashirvad-pushfit-pvc-washer-type-single-plain-y-4-inch-110mm-70001200", sku: "PLB-PFT-00000255",
-    description: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 4 Inch (110mm), 70001200 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Pushfit PVC Washer Type Single Plain-Y, 4 Inch (110mm), 70001200 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8069,7 +8069,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-end-cap-1-inch-40mm-70001269", name: "Ashirvad PVC End Cap, 1¼ Inch (40mm), 70001269", slug: "ashirvad-pvc-end-cap-1-inch-40mm-70001269", sku: "PLB-PFT-00000284",
-    description: "Ashirvad PVC End Cap, 1¼ Inch (40mm), 70001269 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC End Cap, 1¼ Inch (40mm), 70001269 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8087,7 +8087,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-end-cap-2-inch-50mm-70001270", name: "Ashirvad PVC End Cap, 1-1/2 Inch (50mm), 70001270", slug: "ashirvad-pvc-end-cap-2-inch-50mm-70001270", sku: "PLB-PFT-00000271",
-    description: "Ashirvad PVC End Cap, 1-1/2 Inch (50mm), 70001270 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC End Cap, 1-1/2 Inch (50mm), 70001270 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8105,7 +8105,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-end-cap-2-inch-75mm-70001271", name: "Ashirvad PVC End Cap, 2½ Inch (75mm), 70001271", slug: "ashirvad-pvc-end-cap-2-inch-75mm-70001271", sku: "PLB-PFT-00000285",
-    description: "Ashirvad PVC End Cap, 2½ Inch (75mm), 70001271 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC End Cap, 2½ Inch (75mm), 70001271 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8123,7 +8123,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-end-cap-4-inch-110mm-70001273", name: "Ashirvad PVC End Cap, 4 Inch (110mm), 70001273", slug: "ashirvad-pvc-end-cap-4-inch-110mm-70001273", sku: "PLB-PFT-00000270",
-    description: "Ashirvad PVC End Cap, 4 Inch (110mm), 70001273 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC End Cap, 4 Inch (110mm), 70001273 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8141,7 +8141,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-equal-plain-y-2inch-50mm-70001238", name: "Ashirvad PVC Equal Plain-Y, 1-1/2Inch (50mm), 70001238", slug: "ashirvad-pvc-equal-plain-y-2inch-50mm-70001238", sku: "PLB-PFT-00000283",
-    description: "Ashirvad PVC Equal Plain-Y, 1-1/2Inch (50mm), 70001238 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Equal Plain-Y, 1-1/2Inch (50mm), 70001238 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8159,7 +8159,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-equal-tee-1-inch-40mm-70001376", name: "Ashirvad PVC Equal Tee, 1¼ Inch (40mm), 70001376", slug: "ashirvad-pvc-equal-tee-1-inch-40mm-70001376", sku: "PLB-PFT-00000282",
-    description: "Ashirvad PVC Equal Tee, 1¼ Inch (40mm), 70001376 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Equal Tee, 1¼ Inch (40mm), 70001376 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8177,7 +8177,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-floor-trap-4x2-inch-110x75mm-70001461", name: "Ashirvad PVC Floor Trap, 4x2½ Inch (110x75mm), 70001461", slug: "ashirvad-pvc-floor-trap-4x2-inch-110x75mm-70001461", sku: "PLB-PFT-00000258",
-    description: "Ashirvad PVC Floor Trap, 4x2½ Inch (110x75mm), 70001461 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Floor Trap, 4x2½ Inch (110x75mm), 70001461 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8195,7 +8195,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-multi-trap-without-jali-4-inch-110mm-70001", name: "Ashirvad PVC Multi Trap Without Jali, 4x2½x1½ inch (110x75x50 mm), 70001252", slug: "ashirvad-pvc-multi-trap-without-jali-4-inch-110mm-70001252", sku: "PLB-PFT-00000257",
-    description: "Ashirvad PVC Multi Trap Without Jali, 4x2½x1½ inch (110x75x50 mm), 70001252 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Multi Trap Without Jali, 4x2½x1½ inch (110x75x50 mm), 70001252 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8213,7 +8213,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-nahani-trap-single-piece-without-jali-2-in", name: "Ashirvad PVC Nahani Trap Single Piece Without Jali, 4x2½ Inch (110x75mm), 70003273", slug: "ashirvad-pvc-nahani-trap-single-piece-without-jali-2-inch-75mm-70003273", sku: "PLB-PFT-00000263",
-    description: "Ashirvad PVC Nahani Trap Single Piece Without Jali, 4x2½ Inch (110x75mm), 70003273 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Nahani Trap Single Piece Without Jali, 4x2½ Inch (110x75mm), 70003273 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8231,7 +8231,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-reducing-bush-2x1-inch-50x40mm-70001311", name: "Ashirvad PVC Reducing Bush, 1½x1¼ Inch, (50x40mm), 70001311", slug: "ashirvad-pvc-reducing-bush-2x1-inch-50x40mm-70001311", sku: "PLB-PFT-00000279",
-    description: "Ashirvad PVC Reducing Bush, 1½x1¼ Inch, (50x40mm), 70001311 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Reducing Bush, 1½x1¼ Inch, (50x40mm), 70001311 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8249,7 +8249,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-reducing-collar-washer-4x2-inch-110x75mm-7", name: "Ashirvad PVC Reducing Collar Washer, 4x2½ Inch (110x75mm), 70001117", slug: "ashirvad-pvc-reducing-collar-washer-4x2-inch-110x75mm-70001117", sku: "PLB-PFT-00000280",
-    description: "Ashirvad PVC Reducing Collar Washer, 4x2½ Inch (110x75mm), 70001117 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Reducing Collar Washer, 4x2½ Inch (110x75mm), 70001117 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8267,7 +8267,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-rubber-lubricant-100gm-50000653", name: "Ashirvad PVC Rubber Lubricant, 100gm, 50000653", slug: "ashirvad-pvc-rubber-lubricant-100gm-50000653", sku: "PLB-PFT-00000277",
-    description: "Ashirvad PVC Rubber Lubricant, 100gm, 50000653 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Rubber Lubricant, 100gm, 50000653 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8285,7 +8285,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-rubber-lubricant-250gm-50000654", name: "Ashirvad PVC Rubber Lubricant, 250gm, 50000654", slug: "ashirvad-pvc-rubber-lubricant-250gm-50000654", sku: "PLB-PFT-00000278",
-    description: "Ashirvad PVC Rubber Lubricant, 250gm, 50000654 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Rubber Lubricant, 250gm, 50000654 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8303,7 +8303,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-pvc-solvent-cement-250ml-70002492", name: "Ashirvad PVC Solvent Cement, 250ml, 70002492", slug: "ashirvad-pvc-solvent-cement-250ml-70002492", sku: "PLB-PFT-00000276",
-    description: "Ashirvad PVC Solvent Cement, 250ml, 70002492 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad PVC Solvent Cement, 250ml, 70002492 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8321,7 +8321,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-coupler-socket-collar-1-inch-40mm-7", name: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1¼ Inch (40mm), 70001298", slug: "ashirvad-solfit-pvc-coupler-socket-collar-1-inch-40mm-70001298", sku: "PLB-PFT-00000273",
-    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1¼ Inch (40mm), 70001298 - Switches & Sockets for construction and home use.",
+    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1¼ Inch (40mm), 70001298 - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -8339,7 +8339,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-coupler-socket-collar-2-inch-50mm-7", name: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1-1/2 Inch (50mm), 70001299", slug: "ashirvad-solfit-pvc-coupler-socket-collar-2-inch-50mm-70001299", sku: "PLB-PFT-00000268",
-    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1-1/2 Inch (50mm), 70001299 - Switches & Sockets for construction and home use.",
+    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 1-1/2 Inch (50mm), 70001299 - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -8357,7 +8357,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-coupler-socket-collar-2-inch-75mm-7", name: "Ashirvad Solfit PVC Coupler/Socket/Collar, 2½ Inch (75mm), 70001300", slug: "ashirvad-solfit-pvc-coupler-socket-collar-2-inch-75mm-70001300", sku: "PLB-PFT-00000264",
-    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 2½ Inch (75mm), 70001300 - Switches & Sockets for construction and home use.",
+    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 2½ Inch (75mm), 70001300 - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -8375,7 +8375,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-coupler-socket-collar-4-inch-110mm", name: "Ashirvad Solfit PVC Coupler/Socket/Collar, 4 Inch (110mm), 70001302", slug: "ashirvad-solfit-pvc-coupler-socket-collar-4-inch-110mm-70001302", sku: "PLB-PFT-00000256",
-    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 4 Inch (110mm), 70001302 - Switches & Sockets for construction and home use.",
+    description: "Ashirvad Solfit PVC Coupler/Socket/Collar, 4 Inch (110mm), 70001302 - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -8393,7 +8393,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-equal-elbow-1-inch-40mm-70001332", name: "Ashirvad Solfit PVC Equal Elbow, 1¼ Inch (40mm), 70001332", slug: "ashirvad-solfit-pvc-equal-elbow-1-inch-40mm-70001332", sku: "PLB-PFT-00000274",
-    description: "Ashirvad Solfit PVC Equal Elbow, 1¼ Inch (40mm), 70001332 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Solfit PVC Equal Elbow, 1¼ Inch (40mm), 70001332 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8411,7 +8411,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-equal-elbow-2inch-50mm-70001333", name: "Ashirvad Solfit PVC Equal Elbow, 1-1/2Inch (50mm), 70001333", slug: "ashirvad-solfit-pvc-equal-elbow-2inch-50mm-70001333", sku: "PLB-PFT-00000266",
-    description: "Ashirvad Solfit PVC Equal Elbow, 1-1/2Inch (50mm), 70001333 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Solfit PVC Equal Elbow, 1-1/2Inch (50mm), 70001333 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8429,7 +8429,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-equal-tee-2inch-50mm-70001377", name: "Ashirvad Solfit PVC Equal Tee, 1-1/2 Inch (50mm), 70001377", slug: "ashirvad-solfit-pvc-equal-tee-2inch-50mm-70001377", sku: "PLB-PFT-00000269",
-    description: "Ashirvad Solfit PVC Equal Tee, 1-1/2 Inch (50mm), 70001377 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Solfit PVC Equal Tee, 1-1/2 Inch (50mm), 70001377 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8447,7 +8447,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-shoe-equal-bend-45-1-inch-40mm-7000", name: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1¼ Inch (40mm), 70001364", slug: "ashirvad-solfit-pvc-shoe-equal-bend-45-1-inch-40mm-70001364", sku: "PLB-PFT-00000275",
-    description: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1¼ Inch (40mm), 70001364 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1¼ Inch (40mm), 70001364 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8465,7 +8465,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ashirvad-solfit-pvc-shoe-equal-bend-45-2-inch-50mm-7000", name: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1-1/2 Inch (50mm), 70001365", slug: "ashirvad-solfit-pvc-shoe-equal-bend-45-2-inch-50mm-70001365", sku: "PLB-PFT-00000267",
-    description: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1-1/2 Inch (50mm), 70001365 - Pipes & Tanks for construction and home use.",
+    description: "Ashirvad Solfit PVC Shoe Equal Bend 45°, 1-1/2 Inch (50mm), 70001365 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Ashirvad", brandSlug: "ashirvad", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -8645,7 +8645,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-asian-paints-smartcare-damp-proof-grey-20-ltr", name: "Asian Paints SmartCare Damp Proof, Grey, 20 Ltr", slug: "asian-paints-smartcare-damp-proof-grey-20-ltr", sku: "PNA-PPS-00000108",
-    description: "Asian Paints SmartCare Damp Proof, Grey, 20 Ltr - Painting for construction and home use.",
+    description: "Asian Paints SmartCare Damp Proof, Grey, 20 Ltr - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -8753,7 +8753,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-asian-paints-trucare-grey-knifing-paste-filler", name: "Asian Paints TruCare Grey Knifing Paste filler", slug: "asian-paints-trucare-grey-knifing-paste-filler", sku: "PNA-PPS-00000007",
-    description: "Asian Paints TruCare Grey Knifing Paste filler - Painting for construction and home use.",
+    description: "Asian Paints TruCare Grey Knifing Paste filler - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -8807,7 +8807,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-asian-paints-trucare-water-based-wall-primer-interior", name: "Asian Paints TruCare Water Based Wall Primer Interior", slug: "asian-paints-trucare-water-based-wall-primer-interior", sku: "PNA-PPS-00000013",
-    description: "Asian Paints TruCare Water Based Wall Primer Interior - Painting for construction and home use.",
+    description: "Asian Paints TruCare Water Based Wall Primer Interior - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -9059,7 +9059,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-atomberg-1200mm-bldc-fan", name: "Atomberg 1200mm BLDC Fan", slug: "atomberg-1200mm-bldc-fan", sku: "ELE-FGI-00000004",
-    description: "Atomberg 1200mm BLDC Fan - Fans & Exhaust for construction and home use.",
+    description: "Atomberg 1200mm BLDC Fan - Fans & Exhaust for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "Atomberg", brandSlug: "atomberg", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -9167,7 +9167,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-bosch-glm-400-laser-distance-meter", name: "Bosch GLM 400 Laser Distance Meter", slug: "bosch-glm-400-laser-distance-meter", sku: "TNA-PWT-000018",
-    description: "Bosch GLM 400 Laser Distance Meter - Hardware & Tools for construction and home use.",
+    description: "Bosch GLM 400 Laser Distance Meter - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Bosch", brandSlug: "bosch", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -9203,7 +9203,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-bosch-gst680-500w-corded-electric-jigsaw", name: "Bosch GST680 500W Corded Electric Jigsaw", slug: "bosch-gst680-500w-corded-electric-jigsaw", sku: "TNA-PWT-000022",
-    description: "Bosch GST680 500W Corded Electric Jigsaw - Hardware & Tools for construction and home use.",
+    description: "Bosch GST680 500W Corded Electric Jigsaw - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Bosch", brandSlug: "bosch", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -9239,7 +9239,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-bosch-gws-800-100mm-800w-angle-grinder", name: "Bosch GWS-800 100mm 800W Angle Grinder", slug: "bosch-gws-800-100mm-800w-angle-grinder", sku: "TNA-PWT-000021",
-    description: "Bosch GWS-800 100mm 800W Angle Grinder - Hardware & Tools for construction and home use.",
+    description: "Bosch GWS-800 100mm 800W Angle Grinder - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Bosch", brandSlug: "bosch", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -9437,7 +9437,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-abs-overhead-round-shower-full-kit-f7010213ab", name: "Cera ABS Overhead Shower Full Kit- Round", slug: "cera-abs-overhead-round-shower-full-kit-f7010213ab", sku: "KSB-SBF-00000023",
-    description: "Cera ABS Overhead Shower Full Kit- Round - Sanitary & Bath for construction and home use.",
+    description: "Cera ABS Overhead Shower Full Kit- Round - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9455,7 +9455,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-abs-overhead-square-shower-full-kit-f7010115ab", name: "Cera ABS Overhead Shower Full Kit- Square", slug: "cera-abs-overhead-square-shower-full-kit-f7010115ab", sku: "KSB-SBF-00000024",
-    description: "Cera ABS Overhead Shower Full Kit- Square - Sanitary & Bath for construction and home use.",
+    description: "Cera ABS Overhead Shower Full Kit- Square - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9509,7 +9509,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-canon-wash-basin-without-pedestal-s2040102", name: "Cera Canon Wash Basin Without Pedestal", slug: "cera-canon-wash-basin-without-pedestal-s2040102", sku: "KSB-SBF-00000015",
-    description: "Cera Canon Wash Basin Without Pedestal - Sanitary & Bath for construction and home use.",
+    description: "Cera Canon Wash Basin Without Pedestal - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9527,7 +9527,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-careo-thin-rim-table-top-wall-hung-wash-basin-snow", name: "Cera Careo Table Top/Wall Hung Thin Rim Wash Basin, S2040207", slug: "cera-careo-thin-rim-table-top-wall-hung-wash-basin-snow-white-365x260x110-mm-s2040207", sku: "KSB-SBF-00000072",
-    description: "Cera Careo Table Top/Wall Hung Thin Rim Wash Basin, S2040207 - Sanitary & Bath for construction and home use.",
+    description: "Cera Careo Table Top/Wall Hung Thin Rim Wash Basin, S2040207 - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9617,7 +9617,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-clapper-pro-rimless-wall-hung-ewc-commode-with-sli", name: "Cera Clapper Pro Rimless Wall Hung Commode", slug: "cera-clapper-pro-rimless-wall-hung-ewc-commode-with-slim-soft-close-seat-cover-s1043177", sku: "KSB-SBF-00000014",
-    description: "Cera Clapper Pro Rimless Wall Hung Commode - Sanitary & Bath for construction and home use.",
+    description: "Cera Clapper Pro Rimless Wall Hung Commode - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9743,7 +9743,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-floor-mount-one-piece-ewc-commode-with-slim-soft-c", name: "Cera Ceon Floor Mount One Piece Ewc Commode", slug: "cera-floor-mount-one-piece-ewc-commode-with-slim-soft-close-seat-220mm-s-trap-s1013253", sku: "KSB-SBF-00000013",
-    description: "Cera Ceon Floor Mount One Piece Ewc Commode - Sanitary & Bath for construction and home use.",
+    description: "Cera Ceon Floor Mount One Piece Ewc Commode - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9905,7 +9905,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-victor-concealed-diverter-f4030301", name: "Cera Victor Concealed Diverter", slug: "cera-victor-concealed-diverter-f4030301", sku: "KSB-SBF-00000020",
-    description: "Cera Victor Concealed Diverter - Sanitary & Bath for construction and home use.",
+    description: "Cera Victor Concealed Diverter - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9923,7 +9923,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cera-victor-exposed-part-f1015851", name: "Cera Victor Exposed Part", slug: "cera-victor-exposed-part-f1015851", sku: "KSB-SBF-00000021",
-    description: "Cera Victor Exposed Part - Sanitary & Bath for construction and home use.",
+    description: "Cera Victor Exposed Part - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "CERA", brandSlug: "cera", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -9995,7 +9995,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-cleaning-saree-for-painting-work", name: "Cleaning Saree for Painting work", slug: "cleaning-saree-for-painting-work", sku: "PNA-PPS-00000097",
-    description: "Cleaning Saree for Painting work - Painting for construction and home use.",
+    description: "Cleaning Saree for Painting work - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Generic", brandSlug: "generic", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -10049,7 +10049,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-crown-crystal-1-2-inch-high-carbon-steel-hack-saw-blade", name: "Crown Crystal 1/2 inch Hack Saw Blade", slug: "crown-crystal-1-2-inch-high-carbon-steel-hack-saw-blade", sku: "TNA-HNT-000053",
-    description: "Crown Crystal 1/2 inch Hack Saw Blade - Hardware & Tools for construction and home use.",
+    description: "Crown Crystal 1/2 inch Hack Saw Blade - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Crown Crystal", brandSlug: "crown-crystal", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -10067,7 +10067,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-crown-crystal-halo-1-inch-double-sided-hack-saw-blade", name: "Crown Crystal 1 inch Double Sided Hack Saw Blade", slug: "crown-crystal-halo-1-inch-double-sided-hack-saw-blade", sku: "TNA-HNT-000054",
-    description: "Crown Crystal 1 inch Double Sided Hack Saw Blade - Hardware & Tools for construction and home use.",
+    description: "Crown Crystal 1 inch Double Sided Hack Saw Blade - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Crown Crystal", brandSlug: "crown-crystal", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -10265,7 +10265,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-165-hinge-regular-close-1-set-2-nos", name: "Ebco 165° Hinge Regular Close 1 Set 2 Nos", slug: "ebco-165-hinge-regular-close-1-set-2-nos", sku: "HNF-HNC-00000010",
-    description: "Ebco 165° Hinge Regular Close 1 Set 2 Nos - Hinges, Channels & Handles for construction and home use.",
+    description: "Ebco 165° Hinge Regular Close 1 Set 2 Nos - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10283,7 +10283,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-35kg-regular-close-telescopic-drawer-channel", name: "EBCO 35kg Regular Close Telescopic Drawer Channel", slug: "ebco-35kg-regular-close-telescopic-drawer-channel", sku: "HNF-HNC-00000014",
-    description: "EBCO 35kg Regular Close Telescopic Drawer Channel - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO 35kg Regular Close Telescopic Drawer Channel - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10319,7 +10319,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-asm2-atd-51-cm-x-5-m-plastic-skid-free-mat-anthrac", name: "EBCO ASM2-ATD 51 cm x 5 m Plastic Skid Free Mat Anthracite", slug: "ebco-asm2-atd-51-cm-x-5-m-plastic-skid-free-mat-anthracite", sku: "HNF-KWH-00000020",
-    description: "EBCO ASM2-ATD 51 cm x 5 m Plastic Skid Free Mat Anthracite - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO ASM2-ATD 51 cm x 5 m Plastic Skid Free Mat Anthracite - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10337,7 +10337,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-e-sql1-22-target-drawer-lock", name: "EBCO E-SQL1-22 Target Drawer Lock", slug: "ebco-e-sql1-22-target-drawer-lock", sku: "HNF-DLH-00000004",
-    description: "EBCO E-SQL1-22 Target Drawer Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO E-SQL1-22 Target Drawer Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10355,7 +10355,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-euro-regular-close-cabinet-hinge-1-set-2-nos", name: "EBCO Euro Regular Close Cabinet Hinge 1 set (2 Nos)", slug: "ebco-euro-regular-close-cabinet-hinge-1-set-2-nos", sku: "HNF-HNC-00000004",
-    description: "EBCO Euro Regular Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Euro Regular Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10373,7 +10373,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-euro-soft-close-cabinet-hinge-1-set-2-nos", name: "EBCO Euro Soft Close Cabinet Hinge 1 set (2 Nos)", slug: "ebco-euro-soft-close-cabinet-hinge-1-set-2-nos", sku: "HNF-HNC-00000003",
-    description: "EBCO Euro Soft Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Euro Soft Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10391,7 +10391,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-hydraulic-lift-up-pair-set-of-2", name: "EBCO Hydraulic Lift Up pair (set of 2)", slug: "ebco-hydraulic-lift-up-pair-set-of-2", sku: "HNF-KWH-00000008",
-    description: "EBCO Hydraulic Lift Up pair (set of 2) - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Hydraulic Lift Up pair (set of 2) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10409,7 +10409,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-mpl1-22m-secutek-drawer-lock", name: "EBCO MPL1-22M Secutek Drawer Lock", slug: "ebco-mpl1-22m-secutek-drawer-lock", sku: "HNF-DLH-00000005",
-    description: "EBCO MPL1-22M Secutek Drawer Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO MPL1-22M Secutek Drawer Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10427,7 +10427,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-p-src-23b-securite-drawer-lock", name: "EBCO P-SRC-23B Securite Drawer Lock", slug: "ebco-p-src-23b-securite-drawer-lock", sku: "HNF-DLH-00000002",
-    description: "EBCO P-SRC-23B Securite Drawer Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO P-SRC-23B Securite Drawer Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10445,7 +10445,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-p-wls1-19-sliding-wardrobe-lock", name: "EBCO P-WLS1-19 Sliding Wardrobe Lock", slug: "ebco-p-wls1-19-sliding-wardrobe-lock", sku: "HNF-DLH-00000001",
-    description: "EBCO P-WLS1-19 Sliding Wardrobe Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO P-WLS1-19 Sliding Wardrobe Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10463,7 +10463,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-pro-lift-bed-fitting-extended-arm-30-plbf-ef-e30", name: "EBCO Pro-lift bed fitting-extended arm- 30 PLBF-EF-E30", slug: "ebco-pro-lift-bed-fitting-extended-arm-30-plbf-ef-e30", sku: "HNF-KWH-00000023",
-    description: "EBCO Pro-lift bed fitting-extended arm- 30 PLBF-EF-E30 - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Pro-lift bed fitting-extended arm- 30 PLBF-EF-E30 - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10481,7 +10481,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-push-open-fitting-magnetic-stroke-40mm-pom40", name: "EBCO Push Open Fitting Magnetic Stroke 40mm POM40", slug: "ebco-push-open-fitting-magnetic-stroke-40mm-pom40", sku: "HNF-DLH-00000007",
-    description: "EBCO Push Open Fitting Magnetic Stroke 40mm POM40 - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Push Open Fitting Magnetic Stroke 40mm POM40 - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10499,7 +10499,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-soft-close-cabinet-hinge-1-set-2-nos", name: "EBCO Soft Close Cabinet Hinge 1 set (2 Nos)", slug: "ebco-soft-close-cabinet-hinge-1-set-2-nos", sku: "HNF-HNC-00000007",
-    description: "EBCO Soft Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO Soft Close Cabinet Hinge 1 set (2 Nos) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10517,7 +10517,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-spob-6-20-21t-150x505x533mm-ss-bottle-pull-out", name: "EBCO SPOB-6-20-21T 150x505x533mm SS Bottle Pull Out", slug: "ebco-spob-6-20-21t-150x505x533mm-ss-bottle-pull-out", sku: "HNF-KWH-00000019",
-    description: "EBCO SPOB-6-20-21T 150x505x533mm SS Bottle Pull Out - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO SPOB-6-20-21T 150x505x533mm SS Bottle Pull Out - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10535,7 +10535,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-spob-8-20-21t-200x505x533mm-ss-bottle-pull-out", name: "EBCO SPOB-8-20-21T 200x505x533mm SS Bottle Pull Out", slug: "ebco-spob-8-20-21t-200x505x533mm-ss-bottle-pull-out", sku: "HNF-KWH-00000018",
-    description: "EBCO SPOB-8-20-21T 200x505x533mm SS Bottle Pull Out - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO SPOB-8-20-21T 200x505x533mm SS Bottle Pull Out - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10553,7 +10553,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-sql1-22m-secutek-drawer-lock", name: "EBCO SQL1-22M Secutek Drawer Lock", slug: "ebco-sql1-22m-secutek-drawer-lock", sku: "HNF-DLH-00000003",
-    description: "EBCO SQL1-22M Secutek Drawer Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO SQL1-22M Secutek Drawer Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10571,7 +10571,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-ebco-sql1-32-secutek-drawer-lock", name: "EBCO SQL1-32 Secutek Drawer Lock", slug: "ebco-sql1-32-secutek-drawer-lock", sku: "HNF-DLH-00000006",
-    description: "EBCO SQL1-32 Secutek Drawer Lock - Hinges, Channels & Handles for construction and home use.",
+    description: "EBCO SQL1-32 Secutek Drawer Lock - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Ebco", brandSlug: "ebco", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -10607,7 +10607,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-essco-by-jaquar-allied-abs-hand-shower-with-8mm-x-1-met", name: "Essco by Jaquar Allied ABS Hand Shower with 8mm x 1 Meter Long Flexible Tube & Wall Hook, ALE-CHR-593", slug: "essco-by-jaquar-allied-abs-hand-shower-with-8mm-x-1-meter-long-flexible-tube-wall-hook-ale-chr-593", sku: "KSB-BFG-00000077",
-    description: "Essco by Jaquar Allied ABS Hand Shower with 8mm x 1 Meter Long Flexible Tube & Wall Hook, ALE-CHR-593 - Sanitary & Bath for construction and home use.",
+    description: "Essco by Jaquar Allied ABS Hand Shower with 8mm x 1 Meter Long Flexible Tube & Wall Hook, ALE-CHR-593 - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Essco by Jaquar", brandSlug: "essco-by-jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10625,7 +10625,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-essco-by-jaquar-bottle-trap-with-300mm-125mm-long-wall", name: "Essco by Jaquar Bottle Trap with 300mm & 125mm Long Wall Connection Pipes, ALE-CHR-773ML300X125", slug: "essco-by-jaquar-bottle-trap-with-300mm-125mm-long-wall-connection-pipes-ale-chr-773ml300x125", sku: "KSB-KBA-00000091",
-    description: "Essco by Jaquar Bottle Trap with 300mm & 125mm Long Wall Connection Pipes, ALE-CHR-773ML300X125 - Pipes & Tanks for construction and home use.",
+    description: "Essco by Jaquar Bottle Trap with 300mm & 125mm Long Wall Connection Pipes, ALE-CHR-773ML300X125 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Essco by Jaquar", brandSlug: "essco-by-jaquar", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -10661,7 +10661,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-essco-by-jaquar-stella-bath-tub-spout-with-wall-flange", name: "Essco by Jaquar Stella Bath Tub Spout with Wall Flange, SPE-CHR-107429", slug: "essco-by-jaquar-stella-bath-tub-spout-with-wall-flange-spe-chr-107429", sku: "KSB-KBA-00000090",
-    description: "Essco by Jaquar Stella Bath Tub Spout with Wall Flange, SPE-CHR-107429 - Sanitary & Bath for construction and home use.",
+    description: "Essco by Jaquar Stella Bath Tub Spout with Wall Flange, SPE-CHR-107429 - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Essco by Jaquar", brandSlug: "essco-by-jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10895,7 +10895,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-brass-ss304-chrome-finish-glass-corner", name: "Evernew Brass Glass Corner", slug: "evernew-brass-ss304-chrome-finish-glass-corner", sku: "KSB-BKA-00000045",
-    description: "Evernew Brass Glass Corner - Sanitary & Bath for construction and home use.",
+    description: "Evernew Brass Glass Corner - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10913,7 +10913,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-24-inch-chrome-finish-towel-rack", name: "Evernew Regal Towel Rack", slug: "evernew-regal-24-inch-chrome-finish-towel-rack", sku: "KSB-BKA-00000029",
-    description: "Evernew Regal Towel Rack - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Towel Rack - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10931,7 +10931,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-double-soap-dish", name: "Evernew Regal Double Soap Dish", slug: "evernew-regal-chrome-finish-double-soap-dish", sku: "KSB-BKA-00000032",
-    description: "Evernew Regal Double Soap Dish - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Double Soap Dish - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10949,7 +10949,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-liquid-dispenser-with-glass", name: "Evernew Regal Liquid Dispenser With Glass Bottle", slug: "evernew-regal-chrome-finish-liquid-dispenser-with-glass-bottle", sku: "KSB-BKA-00000031",
-    description: "Evernew Regal Liquid Dispenser With Glass Bottle - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Liquid Dispenser With Glass Bottle - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10967,7 +10967,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-paper-holder", name: "Evernew Regal Paper Holder", slug: "evernew-regal-chrome-finish-paper-holder", sku: "KSB-BKA-00000030",
-    description: "Evernew Regal Paper Holder - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Paper Holder - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -10985,7 +10985,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-robe-hook", name: "Evernew Regal Robe Hook", slug: "evernew-regal-chrome-finish-robe-hook", sku: "KSB-BKA-00000028",
-    description: "Evernew Regal Robe Hook - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Robe Hook - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11003,7 +11003,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-soap-dish", name: "Evernew Regal Soap Dish", slug: "evernew-regal-chrome-finish-soap-dish", sku: "KSB-BKA-00000026",
-    description: "Evernew Regal Soap Dish - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Soap Dish - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11021,7 +11021,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-soap-dish-tumbler-holder", name: "Evernew Regal Soap Dish & Tumbler Holder", slug: "evernew-regal-chrome-finish-soap-dish-tumbler-holder", sku: "KSB-BKA-00000033",
-    description: "Evernew Regal Soap Dish & Tumbler Holder - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Soap Dish & Tumbler Holder - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11039,7 +11039,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-towel-bar-24-inch", name: "Evernew Regal Towel Bar", slug: "evernew-regal-chrome-finish-towel-bar-24-inch", sku: "KSB-BKA-00000024",
-    description: "Evernew Regal Towel Bar - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Towel Bar - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11057,7 +11057,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-towel-ring", name: "Evernew Regal Towel Ring", slug: "evernew-regal-chrome-finish-towel-ring", sku: "KSB-BKA-00000025",
-    description: "Evernew Regal Towel Ring - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Towel Ring - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11075,7 +11075,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-regal-chrome-finish-tumbler-holder", name: "Evernew Regal Tumbler holder", slug: "evernew-regal-chrome-finish-tumbler-holder", sku: "KSB-BKA-00000027",
-    description: "Evernew Regal Tumbler holder - Sanitary & Bath for construction and home use.",
+    description: "Evernew Regal Tumbler holder - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11093,7 +11093,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-ss304-chrome-finish-grab-bar", name: "Evernew Finish Grab Bar", slug: "evernew-ss304-chrome-finish-grab-bar", sku: "KSB-BKA-00000044",
-    description: "Evernew Finish Grab Bar - Sanitary & Bath for construction and home use.",
+    description: "Evernew Finish Grab Bar - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11111,7 +11111,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-evernew-ss304-glass-shelf", name: "Evernew SS304 Glass Shelf", slug: "evernew-ss304-glass-shelf", sku: "KSB-BKA-00000046",
-    description: "Evernew SS304 Glass Shelf - Sanitary & Bath for construction and home use.",
+    description: "Evernew SS304 Glass Shelf - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Evernew", brandSlug: "evernew", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -11147,7 +11147,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-exide-invamaster-imtt1500-150ah-12v-tall-tubular-invert", name: "Exide InvaMaster 12V Tall Tubular Inverter Battery", slug: "exide-invamaster-imtt1500-150ah-12v-tall-tubular-inverter-battery", sku: "ELE-FGI-PBU-000048",
-    description: "Exide InvaMaster 12V Tall Tubular Inverter Battery - Home Appliances & Power for construction and home use.",
+    description: "Exide InvaMaster 12V Tall Tubular Inverter Battery - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Exide", brandSlug: "exide", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -11165,7 +11165,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-exide-invasmart-isst1200-120ah-12v-short-tubular-invert", name: "Exide Invasmart 12V Tubular Inverter Battery", slug: "exide-invasmart-isst1200-120ah-12v-short-tubular-inverter-battery", sku: "ELE-FGI-PBU-000051",
-    description: "Exide Invasmart 12V Tubular Inverter Battery - Home Appliances & Power for construction and home use.",
+    description: "Exide Invasmart 12V Tubular Inverter Battery - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Exide", brandSlug: "exide", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -11309,7 +11309,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-fevicol-grippo-wg-synthetic-resin-adhesive-5-kg", name: "Fevicol Grippo WG Synthetic Resin Adhesive", slug: "fevicol-grippo-wg-synthetic-resin-adhesive-5-kg", sku: "ANW-FNOA-000112",
-    description: "Fevicol Grippo WG Synthetic Resin Adhesive - Fevicol Adhesives for construction and home use.",
+    description: "Fevicol Grippo WG Synthetic Resin Adhesive - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11381,7 +11381,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-fevicol-nail-free-ultra-adhesive-435g", name: "Fevicol Nail Free Ultra Adhesive 435g", slug: "fevicol-nail-free-ultra-adhesive-435g", sku: "ANW-FNOA-000114",
-    description: "Fevicol Nail Free Ultra Adhesive 435g - Fevicol Adhesives for construction and home use.",
+    description: "Fevicol Nail Free Ultra Adhesive 435g - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevicol", brandSlug: "fevicol", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11435,7 +11435,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-feviseal-gp-general-purpose-silicone-sealant-clear-260m", name: "Feviseal GP General Purpose Silicone Sealant, Clear, 260ml IHC", slug: "feviseal-gp-general-purpose-silicone-sealant-clear-260ml-ihc", sku: "ANW-FNOA-000102",
-    description: "Feviseal GP General Purpose Silicone Sealant, Clear, 260ml IHC - Fevicol Adhesives for construction and home use.",
+    description: "Feviseal GP General Purpose Silicone Sealant, Clear, 260ml IHC - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Feviseal", brandSlug: "feviseal", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11453,7 +11453,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-feviseal-gp-pro-general-purpose-silicone-sealant-clear", name: "Feviseal GP Pro General Purpose Silicone Sealant, Clear, 280ml IHC", slug: "feviseal-gp-pro-general-purpose-silicone-sealant-clear-280ml-ihc", sku: "ANW-FNOA-000101",
-    description: "Feviseal GP Pro General Purpose Silicone Sealant, Clear, 280ml IHC - Fevicol Adhesives for construction and home use.",
+    description: "Feviseal GP Pro General Purpose Silicone Sealant, Clear, 280ml IHC - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Feviseal", brandSlug: "feviseal", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11471,7 +11471,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-feviseal-multipurpose-acrylic-sealant-clear-280-ml", name: "Feviseal Multipurpose Acrylic Sealant, Clear, 280 ml", slug: "feviseal-multipurpose-acrylic-sealant-clear-280-ml", sku: "ANW-FNOA-000103",
-    description: "Feviseal Multipurpose Acrylic Sealant, Clear, 280 ml - Fevicol Adhesives for construction and home use.",
+    description: "Feviseal Multipurpose Acrylic Sealant, Clear, 280 ml - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Feviseal", brandSlug: "feviseal", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11489,7 +11489,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-feviseal-multipurpose-acrylic-sealant-white-280-ml", name: "Feviseal Multipurpose Acrylic Sealant, White, 280 ml", slug: "feviseal-multipurpose-acrylic-sealant-white-280-ml", sku: "ANW-FNOA-000104",
-    description: "Feviseal Multipurpose Acrylic Sealant, White, 280 ml - Fevicol Adhesives for construction and home use.",
+    description: "Feviseal Multipurpose Acrylic Sealant, White, 280 ml - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Feviseal", brandSlug: "feviseal", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11543,7 +11543,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-fiber-mesh-roll-50-mtr", name: "Fiber Mesh Roll, 50 mtr", slug: "fiber-mesh-roll-50-mtr", sku: "PNA-PPS-00000105",
-    description: "Fiber Mesh Roll, 50 mtr - Fevicol Adhesives for construction and home use.",
+    description: "Fiber Mesh Roll, 50 mtr - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Generic", brandSlug: "generic", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -11561,7 +11561,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-0-5-x-4p-cat-6-lite-lan-cable-coil-100-mtr", name: "Finolex 0.5 x 4P CAT-6 Lite LAN Cable, 100 Mtr", slug: "finolex-0-5-x-4p-cat-6-lite-lan-cable-coil-100-mtr", sku: "ELE-WNC-000203",
-    description: "Finolex 0.5 x 4P CAT-6 Lite LAN Cable, 100 Mtr - Wires, MCB & Boards for construction and home use.",
+    description: "Finolex 0.5 x 4P CAT-6 Lite LAN Cable, 100 Mtr - Wires, MCB & Boards for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Finolex", brandSlug: "finolex", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -11669,7 +11669,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-heavy-duty-pvc-conduit-pipe", name: "Finolex Heavy Duty PVC Conduit pipe", slug: "finolex-heavy-duty-pvc-conduit-pipe", sku: "ELE-CBF-00000050",
-    description: "Finolex Heavy Duty PVC Conduit pipe - Conduits & GI Boxes for construction and home use.",
+    description: "Finolex Heavy Duty PVC Conduit pipe - Conduits & GI Boxes for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Finolex", brandSlug: "finolex", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -11687,7 +11687,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-medium-duty-pvc-conduit-pipe", name: "Finolex Medium Duty PVC Conduit pipe", slug: "finolex-medium-duty-pvc-conduit-pipe", sku: "ELE-CBF-00000051",
-    description: "Finolex Medium Duty PVC Conduit pipe - Conduits & GI Boxes for construction and home use.",
+    description: "Finolex Medium Duty PVC Conduit pipe - Conduits & GI Boxes for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Finolex", brandSlug: "finolex", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -11705,7 +11705,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-project-packing-fr-wire", name: "Finolex Project Packing FR Wire, 180 Mtr", slug: "finolex-project-packing-fr-wire", sku: "ELE-WNC-000176",
-    description: "Finolex Project Packing FR Wire, 180 Mtr - Wires, MCB & Boards for construction and home use.",
+    description: "Finolex Project Packing FR Wire, 180 Mtr - Wires, MCB & Boards for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Finolex", brandSlug: "finolex", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -11723,7 +11723,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-pvc-bend-slip-type", name: "Finolex PVC Bend slip Type", slug: "finolex-pvc-bend-slip-type", sku: "ELE-CBF-00000054",
-    description: "Finolex PVC Bend slip Type - Pipes & Tanks for construction and home use.",
+    description: "Finolex PVC Bend slip Type - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Finolex", brandSlug: "finolex", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -11741,7 +11741,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-pvc-coupler", name: "Finolex PVC Coupler", slug: "finolex-pvc-coupler", sku: "ELE-CBF-00000056",
-    description: "Finolex PVC Coupler - Pipes & Tanks for construction and home use.",
+    description: "Finolex PVC Coupler - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Finolex", brandSlug: "finolex", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -11759,7 +11759,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-pvc-junction-box-with-screw-lid", name: "Finolex PVC Junction Box with Screw & Lid", slug: "finolex-pvc-junction-box-with-screw-lid", sku: "ELE-CBF-00000059",
-    description: "Finolex PVC Junction Box with Screw & Lid - Conduits & GI Boxes for construction and home use.",
+    description: "Finolex PVC Junction Box with Screw & Lid - Conduits & GI Boxes for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "Finolex", brandSlug: "finolex", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -11795,7 +11795,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-finolex-silver-pack-fr-wire", name: "Finolex Silver Pack FR Wire, 90 Mtr", slug: "finolex-silver-pack-fr-wire", sku: "ELE-WNC-000150",
-    description: "Finolex Silver Pack FR Wire, 90 Mtr - Wires, MCB & Boards for construction and home use.",
+    description: "Finolex Silver Pack FR Wire, 90 Mtr - Wires, MCB & Boards for professional and home use.",
     shortDescription: "Wires, MCB & Boards product",
     brand: "Finolex", brandSlug: "finolex", category: "Wires, MCB & Boards", categorySlug: "electrical",
     subCategory: null, subCategorySlug: null,
@@ -11849,7 +11849,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-futura-24x18-inch-natural-quartz-finish-single-bowl-kit", name: "Futura Quartz Finish Sink", slug: "futura-24x18-inch-natural-quartz-finish-single-bowl-kitchen-sink-fs-2418-nq", sku: "KSB-KSF-00000007",
-    description: "Futura Quartz Finish Sink - Kitchen Sinks & Faucets for construction and home use.",
+    description: "Futura Quartz Finish Sink - Kitchen Sinks & Faucets for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -11867,7 +11867,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-futura-5x5-inch-ss-square-frame-grating-with-locking-sy", name: "Futura Square Frame Gratting With Locking System", slug: "futura-5x5-inch-ss-square-frame-grating-with-locking-system-nw-016-a", sku: "KSB-BKA-00000018",
-    description: "Futura Square Frame Gratting With Locking System - Door Locks & Hardware for construction and home use.",
+    description: "Futura Square Frame Gratting With Locking System - Door Locks & Hardware for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Futura", brandSlug: "futura", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -11921,7 +11921,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-futura-dura-single-bowl-with-drain-square-sink-dura-36x", name: "Futura Dura Sink with Drain Board, 36x18", slug: "futura-dura-single-bowl-with-drain-square-sink-dura-36x18-inch", sku: "KSB-KSF-00000005",
-    description: "Futura Dura Sink with Drain Board, 36x18 - Kitchen Sinks & Faucets for construction and home use.",
+    description: "Futura Dura Sink with Drain Board, 36x18 - Kitchen Sinks & Faucets for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "Futura", brandSlug: "futura", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -12029,7 +12029,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-1-module-blank-plate-white-aa-1-052", name: "GM FourFive 1M Blank Plate, White", slug: "gm-fourfive-1-module-blank-plate-white-aa-1-052", sku: "ELE-SSP-00000038",
-    description: "GM FourFive 1M Blank Plate, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 1M Blank Plate, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12101,7 +12101,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-10a-1-module-1-way-switch-white-aa-1-001", name: "GM FourFive 10A 1M 1-Way Switch, White", slug: "gm-fourfive-10a-1-module-1-way-switch-white-aa-1-001", sku: "ELE-SSP-00000026",
-    description: "GM FourFive 10A 1M 1-Way Switch, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 10A 1M 1-Way Switch, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12119,7 +12119,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-10a-1-module-2-way-switch-white-aa-1-009", name: "GM FourFive 10A 1M 2-Way Switch, White", slug: "gm-fourfive-10a-1-module-2-way-switch-white-aa-1-009", sku: "ELE-SSP-00000028",
-    description: "GM FourFive 10A 1M 2-Way Switch, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 10A 1M 2-Way Switch, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12137,7 +12137,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-20a-1-module-1-way-switch-with-indicator-wh", name: "GM FourFive 20A 1M 1-Way Switch with Indicator, White", slug: "gm-fourfive-20a-1-module-1-way-switch-with-indicator-white-aa-1-006", sku: "ELE-SSP-00000027",
-    description: "GM FourFive 20A 1M 1-Way Switch with Indicator, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 20A 1M 1-Way Switch with Indicator, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12173,7 +12173,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-32a-2-module-dp-switch-with-indicator-aa-2", name: "GM FourFive 32A 2M DP Switch with Indicator, White", slug: "gm-fourfive-32a-2-module-dp-switch-with-indicator-aa-2-024", sku: "ELE-SSP-00000031",
-    description: "GM FourFive 32A 2M DP Switch with Indicator, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 32A 2M DP Switch with Indicator, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12227,7 +12227,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-6-16a-2-module-universal-socket-white-aa-2", name: "GM FourFive 6/16A 2M Universal Socket, White", slug: "gm-fourfive-6-16a-2-module-universal-socket-white-aa-2-031", sku: "ELE-SSP-00000039",
-    description: "GM FourFive 6/16A 2M Universal Socket, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 6/16A 2M Universal Socket, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12245,7 +12245,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-6a-2-module-3-pin-socket-white-aa-2-236", name: "GM FourFive 6A 2M 3-Pin Socket, White", slug: "gm-fourfive-6a-2-module-3-pin-socket-white-aa-2-236", sku: "ELE-SSP-00000040",
-    description: "GM FourFive 6A 2M 3-Pin Socket, White - Switches & Sockets for construction and home use.",
+    description: "GM FourFive 6A 2M 3-Pin Socket, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12263,7 +12263,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-casaviva-glossy-cover-plate", name: "GM FourFive CasaViva Glossy White Cover Plate", slug: "gm-fourfive-casaviva-glossy-cover-plate", sku: "ELE-SSP-00000067",
-    description: "GM FourFive CasaViva Glossy White Cover Plate - Switches & Sockets for construction and home use.",
+    description: "GM FourFive CasaViva Glossy White Cover Plate - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12281,7 +12281,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-fourfive-electronic-type-4-step-fan-regulator-1-modu", name: "GM FourFive 1M 4-Step Fan Regulator, White", slug: "gm-fourfive-electronic-type-4-step-fan-regulator-1-module-white-aa-1-039", sku: "ELE-SSP-00000034",
-    description: "GM FourFive 1M 4-Step Fan Regulator, White - Fans & Exhaust for construction and home use.",
+    description: "GM FourFive 1M 4-Step Fan Regulator, White - Fans & Exhaust for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "GM", brandSlug: "gm", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -12353,7 +12353,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-10a-1-module-bell-push-switch-snow-white-gm", name: "GM G-Magic 10A 1M Bell Push Switch, White", slug: "gm-g-magic-10a-1-module-bell-push-switch-snow-white-gm-1003", sku: "ELE-SSP-00000043",
-    description: "GM G-Magic 10A 1M Bell Push Switch, White - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 10A 1M Bell Push Switch, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12389,7 +12389,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-16a-3-pin-top-gm-3002", name: "GM G-Magic 16A 3-Pin Top", slug: "gm-g-magic-16a-3-pin-top-gm-3002", sku: "ELE-SSP-00000054",
-    description: "GM G-Magic 16A 3-Pin Top - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 16A 3-Pin Top - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12443,7 +12443,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-32a-flush-dp-switch-with-indicator-gm-8092", name: "GM G-Magic 32A DP Switch with Indicator, Flush", slug: "gm-g-magic-32a-flush-dp-switch-with-indicator-gm-8092", sku: "ELE-SSP-00000066",
-    description: "GM G-Magic 32A DP Switch with Indicator, Flush - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 32A DP Switch with Indicator, Flush - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12461,7 +12461,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-5mtr-parallel-wire-link-with-2-pin-plug-pend", name: "GM G-Magic 5m Parallel Wire Link with 2-Pin Plug & Pendant Holder", slug: "gm-g-magic-5mtr-parallel-wire-link-with-2-pin-plug-pendant-holder-gm-6002", sku: "ELE-SSP-00000064",
-    description: "GM G-Magic 5m Parallel Wire Link with 2-Pin Plug & Pendant Holder - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 5m Parallel Wire Link with 2-Pin Plug & Pendant Holder - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12479,7 +12479,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-6-16a-2-module-universal-socket-snow-white-g", name: "GM G-Magic 6/16A 2M Universal Socket, White", slug: "gm-g-magic-6-16a-2-module-universal-socket-snow-white-gm-1048", sku: "ELE-SSP-00000048",
-    description: "GM G-Magic 6/16A 2M Universal Socket, White - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 6/16A 2M Universal Socket, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12497,7 +12497,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-6a-2-module-3-pin-socket-snow-white-gm-1022", name: "GM G-Magic 6A 2M 3-Pin Socket, White", slug: "gm-g-magic-6a-2-module-3-pin-socket-snow-white-gm-1022", sku: "ELE-SSP-00000044",
-    description: "GM G-Magic 6A 2M 3-Pin Socket, White - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 6A 2M 3-Pin Socket, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12515,7 +12515,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-6a-3-pin-top-gm-3001", name: "GM G-Magic 6A 3-Pin Top", slug: "gm-g-magic-6a-3-pin-top-gm-3001", sku: "ELE-SSP-00000053",
-    description: "GM G-Magic 6A 3-Pin Top - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic 6A 3-Pin Top - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12551,7 +12551,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-g1-switch-cover-plate-snow-white-gm-1056", name: "GM G-Magic G1 Switch Cover Plate, White", slug: "gm-g-magic-g1-switch-cover-plate-snow-white-gm-1056", sku: "ELE-SSP-00000051",
-    description: "GM G-Magic G1 Switch Cover Plate, White - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic G1 Switch Cover Plate, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12569,7 +12569,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-g2-socket-cover-plate-snow-white-gm-1061", name: "GM G-Magic G2 Socket Cover Plate, White", slug: "gm-g-magic-g2-socket-cover-plate-snow-white-gm-1061", sku: "ELE-SSP-00000052",
-    description: "GM G-Magic G2 Socket Cover Plate, White - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic G2 Socket Cover Plate, White - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12587,7 +12587,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-mini-3-pin-travel-adaptor-gm-3005", name: "GM G-Magic Mini 3-Pin Travel Adaptor", slug: "gm-g-magic-mini-3-pin-travel-adaptor-gm-3005", sku: "ELE-SSP-00000055",
-    description: "GM G-Magic Mini 3-Pin Travel Adaptor - Pipes & Tanks for construction and home use.",
+    description: "GM G-Magic Mini 3-Pin Travel Adaptor - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "GM", brandSlug: "gm", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -12641,7 +12641,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gm-g-magic-spice-3-pin-universal-plug-gm-3017", name: "GM G-Magic Spice 3-Pin Universal Plug", slug: "gm-g-magic-spice-3-pin-universal-plug-gm-3017", sku: "ELE-SSP-00000056",
-    description: "GM G-Magic Spice 3-Pin Universal Plug - Switches & Sockets for construction and home use.",
+    description: "GM G-Magic Spice 3-Pin Universal Plug - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "GM", brandSlug: "gm", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -12785,7 +12785,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-godrej-5305-tri-shaft-1ck-with-latch-rim-lock", name: "Godrej 5305 Tri Shaft 1CK with Latch Rim lock", slug: "godrej-5305-tri-shaft-1ck-with-latch-rim-lock", sku: "HNF-DLH-00000042",
-    description: "Godrej 5305 Tri Shaft 1CK with Latch Rim lock - Door Locks & Hardware for construction and home use.",
+    description: "Godrej 5305 Tri Shaft 1CK with Latch Rim lock - Door Locks & Hardware for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Godrej", brandSlug: "godrej", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -13487,7 +13487,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-goldmedal-ekaant-mantra-c-wired-door-chime-4-tunes-whit", name: "Goldmedal Ekaant - Mantra (C) Wired Door Chime (4 Tunes), White, 204080CWHIT", slug: "goldmedal-ekaant-mantra-c-wired-door-chime-4-tunes-white-204080cwhit", sku: "ELE-ELA-00000065",
-    description: "Goldmedal Ekaant - Mantra (C) Wired Door Chime (4 Tunes), White, 204080CWHIT - Switches & Sockets for construction and home use.",
+    description: "Goldmedal Ekaant - Mantra (C) Wired Door Chime (4 Tunes), White, 204080CWHIT - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Goldmedal", brandSlug: "goldmedal", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -13595,7 +13595,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-goldmedal-g-astro-polyphonic-door-bell-18-tunes-white-2", name: "Goldmedal G - Astro Polyphonic Door Bell (18 Tunes), White, 204066WHIT", slug: "goldmedal-g-astro-polyphonic-door-bell-18-tunes-white-204066whit", sku: "ELE-ELA-00000064",
-    description: "Goldmedal G - Astro Polyphonic Door Bell (18 Tunes), White, 204066WHIT - Switches & Sockets for construction and home use.",
+    description: "Goldmedal G - Astro Polyphonic Door Bell (18 Tunes), White, 204066WHIT - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Goldmedal", brandSlug: "goldmedal", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -13703,7 +13703,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-goldmedal-photon-neo-45-meter-led-rope-light-with-10w-p", name: "Goldmedal Photon Neo 45 Meter LED Rope Light with 10W per Meter, 120 LEDs, GL9C12056120WW", slug: "goldmedal-photon-neo-45-meter-led-rope-light-with-10w-per-meter-120-leds-gl9c12056120ww", sku: "ELE-LNF-SL000001",
-    description: "Goldmedal Photon Neo 45 Meter LED Rope Light with 10W per Meter, 120 LEDs, GL9C12056120WW - Switches & Sockets for construction and home use.",
+    description: "Goldmedal Photon Neo 45 Meter LED Rope Light with 10W per Meter, 120 LEDs, GL9C12056120WW - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Goldmedal", brandSlug: "goldmedal", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -13721,7 +13721,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-goldmedal-photon-neo-90w-rope-light-10-meter-120-leds-g", name: "Goldmedal Photon Neo 90W Rope Light 10 Meter, 120 LEDs,  GL9C1203650WW", slug: "goldmedal-photon-neo-90w-rope-light-10-meter-120-leds-gl9c1203650ww", sku: "ELE-LNF-SL000002",
-    description: "Goldmedal Photon Neo 90W Rope Light 10 Meter, 120 LEDs,  GL9C1203650WW - Switches & Sockets for construction and home use.",
+    description: "Goldmedal Photon Neo 90W Rope Light 10 Meter, 120 LEDs,  GL9C1203650WW - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Goldmedal", brandSlug: "goldmedal", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -13883,7 +13883,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-gunny-bags", name: "Gunny Bags", slug: "gunny-bags", sku: "PNA-PPS-PA-000002",
-    description: "Gunny Bags - Hardware & Tools for construction and home use.",
+    description: "Gunny Bags - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Generic", brandSlug: "generic", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -14135,7 +14135,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-1081333-innotech-railing-470mm", name: "Hettich 1081333-InnoTech Railing 470mm", slug: "hettich-1081333-innotech-railing-470mm", sku: "HNF-KWH-00000147",
-    description: "Hettich 1081333-InnoTech Railing 470mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 1081333-InnoTech Railing 470mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14189,7 +14189,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9002503-innotech-railing-connector", name: "Hettich 9002503-InnoTech Railing Connector", slug: "hettich-9002503-innotech-railing-connector", sku: "HNF-KWH-00000148",
-    description: "Hettich 9002503-InnoTech Railing Connector - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9002503-InnoTech Railing Connector - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14225,7 +14225,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9190401-cargotech-m-plain-basket-536x500x100-mm", name: "Hettich 9190401 CargoTech M Plain Basket 536x500100 mm", slug: "hettich-9190401-cargotech-m-plain-basket-536x500x100-mm", sku: "HNF-KWH-00000040",
-    description: "Hettich 9190401 CargoTech M Plain Basket 536x500100 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9190401 CargoTech M Plain Basket 536x500100 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14243,7 +14243,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9190402-cargotech-m-plain-basket-536x500x150-mm", name: "Hettich 9190402 CargoTech M Plain Basket 536x500x150 mm", slug: "hettich-9190402-cargotech-m-plain-basket-536x500x150-mm", sku: "HNF-KWH-00000041",
-    description: "Hettich 9190402 CargoTech M Plain Basket 536x500x150 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9190402 CargoTech M Plain Basket 536x500x150 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14261,7 +14261,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9190403-cargotech-m-plain-basket-536x500x200-mm", name: "Hettich 9190403 CargoTech M Plain Basket 536x500x200 mm", slug: "hettich-9190403-cargotech-m-plain-basket-536x500x200-mm", sku: "HNF-KWH-00000042",
-    description: "Hettich 9190403 CargoTech M Plain Basket 536x500x200 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9190403 CargoTech M Plain Basket 536x500x200 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14279,7 +14279,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9194321-cargotech-m-thali-basket-536x500x200-mm", name: "Hettich 9194321 CargoTech M Thali Basket 536x500x200 mm", slug: "hettich-9194321-cargotech-m-thali-basket-536x500x200-mm", sku: "HNF-KWH-00000043",
-    description: "Hettich 9194321 CargoTech M Thali Basket 536x500x200 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9194321 CargoTech M Thali Basket 536x500x200 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14297,7 +14297,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9206160-cargo-dish-drainer-set-600mm", name: "Hettich Cargo Dish Drainer Set", slug: "hettich-9206160-cargo-dish-drainer-set-600mm", sku: "HNF-KWH-00000060",
-    description: "Hettich Cargo Dish Drainer Set - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Dish Drainer Set - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14315,7 +14315,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9210441-spice-pull-out-3-tier-200mm", name: "Hettich 9210441 Spice Pull Out 3 Tier 200mm", slug: "hettich-9210441-spice-pull-out-3-tier-200mm", sku: "HNF-KWH-00000070",
-    description: "Hettich 9210441 Spice Pull Out 3 Tier 200mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9210441 Spice Pull Out 3 Tier 200mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14441,7 +14441,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9243225-qv-part-extension-400mm-25kg", name: "Hettich QV Part Extension, 25kg", slug: "hettich-9243225-qv-part-extension-400mm-25kg", sku: "HNF-HNC-00000098",
-    description: "Hettich QV Part Extension, 25kg - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich QV Part Extension, 25kg - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14459,7 +14459,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9251642-door-closer-hin-10-en-2-3", name: "Hettich 9251642 Door Closer HIN 10 EN 2/3", slug: "hettich-9251642-door-closer-hin-10-en-2-3", sku: "HNF-DLH-00000080",
-    description: "Hettich 9251642 Door Closer HIN 10 EN 2/3 - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9251642 Door Closer HIN 10 EN 2/3 - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14477,7 +14477,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9270287-cargo-cutlery-basket-536x500x94-mm", name: "Hettich 9270287 Cargo Cutlery Basket 536x500x94 mm", slug: "hettich-9270287-cargo-cutlery-basket-536x500x94-mm", sku: "HNF-KWH-00000039",
-    description: "Hettich 9270287 Cargo Cutlery Basket 536x500x94 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9270287 Cargo Cutlery Basket 536x500x94 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14495,7 +14495,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9299225-gola-profile-l-type-3000mm-black", name: "Hettich 9299225-Gola Profile L Type 3000mm, Black", slug: "hettich-9299225-gola-profile-l-type-3000mm-black", sku: "HNF-KWH-00000132",
-    description: "Hettich 9299225-Gola Profile L Type 3000mm, Black - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9299225-Gola Profile L Type 3000mm, Black - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14513,7 +14513,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9333566-profile-gola-l-connector", name: "Hettich 9333566-Profile Gola L Connector", slug: "hettich-9333566-profile-gola-l-connector", sku: "HNF-KWH-00000135",
-    description: "Hettich 9333566-Profile Gola L Connector - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9333566-Profile Gola L Connector - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14531,7 +14531,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9339711-leather-classification-box-wardrobe-acc", name: "Hettich Leather Classification Box Wardrobe Accessory", slug: "hettich-9339711-leather-classification-box-wardrobe-accessory-grey-600mm", sku: "HNF-KWH-00000065",
-    description: "Hettich Leather Classification Box Wardrobe Accessory - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Leather Classification Box Wardrobe Accessory - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14549,7 +14549,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9339726-wardrobe-lift-960-mm-grey", name: "Hettich Wardrobe Lift, 960 mm", slug: "hettich-9339726-wardrobe-lift-960-mm-grey", sku: "HNF-KWH-00000124",
-    description: "Hettich Wardrobe Lift, 960 mm - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Wardrobe Lift, 960 mm - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14603,7 +14603,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9345622-gola-profile-l-type-3000mm-matt-black", name: "Hettich 9345622-Gola Profile L Type 3000mm, Matt Black", slug: "hettich-9345622-gola-profile-l-type-3000mm-matt-black", sku: "HNF-KWH-00000133",
-    description: "Hettich 9345622-Gola Profile L Type 3000mm, Matt Black - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9345622-Gola Profile L Type 3000mm, Matt Black - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14621,7 +14621,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9346281-magic-corner-iron-grey", name: "Hettich 9346281 Magic Corner Iron Grey", slug: "hettich-9346281-magic-corner-iron-grey", sku: "HNF-KWH-00000069",
-    description: "Hettich 9346281 Magic Corner Iron Grey - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 9346281 Magic Corner Iron Grey - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14639,7 +14639,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9346282-duo-frame-6-tier-450mm-iron-grey-order", name: "Hettich Duo 6 Tier 450mm Frame and Basket, Iron Grey (Order Frame And Basket For Making Complete Set)", slug: "hettich-9346282-duo-frame-6-tier-450mm-iron-grey-order-frame-and-basket-for-making-complete-set", sku: "HNF-KWH-00000126",
-    description: "Hettich Duo 6 Tier 450mm Frame and Basket, Iron Grey (Order Frame And Basket For Making Complete Set) - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Duo 6 Tier 450mm Frame and Basket, Iron Grey (Order Frame And Basket For Making Complete Set) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14657,7 +14657,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-9346306-2-tier-pull-out-iron-grey-150mm", name: "Hettich 2 Tier Pull Out, Iron Grey", slug: "hettich-9346306-2-tier-pull-out-iron-grey-150mm", sku: "HNF-KWH-00000062",
-    description: "Hettich 2 Tier Pull Out, Iron Grey - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich 2 Tier Pull Out, Iron Grey - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14747,7 +14747,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-avantech-tandem-box-anthracite-9343356-187mm-50", name: "Hettich AvanTech Tandem Box Anthracite, 500mm, 30Kg, Full Set", slug: "hettich-avantech-tandem-box-anthracite-9343356-187mm-500mm-30kg-full-set", sku: "HNF-KWH-00000083",
-    description: "Hettich AvanTech Tandem Box Anthracite, 500mm, 30Kg, Full Set - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich AvanTech Tandem Box Anthracite, 500mm, 30Kg, Full Set - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14765,7 +14765,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-built-in-ironing-board-extension-minimum-inside", name: "Hettich Built-in Ironing Board Extension (Minimum inside cabinet width 360 - 468 mm)", slug: "hettich-built-in-ironing-board-extension-minimum-inside-cabinet-width-360-468-mm", sku: "HNF-KWH-00000108",
-    description: "Hettich Built-in Ironing Board Extension (Minimum inside cabinet width 360 - 468 mm) - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Built-in Ironing Board Extension (Minimum inside cabinet width 360 - 468 mm) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14783,7 +14783,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-detergent-holder-kitchen-accessory-10-25x", name: "Hettich Cargo Detergent Holder Kitchen Accessory, 10.25x14x8 inch", slug: "hettich-cargo-detergent-holder-kitchen-accessory-10-25x14x8-inch", sku: "HNF-KWH-00000099",
-    description: "Hettich Cargo Detergent Holder Kitchen Accessory, 10.25x14x8 inch - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Detergent Holder Kitchen Accessory, 10.25x14x8 inch - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14801,7 +14801,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-duo-basket-holder-frame-450-mm-outer-cabi", name: "Hettich Cargo Duo Basket Holder Frame", slug: "hettich-cargo-duo-basket-holder-frame-450-mm-outer-cabinet-width-410-mm-inside-carcase-width-4-tier-1215-mm-height", sku: "HNF-KWH-00000101",
-    description: "Hettich Cargo Duo Basket Holder Frame - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Duo Basket Holder Frame - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14819,7 +14819,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-iq300-bottle-pull-out-2-tier", name: "Hettich Cargo IQ300 Bottle Pull Out 2-Tier", slug: "hettich-cargo-iq300-bottle-pull-out-2-tier", sku: "HNF-KWH-00000044",
-    description: "Hettich Cargo IQ300 Bottle Pull Out 2-Tier - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo IQ300 Bottle Pull Out 2-Tier - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14837,7 +14837,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-larder-600-mm-6-tier-frame-532x500x1828-m", name: "Hettich Cargo Larder 600mm 6-Tier Frame & Basket, 532x500x1828mm (Order Frame And Basket For Making Complete Set)", slug: "hettich-cargo-larder-600-mm-6-tier-frame-532x500x1828-mm-order-frame-and-basket-for-making-complete-set", sku: "HNF-KWH-00000130",
-    description: "Hettich Cargo Larder 600mm 6-Tier Frame & Basket, 532x500x1828mm (Order Frame And Basket For Making Complete Set) - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Larder 600mm 6-Tier Frame & Basket, 532x500x1828mm (Order Frame And Basket For Making Complete Set) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14855,7 +14855,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-larder-full-extension-runner-300-mm-carca", name: "Hettich Cargo Larder Full Extension Runner", slug: "hettich-cargo-larder-full-extension-runner-300-mm-carcase-outer-width-120-kg-load-capacity", sku: "HNF-KWH-00000105",
-    description: "Hettich Cargo Larder Full Extension Runner - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Larder Full Extension Runner - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14873,7 +14873,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-tie-belt-pull-out-125x500x100-mm-wardrobe", name: "Hettich Cargo Tie & Belt Pull Out – 125x500x100 mm Wardrobe Accessory", slug: "hettich-cargo-tie-belt-pull-out-125x500x100-mm-wardrobe-accessory", sku: "HNF-KWH-00000115",
-    description: "Hettich Cargo Tie & Belt Pull Out – 125x500x100 mm Wardrobe Accessory - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Cargo Tie & Belt Pull Out – 125x500x100 mm Wardrobe Accessory - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14891,7 +14891,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-cargo-trouser-pull-out-m-340x500x142-mm-wardrob", name: "Hettich Cargo Trouser Pull Out M – 340x500x142 mm Wardrobe Accessory (KA runner & clamps to be ordered separately)", slug: "hettich-cargo-trouser-pull-out-m-340x500x142-mm-wardrobe-accessory-ka-runner-clamps-to-be-ordered-separately", sku: "HNF-KWH-00000114",
-    description: "Hettich Cargo Trouser Pull Out M – 340x500x142 mm Wardrobe Accessory (KA runner & clamps to be ordered separately) - Hardware & Tools for construction and home use.",
+    description: "Hettich Cargo Trouser Pull Out M – 340x500x142 mm Wardrobe Accessory (KA runner & clamps to be ordered separately) - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hettich", brandSlug: "hettich", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -14909,7 +14909,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-handle-eslinga-g-profile-end-cap-with-black-fin", name: "Hettich Handle Eslinga (G Profile) End Cap with Black finish, 9306109", slug: "hettich-handle-eslinga-g-profile-end-cap-with-black-finish-9306109", sku: "HNF-KWH-00000134",
-    description: "Hettich Handle Eslinga (G Profile) End Cap with Black finish, 9306109 - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Handle Eslinga (G Profile) End Cap with Black finish, 9306109 - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14927,7 +14927,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-ka4732-soft-close-channel-35-kg", name: "Hettich KA4732 Soft Close Channel 35 Kg", slug: "hettich-ka4732-soft-close-channel-35-kg", sku: "HNF-HNC-00000046",
-    description: "Hettich KA4732 Soft Close Channel 35 Kg - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich KA4732 Soft Close Channel 35 Kg - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14945,7 +14945,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-ka5332-regular-channel-35kg", name: "Hettich KA5332 Regular Channel 35Kg", slug: "hettich-ka5332-regular-channel-35kg", sku: "HNF-HNC-00000040",
-    description: "Hettich KA5332 Regular Channel 35Kg - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich KA5332 Regular Channel 35Kg - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14981,7 +14981,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-liftease-bifold-h-700-1040-mm-h-black", name: "Hettich LiftEase Bifold Premium lift-up System", slug: "hettich-liftease-bifold-h-700-1040-mm-h-black", sku: "HNF-KWH-00000078",
-    description: "Hettich LiftEase Bifold Premium lift-up System - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich LiftEase Bifold Premium lift-up System - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -14999,7 +14999,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-liftease-m-medium-free-stop-300-400mm-h-black", name: "Hettich LiftEase-M (Medium) free stop 300-400mm H - Black", slug: "hettich-liftease-m-medium-free-stop-300-400mm-h-black", sku: "HNF-KWH-00000079",
-    description: "Hettich LiftEase-M (Medium) free stop 300-400mm H - Black - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich LiftEase-M (Medium) free stop 300-400mm H - Black - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15017,7 +15017,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-onsys-hinge-soft-close-1-set-2-nos", name: "Hettich Onsys Hinge Soft Close 1 set (2 Nos)", slug: "hettich-onsys-hinge-soft-close-1-set-2-nos", sku: "HNF-HNC-00000028",
-    description: "Hettich Onsys Hinge Soft Close 1 set (2 Nos) - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Onsys Hinge Soft Close 1 set (2 Nos) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15071,7 +15071,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-orgatray-440-trimmable-fixed-partition-cutlery", name: "Hettich OrgaTray 440 Trimmable Fixed Partition Cutlery Insert Silver", slug: "hettich-orgatray-440-trimmable-fixed-partition-cutlery-insert-silver", sku: "HNF-KWH-00000030",
-    description: "Hettich OrgaTray 440 Trimmable Fixed Partition Cutlery Insert Silver - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich OrgaTray 440 Trimmable Fixed Partition Cutlery Insert Silver - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15089,7 +15089,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-quadro-v6-full-extension", name: "Hettich Quadro V6 Full Extension", slug: "hettich-quadro-v6-full-extension", sku: "HNF-HNC-00000052",
-    description: "Hettich Quadro V6 Full Extension - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Quadro V6 Full Extension - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15107,7 +15107,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-waste-bin-it-classic-13-litres-capacity-9343581", name: "Hettich Waste-Bin.It Classic, 13 Litres Capacity, 9343581", slug: "hettich-waste-bin-it-classic-13-litres-capacity-9343581", sku: "HNF-KWH-00000098",
-    description: "Hettich Waste-Bin.It Classic, 13 Litres Capacity, 9343581 - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Waste-Bin.It Classic, 13 Litres Capacity, 9343581 - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15125,7 +15125,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hettich-wicker-baskets-with-beech-runner-320x500x120-ca", name: "Hettich Wicker Baskets with Beech Runner", slug: "hettich-wicker-baskets-with-beech-runner-320x500x120-cabinet-width-400-mm", sku: "HNF-KWH-00000086",
-    description: "Hettich Wicker Baskets with Beech Runner - Hinges, Channels & Handles for construction and home use.",
+    description: "Hettich Wicker Baskets with Beech Runner - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "Hettich", brandSlug: "hettich", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -15143,7 +15143,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-8mm-washer-pack-250-gm", name: "Hi-Tech 8mm Washer", slug: "hi-tech-8mm-washer-pack-250-gm", sku: "PLB-PFT-00000209",
-    description: "Hi-Tech 8mm Washer - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech 8mm Washer - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15161,7 +15161,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-bombay-nails", name: "Hi-Tech Bombay Nails Pack, 250 gm", slug: "hi-tech-bombay-nails", sku: "PLB-PFT-00000213",
-    description: "Hi-Tech Bombay Nails Pack, 250 gm - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech Bombay Nails Pack, 250 gm - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15179,7 +15179,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-cpvc-powder-coated-htc-saddle-clamp", name: "Hi-Tech CPVC Powder Coated HTC Saddle Clamp", slug: "hi-tech-cpvc-powder-coated-htc-saddle-clamp", sku: "PLB-PFT-00000231",
-    description: "Hi-Tech CPVC Powder Coated HTC Saddle Clamp - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech CPVC Powder Coated HTC Saddle Clamp - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15197,7 +15197,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-g-i-wall-bracket", name: "Hi-Tech G.I Wall Bracket", slug: "hi-tech-g-i-wall-bracket", sku: "PLB-PFT-00000215",
-    description: "Hi-Tech G.I Wall Bracket - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech G.I Wall Bracket - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15215,7 +15215,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-htc-saddle-clamp-for-g-i-pipe", name: "Hi-Tech HTC Saddle Clamp for G.I Pipe", slug: "hi-tech-htc-saddle-clamp-for-g-i-pipe", sku: "PLB-PFT-00000236",
-    description: "Hi-Tech HTC Saddle Clamp for G.I Pipe - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech HTC Saddle Clamp for G.I Pipe - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15233,7 +15233,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-ss-nails", name: "Hi-Tech SS Nails Pack, 250 gm", slug: "hi-tech-ss-nails", sku: "PLB-PFT-00000210",
-    description: "Hi-Tech SS Nails Pack, 250 gm - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech SS Nails Pack, 250 gm - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15251,7 +15251,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-hi-tech-u-bolt-with-nuts-washers", name: "Hi-Tech U-Bolt With Nuts & Washers", slug: "hi-tech-u-bolt-with-nuts-washers", sku: "PLB-PFT-00000226",
-    description: "Hi-Tech U-Bolt With Nuts & Washers - Hardware & Tools for construction and home use.",
+    description: "Hi-Tech U-Bolt With Nuts & Washers - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Hi-Tech", brandSlug: "hi-tech", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15305,7 +15305,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-izom-500w-13mm-impact-drill-iz-ed1013", name: "Izom 500W 13mm Impact Drill", slug: "izom-500w-13mm-impact-drill-iz-ed1013", sku: "TNA-PWT-000006",
-    description: "Izom 500W 13mm Impact Drill - Hardware & Tools for construction and home use.",
+    description: "Izom 500W 13mm Impact Drill - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Izom", brandSlug: "izom", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -15323,7 +15323,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-12mm-flexible-metal-hose-1-5-mtr-sha-chr-549d12", name: "Jaquar 12mm Flexible Metal Hose, 1.5 Mtr, SHA-CHR-549D12", slug: "jaquar-12mm-flexible-metal-hose-1-5-mtr-sha-chr-549d12", sku: "KSB-SBF-00000069",
-    description: "Jaquar 12mm Flexible Metal Hose, 1.5 Mtr, SHA-CHR-549D12 - Pipes & Tanks for construction and home use.",
+    description: "Jaquar 12mm Flexible Metal Hose, 1.5 Mtr, SHA-CHR-549D12 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -15413,7 +15413,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-alive-control-plate-chrome-jcp-chr-852415", name: "Jaquar Concealed Cistern Control Flush Plate", slug: "jaquar-alive-control-plate-chrome-jcp-chr-852415", sku: "KSB-SBF-00000053",
-    description: "Jaquar Concealed Cistern Control Flush Plate - Switches & Sockets for construction and home use.",
+    description: "Jaquar Concealed Cistern Control Flush Plate - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -15431,7 +15431,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-allied-32mm-bottle-trap-with-300x190mm-long-wall", name: "Jaquar Allied 32mm Bottle Trap with 300x190mm Long Wall Connection Pipes & Wall Flange, ALD-CHR-769L300X190", slug: "jaquar-allied-32mm-bottle-trap-with-300x190mm-long-wall-connection-pipes-wall-flange-ald-chr-769l300x190", sku: "KSB-KBA-00000069",
-    description: "Jaquar Allied 32mm Bottle Trap with 300x190mm Long Wall Connection Pipes & Wall Flange, ALD-CHR-769L300X190 - Pipes & Tanks for construction and home use.",
+    description: "Jaquar Allied 32mm Bottle Trap with 300x190mm Long Wall Connection Pipes & Wall Flange, ALD-CHR-769L300X190 - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -15449,7 +15449,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-allied-aquamax-concealed-body-of-single-lever-sh", name: "Jaquar Allied Aquamax Concealed Body of Single Lever Shower Mixer with 3-way diverter, ALD-CHR-783N", slug: "jaquar-allied-aquamax-concealed-body-of-single-lever-shower-mixer-with-3-way-diverter-ald-chr-783n", sku: "KSB-BFG-00000068",
-    description: "Jaquar Allied Aquamax Concealed Body of Single Lever Shower Mixer with 3-way diverter, ALD-CHR-783N - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Allied Aquamax Concealed Body of Single Lever Shower Mixer with 3-way diverter, ALD-CHR-783N - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15521,7 +15521,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-continental-chrome-finish-600mm-stainless-steel", name: "Jaquar Continental Chrome Finish 600mm Stainless Steel Towel Bar/Rail , ACN-CHR-1111SM", slug: "jaquar-continental-chrome-finish-600mm-stainless-steel-towel-bar-rail-acn-chr-1111sm", sku: "KSB-KBA-00000087",
-    description: "Jaquar Continental Chrome Finish 600mm Stainless Steel Towel Bar/Rail , ACN-CHR-1111SM - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Continental Chrome Finish 600mm Stainless Steel Towel Bar/Rail , ACN-CHR-1111SM - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15539,7 +15539,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-continental-chrome-finish-soap-dispenser-with-gl", name: "Jaquar Continental Chrome Finish Soap Dispenser with Glass Bottle, ACN-CHR-1135N", slug: "jaquar-continental-chrome-finish-soap-dispenser-with-glass-bottle-acn-chr-1135n", sku: "KSB-KBA-00000083",
-    description: "Jaquar Continental Chrome Finish Soap Dispenser with Glass Bottle, ACN-CHR-1135N - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Continental Chrome Finish Soap Dispenser with Glass Bottle, ACN-CHR-1135N - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15557,7 +15557,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-continental-double-arm-wall-mounted-reversible-p", name: "Jaquar Continental Double Arm Wall Mounted Reversible Plain & (3X) Magnifying Pivotal Mirror, ACN-CHR-1193N", slug: "jaquar-continental-double-arm-wall-mounted-reversible-plain-3x-magnifying-pivotal-mirror-acn-chr-1193n", sku: "KSB-KBA-00000073",
-    description: "Jaquar Continental Double Arm Wall Mounted Reversible Plain & (3X) Magnifying Pivotal Mirror, ACN-CHR-1193N - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Continental Double Arm Wall Mounted Reversible Plain & (3X) Magnifying Pivotal Mirror, ACN-CHR-1193N - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15575,7 +15575,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-continental-prime-chrome-finish-long-body-bib-co", name: "Jaquar Long Body Bib Cock with Wall Flange, COP-CHR-107NPM", slug: "jaquar-continental-prime-chrome-finish-long-body-bib-cock-with-wall-flange-cop-chr-107npm", sku: "KSB-SBF-00000067",
-    description: "Jaquar Long Body Bib Cock with Wall Flange, COP-CHR-107NPM - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Long Body Bib Cock with Wall Flange, COP-CHR-107NPM - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15665,7 +15665,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-jdr-thin-rim-rectangular-table-top-basin-size-53", name: "Jaquar JDR Thin Rim Rectangular Table Top Basin, Size: 530x420x140 mm, JDS-WHT-25907N", slug: "jaquar-jdr-thin-rim-rectangular-table-top-basin-size-530x420x140-mm-jds-wht-25907n", sku: "KSB-SNW-00000001",
-    description: "Jaquar JDR Thin Rim Rectangular Table Top Basin, Size: 530x420x140 mm, JDS-WHT-25907N - Sanitary & Bath for construction and home use.",
+    description: "Jaquar JDR Thin Rim Rectangular Table Top Basin, Size: 530x420x140 mm, JDS-WHT-25907N - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15683,7 +15683,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-600mm-long-chrome-finish-stainless-s", name: "Jaquar Kubix Prime 600mm long Chrome Finish Stainless Steel Towel Rack with Lower Hangers, AKP-CHR-35781PS", slug: "jaquar-kubix-prime-600mm-long-chrome-finish-stainless-steel-towel-rack-with-lower-hangers-akp-chr-35781ps", sku: "KSB-KBA-00000075",
-    description: "Jaquar Kubix Prime 600mm long Chrome Finish Stainless Steel Towel Rack with Lower Hangers, AKP-CHR-35781PS - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime 600mm long Chrome Finish Stainless Steel Towel Rack with Lower Hangers, AKP-CHR-35781PS - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15701,7 +15701,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-angular-stop-cock-with-wall-flange-k", name: "Jaquar Kubix Prime Angular Stop Cock with Wall Flange, KUP-CHR-35053PM", slug: "jaquar-kubix-prime-angular-stop-cock-with-wall-flange-kup-chr-35053pm", sku: "KSB-BFG-00000071",
-    description: "Jaquar Kubix Prime Angular Stop Cock with Wall Flange, KUP-CHR-35053PM - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Angular Stop Cock with Wall Flange, KUP-CHR-35053PM - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15719,7 +15719,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-aquamax-exposed-part-kit-of-single-l", name: "Jaquar Kubix Prime Aquamax Exposed Part Kit of Single Lever Shower Mixer with 3-Way diverter, KUP-CHR-35783NKPM", slug: "jaquar-kubix-prime-aquamax-exposed-part-kit-of-single-lever-shower-mixer-with-3-way-diverter-kup-chr-35783nkpm", sku: "KSB-BFG-00000067",
-    description: "Jaquar Kubix Prime Aquamax Exposed Part Kit of Single Lever Shower Mixer with 3-Way diverter, KUP-CHR-35783NKPM - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Aquamax Exposed Part Kit of Single Lever Shower Mixer with 3-Way diverter, KUP-CHR-35783NKPM - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15755,7 +15755,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-chrome-finish-square-towel-ring-akp", name: "Jaquar Kubix Prime Chrome Finish Square Towel Ring, AKP-CHR-35721P", slug: "jaquar-kubix-prime-chrome-finish-square-towel-ring-akp-chr-35721p", sku: "KSB-KBA-00000072",
-    description: "Jaquar Kubix Prime Chrome Finish Square Towel Ring, AKP-CHR-35721P - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Chrome Finish Square Towel Ring, AKP-CHR-35721P - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15773,7 +15773,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-chrome-finish-toilet-roll-holder-akp", name: "Jaquar Kubix Prime Chrome Finish Toilet Roll Holder, AKP-CHR-35751P", slug: "jaquar-kubix-prime-chrome-finish-toilet-roll-holder-akp-chr-35751p", sku: "KSB-KBA-00000077",
-    description: "Jaquar Kubix Prime Chrome Finish Toilet Roll Holder, AKP-CHR-35751P - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Chrome Finish Toilet Roll Holder, AKP-CHR-35751P - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15827,7 +15827,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-rimless-blind-installation-wall-hung", name: "Jaquar Kubix Prime Rimless Blind Installation Wall Hung WC, 380x525x375 mm, KUS-WHT-35953BIUFSMPM", slug: "jaquar-kubix-prime-rimless-blind-installation-wall-hung-wc-380x525x375-mm-kus-wht-35953biufsmpm", sku: "KSB-SNW-00000002",
-    description: "Jaquar Kubix Prime Rimless Blind Installation Wall Hung WC, 380x525x375 mm, KUS-WHT-35953BIUFSMPM - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Rimless Blind Installation Wall Hung WC, 380x525x375 mm, KUS-WHT-35953BIUFSMPM - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15863,7 +15863,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-kubix-prime-soap-dispenser-with-glass-bottle-akp", name: "Jaquar Kubix Prime Soap Dispenser with Glass bottle, AKP-CHR-35735P", slug: "jaquar-kubix-prime-soap-dispenser-with-glass-bottle-akp-chr-35735p", sku: "KSB-KBA-00000070",
-    description: "Jaquar Kubix Prime Soap Dispenser with Glass bottle, AKP-CHR-35735P - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Kubix Prime Soap Dispenser with Glass bottle, AKP-CHR-35735P - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -15971,7 +15971,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-single-lever-exposed-parts-kit-of-hi-flow-divert", name: "Jaquar Single Lever Exposed Parts Kit of Hi-flow Diverter, FUS-CHR-29079NK", slug: "jaquar-single-lever-exposed-parts-kit-of-hi-flow-diverter-fus-chr-29079nk", sku: "KSB-BFG-00000072",
-    description: "Jaquar Single Lever Exposed Parts Kit of Hi-flow Diverter, FUS-CHR-29079NK - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Single Lever Exposed Parts Kit of Hi-flow Diverter, FUS-CHR-29079NK - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -16025,7 +16025,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jaquar-wall-outlet-with-square-shape-shower-hook-sha-ch", name: "Jaquar Wall Outlet with Square Shape Shower Hook, SHA-CHR-566S", slug: "jaquar-wall-outlet-with-square-shape-shower-hook-sha-chr-566s", sku: "KSB-BFG-00000069",
-    description: "Jaquar Wall Outlet with Square Shape Shower Hook, SHA-CHR-566S - Sanitary & Bath for construction and home use.",
+    description: "Jaquar Wall Outlet with Square Shape Shower Hook, SHA-CHR-566S - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Jaquar", brandSlug: "jaquar", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -16043,7 +16043,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-jeyces-aluminium-5-step-ladder", name: "Jeyces Aluminium 5 Step Ladder", slug: "jeyces-aluminium-5-step-ladder", sku: "TNA-ACC-000041",
-    description: "Jeyces Aluminium 5 Step Ladder - Hardware & Tools for construction and home use.",
+    description: "Jeyces Aluminium 5 Step Ladder - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Jeyces", brandSlug: "jeyces", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -16061,7 +16061,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-1-1-2-inch-c-p-brass-extension-nipple", name: "Kohinoor 1-1/2 inch Extension Nipple", slug: "kohinoor-1-1-2-inch-c-p-brass-extension-nipple", sku: "KSB-BKA-00000004",
-    description: "Kohinoor 1-1/2 inch Extension Nipple - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor 1-1/2 inch Extension Nipple - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16079,7 +16079,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-1-2-inch-c-p-brass-hex-nipple", name: "Kohinoor 1/2 inch Hex Nipple", slug: "kohinoor-1-2-inch-c-p-brass-hex-nipple", sku: "KSB-BKA-00000005",
-    description: "Kohinoor 1/2 inch Hex Nipple - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor 1/2 inch Hex Nipple - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16097,7 +16097,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-1-inch-c-p-brass-extension-nipple", name: "Kohinoor 1 inch Extension Nipple", slug: "kohinoor-1-inch-c-p-brass-extension-nipple", sku: "KSB-BKA-00000003",
-    description: "Kohinoor 1 inch Extension Nipple - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor 1 inch Extension Nipple - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16115,7 +16115,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-2-feet-flexible-connection-pipe-with-steel-gri", name: "Kohinoor Connection Pipe", slug: "kohinoor-2-feet-flexible-connection-pipe-with-steel-grip", sku: "KSB-BKA-00000012",
-    description: "Kohinoor Connection Pipe - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor Connection Pipe - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16133,7 +16133,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-2-inch-stainless-steel-flange", name: "Kohinoor 2 inch Flange", slug: "kohinoor-2-inch-stainless-steel-flange", sku: "KSB-BKA-00000009",
-    description: "Kohinoor 2 inch Flange - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor 2 inch Flange - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16151,7 +16151,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-3-4-inch-cp-wash-basin-rack-bolt-screw-without", name: "Kohinoor 3/4 inch Wash Basin Rack Bolt", slug: "kohinoor-3-4-inch-cp-wash-basin-rack-bolt-screw-without-showcap", sku: "KSB-BKA-00000008",
-    description: "Kohinoor 3/4 inch Wash Basin Rack Bolt - Sanitary & Bath for construction and home use.",
+    description: "Kohinoor 3/4 inch Wash Basin Rack Bolt - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -16169,7 +16169,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-5-inch-hole-grating", name: "Kohinoor 5 inch Grating", slug: "kohinoor-5-inch-hole-grating", sku: "KSB-BKA-00000007",
-    description: "Kohinoor 5 inch Grating - Sanitary & Bath for construction and home use.",
+    description: "Kohinoor 5 inch Grating - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -16187,7 +16187,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-kohinoor-gold-pvc-straight-waste-pipe-1-1-4x36-inch", name: "Kohinoor PVC Waste Pipe", slug: "kohinoor-gold-pvc-straight-waste-pipe-1-1-4x36-inch", sku: "KSB-BKA-00000011",
-    description: "Kohinoor PVC Waste Pipe - Pipes & Tanks for construction and home use.",
+    description: "Kohinoor PVC Waste Pipe - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Kohinoor", brandSlug: "kohinoor", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -16907,7 +16907,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-lorazzo-duo-drift-health-faucet-gun-with-1m-hose-pipe-a", name: "Lorazzo Duo Drift Health Faucet Set", slug: "lorazzo-duo-drift-health-faucet-gun-with-1m-hose-pipe-and-wall-hook", sku: "KSB-BKA-00000048",
-    description: "Lorazzo Duo Drift Health Faucet Set - Sanitary & Bath for construction and home use.",
+    description: "Lorazzo Duo Drift Health Faucet Set - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Lorazzo", brandSlug: "lorazzo", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -17051,7 +17051,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-optimus-2300-pure-sine-wave-inverter-with-two", name: "Luminous Optimus 2300+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo", slug: "luminous-optimus-2300-pure-sine-wave-inverter-with-two-rc15000-tall-tubular-battery-combo", sku: "ELE-FGI-PBU-000041",
-    description: "Luminous Optimus 2300+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo - Home Appliances & Power for construction and home use.",
+    description: "Luminous Optimus 2300+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17087,7 +17087,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-optimus-2800-pure-sine-wave-inverter-with-two", name: "Luminous Optimus 2800+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo", slug: "luminous-optimus-2800-pure-sine-wave-inverter-with-two-rc15000-tall-tubular-battery-combo", sku: "ELE-FGI-PBU-000040",
-    description: "Luminous Optimus 2800+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo - Home Appliances & Power for construction and home use.",
+    description: "Luminous Optimus 2800+ Pure Sine Wave Inverter with Two RC15000 Tall Tubular Battery Combo - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17123,7 +17123,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-optimus-2800-pure-sine-wave-inveter-with-two-r-2", name: "Luminous Optimus 2800+ Pure Sine Wave Inveter with Two RC18000ST Short Tubular Inverter Battery Combo", slug: "luminous-optimus-2800-pure-sine-wave-inveter-with-two-rc18000st-short-tubular-inverter-battery-combo", sku: "ELE-FGI-PBU-000042",
-    description: "Luminous Optimus 2800+ Pure Sine Wave Inveter with Two RC18000ST Short Tubular Inverter Battery Combo - Home Appliances & Power for construction and home use.",
+    description: "Luminous Optimus 2800+ Pure Sine Wave Inveter with Two RC18000ST Short Tubular Inverter Battery Combo - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17141,7 +17141,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-optimus-4500-pure-sine-wave-inveter-with-two-r", name: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC18000 Pro 150 Ah Tubular Inverter Battery Combo", slug: "luminous-optimus-4500-pure-sine-wave-inveter-with-two-rc18000-pro-short-tubular-inverter-battery-combo", sku: "ELE-FGI-PBU-000045",
-    description: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC18000 Pro 150 Ah Tubular Inverter Battery Combo - Home Appliances & Power for construction and home use.",
+    description: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC18000 Pro 150 Ah Tubular Inverter Battery Combo - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17159,7 +17159,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-optimus-4500-pure-sine-wave-inveter-with-two-r-2", name: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC25000 Pro 200Ah Tubular Inverter Battery Combo", slug: "luminous-optimus-4500-pure-sine-wave-inveter-with-two-rc25000-pro-short-tubular-inverter-battery-combo", sku: "ELE-FGI-PBU-000046",
-    description: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC25000 Pro 200Ah Tubular Inverter Battery Combo - Home Appliances & Power for construction and home use.",
+    description: "Luminous Optimus 4500+ Pure Sine Wave Inveter with Four RC25000 Pro 200Ah Tubular Inverter Battery Combo - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17177,7 +17177,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-luminous-power-sine-1100-900va-12v-pure-sine-wave-inver", name: "Luminous Power Sine 1100 (900VA/12V) Pure Sine Wave Inverter with RC18000ST Pro 150Ah Short Tubular Battery Combo with Trolley", slug: "luminous-power-sine-1100-900va-12v-pure-sine-wave-inverter-with-rc18000st-pro-150ah-short-tubular-battery-combo-with-trolley", sku: "ELE-FGI-PBU-000047",
-    description: "Luminous Power Sine 1100 (900VA/12V) Pure Sine Wave Inverter with RC18000ST Pro 150Ah Short Tubular Battery Combo with Trolley - Home Appliances & Power for construction and home use.",
+    description: "Luminous Power Sine 1100 (900VA/12V) Pure Sine Wave Inverter with RC18000ST Pro 150Ah Short Tubular Battery Combo with Trolley - Home Appliances & Power for professional and home use.",
     shortDescription: "Home Appliances & Power product",
     brand: "Luminous", brandSlug: "luminous", category: "Home Appliances & Power", categorySlug: "appliances",
     subCategory: null, subCategorySlug: null,
@@ -17411,7 +17411,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-maheshwari-16mm-bwr-plywood-8x4-ft", name: "Vajraa Platinum 16mm Calibrated BWR Plywood, 8x4 ft, 15-Year Warranty", slug: "maheshwari-16mm-bwr-plywood-8x4-ft", sku: "WNL-LMT-00000093",
-    description: "Vajraa Platinum 16mm Calibrated BWR Plywood, 8x4 ft, 15-Year Warranty - Plywood, MDF & HDHMR for construction and home use.",
+    description: "Vajraa Platinum 16mm Calibrated BWR Plywood, 8x4 ft, 15-Year Warranty - Plywood, MDF & HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Maheshwari", brandSlug: "maheshwari", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -17483,7 +17483,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-myk-laticrete-303-grey-tile-adhesive-30-kg-2", name: "MYK Laticrete 303 Grey Tile Adhesive 30 kg", slug: "myk-laticrete-303-grey-tile-adhesive-30-kg-2", sku: "ANW-TWC-000098",
-    description: "MYK Laticrete 303 Grey Tile Adhesive 30 kg - Tiling for construction and home use.",
+    description: "MYK Laticrete 303 Grey Tile Adhesive 30 kg - Tiling for professional and home use.",
     shortDescription: "Tiling product",
     brand: "MYK Laticrete", brandSlug: "myk-laticrete", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -17663,7 +17663,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-nakoda-screw", name: "Nakoda Nickel Screw Box", slug: "nakoda-screw", sku: "HNF-BSF-00000016",
-    description: "Nakoda Nickel Screw Box - Hardware & Tools for construction and home use.",
+    description: "Nakoda Nickel Screw Box - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Nakoda", brandSlug: "nakoda", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -17681,7 +17681,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-nariya-310-5-inch-stainless-steel-concealed-door-handle", name: "Nariya 310 Stainless steel Concealed Door Handle", slug: "nariya-310-5-inch-stainless-steel-concealed-door-handle", sku: "HNF-DLH-00000059",
-    description: "Nariya 310 Stainless steel Concealed Door Handle - Pipes & Tanks for construction and home use.",
+    description: "Nariya 310 Stainless steel Concealed Door Handle - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Nariya", brandSlug: "nariya", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -17699,7 +17699,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-nariya-605-8-inch-stainless-steel-door-handle", name: "Nariya 605 Stainless steel Door Handle", slug: "nariya-605-8-inch-stainless-steel-door-handle", sku: "HNF-DLH-00000057",
-    description: "Nariya 605 Stainless steel Door Handle - Pipes & Tanks for construction and home use.",
+    description: "Nariya 605 Stainless steel Door Handle - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Nariya", brandSlug: "nariya", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -17717,7 +17717,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-nariya-ns111-4-inch-stainless-steel-door-handle", name: "Nariya NS111 Stainless Steel Door Handle", slug: "nariya-ns111-4-inch-stainless-steel-door-handle", sku: "HNF-DLH-00000051",
-    description: "Nariya NS111 Stainless Steel Door Handle - Pipes & Tanks for construction and home use.",
+    description: "Nariya NS111 Stainless Steel Door Handle - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Nariya", brandSlug: "nariya", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -17735,7 +17735,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-nariya-ns118-4-inch-stainless-steel-door-handle", name: "Nariya NS118 Stainless steel Door Handle", slug: "nariya-ns118-4-inch-stainless-steel-door-handle", sku: "HNF-DLH-00000054",
-    description: "Nariya NS118 Stainless steel Door Handle - Pipes & Tanks for construction and home use.",
+    description: "Nariya NS118 Stainless steel Door Handle - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Nariya", brandSlug: "nariya", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -17753,7 +17753,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-onidaibibo-sink-cock-silicon-spout-foam-flow-with-flang", name: "OnidaIbibo Sink Cock Silicon Spout Foam Flow with Flange, 4090", slug: "onidaibibo-sink-cock-silicon-spout-foam-flow-with-flange-4090", sku: "KSB-SBF-00000070",
-    description: "OnidaIbibo Sink Cock Silicon Spout Foam Flow with Flange, 4090 - Kitchen Sinks & Faucets for construction and home use.",
+    description: "OnidaIbibo Sink Cock Silicon Spout Foam Flow with Flange, 4090 - Kitchen Sinks & Faucets for professional and home use.",
     shortDescription: "Kitchen Sinks & Faucets product",
     brand: "OnidaIbibo", brandSlug: "onidaibibo", category: "Kitchen Sinks & Faucets", categorySlug: "kitchen",
     subCategory: null, subCategorySlug: null,
@@ -18113,7 +18113,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-philips-meraki-round-10w-ip44-582108-warm-white", name: "Philips Meraki Round 10W IP44,582108, Warm White", slug: "philips-meraki-round-10w-ip44-582108-warm-white", sku: "ELE-LNF-00000093",
-    description: "Philips Meraki Round 10W IP44,582108, Warm White - Lighting for construction and home use.",
+    description: "Philips Meraki Round 10W IP44,582108, Warm White - Lighting for professional and home use.",
     shortDescription: "Lighting product",
     brand: "Philips", brandSlug: "philips", category: "Lighting", categorySlug: "lighting",
     subCategory: null, subCategorySlug: null,
@@ -18131,7 +18131,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-philips-moonglade-pic-light-silver-7w-582062-warm-white", name: "Philips Moonglade Pic Light Silver 7W, 582062, Warm White", slug: "philips-moonglade-pic-light-silver-7w-582062-warm-white", sku: "ELE-LNF-00000090",
-    description: "Philips Moonglade Pic Light Silver 7W, 582062, Warm White - Lighting for construction and home use.",
+    description: "Philips Moonglade Pic Light Silver 7W, 582062, Warm White - Lighting for professional and home use.",
     shortDescription: "Lighting product",
     brand: "Philips", brandSlug: "philips", category: "Lighting", categorySlug: "lighting",
     subCategory: null, subCategorySlug: null,
@@ -18221,7 +18221,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-pidilite-fevi-kwik-463-high-viscosity-instant-bonding-s", name: "Pidilite Fevi Kwik 463 High Viscosity Instant Glue", slug: "pidilite-fevi-kwik-463-high-viscosity-instant-bonding-strong-super-glue-125-grams", sku: "ANW-FNOA-000105",
-    description: "Pidilite Fevi Kwik 463 High Viscosity Instant Glue - Fevicol Adhesives for construction and home use.",
+    description: "Pidilite Fevi Kwik 463 High Viscosity Instant Glue - Fevicol Adhesives for professional and home use.",
     shortDescription: "Fevicol Adhesives product",
     brand: "Fevikwik", brandSlug: "fevikwik", category: "Fevicol Adhesives", categorySlug: "fevicol",
     subCategory: null, subCategorySlug: null,
@@ -18311,7 +18311,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-pidilite-marinekoat-waterproof-plywood-coating-paint-fo", name: "Pidilite Marinekoat Waterproof Plywood Coating Paint", slug: "pidilite-marinekoat-waterproof-plywood-coating-paint-for-wood-surfaces-1-ltr", sku: "ANW-FNOA-000107",
-    description: "Pidilite Marinekoat Waterproof Plywood Coating Paint - Plywood, MDF & HDHMR for construction and home use.",
+    description: "Pidilite Marinekoat Waterproof Plywood Coating Paint - Plywood, MDF & HDHMR for professional and home use.",
     shortDescription: "Plywood, MDF & HDHMR product",
     brand: "Pidilite", brandSlug: "pidilite", category: "Plywood, MDF & HDHMR", categorySlug: "plywood",
     subCategory: null, subCategorySlug: null,
@@ -18527,7 +18527,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-pre-taped-wall-covers-20mtr", name: "Pre-Taped Wall Covers, 20Mtr", slug: "pre-taped-wall-covers-20mtr", sku: "PNA-PPS-00000104",
-    description: "Pre-Taped Wall Covers, 20Mtr - Sanitary & Bath for construction and home use.",
+    description: "Pre-Taped Wall Covers, 20Mtr - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Generic", brandSlug: "generic", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -18923,7 +18923,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-roff-t11-grout-jet-black-1kg-tile-cementitious-grout", name: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Jet Black, 1 kg", slug: "roff-t11-grout-jet-black-1kg-tile-cementitious-grout", sku: "ANW-TAG-00000102",
-    description: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Jet Black, 1 kg - Tiling for construction and home use.",
+    description: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Jet Black, 1 kg - Tiling for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Roff", brandSlug: "roff", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -18941,7 +18941,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-roff-t11-grout-snow-white-1kg-tile-cementitious-grout", name: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Snow White, 1 kg", slug: "roff-t11-grout-snow-white-1kg-tile-cementitious-grout", sku: "ANW-TAG-00000101",
-    description: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Snow White, 1 kg - Tiling for construction and home use.",
+    description: "Roff T11 Rainbow Tile Mate Cementitious Tile Joint Filler, Snow White, 1 kg - Tiling for professional and home use.",
     shortDescription: "Tiling product",
     brand: "Roff", brandSlug: "roff", category: "Tiling", categorySlug: "tiling",
     subCategory: null, subCategorySlug: null,
@@ -18977,7 +18977,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-satin-door-stopper", name: "Door Stopper", slug: "satin-door-stopper", sku: "HNF-DLH-00000076",
-    description: "Door Stopper - Door Locks & Hardware for construction and home use.",
+    description: "Door Stopper - Door Locks & Hardware for professional and home use.",
     shortDescription: "Door Locks & Hardware product",
     brand: "Generic", brandSlug: "generic", category: "Door Locks & Hardware", categorySlug: "locks",
     subCategory: null, subCategorySlug: null,
@@ -19067,7 +19067,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-stainless-steel-brass-door-eye", name: "Stainless Steel Brass Door Eye", slug: "stainless-steel-brass-door-eye", sku: "HNF-DLH-00000078",
-    description: "Stainless Steel Brass Door Eye - Pipes & Tanks for construction and home use.",
+    description: "Stainless Steel Brass Door Eye - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -19085,7 +19085,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-stainless-steel-tower-bolt-3-inch", name: "Stainless Steel Tower Bolt", slug: "stainless-steel-tower-bolt-3-inch", sku: "HNF-DLH-00000061",
-    description: "Stainless Steel Tower Bolt - Pipes & Tanks for construction and home use.",
+    description: "Stainless Steel Tower Bolt - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -19247,7 +19247,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-steel-door-stop", name: "Steel Door Stop", slug: "steel-door-stop", sku: "HNF-DLH-00000075",
-    description: "Steel Door Stop - Pipes & Tanks for construction and home use.",
+    description: "Steel Door Stop - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -19265,7 +19265,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-sturlite-eco-lyf-15w-round-led-slim-downlight-cool-whit", name: "Sturlite Eco LYF 15W Round LED Slim Downlight, Natural White", slug: "sturlite-eco-lyf-15w-round-led-slim-downlight-cool-white", sku: "ELE-LGB-00000020",
-    description: "Sturlite Eco LYF 15W Round LED Slim Downlight, Natural White - Lighting for construction and home use.",
+    description: "Sturlite Eco LYF 15W Round LED Slim Downlight, Natural White - Lighting for professional and home use.",
     shortDescription: "Lighting product",
     brand: "Sturlite", brandSlug: "sturlite", category: "Lighting", categorySlug: "lighting",
     subCategory: null, subCategorySlug: null,
@@ -19337,7 +19337,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-1171-1171n-adjustable-spanner-8-inch", name: "Taparia Adjustable Spanner", slug: "taparia-1171-1171n-adjustable-spanner-8-inch", sku: "TNA-HNT-000060",
-    description: "Taparia Adjustable Spanner - Hardware & Tools for construction and home use.",
+    description: "Taparia Adjustable Spanner - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19481,7 +19481,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-46pcs-1-4inch-drive-socket-set-in-blow-moulding", name: "Taparia 46pcs 1/4inch Drive Socket Set in Blow Moulding Box, SA46", slug: "taparia-46pcs-1-4inch-drive-socket-set-in-blow-moulding-box-sa46", sku: "TNA-HNT-000075",
-    description: "Taparia 46pcs 1/4inch Drive Socket Set in Blow Moulding Box, SA46 - Switches & Sockets for construction and home use.",
+    description: "Taparia 46pcs 1/4inch Drive Socket Set in Blow Moulding Box, SA46 - Switches & Sockets for professional and home use.",
     shortDescription: "Switches & Sockets product",
     brand: "Taparia", brandSlug: "taparia", category: "Switches & Sockets", categorySlug: "switches",
     subCategory: null, subCategorySlug: null,
@@ -19553,7 +19553,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-8pcs-open-ended-spanner-set-dep-08", name: "Taparia Open Ended Spanner Set", slug: "taparia-8pcs-open-ended-spanner-set-dep-08", sku: "TNA-HNT-000058",
-    description: "Taparia Open Ended Spanner Set - Hardware & Tools for construction and home use.",
+    description: "Taparia Open Ended Spanner Set - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19571,7 +19571,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-aws-8-auto-wire-stripper-cutter", name: "Taparia AWS-8 Auto Wire Stripper & Cutter", slug: "taparia-aws-8-auto-wire-stripper-cutter", sku: "TNA-HNT-000076",
-    description: "Taparia AWS-8 Auto Wire Stripper & Cutter - Hardware & Tools for construction and home use.",
+    description: "Taparia AWS-8 Auto Wire Stripper & Cutter - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19589,7 +19589,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-cbp-110-block-plane-randa-180-mm", name: "Taparia CBP 110 Block Plane/Randa, 180 mm", slug: "taparia-cbp-110-block-plane-randa-180-mm", sku: "TNA-HNT-000074",
-    description: "Taparia CBP 110 Block Plane/Randa, 180 mm - Sanitary & Bath for construction and home use.",
+    description: "Taparia CBP 110 Block Plane/Randa, 180 mm - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Taparia", brandSlug: "taparia", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -19715,7 +19715,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-psfp-6-6pcs-precision-screw-driver-set", name: "Taparia PSFP-6 6Pcs Precision Screw Driver Set", slug: "taparia-psfp-6-6pcs-precision-screw-driver-set", sku: "TNA-HNT-000077",
-    description: "Taparia PSFP-6 6Pcs Precision Screw Driver Set - Sanitary & Bath for construction and home use.",
+    description: "Taparia PSFP-6 6Pcs Precision Screw Driver Set - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Taparia", brandSlug: "taparia", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -19751,7 +19751,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-sfh-30-soft-face-hammer-with-handle-250-g", name: "Taparia SFH-30 Soft Face Hammer with Handle, 250 g", slug: "taparia-sfh-30-soft-face-hammer-with-handle-250-g", sku: "TNA-HNT-000062",
-    description: "Taparia SFH-30 Soft Face Hammer with Handle, 250 g - Hardware & Tools for construction and home use.",
+    description: "Taparia SFH-30 Soft Face Hammer with Handle, 250 g - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19769,7 +19769,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-sk-1-18-mm-snap-off-cutter", name: "Taparia SK-1 18 mm Snap Off Cutter", slug: "taparia-sk-1-18-mm-snap-off-cutter", sku: "TNA-HNT-000068",
-    description: "Taparia SK-1 18 mm Snap Off Cutter - Hardware & Tools for construction and home use.",
+    description: "Taparia SK-1 18 mm Snap Off Cutter - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19787,7 +19787,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-ske-18-18-mm-cutter-blade", name: "Taparia SKE-18 18 mm Cutter Blade", slug: "taparia-ske-18-18-mm-cutter-blade", sku: "TNA-HNT-000067",
-    description: "Taparia SKE-18 18 mm Cutter Blade - Hardware & Tools for construction and home use.",
+    description: "Taparia SKE-18 18 mm Cutter Blade - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19805,7 +19805,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-tb-18-multi-pocket-polyester-tool-bag-18-inch", name: "Taparia TB-18 Multi-Pocket Polyester Tool Bag, 18 inch", slug: "taparia-tb-18-multi-pocket-polyester-tool-bag-18-inch", sku: "TNA-HNT-000079",
-    description: "Taparia TB-18 Multi-Pocket Polyester Tool Bag, 18 inch - Sanitary & Bath for construction and home use.",
+    description: "Taparia TB-18 Multi-Pocket Polyester Tool Bag, 18 inch - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Taparia", brandSlug: "taparia", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -19823,7 +19823,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-tcs-08-8inch-tin-cutters-with-spring", name: "Taparia TCS-08 8inch Tin Cutters with Spring", slug: "taparia-tcs-08-8inch-tin-cutters-with-spring", sku: "TNA-HNT-000078",
-    description: "Taparia TCS-08 8inch Tin Cutters with Spring - Hardware & Tools for construction and home use.",
+    description: "Taparia TCS-08 8inch Tin Cutters with Spring - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19841,7 +19841,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-uk-3-19-mm-utility-knives", name: "Taparia UK-3 19 mm Utility Knives", slug: "taparia-uk-3-19-mm-utility-knives", sku: "TNA-HNT-000069",
-    description: "Taparia UK-3 19 mm Utility Knives - Sanitary & Bath for construction and home use.",
+    description: "Taparia UK-3 19 mm Utility Knives - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Taparia", brandSlug: "taparia", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -19859,7 +19859,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-taparia-wcb-32-32-mm-wood-chisel", name: "Taparia Wood Chisel", slug: "taparia-wcb-32-32-mm-wood-chisel", sku: "TNA-HNT-000063",
-    description: "Taparia Wood Chisel - Hardware & Tools for construction and home use.",
+    description: "Taparia Wood Chisel - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "Taparia", brandSlug: "taparia", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -19931,7 +19931,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-cisne-full-extension-indamatic-zink", name: "TplusA Cisne Full Extension Indamatic Zink", slug: "tplusa-cisne-full-extension-indamatic-zink", sku: "HNF-HNC-00000090",
-    description: "TplusA Cisne Full Extension Indamatic Zink - Hinges, Channels & Handles for construction and home use.",
+    description: "TplusA Cisne Full Extension Indamatic Zink - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -19949,7 +19949,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-full-extension-zink-45kg", name: "TplusA Full Extension Zink 45KG", slug: "tplusa-full-extension-zink-45kg", sku: "HNF-HNC-00000093",
-    description: "TplusA Full Extension Zink 45KG - Hinges, Channels & Handles for construction and home use.",
+    description: "TplusA Full Extension Zink 45KG - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -19967,7 +19967,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-full-extention-under-mount-1d-clip", name: "TplusA Full extention under mount 1D clip", slug: "tplusa-full-extention-under-mount-1d-clip", sku: "HNF-HNC-00000083",
-    description: "TplusA Full extention under mount 1D clip - Hinges, Channels & Handles for construction and home use.",
+    description: "TplusA Full extention under mount 1D clip - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -19985,7 +19985,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-part-extention-7-8-under-mount-1d-clip", name: "TplusA Part extention 7/8 under mount 1D clip", slug: "tplusa-part-extention-7-8-under-mount-1d-clip", sku: "HNF-HNC-00000086",
-    description: "TplusA Part extention 7/8 under mount 1D clip - Hinges, Channels & Handles for construction and home use.",
+    description: "TplusA Part extention 7/8 under mount 1D clip - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -20003,7 +20003,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-screw-csk-sawthread-zn-philips", name: "TplusA Screw CSK Sawthread Zn-Philips (Pack of 1000pcs)", slug: "tplusa-screw-csk-sawthread-zn-philips", sku: "HNF-BSF-00000001",
-    description: "TplusA Screw CSK Sawthread Zn-Philips (Pack of 1000pcs) - Hardware & Tools for construction and home use.",
+    description: "TplusA Screw CSK Sawthread Zn-Philips (Pack of 1000pcs) - Hardware & Tools for professional and home use.",
     shortDescription: "Hardware & Tools product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,
@@ -20021,7 +20021,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-tplusa-slide-on-set-110-degree-hinge-1-set-2-nos", name: "TplusA Slide on Set 110 degree Hinge 1 set (2 Nos)", slug: "tplusa-slide-on-set-110-degree-hinge-1-set-2-nos", sku: "HNF-HNC-00000057",
-    description: "TplusA Slide on Set 110 degree Hinge 1 set (2 Nos) - Hinges, Channels & Handles for construction and home use.",
+    description: "TplusA Slide on Set 110 degree Hinge 1 set (2 Nos) - Hinges, Channels & Handles for professional and home use.",
     shortDescription: "Hinges, Channels & Handles product",
     brand: "TplusA", brandSlug: "tplusa", category: "Hinges, Channels & Handles", categorySlug: "hinges",
     subCategory: null, subCategorySlug: null,
@@ -20093,7 +20093,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-transparent-pvc-magnetic-door-curtain", name: "Transparent PVC Magnetic Door Curtain", slug: "transparent-pvc-magnetic-door-curtain", sku: "TNA-ACC-00000043",
-    description: "Transparent PVC Magnetic Door Curtain - Pipes & Tanks for construction and home use.",
+    description: "Transparent PVC Magnetic Door Curtain - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "Generic", brandSlug: "generic", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -20147,7 +20147,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-viking-12x0-10mm-ptfe-teflon-thread-seal-tape-10-mtr", name: "Viking PTFE Teflon Tape", slug: "viking-12x0-10mm-ptfe-teflon-thread-seal-tape-10-mtr", sku: "ANW-TWC-000106",
-    description: "Viking PTFE Teflon Tape - Sanitary & Bath for construction and home use.",
+    description: "Viking PTFE Teflon Tape - Sanitary & Bath for professional and home use.",
     shortDescription: "Sanitary & Bath product",
     brand: "Viking", brandSlug: "viking", category: "Sanitary & Bath", categorySlug: "sanitary",
     subCategory: null, subCategorySlug: null,
@@ -20201,7 +20201,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-vip-19-20mm-powder-coated-metal-fan-box-red", name: "VIP Metal Fan Box Red", slug: "vip-19-20mm-powder-coated-metal-fan-box-red", sku: "ELE-CBF-00000024",
-    description: "VIP Metal Fan Box Red - Fans & Exhaust for construction and home use.",
+    description: "VIP Metal Fan Box Red - Fans & Exhaust for professional and home use.",
     shortDescription: "Fans & Exhaust product",
     brand: "VIP", brandSlug: "vip", category: "Fans & Exhaust", categorySlug: "fans",
     subCategory: null, subCategorySlug: null,
@@ -20255,7 +20255,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-vip-pvc-coupler", name: "VIP PVC Coupler", slug: "vip-pvc-coupler", sku: "ELE-CBF-00000008",
-    description: "VIP PVC Coupler - Pipes & Tanks for construction and home use.",
+    description: "VIP PVC Coupler - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "VIP", brandSlug: "vip", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -20273,7 +20273,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-vip-pvc-solvent-cement-250-ml", name: "VIP PVC Solvent", slug: "vip-pvc-solvent-cement-250-ml", sku: "ELE-CBF-00000025",
-    description: "VIP PVC Solvent - Pipes & Tanks for construction and home use.",
+    description: "VIP PVC Solvent - Pipes & Tanks for professional and home use.",
     shortDescription: "Pipes & Tanks product",
     brand: "VIP", brandSlug: "vip", category: "Pipes & Tanks", categorySlug: "pipes",
     subCategory: null, subCategorySlug: null,
@@ -20291,7 +20291,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-vip-pvc-surface-junction-box-with-lid-screw", name: "VIP PVC Surface Junction Box With Lid & Screw", slug: "vip-pvc-surface-junction-box-with-lid-screw", sku: "ELE-CBF-00000018",
-    description: "VIP PVC Surface Junction Box With Lid & Screw - Conduits & GI Boxes for construction and home use.",
+    description: "VIP PVC Surface Junction Box With Lid & Screw - Conduits & GI Boxes for professional and home use.",
     shortDescription: "Conduits & GI Boxes product",
     brand: "VIP", brandSlug: "vip", category: "Conduits & GI Boxes", categorySlug: "conduits",
     subCategory: null, subCategorySlug: null,
@@ -20381,7 +20381,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-woodtec-general-purpose-thinner-tutpentile-oil", name: "Woodtech General Purpose Thinner - Turpentine Oil", slug: "woodtec-general-purpose-thinner-tutpentile-oil", sku: "PNA-PPS-00000031",
-    description: "Woodtech General Purpose Thinner - Turpentine Oil - Painting for construction and home use.",
+    description: "Woodtech General Purpose Thinner - Turpentine Oil - Painting for professional and home use.",
     shortDescription: "Painting product",
     brand: "Asian Paints", brandSlug: "asian-paints", category: "Painting", categorySlug: "painting",
     subCategory: null, subCategorySlug: null,
@@ -20399,7 +20399,7 @@ export const products: Product[] = [
   },
   {
     id: "fxy-yorker-y-series-3-meter-measuring-tape-yk-3016", name: "Yorker 3 Meter Measuring Tape", slug: "yorker-y-series-3-meter-measuring-tape-yk-3016", sku: "TNA-HNT-000044",
-    description: "Y Series 3 Metre Measuring Tape by Yorker: 3m tape length, 16mm stainless steel blade, blue case, for construction use. Item Code YK-3016, made in India.",
+    description: "Y Series 3 Metre Measuring Tape by Yorker: 3m tape length, 16mm stainless steel blade, blue case, for professional and home use. Item Code YK-3016, made in India.",
     shortDescription: "Hardware & Tools product",
     brand: "Yorker", brandSlug: "yorker", category: "Hardware & Tools", categorySlug: "hardware-tools",
     subCategory: null, subCategorySlug: null,

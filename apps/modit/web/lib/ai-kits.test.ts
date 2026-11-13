@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { PROJECT_KITS, resolveKit, findKitsByQuery } from "./ai-kits.ts";
 
 describe("MODIT AI Project Kits (Blinkit-style Recipe to Cart)", () => {
-  it("defines standard construction project kits", () => {
+  it("defines standard project kits", () => {
     assert.ok(PROJECT_KITS.length >= 5, "Expected at least 5 curated project kits");
     const ids = PROJECT_KITS.map((k) => k.id);
     assert.ok(ids.includes("kit-waterproofing"), "Missing waterproofing kit");

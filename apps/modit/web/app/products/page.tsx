@@ -23,7 +23,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const category = first(sp.category);
   const search = first(sp.search) || first(sp.q);
 
-  let title = "Construction Materials — Cement, Paint, Lighting & Tiling";
+  let title = "Materials on Door — Cement, Paint, Lighting & Tiling";
   let description =
     "Browse cement, paint, lighting, tiles and more at MODIT. Live prices, GST invoices and delivery to your site.";
   if (category) {
@@ -49,7 +49,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
       url: canonical,
       siteName: "MODIT",
       locale: "en_IN",
-      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "MODIT — construction materials delivered" }],
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "MODIT — Materials on Door delivered" }],
     },
     twitter: {
       card: "summary_large_image",

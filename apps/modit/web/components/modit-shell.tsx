@@ -179,7 +179,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell min-h-screen">
       {/* Announcement bar (announce-bar CSS owns vertical padding + notch inset) */}
       <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center text-xs font-bold tracking-wide">
-        Enterprise procurement for construction materials, bulk orders, and supplier sourcing.
+        Materials on Door — enterprise procurement, bulk orders, and 60-minute delivery.
       </div>
 
       <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.35)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, rgba(11,3,24,0.92) 0%, rgba(21,7,38,0.88) 55%, rgba(30,18,69,0.9) 130%)', paddingTop: "var(--safe-t)" }}>

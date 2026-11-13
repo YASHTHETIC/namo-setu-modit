@@ -22,14 +22,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://modit.in"),
   title: {
-    default: "MODIT — Construction Materials Delivered",
+    default: "MODIT — Materials on Door",
     template: "%s | MODIT",
   },
-  description: "Construction materials delivered to your site in 60 minutes. Cement, paint, lighting, tiling — genuine products from verified sellers.",
-  keywords: ["MODIT", "modit.in", "construction materials", "cement online", "paint online", "building material delivery India"],
+  description: "Materials on Door delivered in 60 minutes. Cement, paint, lighting, tiling — genuine products from verified sellers.",
+  keywords: ["MODIT", "modit.in", "materials on door", "cement online", "paint online", "doorstep delivery India"],
   openGraph: {
-    title: "MODIT — Construction Materials Delivered",
-    description: "Cement, paint, lighting, tiling — delivered to your site in 60 minutes.",
+    title: "MODIT — Materials on Door",
+    description: "Materials on Door delivered in 60 minutes. Cement, paint, lighting, tiling.",
     url: "https://modit.in",
     siteName: "MODIT",
     locale: "en_IN",
@@ -39,14 +39,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "MODIT — Construction materials delivered to your site in 60 minutes",
+        alt: "MODIT — Materials on Door delivered in 60 minutes",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MODIT — Construction Materials Delivered",
-    description: "Cement, paint, lighting, tiling — delivered to your site in 60 minutes.",
+    title: "MODIT — Materials on Door",
+    description: "Materials on Door delivered in 60 minutes. Cement, paint, lighting, tiling.",
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "MODIT",
+    title: "MODIT - Materials on Door",
   },
   formatDetection: {
     telephone: false,
@@ -100,8 +100,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="MODIT" />
-        <meta name="application-name" content="MODIT" />
+        <meta name="apple-mobile-web-app-title" content="MODIT - Materials on Door" />
+        <meta name="application-name" content="MODIT - Materials on Door" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -197,7 +197,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   url: "https://modit.in",
                   logo: "https://modit.in/icons/icon-192.png",
                   description:
-                    "Online store for construction materials — cement, paint, lighting, tiling delivered to site.",
+                    "Materials on Door — cement, paint, lighting, tiling delivered in 60 minutes.",
                 },
                 {
                   "@type": "WebSite",

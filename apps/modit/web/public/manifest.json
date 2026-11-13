@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "MODIT",
+  "name": "MODIT - Materials on Door",
   "short_name": "MODIT",
-  "description": "Construction materials delivered to your site in 60 minutes.",
+  "description": "Materials on Door delivered in 60 minutes. Cement, paint, lighting, tiling.",
   "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#150726",

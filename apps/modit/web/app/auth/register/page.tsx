@@ -62,7 +62,7 @@ export default function RegisterPage() {
         <div className="relative z-10 space-y-8">
           <div>
             <h2 className="text-display font-extrabold text-white leading-tight">Join 10,000+<br />builders today</h2>
-            <p className="mt-3 text-body-md text-white/50 leading-relaxed">Create your account and start ordering construction materials at the best prices with 60-minute delivery.</p>
+            <p className="mt-3 text-body-md text-white/50 leading-relaxed">Create your account and get materials on door at the best prices with 60-minute delivery.</p>
           </div>
           <div className="space-y-4">
             {[
