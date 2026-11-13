@@ -36,6 +36,7 @@ import { Button, Badge, Card, StarRating, PriceDisplay, DeliveryBadge, QuantityS
 import { ShadePicker } from "@/components/shade-picker";
 import { AiRoomVisualizer } from "@/components/ai-room-visualizer";
 import { ProductZoom3DViewer } from "@/components/product-zoom-3d-viewer";
+import { AmazonInspectionModal } from "@/components/amazon-inspection-modal";
 import { Reveal } from "@/components/reveal";
 import { OutOfStockSubstitutes } from "@/components/out-of-stock-substitutes";
 import { usePincode } from "@/lib/pincode-context";
@@ -320,64 +321,21 @@ export default function ProductDetailPage({
               </div>
             )}
 
-      {/* Fullscreen image viewer */}
-      {lightboxOpen && product.images.length > 0 && (
-        <div
-          className="fixed inset-0 z-modal flex flex-col bg-black/95 animate-[fadeIn_0.2s_ease-out]"
-          onClick={() => setLightboxOpen(false)}
-        >
-          <div className="flex items-center justify-between px-4 py-3">
-            <span className="text-body-sm font-semibold text-white/70 tabular-nums">
-              {safeImageIndex + 1} / {product.images.length}
-            </span>
-            <button
-              onClick={() => setLightboxOpen(false)}
-              aria-label="Close fullscreen view"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <div
-            className="relative flex-1 min-h-0"
-            onClick={(e) => e.stopPropagation()}
-            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-            onTouchEnd={(e) => {
-              if (touchStartX.current === null) return;
-              const dx = e.changedTouches[0].clientX - touchStartX.current;
-              touchStartX.current = null;
-              if (Math.abs(dx) < 40) return;
-              setSelectedImage((i) => (i + (dx < 0 ? 1 : product.images.length - 1)) % product.images.length);
-            }}
-          >
-            <Image
-              src={product.images[safeImageIndex]}
-              alt={product.name}
-              fill
-              sizes="100vw"
-              className="object-contain"
-            />
-            {product.images.length > 1 && (
-              <>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setSelectedImage((i) => (i + product.images.length - 1) % product.images.length); }}
-                  aria-label="Previous image"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setSelectedImage((i) => (i + 1) % product.images.length); }}
-                  aria-label="Next image"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Amazon-Style 3D & Ultra Zoom Inspection Window (Manager: "amazon m dekha hoga apne zoom and 3d look available hote h") */}
+      <AmazonInspectionModal
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        images={product.images}
+        productName={product.name}
+        price={activeVariant?.price ?? product.price}
+        unit={activeVariant?.unit ?? product.unit}
+        initialImageIndex={safeImageIndex}
+        isPaintProduct={product.categorySlug === "painting" || Boolean(product.hasShades)}
+        shades={product.shades}
+        selectedShade={selectedShade}
+        onSelectShade={(s) => setSelectedShade(s)}
+        onAddToCart={handleAddToCart}
+      />
 
             {/* Trust badges — below gallery on mobile */}
             <div className="mt-4 grid grid-cols-3 gap-2 lg:hidden">

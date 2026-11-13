@@ -259,6 +259,72 @@ export function ProductZoom3DViewer({
               }}
             />
           )}
+
+          {/* Erupting Liquid Paint Splash (Manager: "paint bucket se bhr uchal rha h kind of") */}
+          {isPaintProduct && (
+            <svg
+              viewBox="0 0 500 500"
+              className="pointer-events-none absolute inset-0 m-auto h-full w-full z-20 transition-transform duration-500"
+              style={{
+                transform: mode === "3d" ? "translateZ(26px)" : "none",
+                filter: `drop-shadow(0 10px 20px ${auraColor}70)`,
+              }}
+            >
+              <defs>
+                <linearGradient id="pdpSplashGloss" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
+                  <stop offset="50%" stopColor="#ffffff" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#000000" stopOpacity="0.25" />
+                </linearGradient>
+              </defs>
+
+              {/* Left Erupting Splash Jet — Leaping out from the left rim */}
+              <path
+                d="M 180 180 C 130 160, 70 120, 60 70 C 50 30, 95 30, 110 65 C 125 100, 160 135, 195 165 Z"
+                fill={auraColor}
+                opacity="0.95"
+              />
+              <path
+                d="M 170 170 C 125 150, 75 110, 68 75 C 65 55, 90 45, 102 70 C 112 95, 145 130, 180 155 Z"
+                fill="url(#pdpSplashGloss)"
+                opacity="0.55"
+              />
+
+              {/* Right Erupting Splash Jet — Leaping out from the right rim */}
+              <path
+                d="M 320 180 C 370 160, 430 120, 440 70 C 450 30, 405 30, 390 65 C 375 100, 340 135, 305 165 Z"
+                fill={auraColor}
+                opacity="0.95"
+              />
+              <path
+                d="M 330 170 C 375 150, 425 110, 432 75 C 435 55, 410 45, 398 70 C 388 95, 355 130, 320 155 Z"
+                fill="url(#pdpSplashGloss)"
+                opacity="0.55"
+              />
+
+              {/* Central Paint Wave Crown Bursting Over Front Rim */}
+              <path
+                d="M 175 180 Q 250 150 325 180 Q 250 200 175 180 Z"
+                fill={auraColor}
+                opacity="0.95"
+              />
+              <ellipse cx="250" cy="180" rx="65" ry="10" fill="url(#pdpSplashGloss)" opacity="0.45" />
+
+              {/* Airborne Flying Droplets */}
+              <circle cx="50" cy="45" r="10" fill={auraColor} />
+              <circle cx="85" cy="25" r="7" fill={auraColor} />
+              <circle cx="450" cy="45" r="10" fill={auraColor} />
+              <circle cx="415" cy="25" r="7" fill={auraColor} />
+              <circle cx="250" cy="90" r="12" fill={auraColor} />
+              <circle cx="230" cy="65" r="7" fill={auraColor} />
+              <circle cx="270" cy="70" r="8" fill={auraColor} />
+
+              {/* Droplet highlights */}
+              <circle cx="48" cy="42" r="3" fill="#ffffff" opacity="0.8" />
+              <circle cx="448" cy="42" r="3" fill="#ffffff" opacity="0.8" />
+              <circle cx="248" cy="87" r="4" fill="#ffffff" opacity="0.8" />
+            </svg>
+          )}
         </div>
 
         {/* Floating 3D shadow underneath */}
