@@ -582,11 +582,20 @@ export default function ProductDetailPage({
                 <button
                   type="button"
                   onClick={() => setVisualizerOpen(true)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#1E1245] hover:from-[#1E1245] hover:to-[#2D1B69] text-white text-body-sm font-black shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                  className="group relative w-full overflow-hidden flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-[#2D1B69] via-[#4A2D8A] to-[#1E1245] hover:opacity-95 text-white text-body-sm font-black shadow-lg shadow-purple-900/20 active:scale-[0.98] transition-all cursor-pointer border border-white/20"
                 >
-                  <Sparkles className="h-4 w-4 text-[#F8CB46] animate-pulse" />
-                  <span>Product Exposure · AI Room Visualizer</span>
-                  <ChevronRight className="h-4 w-4 text-white/60 ml-1" />
+                  <div className="flex items-center gap-2">
+                    <div className="h-7 w-7 rounded-lg bg-white/10 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-[#F8CB46] animate-pulse" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-body-sm font-black leading-tight text-white">Product Exposure · AI Room Visualizer</p>
+                      <p className="text-tiny font-medium text-white/70">Preview {selectedShade || "selected shade"} on real walls &amp; lighting</p>
+                    </div>
+                  </div>
+                  <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-tiny font-bold text-white group-hover:bg-white/25 transition-colors">
+                    Try Now <ChevronRight className="h-3.5 w-3.5 text-white" />
+                  </span>
                 </button>
               </div>
             </div>

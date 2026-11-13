@@ -118,13 +118,26 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
       {/* Info zone */}
       <div className="flex flex-col flex-1 gap-0.5 p-2 sm:p-2.5">
-        <p className="flex items-center gap-1 text-tiny font-semibold text-[#9B8CB5]">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-          60 MINS
-        </p>
+        <div className="flex items-center justify-between gap-1 text-tiny">
+          <p className="flex items-center gap-1 font-semibold text-[#9B8CB5]">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            60 MINS
+          </p>
+          {live.shades && live.shades.length > 0 && (
+            <div className="flex items-center -space-x-1" title={`${live.shades.length} shades available`}>
+              {live.shades.slice(0, 3).map((s) => (
+                <span
+                  key={s.name}
+                  className="h-2.5 w-2.5 rounded-full border border-white shadow-xs inline-block"
+                  style={{ backgroundColor: s.code }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
         <h3 className="text-body-sm font-medium text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px]">
           {product.name}
         </h3>

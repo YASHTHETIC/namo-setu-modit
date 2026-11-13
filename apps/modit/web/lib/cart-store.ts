@@ -115,6 +115,21 @@ export const useCartStore = create<CartState>()(
               ),
             };
           }
+          // If adding with a shade, upgrade any existing unshaded line for this product/variant
+          if (shade) {
+            const unshadedIndex = state.items.findIndex(
+              (i) => keyOf(i.product) === keyOf(product) && (i.variantId || "default") === (variantId || "default") && !i.shade
+            );
+            if (unshadedIndex !== -1) {
+              return {
+                items: state.items.map((i, idx) =>
+                  idx === unshadedIndex
+                    ? { ...i, shade, unitPrice, quantity: Math.max(i.quantity, quantity) }
+                    : i
+                ),
+              };
+            }
+          }
           return {
             items: [...state.items, { product, quantity, addedAt: Date.now(), variantId, shade, unitPrice }],
           };

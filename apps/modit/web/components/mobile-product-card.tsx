@@ -87,14 +87,27 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           <span className="flex items-center gap-0.5 font-bold text-[#2D1B69] bg-[#F0ECF9] px-1.5 py-0.5 rounded">
             <Clock className="h-2.5 w-2.5 text-[#7CB518]" /> 60 MINS
           </span>
-          {optLabel && (
-            <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-              className="text-tiny font-bold text-[#047857] hover:underline"
-            >
-              {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
-            </button>
-          )}
+          <div className="flex items-center gap-1.5">
+            {product.shades && product.shades.length > 0 && (
+              <div className="flex items-center -space-x-1" title={`${product.shades.length} shades available`}>
+                {product.shades.slice(0, 3).map((s) => (
+                  <span
+                    key={s.name}
+                    className="h-2.5 w-2.5 rounded-full border border-white shadow-xs inline-block"
+                    style={{ backgroundColor: s.code }}
+                  />
+                ))}
+              </div>
+            )}
+            {optLabel && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+                className="text-tiny font-bold text-[#047857] hover:underline"
+              >
+                {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
+              </button>
+            )}
+          </div>
         </div>
 
         <Link href={productLink(product)}>

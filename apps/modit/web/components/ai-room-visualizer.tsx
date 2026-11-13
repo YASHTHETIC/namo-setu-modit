@@ -95,6 +95,7 @@ export function AiRoomVisualizer({
   );
   const [finish, setFinish] = useState<"matte" | "silk" | "gloss">("silk");
   const [coats, setCoats] = useState<1 | 2>(2);
+  const [lightMode, setLightMode] = useState<"day" | "warm">("day");
   const [showOriginal, setShowOriginal] = useState(false);
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -235,12 +236,12 @@ export function AiRoomVisualizer({
                     <defs>
                       {/* Gradient for realistic room lighting and sunlight shadow */}
                       <linearGradient id="sunlight" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+                        <stop offset="0%" stopColor={lightMode === "warm" ? "#FFF3E0" : "#ffffff"} stopOpacity={lightMode === "warm" ? "0.55" : "0.4"} />
                         <stop offset="50%" stopColor="#ffffff" stopOpacity="0.05" />
                         <stop offset="100%" stopColor="#000000" stopOpacity="0.35" />
                       </linearGradient>
                       <radialGradient id="ceilingLight" cx="50%" cy="10%" r="70%">
-                        <stop offset="0%" stopColor="#FFF9E6" stopOpacity="0.5" />
+                        <stop offset="0%" stopColor={lightMode === "warm" ? "#FF9800" : "#FFF9E6"} stopOpacity={lightMode === "warm" ? "0.4" : "0.5"} />
                         <stop offset="100%" stopColor="#000000" stopOpacity="0.2" />
                       </radialGradient>
                     </defs>
@@ -324,6 +325,30 @@ export function AiRoomVisualizer({
                 />
                 <span>{selectedShadeName}</span>
                 <span className="font-mono text-white/60 text-micro">({selectedShadeHex})</span>
+              </div>
+
+              {/* Lighting Ambient Switcher (Daylight vs Warm Glow) */}
+              <div className="absolute top-3 right-3 z-20 flex items-center gap-1 bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
+                <button
+                  type="button"
+                  onClick={() => setLightMode("day")}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-tiny font-bold transition-all cursor-pointer ${
+                    lightMode === "day" ? "bg-white text-black shadow-xs" : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  <Sun className="h-3 w-3 text-amber-500" />
+                  Daylight
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLightMode("warm")}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-tiny font-bold transition-all cursor-pointer ${
+                    lightMode === "warm" ? "bg-amber-400 text-black shadow-xs" : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  <Sparkles className="h-3 w-3 text-amber-800" />
+                  Warm Light
+                </button>
               </div>
 
               {/* Before/After Toggle Floating Button */}

@@ -77,6 +77,23 @@ export function ProductZoom3DViewer({
     setTilt({ rx: 0, ry: 0 });
   }, []);
 
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      if (mode !== "3d" || !containerRef.current || e.touches.length === 0) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const touch = e.touches[0];
+      const clientX = touch.clientX - rect.left;
+      const clientY = touch.clientY - rect.top;
+      const normX = Math.max(-1, Math.min(1, (clientX / rect.width) * 2 - 1));
+      const normY = Math.max(-1, Math.min(1, (clientY / rect.height) * 2 - 1));
+      setTilt({
+        rx: -normY * 18,
+        ry: normX * 22,
+      });
+    },
+    [mode]
+  );
+
   return (
     <div className="relative">
       {/* Top mode switch toolbar */}
@@ -134,7 +151,11 @@ export function ProductZoom3DViewer({
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0].clientX;
         }}
+        onTouchMove={handleTouchMove}
         onTouchEnd={(e) => {
+          if (mode === "3d") {
+            setTilt({ rx: 0, ry: 0 });
+          }
           if (touchStartX.current === null) return;
           const dx = e.changedTouches[0].clientX - touchStartX.current;
           touchStartX.current = null;
