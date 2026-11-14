@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { ModitLogo } from "@/components/modit-logo";
 import { ReferralModal } from "@/components/referral-modal";
-import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
+import { useIsStandalone, useIsAppInstalled, usePwaInstall } from "@/lib/pwa";
 import { openAppSheet } from "@/components/app-install-sheet";
 
 /**
@@ -17,6 +17,7 @@ import { openAppSheet } from "@/components/app-install-sheet";
 export function SiteFooter({ className = "" }: { className?: string }) {
   const [showReferral, setShowReferral] = useState(false);
   const isApp = useIsStandalone();
+  const isInstalled = useIsAppInstalled();
   const { canInstall, install } = usePwaInstall();
 
   const handleInstall = async () => {
@@ -27,7 +28,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     }
   };
 
-  const showAppCta = !isApp;
+  const showAppCta = !isApp && !isInstalled;
 
   return (
     <>
@@ -47,7 +48,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">7-day replacement</span>
               </div>
               {showAppCta && (
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2 hidden sm:flex hide-in-app install-app-cta" data-hide-in-app="true">
                   <button
                     onClick={handleInstall}
                     className="flex items-center gap-2.5 rounded-xl border border-[#DDD6EE] bg-white px-3.5 py-2 transition-all hover:border-[#2D1B69] hover:shadow-xs active:scale-95 cursor-pointer"
@@ -98,7 +99,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <li><Link href="/dashboard/profile" className="transition-colors hover:text-[#2D1B69]">Profile settings</Link></li>
                 <li><Link href="/payment/history" className="transition-colors hover:text-[#2D1B69]">Payment history</Link></li>
                 {showAppCta && (
-                  <li className="hide-in-app install-app-cta" data-hide-in-app="true">
+                  <li className="hidden sm:block hide-in-app install-app-cta" data-hide-in-app="true">
                     <button onClick={handleInstall} className="transition-colors hover:text-[#2D1B69]">
                       Get the app
                     </button>

@@ -3,23 +3,23 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Check, Star, Zap, ShieldCheck, FileText, CheckCircle2, Play, Apple } from "lucide-react";
-import { usePwaInstall, useIsStandalone } from "@/lib/pwa";
+import { usePwaInstall, useIsStandalone, useIsAppInstalled, markAppInstalled } from "@/lib/pwa";
 import { openAppSheet } from "@/components/app-install-sheet";
 
 /**
- * Universal App Download Showcase Banner (Mobile & Desktop).
- * Visible in mobile browsers (Chrome / Safari) and desktop browsers.
- * Hidden automatically when running inside the installed app (isStandalone).
- * 1-click direct install trigger — zero QR codes or scanners.
+ * Desktop App Download Showcase Banner.
+ * Visible on desktop site browsers when not running in-app.
+ * Hidden automatically when running inside the installed app or after app is installed.
  */
 export function AppDownloadSection() {
   const isApp = useIsStandalone();
+  const isInstalled = useIsAppInstalled();
   const { canInstall, install } = usePwaInstall();
   const [installing, setInstalling] = useState(false);
   const [justInstalled, setJustInstalled] = useState(false);
 
-  // If running inside the installed standalone app, hide completely
-  if (isApp) {
+  // If running inside the installed standalone app or already installed, hide completely
+  if (isApp || isInstalled) {
     return null;
   }
 
@@ -30,10 +30,9 @@ export function AppDownloadSection() {
       setInstalling(false);
       if (ok) {
         setJustInstalled(true);
+        markAppInstalled();
       }
     } else {
-      // Native prompt unavailable (iOS/unsupported/covered): open the guided
-      // install sheet with the Android steps instead of an alert.
       openAppSheet("android");
     }
   };
@@ -43,7 +42,7 @@ export function AppDownloadSection() {
   };
 
   return (
-    <section aria-label="Download MODIT App" className="w-full hide-in-app install-app-cta" data-hide-in-app="true">
+    <section aria-label="Download MODIT App" className="w-full hidden sm:block hide-in-app install-app-cta" data-hide-in-app="true">
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 py-6 sm:py-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#150726] via-[#1e1245] to-[#0b0318] p-5 sm:p-10 border border-white/15 shadow-2xl shadow-purple-950/40">
           {/* Subtle background glow */}

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X, Check } from "lucide-react";
-import { usePwaInstall, isStandalone } from "@/lib/pwa";
+import { usePwaInstall, isStandalone, isAppInstalled, markAppInstalled } from "@/lib/pwa";
 
 export function PwaInstallPrompt() {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export function PwaInstallPrompt() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (!canInstall || isStandalone()) {
+    if (!canInstall || isStandalone() || isAppInstalled()) {
       setShow(false);
       return;
     }
@@ -22,7 +22,10 @@ export function PwaInstallPrompt() {
     } catch {
       /* ignore */
     }
-    // Stagger prompt on phone so user has time to browse first
+    // Only show on desktop browser after a delay
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      return;
+    }
     const timer = setTimeout(() => setShow(true), 8000);
     return () => clearTimeout(timer);
   }, [canInstall]);
@@ -36,6 +39,7 @@ export function PwaInstallPrompt() {
       const ok = await install();
       if (ok) {
         setDone(true);
+        markAppInstalled();
         setTimeout(() => setShow(false), 2000);
       }
     } catch {
@@ -52,14 +56,14 @@ export function PwaInstallPrompt() {
     }
   };
 
-  if (!show || !canInstall || isStandalone()) return null;
+  if (!show || !canInstall || isStandalone() || isAppInstalled()) return null;
   // Never interrupt checkout/payment — or ops surfaces.
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/checkout") || currentPath.startsWith("/payment")) return null;
   if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-6 left-4 right-4 z-sheet max-w-[420px] mx-auto sm:left-auto sm:right-6 sm:mx-0 sm:max-w-[360px] hide-in-app install-app-cta" data-hide-in-app="true">
+    <div className="fixed bottom-6 right-6 z-sheet max-w-[360px] hidden sm:block hide-in-app install-app-cta" data-hide-in-app="true">
       <div className="bg-[#150726] rounded-2xl border border-white/15 p-4 shadow-2xl shadow-purple-950/60 relative animate-slide-in-up">
         <button
           onClick={handleDismiss}

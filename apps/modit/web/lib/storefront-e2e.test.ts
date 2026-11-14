@@ -5,6 +5,7 @@ import { products, COMMON_EMULSION_SHADES } from "./product-data.ts";
 import { resolveProduct, isPaintProduct } from "./pricing.ts";
 import { useCartStore } from "./cart-store.ts";
 import { PROJECT_KITS, resolveKit, findKitsByQuery } from "./ai-kits.ts";
+import { isStandalone, isAppInstalled, markAppInstalled } from "./pwa.ts";
 
 describe("MODIT Storefront End-to-End Flow & Functionality", () => {
   beforeEach(() => {
@@ -133,6 +134,37 @@ describe("MODIT Storefront End-to-End Flow & Functionality", () => {
 
       const waterMatches = findKitsByQuery("terrace waterproofing leak");
       assert.ok(waterMatches.some((k) => k.id === "kit-waterproofing"));
+    });
+  });
+
+  describe("4. In-App Standalone & Install Guard", () => {
+    it("guarantees no app install prompt shows when app is installed or running in standalone", () => {
+      assert.equal(typeof isStandalone(), "boolean");
+      assert.equal(typeof isAppInstalled(), "boolean");
+
+      const storage: Record<string, string> = {};
+      const mockWin: any = {
+        localStorage: {
+          getItem: (k: string) => storage[k] || null,
+          setItem: (k: string, v: string) => { storage[k] = v; },
+        },
+        sessionStorage: {
+          getItem: (k: string) => storage[k] || null,
+          setItem: (k: string, v: string) => { storage[k] = v; },
+        },
+        dispatchEvent: () => true,
+        matchMedia: () => ({ matches: false }),
+        navigator: { userAgent: "Mozilla/5.0" },
+        location: { search: "" },
+      };
+      (globalThis as any).window = mockWin;
+
+      // Mark app installed
+      markAppInstalled();
+      assert.equal(isAppInstalled(), true);
+      assert.equal(isStandalone(), true);
+
+      delete (globalThis as any).window;
     });
   });
 });

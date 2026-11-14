@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { getAccessToken } from "@/lib/auth";
+import { getAccessToken } from "./auth.ts";
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -13,13 +13,76 @@ declare global {
   interface Window {
     __moditInstallPrompt?: BeforeInstallPromptEvent | null;
     __modit_is_standalone?: boolean;
+    __modit_app_installed?: boolean;
   }
+}
+
+export function isAppInstalled(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (window.__modit_app_installed || window.__modit_is_standalone) return true;
+    if (window.localStorage && (
+      window.localStorage.getItem("modit_app_installed") === "true" ||
+      window.localStorage.getItem("modit_is_standalone") === "true"
+    )) return true;
+    if (window.sessionStorage && (
+      window.sessionStorage.getItem("modit_app_installed") === "true" ||
+      window.sessionStorage.getItem("modit_is_standalone") === "true"
+    )) return true;
+    if (typeof document !== "undefined" && document.cookie && (
+      document.cookie.includes("modit_app_installed=true") ||
+      document.cookie.includes("modit_is_standalone=true")
+    )) return true;
+    if (
+      typeof document !== "undefined" &&
+      document.documentElement &&
+      (document.documentElement.classList.contains("is-installed") ||
+        document.documentElement.classList.contains("is-standalone") ||
+        document.documentElement.classList.contains("is-app") ||
+        document.documentElement.getAttribute("data-app-installed") === "true" ||
+        document.documentElement.getAttribute("data-is-app") === "true")
+    ) {
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
+export function markAppInstalled(): void {
+  if (typeof window === "undefined") return;
+  window.__modit_is_standalone = true;
+  window.__modit_app_installed = true;
+  window.__moditInstallPrompt = null;
+  try {
+    if (window.localStorage) {
+      window.localStorage.setItem("modit_app_installed", "true");
+      window.localStorage.setItem("modit_is_standalone", "true");
+    }
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem("modit_is_standalone", "true");
+      window.sessionStorage.setItem("modit_app_installed", "true");
+    }
+    if (typeof document !== "undefined") {
+      document.cookie = "modit_app_installed=true; path=/; max-age=31536000; SameSite=Lax";
+      document.cookie = "modit_is_standalone=true; path=/; max-age=31536000; SameSite=Lax";
+      if (document.documentElement) {
+        document.documentElement.classList.add("is-standalone", "is-app", "is-installed");
+        document.documentElement.setAttribute("data-is-app", "true");
+        document.documentElement.setAttribute("data-app-installed", "true");
+      }
+    }
+    window.dispatchEvent(new CustomEvent("modit:pwa-installed"));
+  } catch {}
 }
 
 export function isStandalone(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    if (window.__modit_is_standalone) return true;
+    if (window.__modit_is_standalone || window.__modit_app_installed) return true;
+    if (isAppInstalled()) {
+      window.__modit_is_standalone = true;
+      return true;
+    }
     if (window.sessionStorage && window.sessionStorage.getItem("modit_is_standalone") === "true") {
       window.__modit_is_standalone = true;
       return true;
@@ -80,8 +143,30 @@ export function useIsStandalone(): boolean {
   const [standalone, setStandalone] = useState(() => isStandalone());
   useEffect(() => {
     setStandalone(isStandalone());
+    const onInstalled = () => setStandalone(true);
+    window.addEventListener("appinstalled", onInstalled);
+    window.addEventListener("modit:pwa-installed", onInstalled);
+    return () => {
+      window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("modit:pwa-installed", onInstalled);
+    };
   }, []);
   return standalone;
+}
+
+export function useIsAppInstalled(): boolean {
+  const [installed, setInstalled] = useState(() => isAppInstalled());
+  useEffect(() => {
+    setInstalled(isAppInstalled());
+    const onInstalled = () => setInstalled(true);
+    window.addEventListener("appinstalled", onInstalled);
+    window.addEventListener("modit:pwa-installed", onInstalled);
+    return () => {
+      window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("modit:pwa-installed", onInstalled);
+    };
+  }, []);
+  return installed;
 }
 
 /** PWA install prompt state (beforeinstallprompt). */
@@ -92,16 +177,17 @@ export function usePwaInstall() {
     }
     return null;
   });
-  const [installed, setInstalled] = useState(() => isStandalone());
+  const [installed, setInstalled] = useState(() => isStandalone() || isAppInstalled());
 
   useEffect(() => {
-    const isApp = isStandalone();
+    const isApp = isStandalone() || isAppInstalled();
     let hasInstalledFlag = false;
     try {
-      hasInstalledFlag = localStorage.getItem("modit_app_installed") === "true";
+      hasInstalledFlag = localStorage.getItem("modit_app_installed") === "true" ||
+        localStorage.getItem("modit_is_standalone") === "true";
     } catch {}
 
-    setInstalled(isApp || (isApp && hasInstalledFlag));
+    setInstalled(isApp || hasInstalledFlag);
 
     // Hydrate cached prompt from window if early head script caught it
     if (window.__moditInstallPrompt && !deferred) {
@@ -122,16 +208,9 @@ export function usePwaInstall() {
     };
 
     const onInstalled = () => {
+      markAppInstalled();
       setInstalled(true);
       setDeferred(null);
-      if (typeof window !== "undefined") {
-        window.__moditInstallPrompt = null;
-        window.__modit_is_standalone = true;
-        try {
-          localStorage.setItem("modit_app_installed", "true");
-          sessionStorage.setItem("modit_is_standalone", "true");
-        } catch {}
-      }
     };
 
     window.addEventListener("beforeinstallprompt", onPrompt);
@@ -154,16 +233,9 @@ export function usePwaInstall() {
       await promptEvent.prompt();
       const choice = await promptEvent.userChoice;
       if (choice && choice.outcome === "accepted") {
+        markAppInstalled();
         setInstalled(true);
         setDeferred(null);
-        if (typeof window !== "undefined") {
-          window.__moditInstallPrompt = null;
-          window.__modit_is_standalone = true;
-          try {
-            localStorage.setItem("modit_app_installed", "true");
-            sessionStorage.setItem("modit_is_standalone", "true");
-          } catch {}
-        }
         return true;
       }
       return false;

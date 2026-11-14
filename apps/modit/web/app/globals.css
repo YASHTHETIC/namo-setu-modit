@@ -3542,8 +3542,14 @@ html.is-standalone .install-app-cta,
 html.is-app .hide-in-app,
 html.is-app [data-hide-in-app="true"],
 html.is-app .install-app-cta,
+html.is-installed .hide-in-app,
+html.is-installed [data-hide-in-app="true"],
+html.is-installed .install-app-cta,
 html[data-is-app="true"] .hide-in-app,
 html[data-is-app="true"] [data-hide-in-app="true"],
-html[data-is-app="true"] .install-app-cta {
+html[data-is-app="true"] .install-app-cta,
+html[data-app-installed="true"] .hide-in-app,
+html[data-app-installed="true"] [data-hide-in-app="true"],
+html[data-app-installed="true"] .install-app-cta {
   display: none !important;
 }

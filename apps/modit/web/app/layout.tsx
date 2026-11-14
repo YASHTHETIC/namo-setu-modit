@@ -110,7 +110,21 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 try {
                   var nav = window.navigator || {};
                   var ua = nav.userAgent || '';
-                  var isStand = (
+                  var hasInstalledFlag = (
+                    (window.localStorage && (
+                      window.localStorage.getItem('modit_app_installed') === 'true' ||
+                      window.localStorage.getItem('modit_is_standalone') === 'true'
+                    )) ||
+                    (window.sessionStorage && (
+                      window.sessionStorage.getItem('modit_is_standalone') === 'true' ||
+                      window.sessionStorage.getItem('modit_app_installed') === 'true'
+                    )) ||
+                    (document.cookie && (
+                      document.cookie.indexOf('modit_app_installed=true') !== -1 ||
+                      document.cookie.indexOf('modit_is_standalone=true') !== -1
+                    ))
+                  );
+                  var isStand = hasInstalledFlag || (
                     (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
                     (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) ||
                     (window.matchMedia && window.matchMedia('(display-mode: minimal-ui)').matches) ||
@@ -129,17 +143,25 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     window.location.search.indexOf('app=1') !== -1 ||
                     window.location.search.indexOf('package=in.modit.app') !== -1 ||
                     window.location.search.indexOf('standalone=1') !== -1 ||
-                    (window.sessionStorage && window.sessionStorage.getItem('modit_is_standalone') === 'true') ||
                     /;\s*wv\b/i.test(ua) ||
                     (/Android/i.test(ua) && /Version\/[\d.]+/i.test(ua) && /Chrome\/[\d.]+/i.test(ua)) ||
                     /in\.modit\.app|MODIT-APP|Bubblewrap/i.test(ua)
                   );
                   if (isStand) {
                     window.__modit_is_standalone = true;
-                    if (window.sessionStorage) window.sessionStorage.setItem('modit_is_standalone', 'true');
+                    window.__modit_app_installed = true;
+                    if (window.sessionStorage) {
+                      window.sessionStorage.setItem('modit_is_standalone', 'true');
+                      window.sessionStorage.setItem('modit_app_installed', 'true');
+                    }
+                    if (window.localStorage) {
+                      window.localStorage.setItem('modit_app_installed', 'true');
+                      window.localStorage.setItem('modit_is_standalone', 'true');
+                    }
                     if (document.documentElement) {
-                      document.documentElement.classList.add('is-standalone', 'is-app');
+                      document.documentElement.classList.add('is-standalone', 'is-app', 'is-installed');
                       document.documentElement.setAttribute('data-is-app', 'true');
+                      document.documentElement.setAttribute('data-app-installed', 'true');
                     }
                   }
                 } catch(e) {}
@@ -155,12 +177,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 window.addEventListener('appinstalled', function() {
                   window.__moditInstallPrompt = null;
                   window.__modit_is_standalone = true;
+                  window.__modit_app_installed = true;
                   try {
                     localStorage.setItem('modit_app_installed', 'true');
+                    localStorage.setItem('modit_is_standalone', 'true');
                     sessionStorage.setItem('modit_is_standalone', 'true');
+                    sessionStorage.setItem('modit_app_installed', 'true');
+                    document.cookie = 'modit_app_installed=true; path=/; max-age=31536000; SameSite=Lax';
+                    document.cookie = 'modit_is_standalone=true; path=/; max-age=31536000; SameSite=Lax';
                     if (document.documentElement) {
-                      document.documentElement.classList.add('is-standalone', 'is-app');
+                      document.documentElement.classList.add('is-standalone', 'is-app', 'is-installed');
                       document.documentElement.setAttribute('data-is-app', 'true');
+                      document.documentElement.setAttribute('data-app-installed', 'true');
                     }
                   } catch(_) {}
                   try {

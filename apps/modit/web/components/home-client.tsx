@@ -34,11 +34,10 @@ import { ActiveOrderBanner } from "@/components/active-order-banner";
 import { categories as allCategories } from "@/lib/product-data";
 import { CategoryTileIcon } from "@/components/modit-shell";
 import { AppDownloadSection } from "@/components/app-download-section";
-import { openAppSheet } from "@/components/app-install-sheet";
 import { SiteFooter } from "@/components/site-footer";
 import { BottomNav } from "@/components/bottom-nav";
 import { AiProjectKitsSection } from "@/components/ai-project-kits";
-import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
+import { useIsStandalone } from "@/lib/pwa";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -92,19 +91,8 @@ export default function HomeClient() {
   const products = allProducts as Product[];
   const { data: searchResults = [] } = useSearchProducts(searchQuery);
   const isApp = useIsStandalone();
-  const { canInstall, install } = usePwaInstall();
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-
-  const handleInstallClick = async () => {
-    if (canInstall) {
-      await install();
-    } else {
-      // No native prompt (iOS Safari, or Chrome criteria unmet): open the
-      // guided install sheet — auto-detects iPhone vs Android steps.
-      openAppSheet("any");
-    }
-  };
   const [cartToast, setCartToast] = useState<{ name: string; price: number } | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [highlightIdx, setHighlightIdx] = useState(-1);
@@ -274,18 +262,6 @@ export default function HomeClient() {
             </Link>
           </div>
           <div className="flex items-center gap-1">
-            {!isApp && (
-              <button
-                type="button"
-                onClick={handleInstallClick}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-sm active:scale-95 transition-all sm:hidden cursor-pointer hide-in-app install-app-cta"
-                aria-label="Install App"
-                data-hide-in-app="true"
-              >
-                <Download className="h-3 w-3" />
-                <span>App</span>
-              </button>
-            )}
             <button
               onClick={() => setShowSearch(true)}
               aria-label="Search products"
@@ -317,29 +293,6 @@ export default function HomeClient() {
         </div>
       </header>
 
-      {/* ═══ MOBILE SMART APP BANNER (Visible on phone browser only, hidden in installed app) ═══ */}
-      {!isApp && (
-        <div className="bg-gradient-to-r from-[#1E1245] via-[#2D1B69] to-[#150726] border-b border-[#7CB518]/30 px-4 py-2.5 flex items-center justify-between sm:hidden shadow-md hide-in-app install-app-cta" data-hide-in-app="true">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative h-9 w-9 rounded-xl overflow-hidden flex-shrink-0 shadow-sm ring-1 ring-white/20 bg-[#150726]">
-              <Image src="/icons/icon-192.png" alt="MODIT" width={36} height={36} priority className="h-full w-full object-cover" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-body-sm font-black text-white leading-tight">MODIT App</p>
-              <p className="text-micro text-[#7CB518] font-bold">⚡ Fastest 60-Min Site Delivery</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleInstallClick}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-black shadow-lg shadow-green-500/30 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
-          >
-            <Download className="h-3.5 w-3.5" />
-            <span>Install</span>
-          </button>
-        </div>
-      )}
-
       {/* ═══ DELIVERY HEADER — one dense row on phones (Blinkit fit),
            full two-line hierarchy on sm+ ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2 sm:py-2.5">
@@ -365,23 +318,9 @@ export default function HomeClient() {
               {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
             </span>
           )}
-          <div className="ml-auto flex items-center gap-2 flex-shrink-0">
-            {!isApp && (
-              <button
-                type="button"
-                onClick={handleInstallClick}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-tiny font-black shadow-md shadow-green-500/20 active:scale-95 transition-all hide-in-app install-app-cta"
-                aria-label="Download App"
-                data-hide-in-app="true"
-              >
-                <Download className="h-3 w-3" />
-                <span>Install App</span>
-              </button>
-            )}
-            <div className="flex items-center gap-1.5 text-white/40">
-              <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-              <span className="text-tiny font-medium">Live</span>
-            </div>
+          <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+            <span className="text-tiny font-medium">Live</span>
           </div>
         </div>
       </div>
@@ -900,27 +839,6 @@ export default function HomeClient() {
               </Link>
             </div>
 
-            {/* Install App in mobile drawer if not running in standalone app */}
-            {!isApp && (
-              <div className="my-3 p-3 rounded-2xl bg-gradient-to-br from-[#2D1B69] to-[#1E1245] border border-white/15 text-white shadow-lg hide-in-app install-app-cta" data-hide-in-app="true">
-                <div className="flex items-center gap-2.5">
-                  <Image src="/icons/icon-192.png" alt="MODIT" width={36} height={36} className="h-9 w-9 rounded-xl flex-shrink-0 shadow-sm" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-body-sm font-extrabold leading-tight">MODIT App</p>
-                    <p className="text-micro text-[#7CB518] font-bold">Android & iOS</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => { setShowMenu(false); handleInstallClick(); }}
-                  className="mt-2.5 w-full py-2.5 rounded-xl bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-green-500/25 active:scale-95 transition-all"
-                >
-                  <Download className="h-3.5 w-3.5" /> Install MODIT App
-                </button>
-              </div>
-            )}
-
-
             <div className="mt-6 pt-4 border-t border-white/10">
               <p className="text-tiny font-bold text-white/30 uppercase px-4 mb-3">Categories</p>
               {categories.map((cat) => (
@@ -991,29 +909,6 @@ export default function HomeClient() {
                   <X className="h-5 w-5" />
                 </button>
               </div>
-
-              {/* Browser search app download prompt — visible in web browser, hidden in installed app */}
-              {!isApp && (
-                <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-[#2D1B69] via-[#1E1245] to-[#150726] border border-[#7CB518]/30 flex items-center justify-between gap-3 text-white shadow-md hide-in-app install-app-cta" data-hide-in-app="true">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="h-9 w-9 rounded-xl overflow-hidden flex-shrink-0 bg-[#150726] ring-1 ring-white/20">
-                      <Image src="/icons/icon-192.png" alt="MODIT App" width={36} height={36} className="h-full w-full object-cover" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-body-sm font-black truncate leading-tight">Download the MODIT App</p>
-                      <p className="text-micro text-[#7CB518] font-bold truncate">⚡ 60-min express delivery & live GPS tracking</p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setShowSearch(false); handleInstallClick(); }}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-black shadow-sm flex-shrink-0 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    <span>Install App</span>
-                  </button>
-                </div>
-              )}
 
               {/* Autocomplete suggestions — when typing 1 char */}
               {searchQuery.length === 1 && (

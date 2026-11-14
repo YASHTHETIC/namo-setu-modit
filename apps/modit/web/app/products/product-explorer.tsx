@@ -35,8 +35,7 @@ import { useCompareToggle } from "@/lib/use-compare-toggle";
 import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 import { useSubCategories } from "@/lib/modit-api";
 import { useDisplayProducts } from "@/lib/pricing";
-import { useIsStandalone, usePwaInstall } from "@/lib/pwa";
-import { openAppSheet } from "@/components/app-install-sheet";
+import { useIsStandalone } from "@/lib/pwa";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -79,14 +78,6 @@ function ProductsContent() {
   const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "relevance");
 
   const isApp = useIsStandalone();
-  const { canInstall, install } = usePwaInstall();
-  const handleInstallClick = async () => {
-    if (canInstall) {
-      await install();
-    } else {
-      openAppSheet();
-    }
-  };
 
   // Single source of truth: ONE unfiltered catalog fetch. Category, brand,
   // price, rating and stock all filter client-side below, so the sidebar
@@ -682,33 +673,6 @@ function ProductsContent() {
             </div>
           </div>
           </Reveal>
-
-          {/* Browser Search App Download Strip — visible when searching in browser, hidden inside installed app */}
-          {!isApp && (
-            <div className="mb-4 rounded-2xl bg-gradient-to-r from-[#1E1245] via-[#2D1B69] to-[#150726] p-3 sm:p-4 text-white flex items-center justify-between gap-3 shadow-md border border-[#7CB518]/30 hide-in-app install-app-cta" data-hide-in-app="true">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="relative h-10 w-10 rounded-xl overflow-hidden flex-shrink-0 bg-[#150726] ring-1 ring-white/20">
-                  <Image src="/icons/icon-192.png" alt="MODIT App" width={40} height={40} className="h-full w-full object-cover" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-body-sm font-black leading-tight truncate">
-                    {search ? `Searching "${search}"? Get 60-Min Delivery on App` : "Download the MODIT App"}
-                  </p>
-                  <p className="text-micro text-[#7CB518] font-bold truncate">
-                    ⚡ 60-min express site delivery, live GPS tracking & instant GST invoices
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleInstallClick}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#7CB518] hover:bg-[#6A9C14] text-white text-caption font-extrabold shadow-sm active:scale-95 transition-all flex-shrink-0 cursor-pointer"
-              >
-                <Download className="h-3.5 w-3.5" />
-                <span>Install App</span>
-              </button>
-            </div>
-          )}
 
           {/* Subcategory pills — only for the active category, and only
               when live rows actually carry sub-categories */}

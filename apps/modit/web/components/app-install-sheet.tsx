@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Play, Apple, X, Smartphone, Share, PlusSquare, MoreVertical, Download, Check } from "lucide-react";
-import { usePwaInstall, isStandalone } from "@/lib/pwa";
+import { usePwaInstall, isStandalone, isAppInstalled, markAppInstalled } from "@/lib/pwa";
 
 export type InstallTarget = "android" | "ios" | "any";
 
@@ -12,6 +12,7 @@ export const OPEN_APP_SHEET_EVENT = "modit:open-app-sheet";
 
 export function openAppSheet(target: InstallTarget = "any") {
   try {
+    if (isStandalone() || isAppInstalled()) return;
     window.dispatchEvent(new CustomEvent(OPEN_APP_SHEET_EVENT, { detail: { target } }));
   } catch {
     /* ignore */
@@ -32,8 +33,8 @@ export function AppInstallSheetHost() {
 
   useEffect(() => {
     const handleOpen = (e: Event) => {
-      // Don't open if app is already running in standalone mode
-      if (isStandalone()) return;
+      // Don't open if app is already running in standalone mode or installed
+      if (isStandalone() || isAppInstalled()) return;
       const customEvent = e as CustomEvent<{ target?: InstallTarget }>;
       const target = customEvent.detail?.target || "any";
       if (target === "ios") {
@@ -62,12 +63,13 @@ export function AppInstallSheetHost() {
     setInstalling(false);
     if (ok) {
       setJustInstalled(true);
+      markAppInstalled();
       setTimeout(() => setOpen(false), 2000);
     }
   };
 
   // If already installed or closed or inside ops surfaces, do not render
-  if (!open || installed || isStandalone()) return null;
+  if (!open || installed || isStandalone() || isAppInstalled()) return null;
   const currentPath = pathname ?? "";
   if (currentPath.startsWith("/admin") || currentPath.startsWith("/supplier")) return null;
 
