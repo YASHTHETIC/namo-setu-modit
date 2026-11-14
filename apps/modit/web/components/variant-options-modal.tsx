@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Check, ShoppingCart, Palette, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -34,6 +35,12 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   const [customColorCode, setCustomColorCode] = useState("");
   const [showAllShades, setShowAllShades] = useState(false);
   const [shadeRequiredError, setShadeRequiredError] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useModalBehavior(open, onClose);
 
   const variants = useMemo(() => product.variants ?? [], [product]);
@@ -42,7 +49,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   // Set default shade if available and none selected yet
   const effectiveShade = selectedShade || (customColorCode ? `Code ${customColorCode}` : null);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const handleAddVariant = (variantId: string) => {
     if (shades.length > 0 && !effectiveShade) {
@@ -55,7 +62,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
     setTimeout(() => {
       setAddedKey(null);
       onClose();
-    }, 1200);
+    }, 400);
   };
 
   const handleAddShade = () => {
@@ -70,7 +77,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
     setTimeout(() => {
       setAddedKey(null);
       onClose();
-    }, 1200);
+    }, 400);
   };
 
   const handleSelectShade = (name: string) => {
@@ -82,29 +89,45 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   const heroShades = shades.slice(0, 6);
   const remainingShades = shades.slice(6);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-sheet flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out] sm:p-4"
-      onClick={onClose}
+      className="fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out] p-0 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={product.name}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }}
     >
       <div
-        className="w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-3xl shadow-2xl max-h-[85dvh] overflow-y-auto animate-slide-in-up"
+        className="w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-3xl shadow-2xl max-h-[88dvh] overflow-hidden flex flex-col animate-slide-in-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10">
-          <div>
-            <h3 className="text-body-md font-bold text-[#150726] leading-snug pr-6">{product.name}</h3>
+        <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10 flex-shrink-0">
+          <div className="min-w-0 pr-3">
+            <h3 className="text-body-md font-bold text-[#150726] leading-snug truncate">{product.name}</h3>
             {shades.length > 0 && (
               <p className="text-micro font-bold text-[#2D1B69] mt-0.5">Choose your backdrop shade & pack size</p>
             )}
           </div>
-          <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full hover:bg-[#F0ECF9] transition-colors flex-shrink-0">
-            <X className="h-5 w-5 text-[#9B8CB5]" />
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            aria-label="Close options"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F0ECF9] hover:bg-[#E8E0F7] text-[#150726] active:scale-95 transition-all flex-shrink-0 cursor-pointer shadow-xs"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 overflow-y-auto flex-1 overscroll-contain">
           {shadeRequiredError && (
             <div className="rounded-xl bg-amber-50 border border-amber-300 p-2.5 text-center text-caption font-bold text-amber-800 animate-pulse">
               ⚠️ Please select a paint shade before adding to cart!
@@ -273,8 +296,24 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
             </button>
           )}
         </div>
+
+        {/* Footer with easy-to-tap close button */}
+        <div className="sticky bottom-0 bg-white border-t border-[#F0ECF9] px-4 py-3 flex items-center justify-end rounded-b-2xl z-10 flex-shrink-0">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="w-full py-2.5 rounded-xl border border-[#DDD6EE] text-caption font-bold text-[#6B5B83] hover:text-[#150726] hover:bg-[#F7F4FC] active:scale-98 transition-all cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

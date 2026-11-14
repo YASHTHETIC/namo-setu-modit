@@ -54,7 +54,8 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const stars = Math.max(0, Math.min(5, Math.round(product.rating)));
 
   return (
-    <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full shadow-[0_1px_3px_rgba(26,10,51,0.06)] hover:shadow-md transition-all">
+    <>
+      <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full shadow-[0_1px_3px_rgba(26,10,51,0.06)] hover:shadow-md transition-all">
       {/* Image zone — clean & completely unobstructed */}
       <div className="relative bg-[#F7F4FC] p-2 aspect-square">
         <Link href={productLink(product)} className="relative block h-full w-full">
@@ -203,12 +204,13 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </div>
         </div>
       </div>
-
-      <VariantOptionsModal
-        open={optionsOpen}
-        onClose={() => setOptionsOpen(false)}
-        product={product}
-      />
     </div>
+
+    <VariantOptionsModal
+      open={optionsOpen}
+      onClose={() => setOptionsOpen(false)}
+      product={product}
+    />
+  </>
   );
 }

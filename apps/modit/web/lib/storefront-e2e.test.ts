@@ -167,4 +167,39 @@ describe("MODIT Storefront End-to-End Flow & Functionality", () => {
       delete (globalThis as any).window;
     });
   });
+
+  describe("5. Variant Options Modal & Selection Contracts", () => {
+    it("ensures products with variants have unique variant IDs and valid prices", () => {
+      const multiVariantProducts = products
+        .map(resolveProduct)
+        .filter((p) => p.variants && p.variants.length > 1);
+
+      assert.ok(multiVariantProducts.length > 0, "Catalog must have multi-variant products");
+
+      for (const p of multiVariantProducts) {
+        const ids = new Set<string>();
+        for (const v of p.variants!) {
+          assert.ok(v.id, `Variant in ${p.name} must have an ID`);
+          assert.ok(!ids.has(v.id), `Duplicate variant ID ${v.id} in ${p.name}`);
+          ids.add(v.id);
+          assert.ok(v.price > 0, `Variant ${v.label} in ${p.name} must have positive price`);
+          assert.ok(typeof v.label === "string" && v.label.trim().length > 0, `Variant in ${p.name} must have a label`);
+        }
+      }
+    });
+
+    it("ensures adding a variant to the cart records the variant correctly", () => {
+      const p = resolveProduct(products.find((prod) => prod.variants && prod.variants.length > 1) || products[0]);
+      const v = p.variants![1];
+
+      const store = useCartStore.getState();
+      store.addItem(p, 1, v.id);
+
+      const items = useCartStore.getState().items;
+      const added = items.find((i) => (i.product.sku || i.product.id) === (p.sku || p.id) && i.variantId === v.id);
+      assert.ok(added, "Variant item must exist in cart");
+      assert.equal(added.variantId, v.id);
+      assert.equal(added.unitPrice, v.price);
+    });
+  });
 });
