@@ -8,7 +8,7 @@
     "start": "next start -p 3001",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test:unit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test lib/material-math.test.ts lib/order-reorder.test.ts lib/ai-kits.test.ts lib/paper-list-parser.test.ts lib/pricing.test.ts lib/storefront-e2e.test.ts lib/pwa.test.ts lib/search-suggestions.test.ts"
+    "test:unit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test lib/material-math.test.ts lib/order-reorder.test.ts lib/ai-kits.test.ts lib/paper-list-parser.test.ts lib/pricing.test.ts lib/storefront-e2e.test.ts lib/pwa.test.ts lib/search-suggestions.test.ts lib/ai-functions-e2e.test.ts"
   },
   "dependencies": {
     "@foundation/api-client": "file:../../../packages/api-client",
