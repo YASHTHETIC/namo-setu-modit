@@ -48,6 +48,7 @@ import { ComparisonBar } from "@/components/comparison-bar";
 import { PushNotificationPrompt } from "@/components/push-notification-prompt";
 import { LocationMenu } from "@/components/location-menu";
 import { HighlightedText } from "@/components/highlighted-text";
+import { getSearchSuggestions } from "@/lib/search-suggestions";
 import { SiteFooter } from "@/components/site-footer";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { SaleBanner } from "@/components/sale-banner";
@@ -108,6 +109,11 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const searchResults = useDisplayProducts(apiSearchResults as Product[]);
   const { data: apiCategories = [] } = useCategories();
   const categoriesList = (apiCategories.length > 0 ? apiCategories : categories) as typeof categories;
+
+  const suggestions = useMemo(
+    () => (searchQuery.trim().length >= 1 ? getSearchSuggestions(searchQuery, categoriesList as any, 6) : []),
+    [searchQuery, categoriesList]
+  );
 
   const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -185,7 +191,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           <div className="hidden flex-1 items-center lg:flex">
             <div ref={searchRef} className="relative w-full">
-              <div className="flex h-14 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] shadow-[0_4px_16px_rgba(0,0,0,0.35)] ring-1 ring-white/10 transition-shadow focus-within:shadow-[var(--shadow-md)]">
+              <div className="flex h-13 items-center overflow-hidden rounded-full border border-[var(--border)] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.15)] ring-1 ring-white/10 transition-shadow focus-within:shadow-[var(--shadow-md)]">
+                <div className="pl-4.5 flex items-center pointer-events-none flex-shrink-0">
+                  <Search className="h-4.5 w-4.5 text-[#9B8CB5]" />
+                </div>
                 <input
                   type="text"
                   value={searchQuery}
@@ -195,23 +204,21 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   onKeyDown={(event) => {
                     if (event.key === "ArrowDown") {
                       event.preventDefault();
-                      setHighlightIdx((i) => Math.min(i + 1, searchResults.length - 1));
+                      setHighlightIdx((i) => Math.min(i + 1, suggestions.length - 1));
                     } else if (event.key === "ArrowUp") {
                       event.preventDefault();
                       setHighlightIdx((i) => Math.max(i - 1, -1));
                     } else if (event.key === "Enter") {
                       event.preventDefault();
-                      if (highlightIdx >= 0 && searchResults[highlightIdx]) {
-                        const p = searchResults[highlightIdx] as unknown as { id: string; slug?: string };
-                        setShowSearch(false);
-                        setSearchFocused(false);
-                        router.push(productLink(p));
+                      if (highlightIdx >= 0 && suggestions[highlightIdx]) {
+                        submitSearch(suggestions[highlightIdx].query);
                       } else {
                         submitSearch();
                       }
                     } else if (event.key === "Escape") {
                       setSearchQuery("");
                       setSearchFocused(false);
+                      setShowSearch(false);
                     }
                   }}
                   placeholder={searchHint}
@@ -220,24 +227,37 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                   aria-controls="modit-search-listbox"
                   role="combobox"
                   aria-autocomplete="list"
-                  className="h-full flex-1 border-0 bg-transparent px-5 text-body-lg text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                  className="h-full flex-1 border-0 bg-transparent px-3 text-body-md text-[#150726] placeholder:text-[#9B8CB5] focus:outline-none"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setShowSearch(false);
+                    }}
+                    aria-label="Clear search"
+                    className="mr-1 flex h-7 w-7 items-center justify-center rounded-full hover:bg-[#F0ECF9] text-[#9B8CB5] hover:text-[#150726] transition-colors cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => submitSearch()}
-                  className="m-1 inline-flex w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cta)] to-[var(--cta-hover)] text-white transition-all hover:shadow-[0_4px_12px_rgba(45,27,105,0.3)]"
+                  className="m-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2D1B69] hover:bg-[#1E0D36] text-white transition-all shadow-sm flex-shrink-0 cursor-pointer"
                   aria-label="Search"
                 >
-                  <Search className="h-4.5 w-4.5" />
+                  <Search className="h-4 w-4" />
                 </button>
               </div>
 
-              {(showSearch || (searchFocused && searchResults.length === 0)) && (
+              {(showSearch || (searchFocused && suggestions.length === 0)) && (
                 <div
                   id="modit-search-listbox"
                   role="listbox"
                   onMouseDown={(e) => e.preventDefault()}
-                  className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-[24px] border border-[var(--border)] bg-white shadow-[var(--shadow-xl)] animate-slide-down"
+                  className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-[20px] border border-[#EDE7F6] bg-white shadow-2xl animate-slide-down"
                 >
                     {searchQuery.trim() === "" ? (
                       <div className="p-4">
@@ -272,53 +292,48 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                           ))}
                         </div>
                       </div>
-                    ) : searchResults.length > 0 ? (
+                    ) : suggestions.length > 0 ? (
                       <>
-                        {searchResults.map((product, idx) => (
-                          <Link
-                            key={product.id}
-                            href={`/products/${product.id}`}
-                            onClick={() => {
-                              setShowSearch(false);
-                              setSearchFocused(false);
-                              setSearchQuery("");
-                            }}
-                            className={`flex items-center gap-3 border-b border-[var(--border-subtle)] px-4 py-3 transition-colors last:border-0 ${highlightIdx === idx ? "bg-[var(--brand-50)]" : "hover:bg-[var(--bg-subtle)]"}`}
+                        {suggestions.map((s, idx) => (
+                          <button
+                            key={s.text}
+                            type="button"
+                            onClick={() => submitSearch(s.query)}
+                            className={`flex w-full items-center gap-3 border-b border-[#F0ECF9] px-4 py-2.5 text-left transition-colors last:border-0 cursor-pointer ${
+                              highlightIdx === idx ? "bg-[#F0ECF9]" : "hover:bg-[#F8F6FC]"
+                            }`}
                           >
-                          <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-[var(--bg-alt)] flex-shrink-0">
-                            <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="48px" draggable={false} className="object-contain" />
-                          </div>
+                            <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
+                              {s.image ? (
+                                <ImageGuard src={s.image} alt={s.text} fill sizes="32px" draggable={false} className="object-contain p-0.5" />
+                              ) : (
+                                <Search className="h-4 w-4 text-[#9B8CB5]" />
+                              )}
+                            </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-semibold text-[var(--text)]">
-                                <HighlightedText text={product.name} query={searchQuery} markClassName="text-[#5A8010]" />
+                              <p className="truncate text-body-sm text-[#150726]">
+                                <HighlightedText text={s.text} query={searchQuery} markClassName="font-extrabold text-[#150726]" />
                               </p>
-                              <p className="text-xs text-[var(--text-muted)]">{product.category} · Verified listing</p>
                             </div>
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-sm font-bold text-[var(--text)]">₹{product.price.toLocaleString("en-IN")}</p>
-                              {product.onSale
-                                ? <p className="text-tiny font-bold text-[#7CB518]">SALE · <span className="text-[var(--text-muted)] line-through">₹{product.mrp.toLocaleString("en-IN")}</span></p>
-                                : <p className="text-xs text-[var(--text-muted)]">{product.rating} rating</p>}
-                            </div>
-                          </Link>
+                          </button>
                         ))}
                         <button
                           type="button"
                           onClick={() => submitSearch()}
-                          className="flex w-full items-center justify-center gap-2 bg-[var(--brand-50)] px-4 py-3 text-sm font-semibold text-[var(--brand)]"
+                          className="flex w-full items-center justify-center gap-1.5 bg-[#F7F4FC] hover:bg-[#F0ECF9] px-4 py-2.5 text-caption font-bold text-[#2D1B69] transition-colors cursor-pointer"
                         >
-                          View all results <ChevronRight className="h-4 w-4" />
+                          See all results for &ldquo;{searchQuery}&rdquo; <ChevronRight className="h-3.5 w-3.5" />
                         </button>
                       </>
                     ) : (
                       <button
                         type="button"
                         onClick={() => submitSearch()}
-                        className="flex w-full items-center gap-3 px-4 py-4 text-left transition-colors hover:bg-[var(--bg-subtle)]"
+                        className="flex w-full items-center gap-3 px-4 py-4 text-left transition-colors hover:bg-[var(--bg-subtle)] cursor-pointer"
                       >
                         <Search className="h-4 w-4 text-[var(--text-muted)] flex-shrink-0" />
                         <span className="text-sm text-[var(--text-secondary)]">
-                          No matches for &ldquo;{searchQuery.trim()}&rdquo; — <span className="font-semibold text-[var(--brand)]">search anyway</span>
+                          Search for &ldquo;{searchQuery.trim()}&rdquo;
                         </span>
                       </button>
                     )}

@@ -142,34 +142,49 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <h3 className="text-body-sm font-medium text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px]">
           {product.name}
         </h3>
-        <p className="text-micro text-[#9B8CB5] truncate">
-          {product.unit}
-          {live.stockLevel > 0 && live.stockLevel <= 10 && (
-            <span className="font-bold text-[#E91E63]"> · Only {live.stockLevel} left</span>
+        {/* Pack size / Unit selector pill — Blinkit style */}
+        <div className="flex items-center gap-1.5 my-0.5">
+          {optLabel ? (
+            <button
+              type="button"
+              onClick={openOptions}
+              className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
+            >
+              <span>{selectedVariant?.label || product.unit}</span>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          ) : (
+            <span className="text-micro text-[#9B8CB5] truncate">{product.unit}</span>
           )}
-        </p>
+          {live.stockLevel > 0 && live.stockLevel <= 10 && (
+            <span className="text-micro font-bold text-[#E91E63]"> · Only {live.stockLevel} left</span>
+          )}
+        </div>
 
         {/* Bottom row — price block left, ADD/stepper right */}
-        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1">
+        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1.5">
           <div className="min-w-0">
-            <div className="flex items-baseline gap-1 flex-wrap">
+            <div className="flex flex-col">
               <span className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
                 ₹{activePrice.toLocaleString("en-IN")}
               </span>
               {activeMrp > activePrice && (
-                <span className="text-micro text-[#9B8CB5] line-through tabular-nums">
+                <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
                   ₹{activeMrp.toLocaleString("en-IN")}
                 </span>
               )}
             </div>
           </div>
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex-shrink-0">
             {qty === 0 ? (
               <button
                 onClick={handleAdd}
-                className="btn-add"
+                className="btn-add cursor-pointer"
+                aria-label={`Add ${product.name} to cart`}
               >
-                {optLabel ? "OPTIONS ▾" : "ADD"}
+                ADD
               </button>
             ) : (
               <div className="stepper shadow-md shadow-green-500/25">
@@ -177,14 +192,6 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 <span className="tabular-nums">{qty}</span>
                 <button onClick={handleIncrement} aria-label="Increase quantity">+</button>
               </div>
-            )}
-            {optLabel && !compact && (
-              <button
-                onClick={openOptions}
-                className="text-tiny font-semibold text-[#6B5B83] hover:text-[#2D1B69] transition-colors"
-              >
-                {optLabel}
-              </button>
             )}
           </div>
         </div>

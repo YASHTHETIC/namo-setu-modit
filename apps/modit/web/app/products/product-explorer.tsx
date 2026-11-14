@@ -603,6 +603,15 @@ function ProductsContent() {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
+          {/* Blinkit-exact search results headline */}
+          {search && (
+            <div className="mb-3 px-1">
+              <h1 className="text-body-lg sm:text-title-sm font-extrabold text-[#150726] tracking-tight">
+                Showing results for &ldquo;{search}&rdquo;
+              </h1>
+            </div>
+          )}
+
           {/* Sort Bar */}
           <Reveal direction="none">
           <div

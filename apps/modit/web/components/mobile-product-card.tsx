@@ -100,14 +100,6 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                 ))}
               </div>
             )}
-            {optLabel && (
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-                className="text-tiny font-bold text-[#047857] hover:underline"
-              >
-                {optLabel.replace("Options", "options").replace("Colours", "colours")} ▾
-              </button>
-            )}
           </div>
         </div>
 
@@ -117,22 +109,37 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           </h3>
         </Link>
 
-        <p className="text-micro text-[#6B5B83] truncate">
-          {product.unit} {unitRate && <span className="text-[#9B8CB5]">({unitRate})</span>}
-          {product.stockLevel <= 10 && product.stockLevel > 0 && (
-            <span className="font-bold text-[#E91E63]"> · {product.stockLevel} left</span>
+        {/* Pack size / Unit selector pill — Blinkit style */}
+        <div className="flex items-center gap-1.5 my-0.5">
+          {optLabel ? (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+              className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
+            >
+              <span>{product.unit}</span>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          ) : (
+            <span className="text-micro text-[#6B5B83] truncate">{product.unit}</span>
           )}
-        </p>
+          {unitRate && <span className="text-micro text-[#9B8CB5]">({unitRate})</span>}
+          {product.stockLevel <= 10 && product.stockLevel > 0 && (
+            <span className="text-micro font-bold text-[#E91E63]"> · {product.stockLevel} left</span>
+          )}
+        </div>
 
         {/* Bottom row: Price on left, ADD button / Stepper on right */}
         <div className="mt-auto flex items-end justify-between gap-1.5 pt-1.5">
           <div className="min-w-0">
-            <div className="flex items-baseline gap-1 flex-wrap">
+            <div className="flex flex-col">
               <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
                 ₹{product.price.toLocaleString("en-IN")}
               </span>
               {product.mrp > product.price && (
-                <span className="text-micro text-[#9B8CB5] line-through tabular-nums">
+                <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
                   ₹{product.mrp.toLocaleString("en-IN")}
                 </span>
               )}
@@ -154,9 +161,9 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                   }
                 }}
                 disabled={blocked}
-                className="btn-shine rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40"
+                className="btn-shine rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
               >
-                {blocked ? "N/A" : optLabel ? "OPTIONS ▾" : "ADD"}
+                {blocked ? "N/A" : "ADD"}
               </button>
             ) : (
               <div className="flex items-center rounded-lg bg-[#2D7B2D] text-white shadow-xs overflow-hidden">

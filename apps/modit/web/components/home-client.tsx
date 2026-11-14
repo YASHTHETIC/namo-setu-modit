@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, Home, LayoutGrid, Package, User, Wallet, Menu,
   MapPin, ChevronDown, Zap, Truck, Clock, TrendingUp, Lock,
-  ArrowRight, Star, X, ChevronUp, Sparkles, ArrowUpRight, Heart,
+  ArrowRight, Star, X, ChevronUp, ChevronRight, Sparkles, ArrowUpRight, Heart,
   BadgeCheck, Undo2, ReceiptIndianRupee, ShieldCheck, Smartphone, Download
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -21,6 +21,7 @@ import { onlyDigits, productLink } from "@/lib/utils";
 import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
+import { getSearchSuggestions } from "@/lib/search-suggestions";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 import { Reveal } from "@/components/reveal";
@@ -90,6 +91,10 @@ export default function HomeClient() {
   const { data: allProducts = [] } = useProducts({ page_size: 2000 });
   const products = allProducts as Product[];
   const { data: searchResults = [] } = useSearchProducts(searchQuery);
+  const desktopSuggestions = useMemo(
+    () => (searchQuery.trim().length >= 1 ? getSearchSuggestions(searchQuery, products, 6) : []),
+    [searchQuery, products]
+  );
   const isApp = useIsStandalone();
   const [mounted, setMounted] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -279,17 +284,76 @@ export default function HomeClient() {
             </button>
           </div>
         </div>
-        {/* Search row — full width, opens the search sheet (hidden on the
-            compact mobile row where the search icon opens the same sheet) */}
-        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block">
-          <button
-            onClick={() => setShowSearch(true)}
-            className="flex h-11 w-full items-center gap-2.5 rounded-xl bg-white/10 border border-white/10 px-4 text-body-md text-white/40 transition-colors hover:bg-white/15"
-            aria-label="Search products"
-          >
-            <Search className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{searchHint}</span>
-          </button>
+        {/* Desktop inline search bar with Blinkit-style live autocomplete dropdown */}
+        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block relative">
+          <div className="relative w-full">
+            <div className="flex h-12 items-center rounded-xl bg-white border border-[#EDE7F6] shadow-sm px-3.5 transition-all focus-within:shadow-md focus-within:border-[#2D1B69]">
+              <Search className="h-4.5 w-4.5 text-[#9B8CB5] flex-shrink-0 mr-2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.trim()) {
+                    handleSearchSubmit(searchQuery);
+                  } else if (e.key === "Escape") {
+                    setSearchQuery("");
+                  }
+                }}
+                placeholder={searchHint}
+                className="h-full flex-1 bg-transparent text-body-md text-[#150726] placeholder:text-[#9B8CB5] focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="p-1 rounded-full text-[#9B8CB5] hover:text-[#150726] hover:bg-[#F0ECF9] transition-colors cursor-pointer mr-1"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => handleSearchSubmit(searchQuery)}
+                className="px-3 py-1 rounded-lg bg-[#2D1B69] hover:bg-[#1E0D36] text-white text-caption font-bold transition-all shadow-xs cursor-pointer"
+              >
+                Search
+              </button>
+            </div>
+
+            {/* Desktop Autocomplete Dropdown */}
+            {searchQuery.trim().length >= 1 && desktopSuggestions.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-white border border-[#EDE7F6] shadow-2xl overflow-hidden animate-slide-down">
+                {desktopSuggestions.map((s) => (
+                  <button
+                    key={s.text}
+                    type="button"
+                    onClick={() => handleSearchSubmit(s.query)}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F8F6FC] border-b border-[#F0ECF9] last:border-0 transition-colors cursor-pointer"
+                  >
+                    <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
+                      {s.image ? (
+                        <ImageGuard src={s.image} alt={s.text} fill sizes="32px" className="object-contain p-0.5" />
+                      ) : (
+                        <Search className="h-4 w-4 text-[#9B8CB5]" />
+                      )}
+                    </div>
+                    <p className="truncate text-body-sm text-[#150726]">
+                      <HighlightedText text={s.text} query={searchQuery} markClassName="font-extrabold text-[#150726]" />
+                    </p>
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleSearchSubmit(searchQuery)}
+                  className="flex w-full items-center justify-center gap-1.5 bg-[#F7F4FC] hover:bg-[#F0ECF9] px-4 py-2.5 text-caption font-bold text-[#2D1B69] transition-colors cursor-pointer"
+                >
+                  See all results for &ldquo;{searchQuery}&rdquo; <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
