@@ -17,6 +17,8 @@ interface ProductZoom3DViewerProps {
   isPaintProduct?: boolean;
   selectedShadeColor?: string | null;
   selectedShadeName?: string | null;
+  shades?: { name: string; code: string; family: string }[];
+  onSelectShade?: (name: string) => void;
 }
 
 export function ProductZoom3DViewer({
@@ -32,6 +34,8 @@ export function ProductZoom3DViewer({
   isPaintProduct = false,
   selectedShadeColor = null,
   selectedShadeName = null,
+  shades,
+  onSelectShade,
 }: ProductZoom3DViewerProps) {
   const [mode, setMode] = useState<"zoom" | "3d">("zoom");
   const [zoomPos, setZoomPos] = useState<{ x: number; y: number; active: boolean }>({
@@ -412,6 +416,56 @@ export function ProductZoom3DViewer({
           </span>
         )}
       </div>
+
+      {/* Canva Pic 3 Quick Swatch Dock: "Choose your backdrop shade" */}
+      {isPaintProduct && shades && shades.length > 0 && (
+        <div className="mt-3 rounded-2xl bg-white border border-[#EDE7F6] p-3 shadow-xs">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <span className="text-micro font-extrabold uppercase tracking-wider text-[#6B5B83] flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+              Choose backdrop shade
+            </span>
+            <span className="text-micro font-black text-[#2D1B69] bg-[#F0ECF9] px-2.5 py-0.5 rounded-full border border-[#2D1B69]/10">
+              {selectedShadeName || "Soft Lilac"}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1 px-0.5 snap-x">
+            {shades.map((s) => {
+              const isSelected = selectedShadeName === s.name || (!selectedShadeName && s.name === "Soft Lilac");
+              return (
+                <button
+                  key={s.name}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectShade?.(s.name);
+                  }}
+                  title={s.name}
+                  className={`group/swatch relative flex-shrink-0 flex flex-col items-center gap-1 p-1 rounded-xl transition-all cursor-pointer snap-start ${
+                    isSelected ? "bg-[#F0ECF9] scale-105" : "hover:bg-[#F7F4FC]"
+                  }`}
+                >
+                  <div
+                    className={`h-9 w-9 sm:h-10 sm:w-10 rounded-full transition-all duration-300 ${
+                      isSelected
+                        ? "ring-2 ring-[#2D1B69] ring-offset-2 scale-110 shadow-md"
+                        : "border border-black/15 hover:scale-110 shadow-xs"
+                    }`}
+                    style={{
+                      backgroundColor: s.code,
+                      boxShadow: isSelected ? `0 0 14px ${s.code}80` : undefined,
+                    }}
+                  />
+                  <span className="text-micro font-bold text-[#150726] max-w-[58px] truncate leading-none mt-0.5">
+                    {s.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

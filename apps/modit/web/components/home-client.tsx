@@ -42,6 +42,7 @@ import { useIsStandalone } from "@/lib/pwa";
 import { BorderBeam } from "@/components/border-beam";
 import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
+import { CanvaSpotlightBanner } from "@/components/canva-spotlight-banner";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -653,6 +654,11 @@ export default function HomeClient() {
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
+
+      {/* ═══ CANVA 3D DESIGN STUDIO SPOTLIGHT ═══ */}
+      <Reveal>
+        <CanvaSpotlightBanner />
+      </Reveal>
 
       {/* ═══ AI PROJECT KITS (Blinkit Recipe-to-Cart for Materials on Door) ═══ */}
       <Reveal>

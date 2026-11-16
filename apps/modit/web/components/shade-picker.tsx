@@ -68,18 +68,25 @@ export function ShadePicker({ shades, selectedShade, onSelectShade, customColorC
               key={shade.name}
               type="button"
               onClick={() => onSelectShade(shade.name)}
-              className={`group/shade relative flex flex-col items-center gap-1.5 rounded-xl p-2 transition-all cursor-pointer ${
+              className={`group/shade relative flex flex-col items-center gap-1.5 rounded-2xl p-2 transition-all cursor-pointer ${
                 isSelected
-                  ? "bg-[#F0ECF9] ring-2 ring-[#2D1B69] shadow-sm"
+                  ? "bg-[#F0ECF9] shadow-sm scale-105"
                   : "hover:bg-[#F7F4FC]"
               }`}
             >
               <div
-                className={`relative flex items-center justify-center rounded-full border border-black/10 transition-transform ${
-                  isSelected ? "h-10 w-10 ring-2 ring-[#2D1B69] ring-offset-1 scale-105" : "h-9 w-9 group-hover/shade:scale-110 shadow-xs"
+                className={`relative flex items-center justify-center rounded-full transition-all duration-300 ${
+                  isSelected ? "h-11 w-11 ring-2 ring-[#2D1B69] ring-offset-2 scale-110 shadow-lg" : "h-9 w-9 border border-black/15 group-hover/shade:scale-110 shadow-xs"
                 }`}
-                style={{ backgroundColor: shade.code }}
-              />
+                style={{
+                  backgroundColor: shade.code,
+                  boxShadow: isSelected ? `0 0 16px ${shade.code}90` : undefined,
+                }}
+              >
+                {isSelected && (
+                  <span className="h-2 w-2 rounded-full bg-white shadow-xs" />
+                )}
+              </div>
               <span className="text-micro font-bold text-[#150726] leading-tight text-center truncate w-full">
                 {shade.name}
               </span>

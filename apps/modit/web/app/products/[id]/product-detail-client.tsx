@@ -298,6 +298,11 @@ export default function ProductDetailPage({
                 (customColorCode ? `#${customColorCode.replace("#", "")}` : null)
               }
               selectedShadeName={selectedShade || (customColorCode ? `Code ${customColorCode}` : null)}
+              shades={product.shades}
+              onSelectShade={(s) => {
+                setSelectedShade(s);
+                setShadeWarning(false);
+              }}
             />
 
             {/* Thumbnails — horizontal scroll on mobile */}
@@ -360,19 +365,37 @@ export default function ProductDetailPage({
           {/* Brand & Title (Canva Style for Paints from Pic 3) */}
           <div>
             {(product.categorySlug === "painting" || product.hasShades) && (
-              <div className="mb-3 rounded-2xl bg-gradient-to-br from-[#2D1B69]/5 to-[#7CB518]/5 border border-[#2D1B69]/10 p-4">
-                <span className="text-micro font-black uppercase tracking-wider text-[#7CB518]">
-                  — THE ULTIMATE EXTERIOR FINISH
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#150726] tracking-tight mt-1">
-                  Walls that <span className="bg-gradient-to-r from-[#2D1B69] via-[#4A2D8A] to-[#7CB518] bg-clip-text text-transparent">stand out.</span>
-                </h2>
-                <p className="text-body-sm text-[#6B5B83] mt-1.5 leading-relaxed">
-                  Meet {product.name} — a premium emulsion crafted to bring exceptional beauty, rich depth, and lasting confidence to every wall.
-                </p>
-                <div className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-tiny font-extrabold text-[#2D1B69] shadow-xs border border-[#EDE7F6]">
-                  <span className="text-amber-500 font-black">★★★★★</span>
-                  <span>Premium finish · {activeVariant?.label || product.unit}</span>
+              <div className="mb-3 rounded-2xl bg-gradient-to-br from-[#F5F2FC] via-[#EDE8F5] to-[#E0F7FA]/30 border border-[#2D1B69]/15 p-4 sm:p-5 relative overflow-hidden shadow-xs">
+                {/* Decorative Ambient Swatch Aura in Corner */}
+                <div
+                  className="pointer-events-none absolute -right-6 -bottom-6 h-28 w-28 rounded-full blur-2xl opacity-40 transition-all duration-500"
+                  style={{
+                    backgroundColor: product.shades?.find((s) => s.name === selectedShade)?.code || "#8A6FA0",
+                  }}
+                />
+                <div className="relative z-10">
+                  <span className="text-micro font-mono font-black uppercase tracking-wider text-[#7CB518] flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+                    — THE ULTIMATE EXTERIOR FINISH
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#150726] tracking-tight mt-1">
+                    Walls that <span className="bg-gradient-to-r from-[#2D1B69] via-[#4A2D8A] to-[#7CB518] bg-clip-text text-transparent">stand out.</span>
+                  </h2>
+                  <p className="text-body-sm text-[#6B5B83] mt-1.5 leading-relaxed">
+                    Meet {product.name} — a premium emulsion crafted to bring exceptional beauty, rich depth, and lasting confidence to every wall.
+                  </p>
+                  <div className="mt-3 flex items-center gap-2 flex-wrap">
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-tiny font-extrabold text-[#2D1B69] shadow-xs border border-[#EDE7F6]">
+                      <span className="text-amber-500 font-black">★★★★★</span>
+                      <span>Premium finish · {activeVariant?.label || product.unit}</span>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-tiny font-bold text-[#6B5B83] shadow-xs border border-[#EDE7F6]">
+                      ✦ 100% WASHABLE
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-tiny font-bold text-[#6B5B83] shadow-xs border border-[#EDE7F6]">
+                      ✦ 8-YR WARRANTY
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
