@@ -746,8 +746,13 @@ export default function HomeClient() {
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="inline-flex items-center gap-1 rounded bg-[#2D1B69] px-2 py-0.5 text-micro font-black text-[#F8CB46]">
+                    <Sparkles className="h-2.5 w-2.5" /> AI ESTIMATOR
+                  </span>
+                </div>
                 <h3 className="text-caption sm:text-body-md font-extrabold text-[#150726] leading-tight">Smart Material Estimator</h3>
-                <p className="text-caption text-[#9B8CB5] hidden sm:block">Instant estimates for cement, paint, tiles & steel with 1-tap cart addition</p>
+                <p className="text-caption text-[#9B8CB5] hidden sm:block mt-0.5">Instant formulas for cement, paint, tiles &amp; steel with 1-tap cart addition</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0">
                 Calculate <ArrowRight className="h-3.5 w-3.5" />
@@ -762,11 +767,16 @@ export default function HomeClient() {
               className="rounded-2xl bg-[#150726] px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
             >
               <div className="flex-1 min-w-0">
-                <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Project & Bulk RFQ Procurement</h3>
-                <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Direct mill pricing, verified supplier quotes & automated GST invoicing</p>
+                <div className="flex items-center gap-1.5 justify-center sm:justify-start mb-0.5">
+                  <span className="inline-flex items-center gap-1 rounded bg-[#7CB518] px-2 py-0.5 text-micro font-black text-white">
+                    <Sparkles className="h-2.5 w-2.5" /> AI PAPER OCR
+                  </span>
+                </div>
+                <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Handwritten Slip &amp; Bulk RFQ</h3>
+                <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Upload site slip photo or WhatsApp list · Direct mill rates &amp; GST invoice</p>
               </div>
               <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0">
-                Start RFQ <ArrowRight className="h-4 w-4" />
+                Upload Slip <ArrowRight className="h-4 w-4" />
               </span>
               <span className="h-7 w-7 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto flex-shrink-0">
                 <ArrowRight className="h-3.5 w-3.5 text-[#7CB518]" />

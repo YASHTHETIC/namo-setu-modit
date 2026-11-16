@@ -927,6 +927,15 @@ export default function ProductDetailPage({
         productName={product.name}
         sku={product.id}
       />
+
+      <AiRoomVisualizer
+        open={visualizerOpen}
+        onClose={() => setVisualizerOpen(false)}
+        product={product}
+        initialShade={selectedShade}
+        initialShadeColor={customColorCode || product.shades?.find((s) => s.name === selectedShade)?.code}
+        selectedVariantId={selectedVariant}
+      />
     </div>
   );
 }

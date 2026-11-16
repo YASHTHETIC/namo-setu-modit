@@ -13,6 +13,14 @@ import {
 import { useAuthReady } from "@/lib/use-auth";
 import { useCartStore } from "@/lib/cart-store";
 
+const QUICK_TOPICS = [
+  "Track my order",
+  "Refund or replacement",
+  "GST invoice",
+  "60-min delivery",
+  "Talk to human agent",
+];
+
 export function SupportChat() {
   const pathname = usePathname();
   const loggedIn = useAuthReady();
@@ -29,8 +37,8 @@ export function SupportChat() {
   const createConv = useCreateSupportConversation();
   const postMsg = usePostSupportMessage();
 
-  const startConversation = () => {
-    const clean = subject.trim();
+  const startConversation = (customSubject?: string) => {
+    const clean = (customSubject ?? subject).trim();
     if (!clean) return;
     createConv.mutate(
       { subject: clean },
@@ -43,10 +51,10 @@ export function SupportChat() {
     );
   };
 
-  const sendMessage = () => {
-    const clean = draft.trim();
+  const sendMessage = (customBody?: string) => {
+    const clean = (customBody ?? draft).trim();
     if (!clean || !activeId) return;
-    setDraft("");
+    if (!customBody) setDraft("");
     postMsg.mutate({ conversationId: activeId, body: clean });
   };
 
@@ -80,14 +88,22 @@ export function SupportChat() {
           </div>
 
           {!loggedIn ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6 text-center">
-              <p className="text-sm font-bold text-[#2D1B69]">Log in to chat with support</p>
-              <p className="text-xs text-[#9B8CB5]">Your threads stay linked to your orders.</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
+              <div className="rounded-2xl bg-[#F8F6FC] border border-[#DDD6EE] p-3 text-left w-full space-y-1.5">
+                <p className="text-micro font-black uppercase text-[#7CB518] flex items-center gap-1">
+                  <span>⚡</span> Instant MODIT Support
+                </p>
+                <p className="text-caption font-semibold text-[#150726]">· 60-Min delivery updates</p>
+                <p className="text-caption font-semibold text-[#150726]">· GST invoices &amp; order tracking</p>
+                <p className="text-caption font-semibold text-[#150726]">· 7-Day damaged item replacement</p>
+              </div>
+              <p className="text-caption font-bold text-[#2D1B69]">Log in to chat with support</p>
+              <p className="text-micro text-[#9B8CB5]">Your live threads stay linked to your orders.</p>
               <a
                 href="/auth"
-                className="mt-2 rounded-full bg-[#2D1B69] px-5 py-2 text-sm font-bold text-white"
+                className="rounded-full bg-[#2D1B69] hover:bg-[#150726] px-5 py-2 text-caption font-bold text-white transition-all shadow-md shadow-purple-900/20"
               >
-                Log in
+                Log in to Chat
               </a>
             </div>
           ) : !activeId ? (
@@ -101,12 +117,25 @@ export function SupportChat() {
                   className="flex-1 rounded-full border border-[#DDD6EE] px-3 py-2 text-sm outline-none focus:border-[#2D1B69]"
                 />
                 <button
-                  onClick={startConversation}
+                  onClick={() => startConversation()}
                   disabled={createConv.isPending || !subject.trim()}
                   className="rounded-full bg-[#2D1B69] px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
                 >
                   New
                 </button>
+              </div>
+              {/* Quick AI Suggestion Chips */}
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                {QUICK_TOPICS.map((topic) => (
+                  <button
+                    key={topic}
+                    type="button"
+                    onClick={() => startConversation(topic)}
+                    className="rounded-full bg-[#F0ECF9] hover:bg-[#DDD6EE] text-[#2D1B69] px-2.5 py-1 text-tiny font-bold transition-all active:scale-95 cursor-pointer"
+                  >
+                    {topic}
+                  </button>
+                ))}
               </div>
               {listLoading ? (
                 <p className="text-center text-xs text-[#9B8CB5]">Loading threads…</p>
@@ -161,7 +190,7 @@ export function SupportChat() {
                   className="flex-1 rounded-full border border-[#DDD6EE] px-3 py-2 text-sm outline-none focus:border-[#2D1B69]"
                 />
                 <button
-                  onClick={sendMessage}
+                  onClick={() => sendMessage()}
                   disabled={postMsg.isPending || !draft.trim()}
                   aria-label="Send message"
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2D1B69] text-white disabled:opacity-50"

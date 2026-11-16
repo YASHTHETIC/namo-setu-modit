@@ -417,15 +417,43 @@ export function AiProjectKitsSection() {
                         {item.product.name}
                       </p>
                       <p className="text-micro text-[#9B8CB5]">
-                        Qty: {qty} × {formatINR2(item.product.price)}
+                        {formatINR2(item.product.price)} / unit
                       </p>
                     </div>
 
-                    {/* Price */}
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-body-sm font-extrabold text-[#150726]">
-                        {formatINR2(item.product.price * qty)}
-                      </p>
+                    {/* Stepper & Price */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {isChecked && (
+                        <div
+                          className="flex items-center rounded-lg border border-[#DDD6EE] bg-white overflow-hidden shadow-2xs"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setKitQuantities((prev) => ({ ...prev, [pid]: Math.max(1, (prev[pid] ?? item.quantity) - 1) }))}
+                            className="px-2 py-0.5 text-caption font-bold text-[#2D1B69] hover:bg-[#F0ECF9] active:scale-90 transition-all cursor-pointer"
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <span className="px-1.5 text-micro font-bold tabular-nums text-[#150726] min-w-[18px] text-center">
+                            {qty}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setKitQuantities((prev) => ({ ...prev, [pid]: (prev[pid] ?? item.quantity) + 1 }))}
+                            className="px-2 py-0.5 text-caption font-bold text-[#2D1B69] hover:bg-[#F0ECF9] active:scale-90 transition-all cursor-pointer"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                      <div className="text-right min-w-[64px]">
+                        <p className="text-body-sm font-extrabold text-[#150726] tabular-nums">
+                          {formatINR2(item.product.price * qty)}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 );

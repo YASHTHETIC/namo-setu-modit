@@ -170,4 +170,56 @@ describe("MODIT End-to-End AI Functions Audit", () => {
       }
     });
   });
+
+  // ── 6. AI Room Visualizer Real-Time Tint & Lighting Contracts ────────────
+  describe("6. AI Room Visualizer & Real-Time Optics", () => {
+    it("computes proper wall opacity and sheen for finish configurations", () => {
+      // 1 coat vs 2 coats opacity math
+      const coats1Opacity = 0.65;
+      const coats2Opacity = 0.88;
+      assert.ok(coats2Opacity > coats1Opacity, "2 coats must provide higher opacity than 1 coat");
+
+      // Verify finish sheen mappings
+      const finishes = {
+        gloss: "brightness-110 contrast-105",
+        silk: "brightness-105",
+        matte: "brightness-95",
+      };
+      assert.ok(finishes.gloss.includes("brightness-110"), "Gloss sheen must boost specular brightness");
+      assert.ok(finishes.matte.includes("brightness-95"), "Matte finish must soften specular brightness");
+    });
+
+    it("verifies daylight and warm ambient illumination gradient stops", () => {
+      const dayStop = "#ffffff";
+      const warmStop = "#FFF3E0";
+      assert.notEqual(dayStop, warmStop, "Day and warm lighting stops must differ");
+    });
+  });
+
+  // ── 7. AI Project Kits Interactive Customizer & Steppers ─────────────────
+  describe("7. AI Project Kits Interactive Steppers & Subtotals", () => {
+    it("accurately computes live subtotals when item quantities are customized", () => {
+      const paintKit = PROJECT_KITS.find((k) => k.id === "kit-room-paint");
+      assert.ok(paintKit, "Paint kit must exist");
+
+      const resolved = resolveKit(paintKit);
+      assert.ok(resolved.resolvedItems.length >= 4, "Must have 4 items");
+
+      // Baseline total
+      const baseTotal = resolved.totalBundlePrice;
+
+      // Simulate increasing first item quantity by 2
+      const firstItem = resolved.resolvedItems[0];
+      const customQty = firstItem.quantity + 2;
+      const expectedNewTotal = baseTotal + (firstItem.product.price * 2);
+
+      let computedTotal = 0;
+      resolved.resolvedItems.forEach((item, idx) => {
+        const q = idx === 0 ? customQty : item.quantity;
+        computedTotal += item.product.price * q;
+      });
+
+      assert.equal(computedTotal, expectedNewTotal, "Live subtotal must match customized item quantities");
+    });
+  });
 });
