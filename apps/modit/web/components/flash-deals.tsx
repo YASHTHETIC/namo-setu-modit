@@ -81,7 +81,7 @@ export function FlashDeals() {
             const inCart = items.some((i) => i.product.id === product.id);
             const optLabel = optionsLabel(product);
             return (
-              <div key={product.id} className="w-[152px] sm:w-[180px] flex-shrink-0 snap-start bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-[#F8CB46]/50 transition-all group">
+              <div key={product.id} className="w-[164px] sm:w-[196px] flex-shrink-0 snap-start bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-[#F8CB46]/60 hover:shadow-[0_12px_28px_rgba(248,203,70,0.18)] hover:-translate-y-0.5 transition-all duration-300 group">
                 <Link href={productLink(product)} className="block relative aspect-square bg-white/5 p-2">
                   {product.images[0] ? (
                     <Image src={product.images[0]} alt={product.name} fill sizes="(max-width: 640px) 46vw, 180px" loading="lazy" draggable={false} className="object-contain p-2 animate-fade-in group-hover:scale-105 transition-transform" />
@@ -101,17 +101,17 @@ export function FlashDeals() {
                   <Link href={productLink(product)}>
                     <p className="text-micro sm:text-tiny font-semibold text-white leading-tight line-clamp-2 min-h-[24px] mt-1 hover:text-[#7CB518] transition-colors">{product.name}</p>
                   </Link>
-                  <div className="flex items-baseline gap-1.5 mt-1">
-                    <span className="text-body-md font-extrabold text-[#7CB518]">₹{product.price.toLocaleString("en-IN")}</span>
-                    <span className="text-tiny text-white/30 line-through">₹{product.mrp.toLocaleString("en-IN")}</span>
+                  <div className="flex items-baseline gap-1.5 mt-1 min-w-0">
+                    <span className="text-body-md font-extrabold text-[#7CB518] truncate">₹{product.price.toLocaleString("en-IN")}</span>
+                    <span className="text-tiny text-white/40 line-through truncate">₹{product.mrp.toLocaleString("en-IN")}</span>
                   </div>
-                  <div className="mt-1.5 min-h-[30px]">
+                  <div className="mt-2 min-h-[30px]">
                     <button
                       onClick={() => { tryAdd(product); }}
-                      className={`w-full py-1.5 rounded-lg text-tiny font-bold transition-all ${
+                      className={`w-full py-1.5 rounded-lg text-tiny font-extrabold tracking-wide transition-all shadow-sm ${
                         inCart
-                          ? "bg-[#7CB518]/20 text-[#7CB518]"
-                          : "bg-[#7CB518] text-white hover:bg-[#6A9C14]"
+                          ? "bg-[#7CB518]/25 text-[#7CB518] border border-[#7CB518]/40"
+                          : "bg-[#7CB518] hover:bg-[#6EA414] text-white active:scale-95"
                       }`}
                     >
                       {inCart ? "IN CART" : "ADD"}

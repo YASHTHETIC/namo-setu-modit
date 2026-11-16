@@ -195,18 +195,19 @@ export function ProductZoom3DViewer({
             </svg>
 
             {/* Canva Pic 3: Floating Prompt "MOVE TO EXPLORE ↗" */}
-            <div className="pointer-events-none absolute top-3.5 left-3.5 z-20 flex items-center gap-1 text-tiny sm:text-micro font-black uppercase tracking-wider text-[#2D1B69] bg-white/80 backdrop-blur-md px-2.5 py-1 rounded-full shadow-xs border border-white/60">
+            <div className="pointer-events-none absolute top-3.5 left-3.5 z-20 flex items-center gap-1.5 text-tiny font-extrabold uppercase tracking-wider text-white bg-[#150726]/80 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-white/15">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-ping" />
               <span>MOVE TO EXPLORE ↗</span>
             </div>
 
             {/* Canva Pic 3: Floating Standout Finish Badge */}
-            <div className="pointer-events-none absolute top-3.5 right-3.5 z-20 flex items-center gap-2 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-md border border-[#EDE7F6]">
+            <div className="pointer-events-none absolute top-3.5 right-3.5 z-20 flex items-center gap-2 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-lg border border-[#EDE7F6]">
               <div className="h-6 w-6 rounded-lg bg-[#2D1B69]/10 flex items-center justify-center text-[#2D1B69]">
                 <Sparkles className="h-3.5 w-3.5 text-[#7CB518]" />
               </div>
               <div className="text-left">
-                <p className="text-tiny sm:text-micro font-black text-[#150726] leading-none">Standout finish</p>
-                <p className="text-micro font-medium text-[#9B8CB5] leading-none mt-0.5">Made to impress</p>
+                <p className="text-tiny font-black text-[#150726] leading-none">Standout finish</p>
+                <p className="text-micro font-medium text-[#7B6A99] leading-none mt-0.5">Made to impress</p>
               </div>
             </div>
           </>
@@ -339,16 +340,22 @@ export function ProductZoom3DViewer({
 
         {/* Amazon Zoom overlay lens hint */}
         {mode === "zoom" && !zoomPos.active && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-2.5 py-1 text-tiny font-bold text-[#2D1B69] shadow-sm opacity-90 group-hover:opacity-100 transition-opacity">
-            <ZoomIn className="h-3.5 w-3.5 text-[#7CB518]" />
-            Hover to Zoom · Tap for Fullscreen
+          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-full bg-[#150726]/85 backdrop-blur-md px-3 py-1.5 text-tiny font-mono text-white/90 shadow-md border border-white/15 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+            <span className="font-sans font-bold">ULTRA ZOOM</span>
+            <span className="text-white/30">|</span>
+            <span className="font-sans text-white/70">Hover to inspect</span>
           </div>
         )}
 
         {mode === "3d" && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-2.5 py-1 text-tiny font-bold text-[#00838F] shadow-sm">
-            <Box className="h-3.5 w-3.5 text-[#00BCD4]" />
-            Move cursor to tilt 3D
+          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-full bg-[#150726]/85 backdrop-blur-md px-3 py-1.5 text-tiny font-mono text-white/90 shadow-md border border-white/15">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-pulse" />
+            <span className="font-sans font-bold text-[#00BCD4]">3D LOOK</span>
+            <span className="text-white/30">|</span>
+            <span>X: {Math.round(tilt.rx)}°</span>
+            <span className="text-white/30">|</span>
+            <span>Y: {Math.round(tilt.ry)}°</span>
           </div>
         )}
 

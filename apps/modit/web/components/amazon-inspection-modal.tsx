@@ -492,6 +492,26 @@ export function AmazonInspectionModal({
               </button>
             </div>
           )}
+
+          {/* Futuristic 3D Orientation HUD Pill */}
+          {(mode === "3d" || mode === "splash") && (
+            <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 text-tiny font-mono text-white/80 shadow-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-pulse" />
+              <span>TILT X: {Math.round(tilt.rx)}°</span>
+              <span className="text-white/30">|</span>
+              <span>Y: {Math.round(tilt.ry)}°</span>
+            </div>
+          )}
+
+          {/* Futuristic Loupe HUD in Zoom Mode */}
+          {mode === "zoom" && !zoomPos.active && (
+            <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 text-tiny font-mono text-white/80 shadow-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+              <span>LOUPE OPTICS</span>
+              <span className="text-white/30">|</span>
+              <span className="font-sans text-white/70">Drag to inspect detail</span>
+            </div>
+          )}
         </div>
       </div>
 

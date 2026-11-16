@@ -89,7 +89,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     <>
       <Link
         href={productLink(product)}
-        className="bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 w-full group group/card"
+        className="bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_14px_32px_-10px_rgba(45,27,105,0.22)] hover:border-[#2D1B69]/40 hover:-translate-y-1 transition-all duration-300 w-full group group/card"
       >
       {/* Image zone — clean & unobstructed with corner discount pill */}
       <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden p-2">
@@ -99,13 +99,15 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
           draggable={false}
-          className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover/card:scale-105"
+          className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover/card:scale-108"
         />
         {discount > 0 && (
-          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
+          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs border border-white/20">
             {discount}% OFF
           </span>
         )}
+        {/* Futuristic Glass Specular Reflection Sheen */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/25 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -120,7 +122,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       {/* Info zone */}
       <div className="flex flex-col flex-1 gap-0.5 p-2 sm:p-2.5">
         <div className="flex items-center justify-between gap-1 text-tiny">
-          <p className="flex items-center gap-1 font-semibold text-[#9B8CB5]">
+          <p className="flex items-center gap-1 font-semibold text-[#6B5B83]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />

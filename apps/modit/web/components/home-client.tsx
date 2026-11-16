@@ -355,6 +355,8 @@ export default function HomeClient() {
             )}
           </div>
         </div>
+        {/* Futuristic Accent Glow Line */}
+        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#7CB518]/40 via-[#00BCD4]/50 to-transparent" />
       </header>
 
       {/* ═══ DELIVERY HEADER — one dense row on phones (Blinkit fit),
@@ -443,33 +445,42 @@ export default function HomeClient() {
         </div>
       </div>
 
-      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT dark.
-           Phone: compact banner (heading + one-liner + small tile).
-           sm+: full-size with dual product tiles. ═══ */}
+      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT futuristic edition ═══ */}
       <Reveal>
-        <div className="mt-3 sm:mt-4 rounded-2xl overflow-hidden relative group" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #4A2D8A 50%, #2D1B69 100%)" }}>
-          <div className="relative z-10 p-3 sm:p-5 flex items-center justify-between gap-3">
+        <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)" }}>
+          {/* Ambient Futuristic Lighting FX */}
+          <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-[#7CB518]/20 blur-3xl animate-pulse" />
+          <div className="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-[#00BCD4]/25 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/3 h-40 w-40 -translate-y-1/2 rounded-full bg-[#F8CB46]/15 blur-2xl" />
+
+          <div className="relative z-10 p-3.5 sm:p-6 flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <div className="inline-flex items-center gap-1 sm:gap-1.5 bg-[#F8CB46] text-[#150726] text-tiny font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2">
-                <Truck className="h-3 w-3" />
-                FREE DELIVERY
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 text-tiny font-bold text-white mb-2 shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-[#7CB518] animate-ping" />
+                <span className="text-[#F8CB46] font-black tracking-wide">60-MIN SITE DROP</span>
+                <span className="text-white/40">·</span>
+                <span className="text-white/85">FREE DELIVERY ₹5000+</span>
               </div>
-              <h1 className="text-white text-title-md sm:text-title-lg font-extrabold leading-tight">Site Material, On Door</h1>
-              <p className="text-white/70 text-tiny sm:text-body-sm mt-0.5 sm:mt-1">Cement, paints, lights & more — in 60 minutes</p>
-              <Link href="/products" className="mt-2 sm:mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-bold px-4 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95">
+              <h1 className="text-white text-title-md sm:text-title-lg font-black leading-tight tracking-tight">
+                Site Material, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8CB46] to-white">On Door</span>
+              </h1>
+              <p className="text-white/75 text-tiny sm:text-body-sm mt-1 leading-snug">
+                Cement, paints, lights &amp; more — delivered in single-digit minutes
+              </p>
+              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-4.5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)]">
                 Shop Now
                 <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
             <div className="flex sm:items-center gap-2 flex-shrink-0 pr-0.5">
               <Parallax strength={12} className="flex-shrink-0">
-                <div className="h-16 w-12 sm:h-28 sm:w-24 rounded-xl sm:rounded-[28px] bg-white p-1 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-xl ring-2 sm:ring-4 ring-white/40">
+                <div className="h-16 w-12 sm:h-28 sm:w-24 rounded-xl sm:rounded-[28px] bg-white p-1 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-[0_16px_36px_rgba(0,0,0,0.35)] ring-2 sm:ring-4 ring-white/50 group-hover:ring-[#7CB518]/60">
                   <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
                 </div>
               </Parallax>
               <div className="hidden sm:block flex-shrink-0">
                 <Parallax strength={26}>
-                  <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-xl ring-4 ring-white/40">
+                  <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-[0_16px_36px_rgba(0,0,0,0.35)] ring-4 ring-white/50 group-hover:ring-[#00BCD4]/60">
                     <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
                   </div>
                 </Parallax>
@@ -543,7 +554,7 @@ export default function HomeClient() {
                   className="flex w-full flex-col items-center gap-1 group"
                 >
                   <div
-                    className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-green-500/10 group-hover:scale-105 ${
+                    className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_12px_28px_-8px_rgba(45,27,105,0.18)] group-hover:-translate-y-1 group-hover:scale-105 ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{

@@ -200,6 +200,15 @@ export function AiRoomVisualizer({
           <div className="lg:col-span-8 p-4 sm:p-6 flex flex-col justify-between bg-radial from-[#1E0D36] to-[#0A0210] relative min-h-[340px] sm:min-h-[460px]">
             {/* Room Canvas Container */}
             <div className="relative w-full flex-1 rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-2xl flex items-center justify-center select-none">
+              {/* Futuristic AI Stage HUD */}
+              <div className="absolute top-3 left-3 z-20 flex items-center gap-2 pointer-events-none">
+                <span className="flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-tiny font-mono text-white/90 border border-white/15 shadow-sm">
+                  <span className="h-2.5 w-2.5 rounded-full border border-white/40 shadow-xs flex-shrink-0" style={{ backgroundColor: selectedShadeHex }} />
+                  <span>AI TINT ENGINE · {finish.toUpperCase()} ({coats} COATS)</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+                </span>
+              </div>
+
               {isProcessing && (
                 <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm">
                   <RefreshCw className="h-8 w-8 text-[#7CB518] animate-spin mb-2" />
