@@ -132,21 +132,19 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         </div>
 
         {/* Bottom row: Price on left, ADD button / Stepper on right */}
-        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1.5">
-          <div className="min-w-0">
-            <div className="flex flex-col">
-              <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
-                ₹{product.price.toLocaleString("en-IN")}
+        <div className="mt-auto flex items-end justify-between gap-1 pt-1.5 min-w-0">
+          <div className="min-w-0 flex-1 flex flex-col justify-end">
+            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight truncate">
+              ₹{product.price.toLocaleString("en-IN")}
+            </span>
+            {product.mrp > product.price && (
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 truncate">
+                ₹{product.mrp.toLocaleString("en-IN")}
               </span>
-              {product.mrp > product.price && (
-                <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
-                  ₹{product.mrp.toLocaleString("en-IN")}
-                </span>
-              )}
-            </div>
+            )}
           </div>
 
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 pl-1">
             {qty === 0 ? (
               <button
                 onClick={(e) => {

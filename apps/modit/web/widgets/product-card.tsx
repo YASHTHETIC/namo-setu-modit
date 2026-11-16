@@ -89,7 +89,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     <>
       <Link
         href={productLink(product)}
-        className={`bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 ${compact ? "w-[140px]" : "w-full"} group group/card`}
+        className="bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_10px_28px_-12px_rgba(45,27,105,0.22)] hover:-translate-y-0.5 transition-all duration-300 w-full group group/card"
       >
       {/* Image zone — clean & unobstructed with corner discount pill */}
       <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden p-2">
@@ -164,24 +164,22 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         </div>
 
         {/* Bottom row — price block left, ADD/stepper right */}
-        <div className="mt-auto flex items-end justify-between gap-1.5 pt-1.5">
-          <div className="min-w-0">
-            <div className="flex flex-col">
-              <span className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight">
-                ₹{activePrice.toLocaleString("en-IN")}
+        <div className="mt-auto flex items-end justify-between gap-1 pt-1.5 min-w-0">
+          <div className="min-w-0 flex-1 flex flex-col justify-end">
+            <span className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight truncate">
+              ₹{activePrice.toLocaleString("en-IN")}
+            </span>
+            {activeMrp > activePrice && (
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 truncate">
+                ₹{activeMrp.toLocaleString("en-IN")}
               </span>
-              {activeMrp > activePrice && (
-                <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
-                  ₹{activeMrp.toLocaleString("en-IN")}
-                </span>
-              )}
-            </div>
+            )}
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 pl-1">
             {qty === 0 ? (
               <button
                 onClick={handleAdd}
-                className="btn-add cursor-pointer"
+                className={`btn-add cursor-pointer ${compact ? "!px-3 !py-1 text-caption font-bold" : ""}`}
                 aria-label={`Add ${product.name} to cart`}
               >
                 ADD

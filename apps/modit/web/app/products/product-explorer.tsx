@@ -1100,39 +1100,45 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
             {product.name}
           </h3>
         </Link>
-        <p className="text-micro text-[#9B8CB5] mt-0.5">{product.unit}</p>
+        {/* Pack size / Unit selector pill — Blinkit style */}
+        <div className="flex items-center gap-1.5 my-1">
+          {optLabel ? (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
+              className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
+            >
+              <span>{product.unit}</span>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          ) : (
+            <span className="text-micro text-[#9B8CB5] truncate">{product.unit}</span>
+          )}
+        </div>
 
-        {/* Bottom row — price block left, ADD column right */}
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <div className="min-w-0">
-            <div className="flex items-baseline gap-1.5 flex-wrap">
-              <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
-                ₹{product.price.toLocaleString("en-IN")}
+        {/* Bottom row — price block left, ADD button right */}
+        <div className="mt-auto flex items-end justify-between gap-1 pt-2 min-w-0">
+          <div className="min-w-0 flex-1 flex flex-col justify-end">
+            <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight truncate">
+              ₹{product.price.toLocaleString("en-IN")}
+            </span>
+            {product.mrp > product.price && (
+              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums truncate -mt-0.5">
+                ₹{product.mrp.toLocaleString("en-IN")}
               </span>
-              {product.mrp > product.price && (
-                <span className="text-tiny text-[#9B8CB5] line-through tabular-nums">
-                  ₹{product.mrp.toLocaleString("en-IN")}
-                </span>
-              )}
-            </div>
+            )}
           </div>
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex-shrink-0 pl-1">
             <button
               onClick={handleAdd}
               disabled={blocked}
               title={blocked ? "Not serving your pincode yet" : undefined}
-              className={added ? "rounded-full bg-[#7CB518] text-white px-4 py-1.5 text-xs font-black transition-all disabled:opacity-50" : "btn-add"}
+              className={added ? "rounded-full bg-[#7CB518] text-white px-4 py-1.5 text-xs font-black transition-all disabled:opacity-50" : "btn-add cursor-pointer"}
             >
-              {added ? "Added ✓" : optLabel ? "OPTIONS ▾" : "ADD"}
+              {added ? "Added ✓" : "ADD"}
             </button>
-            {optLabel && (
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
-                className="text-tiny font-semibold text-[#6B5B83] hover:text-[#2D1B69] transition-colors"
-              >
-                {optLabel}
-              </button>
-            )}
           </div>
         </div>
       </div>
