@@ -39,6 +39,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { BottomNav } from "@/components/bottom-nav";
 import { AiProjectKitsSection } from "@/components/ai-project-kits";
 import { useIsStandalone } from "@/lib/pwa";
+import { BorderBeam } from "@/components/border-beam";
+import { Marquee } from "@/components/marquee";
+import { NumberTicker } from "@/components/number-ticker";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -413,34 +416,89 @@ export default function HomeClient() {
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
       <div className="mt-3 sm:mt-4">
-        {/* MODIT ASSURED — dark premium panel across all devices (Mobile & Desktop) */}
-        <div className="assure-stripes relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 px-2 py-3 sm:py-4 max-w-[1000px] mx-auto shadow-md">
-          <div className="flex items-center justify-center gap-1.5 mb-2.5 sm:mb-3">
-            <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#7CB518]" />
-            <p className="text-micro sm:text-caption font-extrabold text-white tracking-wide">MODIT ASSURED</p>
+        {/* MODIT ASSURED BENTO GRID — Linear / Apple Quick-Commerce Pattern */}
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 p-3 sm:p-5 max-w-[1200px] mx-auto shadow-2xl">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="h-6 w-6 rounded-lg bg-[#7CB518]/20 border border-[#7CB518]/40 flex items-center justify-center">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#7CB518]" />
+              </span>
+              <p className="text-caption sm:text-body-sm font-black text-white tracking-wide">
+                MODIT ASSURED <span className="text-white/40 font-mono text-tiny">· 2027 SPEC</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-tiny font-mono text-white/70">
+              <span className="h-2 w-2 rounded-full bg-[#7CB518] animate-pulse" />
+              <span>LIVE SATELLITE DISPATCH</span>
+            </div>
           </div>
-          <div className="grid grid-cols-4 divide-x divide-white/10">
-            {[
-              { icon: Undo2, title: "7-Day Returns", sub: "On delivered items", tint: "#7CB518" },
-              { icon: Truck, title: "Free Delivery", sub: "On orders ₹5000+", tint: "#00BCD4" },
-              { icon: ReceiptIndianRupee, title: "GST Invoice", sub: "With every order", tint: "#E91E63" },
-              { icon: BadgeCheck, title: "Genuine Products", sub: "Verified brands only", tint: "#F8CB46" },
-            ].map((t) => (
-              <div key={t.title} className="flex flex-col items-center gap-1 sm:gap-1.5 px-0.5 sm:px-1 text-center">
-                <span
-                  className="h-7 w-7 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${t.tint}1F`, border: `1.5px solid ${t.tint}55` }}
-                >
-                  <t.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: t.tint }} />
+
+          {/* 4-Cell Bento Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+            {/* Bento Card 1: 60-Min Express */}
+            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#7CB518]/60 hover:bg-white/[0.08] transition-all duration-300 group">
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="h-8 w-8 rounded-lg bg-[#7CB518]/20 border border-[#7CB518]/40 flex items-center justify-center text-[#7CB518]">
+                  <Truck className="h-4 w-4" />
                 </span>
-                <span className="text-tiny font-black leading-tight" style={{ color: t.tint }}>
-                  {t.title}
-                </span>
-                <span className="text-tiny text-white/55 leading-tight">
-                  {t.sub}
+                <span className="rounded-full bg-[#7CB518]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#7CB518] border border-[#7CB518]/30">
+                  <NumberTicker value={60} /> MIN
                 </span>
               </div>
-            ))}
+              <div>
+                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">60-Min Site Drop</h4>
+                <p className="text-tiny text-white/60 leading-snug mt-0.5">GPS-tracked express drop straight to your foundation.</p>
+              </div>
+            </div>
+
+            {/* Bento Card 2: 100% Genuine Brands */}
+            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#F8CB46]/60 hover:bg-white/[0.08] transition-all duration-300 group">
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="h-8 w-8 rounded-lg bg-[#F8CB46]/20 border border-[#F8CB46]/40 flex items-center justify-center text-[#F8CB46]">
+                  <BadgeCheck className="h-4 w-4" />
+                </span>
+                <span className="rounded-full bg-[#F8CB46]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#F8CB46] border border-[#F8CB46]/30">
+                  <NumberTicker value={1120} />+ SKUs
+                </span>
+              </div>
+              <div>
+                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">Genuine Brands</h4>
+                <p className="text-tiny text-white/60 leading-snug mt-0.5">Direct from authorized mill depots: UltraTech, Asian Paints &amp; more.</p>
+              </div>
+            </div>
+
+            {/* Bento Card 3: GST Invoice & Bulk Credit */}
+            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#E91E63]/60 hover:bg-white/[0.08] transition-all duration-300 group">
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="h-8 w-8 rounded-lg bg-[#E91E63]/20 border border-[#E91E63]/40 flex items-center justify-center text-[#E91E63]">
+                  <ReceiptIndianRupee className="h-4 w-4" />
+                </span>
+                <span className="rounded-full bg-[#E91E63]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#E91E63] border border-[#E91E63]/30">
+                  TAX CREDIT
+                </span>
+              </div>
+              <div>
+                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">GST Invoice</h4>
+                <p className="text-tiny text-white/60 leading-snug mt-0.5">Instant B2B input tax credit download with every single dispatch.</p>
+              </div>
+            </div>
+
+            {/* Bento Card 4: 7-Day Easy Returns */}
+            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#00BCD4]/60 hover:bg-white/[0.08] transition-all duration-300 group">
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <span className="h-8 w-8 rounded-lg bg-[#00BCD4]/20 border border-[#00BCD4]/40 flex items-center justify-center text-[#00BCD4]">
+                  <Undo2 className="h-4 w-4" />
+                </span>
+                <span className="rounded-full bg-[#00BCD4]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#00BCD4] border border-[#00BCD4]/30">
+                  7 DAYS
+                </span>
+              </div>
+              <div>
+                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">7-Day Site Returns</h4>
+                <p className="text-tiny text-white/60 leading-snug mt-0.5">Hassle-free reverse logistics pickup for unopened site materials.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -448,6 +506,8 @@ export default function HomeClient() {
       {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT futuristic edition ═══ */}
       <Reveal>
         <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)" }}>
+          {/* Magic UI Border Beam — Traveling Laser Glow */}
+          <BorderBeam duration={10} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={1.5} />
           {/* Ambient Futuristic Lighting FX */}
           <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-[#7CB518]/20 blur-3xl animate-pulse" />
           <div className="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-[#00BCD4]/25 blur-3xl" />
@@ -702,53 +762,83 @@ export default function HomeClient() {
       </div>
       </div>{/* ═══ /shared edge B (rails + feature) ═══ */}
 
-      {/* ═══ BRAND STRIP ═══ */}
+      {/* ═══ BRAND MARQUEE — Modern Infinite Hardware-Accelerated Rail (Magic UI Style) ═══ */}
       <Reveal>
         <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 mb-6 pb-2">
-          <div className="section-header px-0 mb-4">
-            <h2>Trusted Brands</h2>
+          <div className="section-header px-0 mb-3 flex items-center justify-between">
+            <h2>Trusted Mill Brands</h2>
+            <span className="text-tiny font-mono font-bold text-[#6B5B83] uppercase tracking-wider flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+              100% DIRECT DEPOT
+            </span>
           </div>
-          <div className="flex gap-4 sm:gap-5 overflow-x-auto pb-2 scrollbar-hide">
-            {[
-              { name: "UltraTech", img: "/products/cement/Ultratech Cement.png" },
-              { name: "ACC", img: "/products/cement/ACC Cement.png" },
-              { name: "Ambuja", img: "/products/cement/Ambuja Cement.png" },
-              { name: "Asian Paints", img: "/products/painting/Asian Paint.png" },
-              { name: "Philips", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp" },
-              { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png" },
-              { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png" },
-              { name: "Roff", img: "/products/tiling/Roff T1.png" },
-              { name: "Hettich", img: "/products/hinges/Hettich Clamps for KA Channels.png" },
-              { name: "Crompton", img: "/products/lighting/crompton-led-star-slim-recess-panel-round-6k-1678368249930_SKU-0684_0-1756465491712-Photoroom.png" },
-              { name: "Jaquar", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp" },
-              { name: "Legrand", img: "/products/switches/1000023225_25325e44-5c03-4885-8994-7222219bde89_250x2502x 1.webp" },
-              { name: "Fevicol", img: "/products/hardware-tools/Fevicol Craft and General Adhesives 2 Fevistik 15gm 2.jpg" },
-              { name: "Havells", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg" },
-              { name: "Birla White", img: "/products/painting/Birla Putty.png" },
-              { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png" },
-            ].map((brand) => (
-              <Link key={brand.name} href={`/products?search=${encodeURIComponent(brand.name)}`} className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group w-[62px] sm:w-[76px]">
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-white border border-[#E7DEF5] overflow-hidden flex items-center justify-center group-hover:border-[#7CB518] group-hover:shadow-lg group-hover:shadow-green-500/10 transition-all duration-300 group-hover:scale-110">
-                  <Image src={brand.img} alt={brand.name} width={80} height={80} loading="lazy" draggable={false} className="h-full w-full object-contain p-1.5" />
-                </div>
-                <span className="text-tiny font-bold text-[#150726] group-hover:text-[#7CB518] transition-colors text-center leading-tight line-clamp-1">{brand.name}</span>
-              </Link>
-            ))}
+
+          <div className="relative overflow-hidden rounded-2xl bg-white/40 border border-[#EDE7F6] py-3 shadow-[0_2px_12px_rgba(26,10,51,0.03)]">
+            {/* Dual Edge Fade Gradients */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-24 bg-gradient-to-r from-[#F8F6FC] to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-24 bg-gradient-to-l from-[#F8F6FC] to-transparent z-10" />
+
+            <Marquee speed={40} pauseOnHover={true}>
+              {[
+                { name: "UltraTech", img: "/products/cement/Ultratech Cement.png", tag: "CEMENT" },
+                { name: "ACC", img: "/products/cement/ACC Cement.png", tag: "CEMENT" },
+                { name: "Ambuja", img: "/products/cement/Ambuja Cement.png", tag: "CEMENT" },
+                { name: "Asian Paints", img: "/products/painting/Asian Paint.png", tag: "PAINT" },
+                { name: "Philips", img: "/products/lighting/Philips AstraSpot Next LED COB light.webp", tag: "LIGHTING" },
+                { name: "Dr. Fixit", img: "/products/tiling/Dr Fixit.png", tag: "FIX-IT" },
+                { name: "Kajaria", img: "/products/tiling/Kajaria Adhesives Tiling.png", tag: "TILES" },
+                { name: "Roff", img: "/products/tiling/Roff T1.png", tag: "TILES" },
+                { name: "Hettich", img: "/products/hinges/Hettich Clamps for KA Channels.png", tag: "FITTINGS" },
+                { name: "Crompton", img: "/products/lighting/crompton-led-star-slim-recess-panel-round-6k-1678368249930_SKU-0684_0-1756465491712-Photoroom.png", tag: "LIGHTING" },
+                { name: "Jaquar", img: "/products/sanitary/32-45-8-wash-basin-over-counter-for-bathroom-45-x-32-x-10-cm-original-imahdff46mfrfvtu.webp", tag: "BATH" },
+                { name: "Legrand", img: "/products/switches/1000023225_25325e44-5c03-4885-8994-7222219bde89_250x2502x 1.webp", tag: "SWITCHES" },
+                { name: "Fevicol", img: "/products/hardware-tools/Fevicol Craft and General Adhesives 2 Fevistik 15gm 2.jpg", tag: "ADHESIVES" },
+                { name: "Havells", img: "/products/switches/6-ampere-rectangular-polycarbonate-havells-modular-switch--957.jpg", tag: "ELECTRICAL" },
+                { name: "Birla White", img: "/products/painting/Birla Putty.png", tag: "PUTTY" },
+                { name: "Stanley", img: "/products/hardware-tools/STANLEY 15 mx Long Measuring Tape Yellow STHT38515-812.png", tag: "TOOLS" },
+              ].map((brand) => (
+                <Link
+                  key={brand.name}
+                  href={`/products?search=${encodeURIComponent(brand.name)}`}
+                  className="flex-shrink-0 flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white border border-[#EDE7F6] hover:border-[#7CB518] hover:shadow-[0_8px_20px_-4px_rgba(124,181,24,0.22)] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-[#F7F4FC] overflow-hidden flex items-center justify-center p-1 border border-[#F0ECF9]">
+                    <Image
+                      src={brand.img}
+                      alt={brand.name}
+                      width={48}
+                      height={48}
+                      loading="lazy"
+                      draggable={false}
+                      className="h-full w-full object-contain group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="text-left pr-1">
+                    <span className="text-micro font-mono font-bold text-[#7CB518] uppercase leading-none block">
+                      {brand.tag}
+                    </span>
+                    <span className="text-caption font-extrabold text-[#150726] group-hover:text-[#7CB518] transition-colors leading-tight block mt-0.5">
+                      {brand.name}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </Marquee>
           </div>
         </div>
       </Reveal>
 
-      {/* ═══ MATERIAL CALCULATOR + BULK CTA — one compact band (side-by-side
-           on mobile, stacked full-width rows on desktop) ═══ */}
+      {/* ═══ MATERIAL CALCULATOR + BULK CTA — one compact band ═══ */}
       <Reveal>
         <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pt-2 pb-4 sm:pb-6">
           <div className="grid grid-cols-2 gap-3 sm:block">
             {/* Calculator */}
             <Link
               href="/calculator"
-              className="rounded-xl bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99] sm:mb-6"
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#F0ECF9] to-[#E8F9FC] p-3 sm:p-5 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-center sm:text-left transition-transform hover:scale-[1.01] active:scale-[0.99] border border-white/40 shadow-sm sm:mb-6 group"
             >
-              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0">
+              <BorderBeam duration={8} colorFrom="#00BCD4" colorTo="#7CB518" borderWidth={1.5} />
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-[#2D1B69] flex items-center justify-center flex-shrink-0 relative z-10">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="4" y="2" width="16" height="20" rx="2"/>
                   <line x1="8" y1="6" x2="16" y2="6"/>
@@ -756,7 +846,7 @@ export default function HomeClient() {
                   <line x1="8" y1="14" x2="12" y2="14"/>
                 </svg>
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 relative z-10">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="inline-flex items-center gap-1 rounded bg-[#2D1B69] px-2 py-0.5 text-micro font-black text-[#F8CB46]">
                     <Sparkles className="h-2.5 w-2.5" /> AI ESTIMATOR
@@ -765,19 +855,21 @@ export default function HomeClient() {
                 <h3 className="text-caption sm:text-body-md font-extrabold text-[#150726] leading-tight">Smart Material Estimator</h3>
                 <p className="text-caption text-[#9B8CB5] hidden sm:block mt-0.5">Instant formulas for cement, paint, tiles &amp; steel with 1-tap cart addition</p>
               </div>
-              <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0">
+              <span className="btn-shine hidden sm:inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all shadow-lg shadow-purple-900/20 flex-shrink-0 relative z-10">
                 Calculate <ArrowRight className="h-3.5 w-3.5" />
               </span>
-              <span className="h-7 w-7 sm:hidden rounded-full bg-[#2D1B69]/10 flex items-center justify-center flex-shrink-0">
+              <span className="h-7 w-7 sm:hidden rounded-full bg-[#2D1B69]/10 flex items-center justify-center flex-shrink-0 relative z-10">
                 <ArrowRight className="h-3.5 w-3.5 text-[#2D1B69]" />
               </span>
             </Link>
+
             {/* Bulk / business */}
             <Link
               href="/rfq"
-              className="rounded-2xl bg-[#150726] px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-center sm:text-left transition-transform hover:scale-[1.02] active:scale-[0.99]"
+              className="relative overflow-hidden rounded-2xl bg-[#150726] px-3 sm:px-5 py-3 sm:py-5 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-center sm:text-left transition-transform hover:scale-[1.01] active:scale-[0.99] border border-white/10 shadow-lg group"
             >
-              <div className="flex-1 min-w-0">
+              <BorderBeam duration={8} colorFrom="#7CB518" colorTo="#F8CB46" borderWidth={1.5} />
+              <div className="flex-1 min-w-0 relative z-10">
                 <div className="flex items-center gap-1.5 justify-center sm:justify-start mb-0.5">
                   <span className="inline-flex items-center gap-1 rounded bg-[#7CB518] px-2 py-0.5 text-micro font-black text-white">
                     <Sparkles className="h-2.5 w-2.5" /> AI PAPER OCR
@@ -786,10 +878,10 @@ export default function HomeClient() {
                 <h3 className="text-caption sm:text-body-md font-extrabold text-white leading-tight">Handwritten Slip &amp; Bulk RFQ</h3>
                 <p className="text-caption text-white/55 mt-0.5 hidden sm:block">Upload site slip photo or WhatsApp list · Direct mill rates &amp; GST invoice</p>
               </div>
-              <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0">
+              <span className="btn-shine hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-button font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex-shrink-0 relative z-10">
                 Upload Slip <ArrowRight className="h-4 w-4" />
               </span>
-              <span className="h-7 w-7 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto flex-shrink-0">
+              <span className="h-7 w-7 sm:hidden rounded-full bg-white/10 flex items-center justify-center mx-auto flex-shrink-0 relative z-10">
                 <ArrowRight className="h-3.5 w-3.5 text-[#7CB518]" />
               </span>
             </Link>

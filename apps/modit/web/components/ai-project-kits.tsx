@@ -23,6 +23,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@foundation/ui";
 import { formatINR2 } from "@/lib/utils";
 import { isPaintProduct } from "@/lib/pricing";
+import { BorderBeam } from "@/components/border-beam";
 import {
   PROJECT_KITS,
   resolveKit,
@@ -226,6 +227,10 @@ export function AiProjectKitsSection() {
                 key={kit.id}
                 className="group relative flex flex-col rounded-2xl border border-[#DDD6EE] bg-white p-4 shadow-[0_2px_8px_rgba(26,10,51,0.04)] transition-all duration-300 hover:border-[#2D1B69] hover:shadow-[0_16px_36px_-12px_rgba(45,27,105,0.18)] hover:-translate-y-1 overflow-hidden"
               >
+                {/* Magic UI Border Beam on Featured Kit */}
+                {kit.id === "kit-room-paint" && (
+                  <BorderBeam duration={9} colorFrom={kit.accentColor} colorTo="#2D1B69" borderWidth={1.5} />
+                )}
                 {/* Futuristic Top Glowing Accent Line */}
                 <div
                   className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

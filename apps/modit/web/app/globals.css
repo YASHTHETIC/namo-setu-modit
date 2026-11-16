@@ -2099,6 +2099,20 @@ button { touch-action: manipulation; }
 
 .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap, 1.25rem)));
+  }
+}
+
+.animate-marquee {
+  animation: marquee-scroll 45s linear infinite;
+  will-change: transform;
+}
+
 .animate-shimmer { animation: shimmer 1.5s infinite; }
 
 .animate-cart-pop { animation: cartPop 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
