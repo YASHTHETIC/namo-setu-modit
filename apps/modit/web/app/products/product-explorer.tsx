@@ -232,7 +232,43 @@ function ProductsContent() {
     return result;
   }, [products, search, effectiveSearch, selectedCategory, selectedSub, selectedBrands, priceRange, minRating, inStockOnly, sort]);
 
-  // All matching products render at once — no client-side paging.
+  // Incremental rendering: the merged catalog can hold 1,100+ items and
+  // rendering every card at once costs seconds of SSR and multi-MB HTML.
+  // Render a window with infinite scroll; result COUNTS still reflect the
+  // full filtered set, so the header and sidebar never lie.
+  const PAGE_SIZE = 36;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const visibleProducts = useMemo(
+    () => filteredProducts.slice(0, visibleCount),
+    [filteredProducts, visibleCount]
+  );
+  const hasMoreProducts = filteredProducts.length > visibleCount;
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [filteredProducts]);
+
+  useEffect(() => {
+    if (!hasMoreProducts) return;
+    const el = loadMoreRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredProducts.length));
+        }
+      },
+      { rootMargin: "600px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMoreProducts, filteredProducts.length]);
+
+  const showMoreProducts = useCallback(() => {
+    setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredProducts.length));
+  }, [filteredProducts.length]);
+
   const toggleBrand = useCallback((brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
@@ -832,7 +868,7 @@ function ProductsContent() {
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
               <div className="product-grid grid grid-cols-2 gap-2 sm:hidden">
-                {filteredProducts.map((product) => (
+                {visibleProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -840,18 +876,30 @@ function ProductsContent() {
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
                   <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                    {filteredProducts.map((product) => (
+                    {visibleProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredProducts.map((product) => (
+                    {visibleProducts.map((product) => (
                       <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
                   </div>
                 )}
               </div>
+              {/* Infinite-scroll sentinel + manual fallback */}
+              {hasMoreProducts && (
+                <div ref={loadMoreRef} className="mt-6 flex flex-col items-center gap-3">
+                  <button
+                    onClick={showMoreProducts}
+                    className="rounded-xl border border-[#DDD6EE] bg-white px-6 py-3 text-sm font-bold text-[#2D1B69] transition-all hover:border-[#7CB518] hover:shadow-sm active:scale-95"
+                  >
+                    Show more ({filteredProducts.length - visibleCount} remaining)
+                  </button>
+                  <p className="text-xs text-[#9B8CB5]">Loading more products…</p>
+                </div>
+              )}
             </>
           )}
         </div>
