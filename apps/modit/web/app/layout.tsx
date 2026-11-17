@@ -143,9 +143,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     window.location.search.indexOf('app=1') !== -1 ||
                     window.location.search.indexOf('package=in.modit.app') !== -1 ||
                     window.location.search.indexOf('standalone=1') !== -1 ||
-                    /;\s*wv\b/i.test(ua) ||
-                    (/Android/i.test(ua) && /Version\/[\d.]+/i.test(ua) && /Chrome\/[\d.]+/i.test(ua)) ||
-                    /in\.modit\.app|MODIT-APP|Bubblewrap/i.test(ua)
+                    /;\\s*wv\\b/i.test(ua) ||
+                    (/Android/i.test(ua) && /Version\\/[\\d.]+/i.test(ua) && /Chrome\\/[\\d.]+/i.test(ua)) ||
+                    /in\\.modit\\.app|MODIT-APP|Bubblewrap/i.test(ua)
                   );
                   if (isStand) {
                     window.__modit_is_standalone = true;

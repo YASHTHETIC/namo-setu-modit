@@ -34,8 +34,8 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     <>
       <footer className={`mt-6 border-t border-[#DDD6EE] bg-[#F0ECF9] ${className}`}>
         <div className="market-container py-10">
-          <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr_0.7fr]">
-            <div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr_0.7fr]">
+            <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3">
                 <ModitLogo className="h-[42px] w-auto" />
               </div>
@@ -48,7 +48,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 <span className="rounded-full border border-[#DDD6EE] bg-white px-3 py-1.5 text-[#2D1B69]">7-day replacement</span>
               </div>
               {showAppCta && (
-                <div className="mt-4 flex flex-wrap gap-2 hidden sm:flex hide-in-app install-app-cta" data-hide-in-app="true">
+                <div className="mt-4 hidden flex-wrap gap-2 sm:flex hide-in-app install-app-cta" data-hide-in-app="true">
                   <button
                     onClick={handleInstall}
                     className="flex items-center gap-2.5 rounded-xl border border-[#DDD6EE] bg-white px-3.5 py-2 transition-all hover:border-[#2D1B69] hover:shadow-xs active:scale-95 cursor-pointer"
