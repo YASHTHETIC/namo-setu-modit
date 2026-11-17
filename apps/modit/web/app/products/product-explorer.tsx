@@ -238,6 +238,7 @@ function ProductsContent() {
   // full filtered set, so the header and sidebar never lie.
   const PAGE_SIZE = 36;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [isLoadingBatch, setIsLoadingBatch] = useState(false);
   const visibleProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
     [filteredProducts, visibleCount]
@@ -249,25 +250,35 @@ function ProductsContent() {
     setVisibleCount(PAGE_SIZE);
   }, [filteredProducts]);
 
+  const showMoreProducts = useCallback(() => {
+    if (isLoadingBatch) return;
+    setIsLoadingBatch(true);
+    // Yield to the main thread briefly so UI spinner renders and DOM updates smoothly
+    setTimeout(() => {
+      setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredProducts.length));
+      setIsLoadingBatch(false);
+    }, 100);
+  }, [filteredProducts.length, isLoadingBatch]);
+
   useEffect(() => {
-    if (!hasMoreProducts) return;
+    if (!hasMoreProducts || isLoadingBatch) return;
     const el = loadMoreRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
-          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredProducts.length));
+          showMoreProducts();
         }
       },
-      { rootMargin: "600px 0px" }
+      { rootMargin: "500px 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [hasMoreProducts, filteredProducts.length]);
+  }, [hasMoreProducts, isLoadingBatch, showMoreProducts]);
 
-  const showMoreProducts = useCallback(() => {
-    setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredProducts.length));
-  }, [filteredProducts.length]);
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const toggleBrand = useCallback((brand: string) => {
     setSelectedBrands((prev) =>
@@ -888,17 +899,97 @@ function ProductsContent() {
                   </div>
                 )}
               </div>
-              {/* Infinite-scroll sentinel + manual fallback */}
+              {/* Infinite-scroll sentinel + manual fallback + Progress HUD */}
               {hasMoreProducts && (
-                <div ref={loadMoreRef} className="mt-6 flex flex-col items-center gap-3">
+                <div ref={loadMoreRef} className="mt-8 mb-6 flex flex-col items-center gap-4">
+                  {/* Catalog Progress HUD */}
+                  <div className="flex flex-col items-center gap-2 w-full max-w-sm px-4">
+                    <div className="flex items-center justify-between w-full text-tiny font-bold text-[#6B5B83]">
+                      <span>
+                        Showing <strong className="text-[#2D1B69] font-black">{visibleProducts.length}</strong> of{" "}
+                        <strong className="text-[#2D1B69] font-black">{filteredProducts.length}</strong> materials
+                      </span>
+                      <span className="text-[#7CB518] font-black">
+                        {Math.round((visibleProducts.length / filteredProducts.length) * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-[#EDE7F6] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#2D1B69] via-[#4A2D8A] to-[#7CB518] transition-all duration-500 ease-out"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            Math.round((visibleProducts.length / filteredProducts.length) * 100)
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
                   <button
+                    type="button"
                     onClick={showMoreProducts}
-                    className="rounded-xl border border-[#DDD6EE] bg-white px-6 py-3 text-sm font-bold text-[#2D1B69] transition-all hover:border-[#7CB518] hover:shadow-sm active:scale-95"
+                    disabled={isLoadingBatch}
+                    className="group relative flex items-center gap-2.5 rounded-2xl border border-[#2D1B69]/15 bg-white px-6 py-3 text-sm font-bold text-[#2D1B69] shadow-xs transition-all hover:border-[#7CB518] hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 cursor-pointer"
                   >
-                    Show more ({filteredProducts.length - visibleCount} remaining)
+                    {isLoadingBatch ? (
+                      <>
+                        <span className="h-4 w-4 rounded-full border-2 border-[#2D1B69] border-t-transparent animate-spin" />
+                        <span>Loading materials…</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Load Next {Math.min(PAGE_SIZE, filteredProducts.length - visibleCount)} Materials</span>
+                        <span className="rounded-full bg-[#F0ECF9] px-2 py-0.5 text-tiny font-extrabold text-[#2D1B69] group-hover:bg-[#7CB518] group-hover:text-white transition-colors">
+                          {filteredProducts.length - visibleCount} left
+                        </span>
+                      </>
+                    )}
                   </button>
-                  <p className="text-xs text-[#9B8CB5]">Loading more products…</p>
+                  <p className="text-micro font-medium text-[#9B8CB5] flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
+                    Scroll down to auto-load or click button above
+                  </p>
                 </div>
+              )}
+
+              {/* End-of-catalog milestone */}
+              {!hasMoreProducts && filteredProducts.length > PAGE_SIZE && (
+                <div className="mt-10 mb-6 flex flex-col items-center gap-3 text-center">
+                  <div className="w-full max-w-sm px-4">
+                    <div className="w-full h-1.5 rounded-full bg-[#7CB518]" />
+                  </div>
+                  <div className="rounded-2xl border border-[#EDE7F6] bg-gradient-to-br from-[#F5F2FC] to-white px-6 py-4 shadow-xs flex flex-col sm:flex-row items-center gap-3">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-[#2D1B69]">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#7CB518] text-white text-xs font-black">
+                        ✓
+                      </span>
+                      <span>You’ve viewed all {filteredProducts.length} verified materials</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={scrollToTop}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-[#2D1B69]/15 bg-white px-3.5 py-1.5 text-tiny font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all cursor-pointer shadow-2xs"
+                    >
+                      Back to top ↑
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Floating Back-to-Top pill when scrolled down */}
+              {visibleCount > PAGE_SIZE && (
+                <button
+                  type="button"
+                  onClick={scrollToTop}
+                  className="fixed bottom-20 right-4 z-30 sm:bottom-8 sm:right-8 flex items-center gap-1.5 rounded-full border border-[#2D1B69]/15 bg-white/90 backdrop-blur-md px-3.5 py-2 text-tiny font-extrabold text-[#2D1B69] shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                  aria-label="Back to top"
+                >
+                  <span>↑ Top</span>
+                  <span className="text-micro text-[#6B5B83]">
+                    ({visibleProducts.length}/{filteredProducts.length})
+                  </span>
+                </button>
               )}
             </>
           )}
