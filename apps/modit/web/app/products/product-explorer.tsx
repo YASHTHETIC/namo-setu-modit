@@ -1177,20 +1177,10 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <div
-      className="group relative rounded-2xl bg-white transition-all duration-300 overflow-hidden h-full flex flex-col"
+      className="card-lift group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
       style={{
         border: '1px solid #DDD6EE',
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(45,27,105,0.12), 0 2px 8px rgba(45,27,105,0.06)';
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.borderColor = '#C9B8E8';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 1px 3px rgba(26,10,51,0.04)';
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.borderColor = '#DDD6EE';
       }}
     >
       {/* Category accent stripe at top */}

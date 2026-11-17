@@ -396,7 +396,7 @@ export default function HomeClient() {
 
       {/* ═══ FREE DELIVERY PROMO STRIP — full-bleed flat banner (Blinkit
            pattern): no card, no radius, spans the whole viewport width ═══ */}
-      <div className="no-stripes relative overflow-hidden" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)" }}>
+      <div className="no-stripes relative overflow-hidden gradient-pan" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)", backgroundSize: "180% 180%" }}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto relative z-10 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3">
           <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
             <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
@@ -418,7 +418,7 @@ export default function HomeClient() {
 
       {/* ═══ HERO BANNER — Clean, Global Standard ═══ */}
       <Reveal>
-        <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)" }}>
+        <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl gradient-pan" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)", backgroundSize: "200% 200%" }}>
           {/* Magic UI Border Beam — Traveling Laser Glow */}
           <BorderBeam duration={10} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={1.5} />
           {/* Ambient Lighting FX */}

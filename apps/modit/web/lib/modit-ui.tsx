@@ -211,15 +211,16 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-2xl font-medium",
+        "transition-[transform,box-shadow,background-color,color,border-color] duration-250 ease-[cubic-bezier(0.34,1.45,0.64,1)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "enabled:hover:scale-[1.02] enabled:active:scale-[0.98]",
+        "enabled:hover:scale-[1.02] enabled:active:scale-[0.97]",
         {
-          "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm": variant === "primary",
-          "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)]": variant === "secondary",
+          "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm enabled:hover:shadow-[0_6px_18px_rgba(124,181,24,0.32)]": variant === "primary",
+          "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)] enabled:hover:shadow-sm": variant === "secondary",
           "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]": variant === "ghost",
-          "bg-red-500 text-white hover:bg-red-600": variant === "danger",
+          "bg-red-500 text-white hover:bg-red-600 enabled:hover:shadow-[0_6px_18px_rgba(239,68,68,0.3)]": variant === "danger",
         },
         {
           "h-8 px-3 text-xs": size === "sm",
@@ -254,15 +255,16 @@ export function LinkButton({
   className?: string;
 }) {
   return (
-    <div className="inline-flex transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
+    <div className="inline-flex transition-transform duration-250 ease-[cubic-bezier(0.34,1.45,0.64,1)] hover:scale-[1.02] active:scale-[0.97]">
       <Link
         href={href}
         className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold",
+        "transition-[transform,box-shadow,background-color,color,border-color] duration-250 ease-[cubic-bezier(0.34,1.45,0.64,1)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2",
           {
-            "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm": variant === "primary",
-            "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)]": variant === "secondary",
+            "bg-[var(--cta)] text-white hover:bg-[var(--cta-hover)] shadow-sm hover:shadow-[0_6px_18px_rgba(124,181,24,0.32)]": variant === "primary",
+            "bg-white text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--brand-50)] hover:shadow-sm": variant === "secondary",
             "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]": variant === "ghost",
           },
           {
@@ -292,9 +294,10 @@ export function Input({
       className={cn(
         "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-body-lg text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
-        "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
+        "transition-[border-color,box-shadow] duration-200",
+        "hover:border-[var(--border-hover)]",
+        "focus:outline-none focus:border-[var(--border-hover)] focus:ring-4 focus:ring-[rgba(45,27,105,0.10)]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "transition-all duration-200",
         className
       )}
       {...props}
@@ -311,9 +314,10 @@ export function Textarea({
       className={cn(
         "flex min-h-[80px] w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-body-lg text-[var(--text-primary)]",
         "placeholder:text-[var(--text-muted)]",
-        "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
+        "transition-[border-color,box-shadow] duration-200",
+        "hover:border-[var(--border-hover)]",
+        "focus:outline-none focus:border-[var(--border-hover)] focus:ring-4 focus:ring-[rgba(45,27,105,0.10)]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "transition-all duration-200",
         className
       )}
       {...props}
@@ -330,9 +334,10 @@ export function Select({
     <select
       className={cn(
         "flex h-11 w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 text-sm text-[var(--text-primary)]",
-        "focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:border-transparent",
+        "transition-[border-color,box-shadow] duration-200",
+        "hover:border-[var(--border-hover)]",
+        "focus:outline-none focus:border-[var(--border-hover)] focus:ring-4 focus:ring-[rgba(45,27,105,0.10)]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "transition-all duration-200",
         className
       )}
       {...props}
