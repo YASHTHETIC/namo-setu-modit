@@ -58,6 +58,34 @@ function normSlug(s: string | null | undefined) {
   return (s ?? "").trim().toLowerCase();
 }
 
+/** Thin gradient bar under the viewport top; fills as the catalog scrolls. */
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement;
+      const max = el.scrollHeight - el.clientHeight;
+      setProgress(max > 8 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  return (
+    <div
+      className={`scroll-progress${progress > 0.004 ? " is-active" : ""}`}
+      style={{ transform: `scaleX(${progress})` }}
+      aria-hidden="true"
+    />
+  );
+}
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -276,6 +304,21 @@ function ProductsContent() {
     return () => io.disconnect();
   }, [hasMoreProducts, isLoadingBatch, showMoreProducts]);
 
+  // Cursor spotlight: ONE delegated listener writes --mx/--my on whichever
+  // .card-spotlight is under the pointer (no per-card listeners).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as HTMLElement | null)?.closest?.(".card-spotlight") as HTMLElement | null;
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -325,6 +368,7 @@ function ProductsContent() {
         minHeight: '100dvh',
       }}
     >
+      <ScrollProgress />
       {/* Breadcrumb — the page's H1 lives here: category name when filtered,
           otherwise "Products" (matches generateMetadata). */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
@@ -1177,14 +1221,14 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <div
-      className="card-lift group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
+      className="card-lift card-spotlight group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
       style={{
         border: '1px solid #DDD6EE',
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
       }}
     >
       {/* Category accent stripe at top */}
-      <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${catColor.accent}, ${catColor.accent}AA, ${catColor.accent}44)` }} />
+      <div className="stripe-shine h-1 w-full" style={{ background: `linear-gradient(90deg, ${catColor.accent}, ${catColor.accent}AA, ${catColor.accent}44)` }} />
 
       {/* Image */}
       <div className="relative h-52 overflow-hidden" style={{ background: catColor.bg }}>
@@ -1320,19 +1364,9 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
 
   return (
     <div
-      className="group flex gap-0 rounded-2xl bg-white overflow-hidden transition-all duration-300 border border-[#DDD6EE]"
+      className="card-lift group flex gap-0 rounded-2xl bg-white overflow-hidden border border-[#DDD6EE]"
       style={{
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(45,27,105,0.12)';
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.borderColor = '#C9B8E8';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 1px 3px rgba(26,10,51,0.04)';
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.borderColor = '#DDD6EE';
       }}
     >
       {/* Left color accent */}

@@ -3640,3 +3640,122 @@ html[data-app-installed="true"] .install-app-cta {
 @media (prefers-reduced-motion: reduce) {
   .gradient-pan { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   EFFECTS SUITE — cursor spotlight, scroll progress, micro-shines
+   All GPU-cheap (opacity/transform/background-position), all reduced-
+   motion guarded, no layout impact.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Cursor-following spotlight on cards. --mx/--my are set by ONE
+   delegated pointermove listener on the grid (product-explorer). */
+.card-spotlight { position: relative; }
+.card-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    230px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(124, 181, 25, 0.12),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity var(--dur-med) var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 30;
+}
+.card-spotlight:hover::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .card-spotlight::after { display: none; }
+}
+
+/* Reading progress bar (products page): fixed under the viewport top,
+   scaleX driven inline by scroll position. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 80;
+  background: linear-gradient(90deg, var(--brand), var(--green), var(--cyan));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  will-change: transform;
+}
+.scroll-progress.is-active { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { transition: none; }
+}
+
+/* Light sweep across the ADD pill on hover (reuses fx-shine-sweep). */
+.btn-add::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-160%) skewX(-20deg);
+  pointer-events: none;
+}
+.btn-add:hover::after,
+.btn-add:focus-visible::after {
+  animation: fx-shine-sweep 0.7s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-add::after { display: none; }
+}
+
+/* Support-chat dock bubble: soft attention pulse. */
+.dock-bubble::before,
+.dock-bubble-docked::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 0 rgba(45, 27, 105, 0.35);
+  animation: dockPulse 2.8s var(--ease-out-expo) infinite;
+  pointer-events: none;
+}
+@keyframes dockPulse {
+  0% { box-shadow: 0 0 0 0 rgba(45, 27, 105, 0.32); }
+  70% { box-shadow: 0 0 0 14px rgba(45, 27, 105, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(45, 27, 105, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dock-bubble::before, .dock-bubble-docked::before { animation: none; }
+}
+
+/* Shimmering gradient text (hero highlight word). */
+.text-shimmer {
+  background-size: 200% auto;
+  animation: textShimmer 4s linear infinite;
+}
+@keyframes textShimmer {
+  to { background-position: -200% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer { animation: none; }
+}
+
+/* Periodic light sweep across the card's category accent stripe. */
+.stripe-shine { position: relative; overflow: hidden; }
+.stripe-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: translateX(-100%) skewX(-20deg);
+  animation: stripeSweep 3.6s var(--ease-out-expo) infinite;
+}
+@keyframes stripeSweep {
+  55%, 100% { transform: translateX(230%) skewX(-20deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stripe-shine::after { display: none; }
+}

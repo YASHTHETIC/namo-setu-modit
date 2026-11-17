@@ -435,7 +435,7 @@ export default function HomeClient() {
                 <span className="text-white/85">FREE OVER ₹5000</span>
               </div>
               <h1 className="text-white text-title-md sm:text-title-lg font-black leading-tight tracking-tight">
-                Site Material, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8CB46] to-white">On Door</span>
+                Site Material, <span className="text-shimmer text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8CB46] to-white">On Door</span>
               </h1>
               <p className="text-white/80 text-caption sm:text-body-sm mt-1.5 leading-snug">
                 Cement, paints, tiles, electricals &amp; more — delivered in 60 minutes to your site
