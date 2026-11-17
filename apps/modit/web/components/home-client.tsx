@@ -42,7 +42,6 @@ import { useIsStandalone } from "@/lib/pwa";
 import { BorderBeam } from "@/components/border-beam";
 import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
-import { CanvaSpotlightBanner } from "@/components/canva-spotlight-banner";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -413,122 +412,35 @@ export default function HomeClient() {
       </div>
 
 
-      {/* ═══ TRUST — active-order ETA banner (real data) + MODIT Assured ═══ */}
+      {/* ═══ TRUST & HERO ═══ */}
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
-      <div className="mt-3 sm:mt-4">
-        {/* MODIT ASSURED BENTO GRID — Linear / Apple Quick-Commerce Pattern */}
-        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#150726] via-[#1E1245] to-[#2D1B69] border border-white/10 p-3 sm:p-5 max-w-[1200px] mx-auto shadow-2xl">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="h-6 w-6 rounded-lg bg-[#7CB518]/20 border border-[#7CB518]/40 flex items-center justify-center">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#7CB518]" />
-              </span>
-              <p className="text-caption sm:text-body-sm font-black text-white tracking-wide">
-                MODIT ASSURED <span className="text-white/40 font-mono text-tiny">· 2027 SPEC</span>
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-tiny font-mono text-white/70">
-              <span className="h-2 w-2 rounded-full bg-[#7CB518] animate-pulse" />
-              <span>LIVE SATELLITE DISPATCH</span>
-            </div>
-          </div>
 
-          {/* 4-Cell Bento Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-            {/* Bento Card 1: 60-Min Express */}
-            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#7CB518]/60 hover:bg-white/[0.08] transition-all duration-300 group">
-              <div className="flex items-center justify-between gap-1 mb-2">
-                <span className="h-8 w-8 rounded-lg bg-[#7CB518]/20 border border-[#7CB518]/40 flex items-center justify-center text-[#7CB518]">
-                  <Truck className="h-4 w-4" />
-                </span>
-                <span className="rounded-full bg-[#7CB518]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#7CB518] border border-[#7CB518]/30">
-                  <NumberTicker value={60} /> MIN
-                </span>
-              </div>
-              <div>
-                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">60-Min Site Drop</h4>
-                <p className="text-tiny text-white/60 leading-snug mt-0.5">GPS-tracked express drop straight to your foundation.</p>
-              </div>
-            </div>
-
-            {/* Bento Card 2: 100% Genuine Brands */}
-            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#F8CB46]/60 hover:bg-white/[0.08] transition-all duration-300 group">
-              <div className="flex items-center justify-between gap-1 mb-2">
-                <span className="h-8 w-8 rounded-lg bg-[#F8CB46]/20 border border-[#F8CB46]/40 flex items-center justify-center text-[#F8CB46]">
-                  <BadgeCheck className="h-4 w-4" />
-                </span>
-                <span className="rounded-full bg-[#F8CB46]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#F8CB46] border border-[#F8CB46]/30">
-                  <NumberTicker value={1120} />+ SKUs
-                </span>
-              </div>
-              <div>
-                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">Genuine Brands</h4>
-                <p className="text-tiny text-white/60 leading-snug mt-0.5">Direct from authorized mill depots: UltraTech, Asian Paints &amp; more.</p>
-              </div>
-            </div>
-
-            {/* Bento Card 3: GST Invoice & Bulk Credit */}
-            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#E91E63]/60 hover:bg-white/[0.08] transition-all duration-300 group">
-              <div className="flex items-center justify-between gap-1 mb-2">
-                <span className="h-8 w-8 rounded-lg bg-[#E91E63]/20 border border-[#E91E63]/40 flex items-center justify-center text-[#E91E63]">
-                  <ReceiptIndianRupee className="h-4 w-4" />
-                </span>
-                <span className="rounded-full bg-[#E91E63]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#E91E63] border border-[#E91E63]/30">
-                  TAX CREDIT
-                </span>
-              </div>
-              <div>
-                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">GST Invoice</h4>
-                <p className="text-tiny text-white/60 leading-snug mt-0.5">Instant B2B input tax credit download with every single dispatch.</p>
-              </div>
-            </div>
-
-            {/* Bento Card 4: 7-Day Easy Returns */}
-            <div className="relative rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 p-3 flex flex-col justify-between hover:border-[#00BCD4]/60 hover:bg-white/[0.08] transition-all duration-300 group">
-              <div className="flex items-center justify-between gap-1 mb-2">
-                <span className="h-8 w-8 rounded-lg bg-[#00BCD4]/20 border border-[#00BCD4]/40 flex items-center justify-center text-[#00BCD4]">
-                  <Undo2 className="h-4 w-4" />
-                </span>
-                <span className="rounded-full bg-[#00BCD4]/15 px-2 py-0.5 text-tiny font-mono font-bold text-[#00BCD4] border border-[#00BCD4]/30">
-                  7 DAYS
-                </span>
-              </div>
-              <div>
-                <h4 className="text-caption sm:text-body-sm font-extrabold text-white leading-tight">7-Day Site Returns</h4>
-                <p className="text-tiny text-white/60 leading-snug mt-0.5">Hassle-free reverse logistics pickup for unopened site materials.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ═══ HERO BANNER — Blinkit photo-hero architecture, MODIT futuristic edition ═══ */}
+      {/* ═══ HERO BANNER — Clean, Global Standard ═══ */}
       <Reveal>
         <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)" }}>
           {/* Magic UI Border Beam — Traveling Laser Glow */}
           <BorderBeam duration={10} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={1.5} />
-          {/* Ambient Futuristic Lighting FX */}
+          {/* Ambient Lighting FX */}
           <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-[#7CB518]/20 blur-3xl animate-pulse" />
           <div className="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-[#00BCD4]/25 blur-3xl" />
           <div className="pointer-events-none absolute top-1/2 left-1/3 h-40 w-40 -translate-y-1/2 rounded-full bg-[#F8CB46]/15 blur-2xl" />
 
-          <div className="relative z-10 p-3.5 sm:p-6 flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 text-tiny font-bold text-white mb-2 shadow-xs">
+          <div className="relative z-10 p-4 sm:p-7 flex items-center justify-between gap-3">
+            <div className="min-w-0 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 text-tiny font-bold text-white mb-2.5 shadow-xs">
                 <span className="h-2 w-2 rounded-full bg-[#7CB518] animate-ping" />
-                <span className="text-[#F8CB46] font-black tracking-wide">60-MIN SITE DROP</span>
+                <span className="text-[#F8CB46] font-black tracking-wide">60-MIN SITE DELIVERY</span>
                 <span className="text-white/40">·</span>
-                <span className="text-white/85">FREE DELIVERY ₹5000+</span>
+                <span className="text-white/85">FREE OVER ₹5000</span>
               </div>
               <h1 className="text-white text-title-md sm:text-title-lg font-black leading-tight tracking-tight">
                 Site Material, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8CB46] to-white">On Door</span>
               </h1>
-              <p className="text-white/75 text-tiny sm:text-body-sm mt-1 leading-snug">
-                Cement, paints, lights &amp; more — delivered in single-digit minutes
+              <p className="text-white/80 text-caption sm:text-body-sm mt-1.5 leading-snug">
+                Cement, paints, tiles, electricals &amp; more — delivered in 60 minutes to your site
               </p>
-              <Link href="/products" className="mt-3 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-4.5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)]">
+              <Link href="/products" className="mt-3.5 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)] cursor-pointer">
                 Shop Now
                 <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -550,6 +462,49 @@ export default function HomeClient() {
           </div>
         </div>
       </Reveal>
+
+      {/* ═══ GLOBAL TRUST STRIP — Clean, Professional, Minimal ═══ */}
+      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#7CB518] transition-colors">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#7CB518]/15 text-[#7CB518]">
+            <Truck className="h-4.5 w-4.5" />
+          </span>
+          <div className="min-w-0">
+            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">60-Min Site Drop</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate">Express GPS doorstep delivery</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#F8CB46] transition-colors">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F8CB46]/20 text-[#B45309]">
+            <BadgeCheck className="h-4.5 w-4.5" />
+          </span>
+          <div className="min-w-0">
+            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">100% Genuine Brands</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate">Direct authorized mill depots</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#E91E63] transition-colors">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#E91E63]/15 text-[#E91E63]">
+            <ReceiptIndianRupee className="h-4.5 w-4.5" />
+          </span>
+          <div className="min-w-0">
+            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">GST Tax Invoice</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate">Instant B2B credit download</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#00BCD4] transition-colors">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#00BCD4]/15 text-[#0097A7]">
+            <Undo2 className="h-4.5 w-4.5" />
+          </span>
+          <div className="min-w-0">
+            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">7-Day Site Returns</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate">Hassle-free unopened pickup</p>
+          </div>
+        </div>
+      </div>
 
       {/* ═══ PROMO CARDS — Blinkit solid-color row, Materials on Door edition ═══ */}
       <div className="section-header !pb-1">
@@ -654,11 +609,6 @@ export default function HomeClient() {
 
       {/* ═══ FLASH DEALS ═══ */}
       <FlashDeals />
-
-      {/* ═══ CANVA 3D DESIGN STUDIO SPOTLIGHT ═══ */}
-      <Reveal>
-        <CanvaSpotlightBanner />
-      </Reveal>
 
       {/* ═══ AI PROJECT KITS (Blinkit Recipe-to-Cart for Materials on Door) ═══ */}
       <Reveal>

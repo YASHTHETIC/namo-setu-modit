@@ -138,24 +138,20 @@ export function AiProjectKitsSection() {
   };
 
   return (
-    <section aria-label="AI Project Kits" className="w-full pt-4 pb-2 sm:pt-6 sm:pb-4">
+    <section aria-label="Site Project Kits" className="w-full pt-4 pb-2 sm:pt-6 sm:pb-4">
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
-        {/* Section Header with Blinkit-style AI Badge */}
+        {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 pb-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#2D1B69] px-2.5 py-0.5 text-micro font-black text-[#F8CB46] shadow-xs mb-1">
-              <Sparkles className="h-3 w-3 text-[#F8CB46] animate-pulse" />
-              <span>AI PROJECT KITS · 1-CLICK SITE BUNDLES</span>
-            </div>
             <h2 className="text-body-lg sm:text-title-md font-extrabold text-[#150726] tracking-tight">
-              Build & Fix Recipes for Your Site
+              Site Project Kits
             </h2>
             <p className="text-caption text-[#9B8CB5] mt-0.5">
-              Complete pre-calculated material bundles — never miss primer, grout, or blades.
+              Complete pre-calculated material bundles — delivered in 60 minutes to your site.
             </p>
           </div>
 
-          {/* Quick AI Prompt Filter Chips */}
+          {/* Quick Category Filter Chips */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1">
             <button
               type="button"
@@ -188,35 +184,7 @@ export function AiProjectKitsSection() {
           </div>
         </div>
 
-        {/* AI Intent Search Input */}
-        <div className="relative mb-4">
-          <label htmlFor={searchInputId} className="sr-only">
-            Describe your project or repair needs
-          </label>
-          <div className="relative flex items-center rounded-2xl border border-[#DDD6EE] bg-white shadow-xs px-3.5 py-2.5 focus-within:border-[#2D1B69] focus-within:ring-2 focus-within:ring-[#2D1B69]/10">
-            <Sparkles className="h-4 w-4 text-[#7CB518] flex-shrink-0 mr-2.5" />
-            <input
-              id={searchInputId}
-              type="text"
-              value={activeQuery}
-              onChange={(e) => setActiveQuery(e.target.value)}
-              placeholder="Describe your project (e.g. 'waterproofing', 'paint 1 bedroom', 'false ceiling lights')..."
-              className="w-full bg-transparent text-caption sm:text-body-sm font-semibold text-[#150726] placeholder:text-[#9B8CB5] focus:outline-none"
-            />
-            {activeQuery && (
-              <button
-                type="button"
-                onClick={() => setActiveQuery("")}
-                aria-label="Clear project query"
-                className="p-1 text-[#9B8CB5] hover:text-[#150726]"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Kits Grid / Horizontal Rail */}
+        {/* Kits Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {visibleKits.map((kit) => {
             const Icon = ICON_MAP[kit.iconName] ?? Sparkles;
@@ -227,15 +195,6 @@ export function AiProjectKitsSection() {
                 key={kit.id}
                 className="group relative flex flex-col rounded-2xl border border-[#DDD6EE] bg-white p-4 shadow-[0_2px_8px_rgba(26,10,51,0.04)] transition-all duration-300 hover:border-[#2D1B69] hover:shadow-[0_16px_36px_-12px_rgba(45,27,105,0.18)] hover:-translate-y-1 overflow-hidden"
               >
-                {/* Magic UI Border Beam on Featured Kit */}
-                {kit.id === "kit-room-paint" && (
-                  <BorderBeam duration={9} colorFrom={kit.accentColor} colorTo="#2D1B69" borderWidth={1.5} />
-                )}
-                {/* Futuristic Top Glowing Accent Line */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ background: `linear-gradient(90deg, ${kit.accentColor}, #2D1B69)` }}
-                />
                 {/* Header Row */}
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
@@ -259,43 +218,38 @@ export function AiProjectKitsSection() {
                   </span>
                 </div>
 
-                <p className="text-micro text-[#6B5B83] line-clamp-2 mb-3">
-                  {kit.description}
-                </p>
-
-                {/* Items Preview strip (Images of all items in bundle) */}
-                <div className="rounded-xl bg-[#F7F4FC] p-2 mb-3">
-                  <div className="flex items-center justify-between text-micro font-bold text-[#2D1B69] mb-1.5">
-                    <span>Includes {resolved.resolvedItems.length} verified items:</span>
-                    <span className="text-[#7CB518] flex items-center gap-1">
-                      <Clock className="h-3 w-3" /> 60m delivery
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5">
+                {/* Items Visual Stack */}
+                <div className="my-2.5 flex items-center justify-between rounded-xl bg-[#F7F4FC] px-3 py-2">
+                  <div className="flex items-center -space-x-2 overflow-hidden py-0.5">
                     {resolved.resolvedItems.map((item) => (
                       <div
                         key={item.product.id}
-                        className="relative h-11 w-11 flex-shrink-0 rounded-lg bg-white border border-[#DDD6EE] p-1 shadow-2xs group-hover:border-[#2D1B69]/30"
-                        title={`${item.product.name} (${item.role})`}
+                        className="relative h-9 w-9 rounded-full bg-white border border-[#DDD6EE] p-1 shadow-2xs shrink-0"
+                        title={`${item.product.name} (${item.quantity}×)`}
                       >
                         {item.product.images?.[0] ? (
                           <Image
                             src={item.product.images[0]}
                             alt={item.product.name}
                             fill
-                            sizes="44px"
+                            sizes="36px"
                             className="object-contain p-0.5"
                           />
                         ) : (
-                          <div className="h-full w-full flex items-center justify-center bg-[#F0ECF9] rounded text-micro text-[#2D1B69]">
+                          <div className="h-full w-full flex items-center justify-center bg-[#F0ECF9] rounded-full text-micro text-[#2D1B69]">
                             {item.quantity}×
                           </div>
                         )}
-                        <span className="absolute -bottom-1 -right-1 rounded-full bg-[#150726] px-1 text-tiny font-black text-white scale-75">
-                          {item.quantity}×
-                        </span>
                       </div>
                     ))}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-micro font-extrabold text-[#2D1B69] block">
+                      {resolved.resolvedItems.length} Verified Items
+                    </span>
+                    <span className="text-micro text-[#7CB518] font-bold flex items-center justify-end gap-1">
+                      <Clock className="h-2.5 w-2.5" /> 60m delivery
+                    </span>
                   </div>
                 </div>
 
