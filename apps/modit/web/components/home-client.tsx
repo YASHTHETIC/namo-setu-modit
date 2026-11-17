@@ -42,6 +42,7 @@ import { useIsStandalone } from "@/lib/pwa";
 import { BorderBeam } from "@/components/border-beam";
 import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
+import { Magnetic } from "@/components/magnetic";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -440,10 +441,12 @@ export default function HomeClient() {
               <p className="text-white/80 text-caption sm:text-body-sm mt-1.5 leading-snug">
                 Cement, paints, tiles, electricals &amp; more — delivered in 60 minutes to your site
               </p>
-              <Link href="/products" className="mt-3.5 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)] cursor-pointer">
-                Shop Now
-                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              <Magnetic strength={7}>
+                <Link href="/products" className="mt-3.5 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)] cursor-pointer">
+                  Shop Now
+                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Magnetic>
             </div>
             <div className="flex sm:items-center gap-2 flex-shrink-0 pr-0.5">
               <Parallax strength={12} className="flex-shrink-0">

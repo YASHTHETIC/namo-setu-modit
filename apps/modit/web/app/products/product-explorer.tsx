@@ -36,6 +36,10 @@ import { useProducts, useCategories, type Product } from "@/lib/api-hooks";
 import { useSubCategories } from "@/lib/modit-api";
 import { useDisplayProducts } from "@/lib/pricing";
 import { useIsStandalone } from "@/lib/pwa";
+import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
+import { useLongPress } from "@/lib/use-long-press";
+import { haptic } from "@/lib/haptics";
+import { PullRefreshIndicator } from "@/components/pull-refresh-indicator";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -112,7 +116,7 @@ function ProductsContent() {
   // counts and the grid can never disagree (two queries could resolve at
   // different times / different data and show 0s next to live results).
   // 499 rows ≈ 50KB — trivial for one cached query.
-  const { data: apiProducts = [], didYouMean } = useProducts({
+  const { data: apiProducts = [], didYouMean, refetch } = useProducts({
     search: search || undefined,
     page_size: 2000,
   });
@@ -319,6 +323,11 @@ function ProductsContent() {
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
 
+  // Native-app pull-to-refresh (coarse pointers only): reload the catalog
+  // from the top edge. The hook self-gates on pointer type, so desktop is
+  // untouched.
+  const { pull, refreshing } = usePullToRefresh(() => refetch());
+
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -369,6 +378,7 @@ function ProductsContent() {
       }}
     >
       <ScrollProgress />
+      <PullRefreshIndicator pull={pull} refreshing={refreshing} />
       {/* Breadcrumb — the page's H1 lives here: category name when filtered,
           otherwise "Products" (matches generateMetadata). */}
       <div className="mb-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
@@ -1206,6 +1216,16 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const savingsPercent = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
   const optLabel = optionsLabel(product);
 
+  // Long-press (touch/pen only) wishlists the product with a heart burst —
+  // the hidden gesture power users expect from native apps.
+  const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
+  const [burst, setBurst] = useState(0);
+  const longPress = useLongPress(() => {
+    haptic(wishlisted ? "light" : "success");
+    toggleWishlist();
+    setBurst((b) => b + 1);
+  });
+
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -1221,12 +1241,18 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <div
+      {...longPress}
       className="card-lift card-spotlight group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
       style={{
         border: '1px solid #DDD6EE',
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
       }}
     >
+      {burst > 0 && (
+        <span key={burst} className="heart-burst" onAnimationEnd={() => setBurst(0)} aria-hidden="true">
+          <Heart className="h-10 w-10" fill="currentColor" strokeWidth={0} />
+        </span>
+      )}
       {/* Category accent stripe at top */}
       <div className="stripe-shine h-1 w-full" style={{ background: `linear-gradient(90deg, ${catColor.accent}, ${catColor.accent}AA, ${catColor.accent}44)` }} />
 

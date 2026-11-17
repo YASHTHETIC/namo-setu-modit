@@ -4,8 +4,10 @@ import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Check, ShoppingCart, Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, useDragControls } from "motion/react";
 import { useCartStore } from "@/lib/cart-store";
 import { useModalBehavior } from "@/lib/use-modal-behavior";
+import { haptic } from "@/lib/haptics";
 import type { DisplayProduct } from "@/lib/pricing";
 
 interface VariantOptionsModalProps {
@@ -42,6 +44,26 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
   }, []);
 
   useModalBehavior(open, onClose);
+
+  // Drag-to-dismiss the mobile bottom sheet: grab the handle (or header)
+  // and pull down past 110px / with a fast flick. Desktop keeps tap-to-close.
+  const dragControls = useDragControls();
+  const [dragEnabled, setDragEnabled] = useState(false);
+  useEffect(() => {
+    if (!open) {
+      setDragEnabled(false);
+      return;
+    }
+    try {
+      const mq = window.matchMedia("(max-width: 639px), (pointer: coarse)");
+      const update = () => setDragEnabled(mq.matches);
+      update();
+      mq.addEventListener?.("change", update);
+      return () => mq.removeEventListener?.("change", update);
+    } catch {
+      return undefined;
+    }
+  }, [open]);
 
   const variants = useMemo(() => product.variants ?? [], [product]);
   const shades = useMemo(() => product.shades ?? [], [product]);
@@ -101,12 +123,38 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
         onClose();
       }}
     >
-      <div
+      <motion.div
         className="w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-3xl shadow-2xl max-h-[88dvh] overflow-hidden flex flex-col animate-slide-in-up"
         onClick={(e) => e.stopPropagation()}
+        drag={dragEnabled ? "y" : false}
+        dragListener={false}
+        dragControls={dragControls}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0.45, bottom: 0 }}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 110 || info.velocity.y > 500) {
+            haptic("light");
+            onClose();
+          }
+        }}
       >
+        {/* Drag-to-dismiss handle (mobile bottom sheet) */}
+        <div
+          onPointerDown={(e) => {
+            if (dragEnabled) dragControls.start(e);
+          }}
+          className="flex-shrink-0 cursor-grab touch-none pt-2.5 pb-1 sm:hidden"
+        >
+          <div className="mx-auto h-1.5 w-11 rounded-full bg-[#DDD6EE]" />
+        </div>
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10 flex-shrink-0">
+        <div
+          onPointerDown={(e) => {
+            if (dragEnabled && !(e.target as HTMLElement).closest?.("button")) dragControls.start(e);
+          }}
+          className="sticky top-0 bg-white border-b border-[#F0ECF9] px-5 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl z-10 flex-shrink-0"
+        >
           <div className="min-w-0 pr-3">
             <h3 className="text-body-md font-bold text-[#150726] leading-snug truncate">{product.name}</h3>
             {shades.length > 0 && (
@@ -311,7 +359,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
             Close
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>,
     document.body
   );

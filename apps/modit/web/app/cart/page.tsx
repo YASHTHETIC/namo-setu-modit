@@ -27,6 +27,7 @@ import { resolveProduct, isPaintProduct, type DisplayProduct } from "@/lib/prici
 import { formatINR, productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { VariantOptionsModal } from "@/components/variant-options-modal";
+import { SwipeRow } from "@/components/swipe-row";
 
 export default function CartPage() {
   const [fixShadeProduct, setFixShadeProduct] = useState<DisplayProduct | null>(null);
@@ -167,6 +168,11 @@ export default function CartPage() {
                   : 0;
               return (
                 <Reveal key={`${item.product.id}:${item.variantId || "default"}:${item.shade || "default"}`} delay={Math.min(idx * 60, 300)}>
+                <SwipeRow
+                  onSave={() => saveForLater(item.product.id)}
+                  onRemove={() => removeItem(item.product.id, item.variantId, item.shade)}
+                  className="rounded-2xl"
+                >
                 <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
                   {/* Image */}
                   <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
@@ -288,6 +294,7 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
+                </SwipeRow>
                 </Reveal>
               );
             })}
