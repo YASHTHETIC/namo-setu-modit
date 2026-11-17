@@ -402,12 +402,12 @@ export default function HomeClient() {
             <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-white font-black italic leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md" style={{ transform: "skewX(-6deg)" }}>FREE DELIVERY</p>
-            <p className="text-tiny sm:text-body-sm font-bold text-white/85 mt-1 leading-tight">On orders ₹5000+</p>
+            <p className="text-white font-black leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md">FREE SITE DELIVERY</p>
+            <p className="text-tiny sm:text-body-sm font-bold text-white/85 mt-1 leading-tight">On all orders ₹5,000+ across all categories</p>
           </div>
           <span className="hidden sm:block h-7 w-px bg-white/25 flex-shrink-0" />
-          <p className="hidden sm:block text-tiny text-white/70 leading-tight flex-shrink-0">Fast, tracked, doorstep</p>
-          <span className="flex-shrink-0 rounded-md bg-white px-2.5 py-1 text-tiny font-black text-[#E91E63] shadow-sm">Valid</span>
+          <p className="hidden sm:block text-tiny text-white/70 leading-tight flex-shrink-0">Fast · Tracked · Doorstep</p>
+          <span className="flex-shrink-0 rounded-full bg-white px-3 py-1 text-tiny font-black text-[#E91E63] shadow-xs">AUTO-APPLIED</span>
         </div>
       </div>
 
