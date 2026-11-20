@@ -247,3 +247,88 @@ export function Parallax({
     </div>
   );
 }
+
+/**
+ * 2028 Interactive Spotlight Glow Card.
+ * Tracks pointer movement to render a soft radial ambient spotlight behind content.
+ */
+export function GlowSpotlight({
+  children,
+  className = "",
+  glowColor = "rgba(124, 181, 24, 0.15)",
+  size = 350,
+}: {
+  children: ReactNode;
+  className?: string;
+  glowColor?: string;
+  size?: number;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setPosition(null);
+      }}
+      className={`relative overflow-hidden ${className}`}
+    >
+      {isHovered && position && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-px transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(${size}px circle at ${position.x}px ${position.y}px, ${glowColor}, transparent 70%)`,
+          }}
+        />
+      )}
+      {children}
+    </div>
+  );
+}
+
+/**
+ * 2028 Cyber Status Badge with animated neon pulse dot.
+ */
+export function CyberBadge({
+  label,
+  variant = "green",
+  className = "",
+}: {
+  label: string;
+  variant?: "green" | "cyan" | "pink" | "gold";
+  className?: string;
+}) {
+  const styles = {
+    green: "bg-[#7CB518]/10 text-[#7CB518] border-[#7CB518]/30 shadow-[0_0_12px_rgba(124,181,24,0.25)]",
+    cyan: "bg-[#00BCD4]/10 text-[#00BCD4] border-[#00BCD4]/30 shadow-[0_0_12px_rgba(0,188,212,0.25)]",
+    pink: "bg-[#E91E63]/10 text-[#E91E63] border-[#E91E63]/30 shadow-[0_0_12px_rgba(233,30,99,0.25)]",
+    gold: "bg-[#F8CB46]/10 text-[#F8CB46] border-[#F8CB46]/30 shadow-[0_0_12px_rgba(248,203,70,0.25)]",
+  };
+  const dotStyles = {
+    green: "bg-[#7CB518]",
+    cyan: "bg-[#00BCD4]",
+    pink: "bg-[#E91E63]",
+    gold: "bg-[#F8CB46]",
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-tiny font-black tracking-wide uppercase ${styles[variant]} ${className}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full animate-ping ${dotStyles[variant]}`} />
+      {label}
+    </span>
+  );
+}

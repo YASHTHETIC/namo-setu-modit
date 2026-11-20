@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Calculator, Paintbrush, Layers, Grid3X3, Zap, Truck, ShoppingCart, CheckCircle2, Ruler, Box } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calculator, Paintbrush, Layers, Grid3X3, Zap, Truck, ShoppingCart, CheckCircle2, Ruler, Box, Sparkles } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { productLink } from "@/lib/utils";
 import { products } from "@/lib/product-data";
@@ -30,10 +30,10 @@ interface Reco {
 }
 
 const inputCls =
-  "mt-1 w-full h-10 rounded-xl border-2 border-[#DDD6EE] px-3 text-body-md font-semibold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10";
-const labelCls = "text-micro font-semibold text-[#9B8CB5] uppercase";
-const cardCls = "rounded-2xl border border-[#DDD6EE] bg-white p-5";
-const headCls = "text-body-sm font-bold text-[#150726] mb-3";
+  "mt-1.5 w-full h-11 rounded-xl border border-[#DDD6EE] bg-white px-3.5 text-body-md font-bold text-[#150726] focus:outline-none focus:border-[#2D1B69] focus:ring-2 focus:ring-[#2D1B69]/10 transition-all";
+const labelCls = "text-micro font-bold text-[#9B8CB5] uppercase tracking-wider";
+const cardCls = "card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs transition-all hover:border-[#2D1B69]/30";
+const headCls = "text-body-sm font-extrabold text-[#150726] mb-3";
 
 export default function CalculatorPage() {
   const addItem = useCartStore((s) => s.addItem);
@@ -133,38 +133,42 @@ export default function CalculatorPage() {
 
   return (
     <div className="fx-page min-h-screen bg-[#F8F6FC]">
-      {/* Header */}
-      <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2D1B69 0%, #150726 60%, #150726 100%)" }}>
-        <div className="absolute inset-0 opacity-10" style={{ background: "radial-gradient(circle at 80% 20%, rgba(124,181,24,0.5), transparent 50%)" }} />
-        <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-4 pb-6 sm:px-6">
+      {/* 2028 Futuristic Header */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#0b0318] via-[#150726] to-[#2D1B69] border-b border-white/10 shadow-cyber-purple">
+        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#7CB518] via-[#00BCD4] to-transparent pointer-events-none" />
+        <div className="relative z-10 max-w-[800px] mx-auto px-4 pt-5 pb-6 sm:px-6">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/products" aria-label="Back to products" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <div>
-              <h1 className="text-title-md font-extrabold text-white flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-[#7CB518]" /> Material Calculator
+            <div className="flex-1 min-w-0">
+              <h1 className="text-title-md font-black text-white flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-[#00BCD4]" />
+                <span>2028 Material Estimator</span>
+                <span className="text-tiny font-bold text-[#7CB518] bg-[#7CB518]/20 px-2 py-0.5 rounded-full border border-[#7CB518]/30">
+                  Precision AI
+                </span>
               </h1>
-              <p className="text-caption text-white/50">Paint, tiles, concrete & steel estimates</p>
+              <p className="text-caption text-white/70 mt-0.5">Automated material quantity calculation with instant order cart linkage</p>
             </div>
             {cartCount > 0 && (
-              <Link href="/cart" className="ml-auto relative rounded-xl bg-white/10 p-2.5 text-white hover:bg-white/15 transition-colors">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-[#7CB518] text-tiny font-bold text-white flex items-center justify-center">
+              <Link href="/cart" className="ml-auto relative rounded-xl bg-white/10 p-2.5 text-white hover:bg-white/20 transition-all border border-white/15 shadow-xs">
+                <ShoppingCart className="h-5 w-5 text-[#00BCD4]" />
+                <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-[#7CB518] text-tiny font-bold text-white flex items-center justify-center shadow-xs">
                   {cartCount}
                 </span>
               </Link>
             )}
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pt-1">
             {tabs.map((t) => (
               <button
                 key={t.id}
                 onClick={() => { setTab(t.id); setAddedItems([]); }}
-                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-caption font-bold border-2 transition-all flex-shrink-0 ${
+                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-caption font-extrabold border transition-all flex-shrink-0 cursor-pointer ${
                   tab === t.id
-                    ? "border-[#7CB518] bg-[#7CB518] text-white"
-                    : "border-white/15 text-white/60 hover:border-white/30 hover:text-white"
+                    ? "border-[#7CB518] bg-[#7CB518] text-white shadow-cyber-green"
+                    : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
                 }`}
               >
                 {t.icon} {t.label}
@@ -174,20 +178,20 @@ export default function CalculatorPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[800px] px-4 py-4 space-y-4 sm:px-6">
+      <div className="mx-auto max-w-[800px] px-4 py-6 space-y-4 sm:px-6">
         {tab === "paint" && (
           <>
             {/* Room Type */}
             <div className={cardCls}>
-              <h3 className={headCls}>Room Type</h3>
+              <h3 className={headCls}>Room Type Preset</h3>
               <div className="flex flex-wrap gap-2">
                 {(Object.keys(roomPresets) as RoomType[]).map((type) => (
                   <button
                     key={type}
                     onClick={() => { setRoomType(type); setArea(roomPresets[type].defaultArea); setHeight(roomPresets[type].defaultHeight); }}
-                    className={`rounded-xl px-4 py-2 text-caption font-semibold border-2 transition-all ${
+                    className={`rounded-xl px-4 py-2 text-caption font-bold border-2 transition-all cursor-pointer ${
                       roomType === type
-                        ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69]"
+                        ? "border-[#2D1B69] bg-[#F0ECF9] text-[#2D1B69] shadow-xs"
                         : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
                     }`}
                   >
@@ -225,7 +229,7 @@ export default function CalculatorPage() {
               <div className="mt-4 flex items-center gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={wallOnly} onChange={(e) => setWallOnly(e.target.checked)} className="h-4 w-4 rounded border-[#DDD6EE] text-[#2D1B69] focus:ring-[#2D1B69]" />
-                  <span className="text-caption font-medium text-[#150726]">Wall only (skip ceiling)</span>
+                  <span className="text-caption font-semibold text-[#150726]">Wall only (skip ceiling calculation)</span>
                 </label>
               </div>
             </div>
@@ -238,9 +242,9 @@ export default function CalculatorPage() {
                   <button
                     key={c}
                     onClick={() => setCoats(c)}
-                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                    className={`flex-1 h-11 rounded-xl text-body-sm font-extrabold border-2 transition-all cursor-pointer ${
                       coats === c
-                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white shadow-xs"
                         : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
                     }`}
                   >
@@ -251,9 +255,9 @@ export default function CalculatorPage() {
             </div>
 
             {/* Results */}
-            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+            <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
+              <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -262,16 +266,16 @@ export default function CalculatorPage() {
                   { label: "Primer Needed", value: `${paint.primerLitres}L`, icon: <Layers className="h-4 w-4 text-[#00BCD4]" /> },
                   { label: "Wall Putty", value: `${paint.puttyKg} kg`, icon: <Layers className="h-4 w-4 text-[#FF9800]" /> },
                 ].map(({ label, value, icon }) => (
-                  <div key={label} className="flex items-center gap-2 rounded-xl bg-white p-3 border border-[#7CB518]/10">
-                    {icon}
+                  <div key={label} className="flex items-center gap-2.5 rounded-2xl bg-white p-3.5 border border-[#7CB518]/20 shadow-xs">
+                    <div className="p-2 rounded-xl bg-[#F0ECF9]">{icon}</div>
                     <div>
-                      <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
-                      <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                      <p className="text-tiny text-[#9B8CB5] font-bold uppercase">{label}</p>
+                      <p className="text-body-md font-black text-[#150726]">{value}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 120 sq ft coverage per litre per coat, 0.3 kg putty per sq ft.</p>
+              <p className="mt-3.5 text-tiny text-[#9B8CB5] font-medium">Standard 120 sq ft coverage per litre per coat, 0.3 kg putty per sq ft.</p>
             </div>
           </>
         )}
@@ -279,7 +283,7 @@ export default function CalculatorPage() {
         {tab === "tiles" && (
           <>
             <div className={cardCls}>
-              <h3 className={headCls}>Floor Area & Tile Size</h3>
+              <h3 className={headCls}>Floor Area &amp; Tile Size</h3>
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label htmlFor="calc-tile-area" className={labelCls}>Area (sq ft)</label>
@@ -294,15 +298,15 @@ export default function CalculatorPage() {
                   <input id="calc-tile-wid" type="number" value={tileWid} onChange={(e) => setTileWid(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
               </div>
-              <h3 className={`${headCls} mt-4`}>Wastage (cuts & breakage)</h3>
+              <h3 className={`${headCls} mt-4`}>Wastage (Cuts &amp; Breakage)</h3>
               <div className="flex gap-2">
                 {[5, 10, 15].map((w) => (
                   <button
                     key={w}
                     onClick={() => setWastage(w)}
-                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                    className={`flex-1 h-11 rounded-xl text-body-sm font-extrabold border-2 transition-all cursor-pointer ${
                       wastage === w
-                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white shadow-xs"
                         : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
                     }`}
                   >
@@ -312,23 +316,23 @@ export default function CalculatorPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+            <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
+              <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Tiles", value: `${tiles.tileCount}` },
+                  { label: "Tiles Needed", value: `${tiles.tileCount} pcs` },
                   { label: "Adhesive", value: `${tiles.adhesiveBags} bags` },
                   { label: "Grout", value: `${tiles.groutKg} kg` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10 text-center">
-                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
-                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  <div key={label} className="rounded-2xl bg-white p-3.5 border border-[#7CB518]/20 text-center shadow-xs">
+                    <p className="text-tiny text-[#9B8CB5] font-bold uppercase">{label}</p>
+                    <p className="text-body-md font-black text-[#150726] mt-0.5">{value}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes 20 kg adhesive bag covers ~55 sq ft, 1 kg grout per ~100 sq ft, rounded up to whole packs.</p>
+              <p className="mt-3.5 text-tiny text-[#9B8CB5] font-medium">Assumes 20 kg adhesive bag covers ~55 sq ft, 1 kg grout per ~100 sq ft.</p>
             </div>
           </>
         )}
@@ -347,19 +351,19 @@ export default function CalculatorPage() {
                   <input id="calc-slab-wid" type="number" value={slabW} onChange={(e) => setSlabW(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
                 <div>
-                  <label htmlFor="calc-slab-thick" className={labelCls}>Thick (inch)</label>
+                  <label htmlFor="calc-slab-thick" className={labelCls}>Thickness (in)</label>
                   <input id="calc-slab-thick" type="number" value={slabT} onChange={(e) => setSlabT(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                 </div>
               </div>
-              <h3 className={`${headCls} mt-4`}>Grade (cement : sand : aggregate)</h3>
+              <h3 className={`${headCls} mt-4`}>Concrete Mix Grade</h3>
               <div className="flex gap-2">
                 {(["M15", "M20", "M25"] as ConcreteGrade[]).map((g) => (
                   <button
                     key={g}
                     onClick={() => setGrade(g)}
-                    className={`flex-1 h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                    className={`flex-1 h-11 rounded-xl text-body-sm font-extrabold border-2 transition-all cursor-pointer ${
                       grade === g
-                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white shadow-xs"
                         : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
                     }`}
                   >
@@ -369,9 +373,9 @@ export default function CalculatorPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+            <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
+              <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -380,13 +384,13 @@ export default function CalculatorPage() {
                   { label: "Aggregate", value: `${concrete.aggCuft} cu ft (${concrete.aggBrass} brass)` },
                   { label: "Wet Volume", value: `${concrete.wetVolumeCuft} cu ft` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10">
-                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
-                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  <div key={label} className="rounded-2xl bg-white p-3.5 border border-[#7CB518]/20 shadow-xs">
+                    <p className="text-tiny text-[#9B8CB5] font-bold uppercase">{label}</p>
+                    <p className="text-body-md font-black text-[#150726] mt-0.5">{value}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes dry-volume factor 1.52, cement 1440 kg/m³, 1 brass = 100 cu ft. Sand/aggregate sold separately.</p>
+              <p className="mt-3.5 text-tiny text-[#9B8CB5] font-medium">Assumes dry-volume factor 1.52, cement 1440 kg/m³, 1 brass = 100 cu ft.</p>
             </div>
           </>
         )}
@@ -400,9 +404,9 @@ export default function CalculatorPage() {
                   <button
                     key={d}
                     onClick={() => setSteelDia(d)}
-                    className={`flex-1 min-w-[56px] h-10 rounded-xl text-body-sm font-bold border-2 transition-all ${
+                    className={`flex-1 min-w-[56px] h-11 rounded-xl text-body-sm font-extrabold border-2 transition-all cursor-pointer ${
                       steelDia === d
-                        ? "border-[#2D1B69] bg-[#2D1B69] text-white"
+                        ? "border-[#2D1B69] bg-[#2D1B69] text-white shadow-xs"
                         : "border-[#DDD6EE] text-[#9B8CB5] hover:border-[#C9B8E8]"
                     }`}
                   >
@@ -415,9 +419,9 @@ export default function CalculatorPage() {
               <p className="mt-2 text-tiny text-[#9B8CB5]">Add up all bars, stirrups and laps in running meters.</p>
             </div>
 
-            <div className="rounded-2xl border border-[#7CB518]/30 bg-[#F0F9E8] p-5">
-              <h3 className="text-body-sm font-bold text-[#150726] mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials
+            <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
+              <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
@@ -425,21 +429,21 @@ export default function CalculatorPage() {
                   { label: "Total Steel", value: `${steel.totalKg} kg` },
                   { label: "12 m Bars", value: `${steel.bars12m}` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-white p-3 border border-[#7CB518]/10 text-center">
-                    <p className="text-tiny text-[#9B8CB5] font-semibold">{label}</p>
-                    <p className="text-body-md font-extrabold text-[#150726]">{value}</p>
+                  <div key={label} className="rounded-2xl bg-white p-3.5 border border-[#7CB518]/20 text-center shadow-xs">
+                    <p className="text-tiny text-[#9B8CB5] font-bold uppercase">{label}</p>
+                    <p className="text-body-md font-black text-[#150726] mt-0.5">{value}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-tiny text-[#9B8CB5]">Assumes d²/162.2 kg per meter (IS 456), standard 12 m bars.</p>
+              <p className="mt-3.5 text-tiny text-[#9B8CB5] font-medium">Assumes d²/162.2 kg per meter (IS 456), standard 12 m bars.</p>
             </div>
 
-            <div className="rounded-2xl border border-dashed border-[#2D1B69]/30 bg-[#F0ECF9] p-5 text-center">
-              <Zap className="h-6 w-6 text-[#2D1B69] mx-auto mb-2" />
-              <p className="text-body-sm font-bold text-[#150726]">TMT steel coming soon to MODIT</p>
-              <p className="text-caption text-[#9B8CB5] mt-1">Get contractor rates for {steel.totalKg} kg ({steelDia} mm) via quote</p>
-              <Link href="/rfq" className="btn-shine mt-3 inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-bold px-5 py-2.5 rounded-full hover:bg-[#150726] transition-all">
-                Request Quote <ArrowRight className="h-3.5 w-3.5" />
+            <div className="card-2028 rounded-3xl border border-dashed border-[#2D1B69]/30 bg-[#F0ECF9] p-6 text-center">
+              <Zap className="h-7 w-7 text-[#2D1B69] mx-auto mb-2" />
+              <p className="text-body-sm font-extrabold text-[#150726]">TMT Steel Direct Mill Procurement</p>
+              <p className="text-caption text-[#9B8CB5] mt-1">Get contractor bulk rates for {steel.totalKg} kg ({steelDia} mm) via RFQ</p>
+              <Link href="/rfq" className="btn-shine specular-sheen mt-4 inline-flex items-center gap-2 bg-[#2D1B69] text-white text-caption font-extrabold px-6 py-2.5 rounded-xl hover:bg-[#150726] transition-all shadow-cyber-purple">
+                Request Instant Quote <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </>
@@ -447,18 +451,21 @@ export default function CalculatorPage() {
 
         {/* Recommended Products */}
         {recommendations.length > 0 && (
-          <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-body-sm font-bold text-[#150726]">Recommended Products</h3>
+          <div className="card-2028 rounded-3xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
+            <div className="flex items-center justify-between mb-3.5">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#7CB518]" />
+                <h3 className="text-body-sm font-black text-[#150726]">Recommended Products</h3>
+              </div>
               <button
                 onClick={handleAddAll}
                 disabled={addedItems.length > 0}
-                className="btn-shine flex items-center gap-1.5 rounded-xl bg-[#7CB518] text-white text-caption font-bold px-4 py-2 hover:bg-[#6A9C14] transition-all disabled:opacity-50"
+                className="btn-shine specular-sheen flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-caption font-extrabold px-4 py-2 hover:opacity-95 transition-all disabled:opacity-50 shadow-cyber-green cursor-pointer"
               >
                 {addedItems.length > 0 ? (
-                  <><CheckCircle2 className="h-3.5 w-3.5" /> Added!</>
+                  <><CheckCircle2 className="h-3.5 w-3.5" /> Added to Cart!</>
                 ) : (
-                  <><ShoppingCart className="h-3.5 w-3.5" /> Add All</>
+                  <><ShoppingCart className="h-3.5 w-3.5" /> Add All to Cart</>
                 )}
               </button>
             </div>
@@ -467,23 +474,23 @@ export default function CalculatorPage() {
                 <Link
                   key={item.name}
                   href={productLink(item.product)}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-[#F8F6FC] hover:bg-[#F0ECF9] transition-colors"
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-[#F8F6FC] hover:bg-[#F0ECF9] transition-colors border border-[#DDD6EE]/60"
                 >
                   <span className="text-xl">{item.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-caption font-semibold text-[#150726] truncate">{item.product.name}</p>
+                    <p className="text-caption font-bold text-[#150726] truncate">{item.product.name}</p>
                     <p className="text-tiny text-[#9B8CB5]">{item.product.brand} · {item.product.unit}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-micro font-bold text-[#150726]">Qty: {item.quantity}</p>
-                    <p className="text-tiny text-[#9B8CB5]">₹{(item.product.price * item.quantity).toLocaleString("en-IN")}</p>
+                    <p className="text-micro font-black text-[#150726]">Qty: {item.quantity}</p>
+                    <p className="text-tiny font-bold text-[#7CB518]">₹{(item.product.price * item.quantity).toLocaleString("en-IN")}</p>
                   </div>
                 </Link>
               ))}
             </div>
-            <div className="mt-3 pt-3 border-t border-[#DDD6EE] flex justify-between">
-              <span className="text-caption font-semibold text-[#9B8CB5]">Estimated Total</span>
-              <span className="text-body-lg font-extrabold text-[#2D1B69]">
+            <div className="mt-3.5 pt-3 border-t border-[#DDD6EE] flex justify-between items-center">
+              <span className="text-caption font-bold text-[#9B8CB5]">Estimated Bundle Total</span>
+              <span className="text-body-lg font-black text-[#2D1B69]">
                 ₹{recommendations.reduce((sum, r) => sum + r.product.price * r.quantity, 0).toLocaleString("en-IN")}
               </span>
             </div>
@@ -491,11 +498,11 @@ export default function CalculatorPage() {
         )}
 
         {/* Delivery note */}
-        <div className="rounded-2xl border border-[#00BCD4]/20 bg-[#E8F9FC] p-4 flex items-center gap-3">
+        <div className="card-2028 rounded-2xl border border-[#00BCD4]/25 bg-[#E8F9FC] p-4 flex items-center gap-3 shadow-xs">
           <Truck className="h-5 w-5 text-[#00BCD4] flex-shrink-0" />
           <div>
-            <p className="text-caption font-bold text-[#150726]">60-Minute Delivery</p>
-            <p className="text-micro text-[#9B8CB5]">All materials delivered to your site within 60 minutes</p>
+            <p className="text-caption font-black text-[#150726]">60-Minute Fast Delivery to Site</p>
+            <p className="text-micro text-[#9B8CB5]">All calculated materials can be dispatched directly to your construction address</p>
           </div>
         </div>
       </div>

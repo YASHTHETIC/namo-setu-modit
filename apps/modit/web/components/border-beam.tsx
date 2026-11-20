@@ -9,6 +9,8 @@ interface BorderBeamProps {
   borderWidth?: number;
   colorFrom?: string;
   colorTo?: string;
+  reverse?: boolean;
+  delay?: number;
 }
 
 /**
@@ -21,6 +23,8 @@ export function BorderBeam({
   borderWidth = 1.5,
   colorFrom = "#7CB518",
   colorTo = "#00BCD4",
+  reverse = false,
+  delay = 0,
 }: BorderBeamProps) {
   return (
     <div
@@ -40,6 +44,8 @@ export function BorderBeam({
         className="absolute inset-[-150%] animate-[spin_8s_linear_infinite]"
         style={{
           animationDuration: `${duration}s`,
+          animationDelay: `${delay}s`,
+          animationDirection: reverse ? "reverse" : "normal",
           background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 315deg, ${colorFrom} 342deg, ${colorTo} 360deg)`,
         }}
       />

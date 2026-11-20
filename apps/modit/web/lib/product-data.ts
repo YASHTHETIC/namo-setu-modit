@@ -1,4 +1,4 @@
-﻿export interface Seller {
+export interface Seller {
   name: string;
   rating: number;
   isVerified: boolean;
@@ -103,6 +103,8 @@ export interface Product {
   deliveryMinutes?: number;
   hasShades?: boolean;
   freeDeliveryThreshold?: number;
+  defaultVariantId?: string;
+  defaultVariant?: ProductVariant;
   /** ISO timestamp of the last catalog change (sitemap lastModified). */
   updatedAt?: string;
 }
@@ -515,12 +517,6 @@ export const products: Product[] = [
       { name: "Sky Blue", code: "#87CEEB", family: "Blue" },
       { name: "Sea Green", code: "#2E8B57", family: "Green" },
       { name: "Pink", code: "#FFB6C1", family: "Pink" },
-    ],
-    variants: [
-      { id: "15-1l", label: "1L", unit: "Can (1 L)", unitCode: "CAN", price: 950, mrp: 1140, discount: 17, bulkPrice: 902, bulkMinQty: 10, stockLevel: 1000 },
-      { id: "15-4l", label: "4L", unit: "Can (4 L)", unitCode: "CAN", price: 3610, mrp: 4332, discount: 17, bulkPrice: 3430, bulkMinQty: 10, stockLevel: 800 },
-      { id: "15-10l", label: "10L", unit: "Can (10 L)", unitCode: "CAN", price: 8075, mrp: 9690, discount: 17, bulkPrice: 7671, bulkMinQty: 10, stockLevel: 500 },
-      { id: "15-20l", label: "20L", unit: "Can (20 L)", unitCode: "CAN", price: 15200, mrp: 18240, discount: 17, bulkPrice: 14440, bulkMinQty: 5, stockLevel: 300 },
     ],
   },
   {

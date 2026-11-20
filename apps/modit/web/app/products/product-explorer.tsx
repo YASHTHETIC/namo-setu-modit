@@ -1307,7 +1307,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
               className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
             >
-              <span>{product.unit}</span>
+              <span>{product.defaultVariant?.label || product.unit}</span>
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
                 <polyline points="6 9 12 15 18 9" />
               </svg>

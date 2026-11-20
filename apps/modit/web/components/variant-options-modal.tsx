@@ -93,7 +93,7 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
       return;
     }
     setShadeRequiredError(false);
-    const defaultVariant = variants[0]?.id;
+    const defaultVariant = product.defaultVariantId || variants[0]?.id;
     addItem(product, 1, defaultVariant, effectiveShade);
     setAddedKey("shade");
     setTimeout(() => {
@@ -275,8 +275,9 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                 const key = `v:${v.id}`;
                 const added = addedKey === key;
                 const discount = v.mrp > v.price ? Math.round(((v.mrp - v.price) / v.mrp) * 100) : 0;
+                const isDefault = v.id === product.defaultVariantId;
                 return (
-                  <div key={v.id} className="flex items-center gap-3 rounded-xl border border-[#F0ECF9] p-3 hover:border-[#7CB518]/40 transition-colors bg-white">
+                  <div key={v.id} className={`flex items-center gap-3 rounded-xl border p-3 hover:border-[#7CB518]/40 transition-colors ${isDefault ? "border-[#2D1B69]/30 bg-[#F7F4FC]" : "border-[#F0ECF9] bg-white"}`}>
                     {product.images[0] && (
                       <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
                     )}
@@ -284,6 +285,11 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                       <p className="text-body-sm font-bold text-[#150726]">
                         {v.label}
                         <span className="ml-1.5 text-micro font-medium text-[#9B8CB5]">{v.unit}</span>
+                        {isDefault && (
+                          <span className="ml-2 inline-flex items-center rounded-sm bg-[#F0ECF9] px-1.5 py-0.5 text-tiny font-black text-[#2D1B69]">
+                            Default
+                          </span>
+                        )}
                       </p>
                       <div className="flex items-baseline gap-1.5 mt-0.5">
                         <span className="text-body-sm font-extrabold text-[#150726]">

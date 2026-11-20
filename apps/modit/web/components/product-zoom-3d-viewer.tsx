@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback, MouseEvent } from "react";
+import { useState, useRef, useCallback, useEffect, MouseEvent } from "react";
 import Image from "next/image";
-import { Heart, Share2, Check, Package, Sparkles, Box, ZoomIn, Maximize2 } from "lucide-react";
+import { Heart, Share2, Check, Package, Sparkles, Box, ZoomIn, Maximize2, RotateCw } from "lucide-react";
 
 interface ProductZoom3DViewerProps {
   images: string[];
@@ -38,6 +38,7 @@ export function ProductZoom3DViewer({
   onSelectShade,
 }: ProductZoom3DViewerProps) {
   const [mode, setMode] = useState<"zoom" | "3d">("zoom");
+  const [turntable, setTurntable] = useState(false);
   const [zoomPos, setZoomPos] = useState<{ x: number; y: number; active: boolean }>({
     x: 50,
     y: 50,
@@ -46,6 +47,24 @@ export function ProductZoom3DViewer({
   const [tilt, setTilt] = useState<{ rx: number; ry: number }>({ rx: 0, ry: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
+
+  // Turntable smooth 3D auto-spin animation loop
+  useEffect(() => {
+    if (!turntable) return;
+    let animId: number;
+    let angle = 0;
+    const spin = () => {
+      angle = (angle + 1.2) % 360;
+      const rad = (angle * Math.PI) / 180;
+      setTilt({
+        rx: Math.sin(rad) * 9,
+        ry: Math.sin(rad * 0.5) * 24,
+      });
+      animId = requestAnimationFrame(spin);
+    };
+    animId = requestAnimationFrame(spin);
+    return () => cancelAnimationFrame(animId);
+  }, [turntable]);
 
   const activeImage = images[safeImageIndex];
   const auraColor = selectedShadeColor || (isPaintProduct ? "#FF9800" : "#7CB518");
@@ -64,6 +83,7 @@ export function ProductZoom3DViewer({
       if (mode === "zoom") {
         setZoomPos({ x: px, y: py, active: true });
       } else {
+        if (turntable) setTurntable(false);
         // 3D Tilt calculation: max +/- 18 degrees
         const normX = (clientX / rect.width) * 2 - 1; // -1 to 1
         const normY = (clientY / rect.height) * 2 - 1; // -1 to 1
@@ -73,17 +93,20 @@ export function ProductZoom3DViewer({
         });
       }
     },
-    [mode]
+    [mode, turntable]
   );
 
   const handleMouseLeave = useCallback(() => {
     setZoomPos((prev) => ({ ...prev, active: false }));
-    setTilt({ rx: 0, ry: 0 });
-  }, []);
+    if (!turntable) {
+      setTilt({ rx: 0, ry: 0 });
+    }
+  }, [turntable]);
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
       if (mode !== "3d" || !containerRef.current || e.touches.length === 0) return;
+      if (turntable) setTurntable(false);
       const rect = containerRef.current.getBoundingClientRect();
       const touch = e.touches[0];
       const clientX = touch.clientX - rect.left;
@@ -95,7 +118,7 @@ export function ProductZoom3DViewer({
         ry: normX * 22,
       });
     },
-    [mode]
+    [mode, turntable]
   );
 
   return (
@@ -116,9 +139,12 @@ export function ProductZoom3DViewer({
             Zoom
           </button>
           <button
-            onClick={() => setMode("3d")}
+            onClick={() => {
+              setTurntable(false);
+              setMode("3d");
+            }}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-              mode === "3d"
+              mode === "3d" && !turntable
                 ? "bg-white text-[#2D1B69] shadow-xs"
                 : "text-[#6B5B83] hover:text-[#2D1B69]"
             }`}
@@ -126,6 +152,21 @@ export function ProductZoom3DViewer({
           >
             <Box className="h-3.5 w-3.5 text-[#00BCD4]" />
             3D Look
+          </button>
+          <button
+            onClick={() => {
+              setMode("3d");
+              setTurntable((prev) => !prev);
+            }}
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-all ${
+              turntable
+                ? "bg-white text-[#E91E63] shadow-xs font-black"
+                : "text-[#6B5B83] hover:text-[#2D1B69]"
+            }`}
+            title="360° Studio Turntable"
+          >
+            <RotateCw className={`h-3 w-3 text-[#E91E63] ${turntable ? "animate-spin" : ""}`} />
+            360° Spin
           </button>
         </div>
 

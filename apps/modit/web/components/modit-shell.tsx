@@ -179,10 +179,10 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
         Materials on Door — enterprise procurement, bulk orders, and 60-minute delivery.
       </div>
 
-      <header className={`sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.35)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ background: 'linear-gradient(135deg, rgba(11,3,24,0.92) 0%, rgba(21,7,38,0.88) 55%, rgba(30,18,69,0.9) 130%)', paddingTop: "var(--safe-t)" }}>
+      <header className={`sticky top-0 z-50 glass-cyber border-b border-white/10 transition-all duration-300 shadow-[0_12px_36px_rgba(0,0,0,0.45)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
         <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target">
-            <ModitLogo light className="h-[36px] sm:h-[42px] w-auto" />
+          <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target group">
+            <ModitLogo light className="h-[36px] sm:h-[42px] w-auto drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform group-hover:scale-105" />
           </Link>
 
           <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
@@ -191,7 +191,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
 
           <div className="hidden flex-1 items-center lg:flex">
             <div ref={searchRef} className="relative w-full">
-              <div className="flex h-13 items-center overflow-hidden rounded-full border border-[var(--border)] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.15)] ring-1 ring-white/10 transition-shadow focus-within:shadow-[var(--shadow-md)]">
+              <div className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/20 bg-white/95 backdrop-blur-md shadow-sm transition-all focus-within:shadow-[0_0_25px_rgba(124,181,24,0.3)] focus-within:border-[#7CB518]">
                 <div className="pl-4.5 flex items-center pointer-events-none flex-shrink-0">
                   <Search className="h-4.5 w-4.5 text-[#9B8CB5]" />
                 </div>
@@ -245,7 +245,7 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                 <button
                   type="button"
                   onClick={() => submitSearch()}
-                  className="m-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2D1B69] hover:bg-[#1E0D36] text-white transition-all shadow-sm flex-shrink-0 cursor-pointer"
+                  className="m-1.5 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#1E0D36] hover:from-[#1E0D36] hover:to-[#150726] text-white transition-all shadow-md flex-shrink-0 cursor-pointer hover:scale-105 active:scale-95"
                   aria-label="Search"
                 >
                   <Search className="h-4 w-4" />

@@ -43,6 +43,7 @@ import { BorderBeam } from "@/components/border-beam";
 import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
 import { Magnetic } from "@/components/magnetic";
+import { Cube3D } from "@/components/cube-3d";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -258,30 +259,29 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
 
-      {/* ═══ HEADER — mobile: one row (menu · logo · search · cart).
-           sm+: menu + logo + cart with the full search row below. ═══ */}
-      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
+      {/* ═══ HEADER — 2028 Obsidian Glass: mobile (menu · logo · search · cart), sm+ with search bar ═══ */}
+      <header className={`sticky top-0 z-50 glass-cyber border-b border-white/10 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-3 px-4 sm:px-6 py-3">
-          <RippleButton className="p-2 text-white/70 hover:text-white transition-colors rounded-xl hover:bg-white/5" onClick={() => setShowMenu(true)} aria-label="Open menu">
+          <RippleButton className="p-2 text-white/80 hover:text-white transition-colors rounded-xl hover:bg-white/10" onClick={() => setShowMenu(true)} aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </RippleButton>
           <div className="flex-1 flex justify-center">
-            <Link href="/" className="transition-all hover:scale-105 active:scale-95">
-              <ModitLogo className="h-[40px] w-auto" light={true} />
+            <Link href="/" className="transition-all hover:scale-105 active:scale-95 group">
+              <ModitLogo className="h-[40px] w-auto drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]" light={true} />
             </Link>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setShowSearch(true)}
               aria-label="Search products"
-              className="p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5 sm:hidden"
+              className="p-2 text-white/80 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/10 sm:hidden"
             >
               <Search className="h-5 w-5" />
             </button>
-            <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2 text-white/70 hover:text-white transition-all hover:scale-110 active:scale-95 rounded-xl hover:bg-white/5">
+            <button onClick={() => openDrawer()} aria-label="Open cart" className="relative p-2.5 text-white/90 hover:text-white transition-all hover:scale-105 active:scale-95 rounded-xl hover:bg-white/10 border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] rounded-full bg-[#E91E63] text-tiny font-black text-white flex items-center justify-center px-1 shadow-lg shadow-green-500/30 animate-cart-pop">
+                <span className="absolute -top-1 -right-1 h-[20px] min-w-[20px] rounded-full bg-[#E91E63] text-tiny font-black text-white flex items-center justify-center px-1 shadow-[0_0_12px_rgba(233,30,99,0.7)] animate-cart-pop border border-white/30">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
@@ -291,7 +291,7 @@ export default function HomeClient() {
         {/* Desktop inline search bar with Blinkit-style live autocomplete dropdown */}
         <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block relative">
           <div className="relative w-full">
-            <div className="flex h-12 items-center rounded-xl bg-white border border-[#EDE7F6] shadow-sm px-3.5 transition-all focus-within:shadow-md focus-within:border-[#2D1B69]">
+            <div className="flex h-12 items-center rounded-2xl bg-white/95 backdrop-blur-md border border-[#EDE7F6] shadow-sm px-3.5 transition-all focus-within:shadow-[0_0_20px_rgba(124,181,24,0.25)] focus-within:border-[#7CB518]">
               <Search className="h-4.5 w-4.5 text-[#9B8CB5] flex-shrink-0 mr-2" />
               <input
                 type="text"
@@ -320,7 +320,7 @@ export default function HomeClient() {
               <button
                 type="button"
                 onClick={() => handleSearchSubmit(searchQuery)}
-                className="px-3 py-1 rounded-lg bg-[#2D1B69] hover:bg-[#1E0D36] text-white text-caption font-bold transition-all shadow-xs cursor-pointer"
+                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#1E0D36] hover:from-[#1E0D36] hover:to-[#150726] text-white text-caption font-black transition-all shadow-md shadow-purple-950/30 cursor-pointer hover:scale-102 active:scale-98"
               >
                 Search
               </button>
@@ -328,87 +328,90 @@ export default function HomeClient() {
 
             {/* Desktop Autocomplete Dropdown */}
             {searchQuery.trim().length >= 1 && desktopSuggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-white border border-[#EDE7F6] shadow-2xl overflow-hidden animate-slide-down">
+              <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-white/95 backdrop-blur-xl border border-[#EDE7F6] shadow-[0_24px_50px_rgba(21,7,38,0.25)] overflow-hidden animate-slide-down">
                 {desktopSuggestions.map((s) => (
                   <button
                     key={s.text}
                     type="button"
                     onClick={() => handleSearchSubmit(s.query)}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F8F6FC] border-b border-[#F0ECF9] last:border-0 transition-colors cursor-pointer"
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#F8F6FC] border-b border-[#F0ECF9] last:border-0 transition-colors cursor-pointer"
                   >
-                    <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
+                    <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
                       {s.image ? (
-                        <ImageGuard src={s.image} alt={s.text} fill sizes="32px" className="object-contain p-0.5" />
+                        <ImageGuard src={s.image} alt={s.text} fill sizes="36px" className="object-contain p-1" />
                       ) : (
                         <Search className="h-4 w-4 text-[#9B8CB5]" />
                       )}
                     </div>
-                    <p className="truncate text-body-sm text-[#150726]">
-                      <HighlightedText text={s.text} query={searchQuery} markClassName="font-extrabold text-[#150726]" />
+                    <p className="truncate text-body-sm font-medium text-[#150726]">
+                      <HighlightedText text={s.text} query={searchQuery} markClassName="font-black text-[#2D1B69]" />
                     </p>
                   </button>
                 ))}
                 <button
                   type="button"
                   onClick={() => handleSearchSubmit(searchQuery)}
-                  className="flex w-full items-center justify-center gap-1.5 bg-[#F7F4FC] hover:bg-[#F0ECF9] px-4 py-2.5 text-caption font-bold text-[#2D1B69] transition-colors cursor-pointer"
+                  className="flex w-full items-center justify-center gap-1.5 bg-gradient-to-r from-[#F7F4FC] to-[#F0ECF9] hover:from-[#F0ECF9] hover:to-[#E8E0F7] px-4 py-3 text-caption font-extrabold text-[#2D1B69] transition-colors cursor-pointer border-t border-[#EDE7F6]"
                 >
-                  See all results for &ldquo;{searchQuery}&rdquo; <ChevronRight className="h-3.5 w-3.5" />
+                  See all results for &ldquo;{searchQuery}&rdquo; <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
             )}
           </div>
         </div>
-        {/* Futuristic Accent Glow Line */}
-        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#7CB518]/40 via-[#00BCD4]/50 to-transparent" />
+        {/* Futuristic Laser Horizon Line */}
+        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#7CB518]/60 via-[#00BCD4]/70 to-transparent" />
       </header>
 
-      {/* ═══ DELIVERY HEADER — one dense row on phones (Blinkit fit),
-           full two-line hierarchy on sm+ ═══ */}
+      {/* ═══ DELIVERY HEADER — 2028 Cyber Bar ═══ */}
       <div className="bg-[#150726] border-b border-white/5 px-4 sm:px-6 py-2 sm:py-2.5">
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto flex items-center gap-2.5 sm:gap-3">
-          <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg sm:rounded-xl bg-[#7CB518] leading-none shadow-lg shadow-green-500/25">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-gradient-to-br from-[#7CB518] to-[#5A8010] leading-none shadow-[0_0_15px_rgba(124,181,24,0.35)] border border-emerald-400/30">
             <span className="text-caption font-black text-white">60</span>
-            <span className="text-tiny font-black text-white/80">Min</span>
+            <span className="text-tiny font-black text-white/90">Min</span>
           </div>
-          <button onClick={() => setShowPincodeModal(true)} className="min-w-0 flex-1 text-left group focus:outline-none">
+          <button onClick={() => setShowPincodeModal(true)} className="min-w-0 flex-1 text-left group focus:outline-none cursor-pointer">
             <p className="flex items-center gap-2 text-body-md font-extrabold text-white leading-tight">
-              <span className="truncate">Deliver To <span className="text-[#7CB518]">{pincode ? pincode : "set location"}</span></span>
-              <ChevronDown className="h-3 w-3 text-white/50 flex-shrink-0 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="truncate">Deliver To <span className="text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.5)]">{pincode ? pincode : "set location"}</span></span>
+              <ChevronDown className="h-3.5 w-3.5 text-white/60 flex-shrink-0 group-hover:rotate-180 transition-transform duration-300" />
             </p>
-            <p className="hidden sm:flex items-center gap-1 mt-0.5 text-white/70">
+            <p className="hidden sm:flex items-center gap-1.5 mt-0.5 text-white/70">
               <MapPin className="h-3 w-3 text-white/50 group-hover:text-[#7CB518] transition-colors flex-shrink-0" />
               <span className="text-caption font-semibold truncate">
-                Delivery in <span className="text-[#7CB518] font-extrabold">60 min</span> — tap to change
+                Express Dispatch in <span className="text-[#7CB518] font-black">60 min</span> — tap to change
               </span>
             </p>
           </button>
           {nearest && typeof nearest.distance_km === "number" && (
-            <span className="hidden sm:block rounded-full bg-white/10 border border-white/10 px-2 py-0.5 text-tiny font-bold text-white/70 tabular-nums flex-shrink-0">
+            <span className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-tiny font-bold text-white/80 tabular-nums flex-shrink-0 shadow-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-ping" />
               {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
             </span>
           )}
-          <div className="ml-auto flex items-center gap-1.5 text-white/40 flex-shrink-0">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-            <span className="text-tiny font-medium">Live</span>
+          <div className="ml-auto flex items-center gap-1.5 text-white/60 flex-shrink-0 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+            <div className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] animate-pulse" />
+            <span className="text-tiny font-extrabold uppercase tracking-wider text-emerald-400">Live</span>
           </div>
         </div>
       </div>
 
-      {/* ═══ FREE DELIVERY PROMO STRIP — full-bleed flat banner (Blinkit
-           pattern): no card, no radius, spans the whole viewport width ═══ */}
-      <div className="no-stripes relative overflow-hidden gradient-pan" style={{ background: "linear-gradient(100deg, #E91E63 0%, #C2185B 55%, #8A1250 100%)", backgroundSize: "180% 180%" }}>
+      {/* ═══ FREE DELIVERY PROMO STRIP — 2028 Cyber Gradient ═══ */}
+      <div className="relative overflow-hidden" style={{ background: "linear-gradient(95deg, #AD1457 0%, #E91E63 45%, #8A1250 100%)" }}>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.25),transparent_70%)]" />
         <div className="max-w-[1600px] lg:w-[84vw] mx-auto relative z-10 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3">
-          <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-md">
+          <span className="h-8 w-8 sm:h-9 sm:w-9 flex-shrink-0 rounded-full bg-white flex items-center justify-center shadow-lg shadow-black/20">
             <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-[#E91E63]" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-white font-black leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md">FREE SITE DELIVERY</p>
-            <p className="text-tiny sm:text-body-sm font-bold text-white/85 mt-1 leading-tight">On all orders ₹5,000+ across all categories</p>
+            <p className="text-white font-black leading-none whitespace-nowrap tracking-tight text-body-lg sm:text-title-md flex items-center gap-2">
+              FREE SITE DELIVERY
+              <span className="hidden md:inline-block text-micro font-bold px-2 py-0.5 rounded-full bg-white/20 border border-white/30 text-white">2028 PRO DISPATCH</span>
+            </p>
+            <p className="text-tiny sm:text-body-sm font-semibold text-white/90 mt-1 leading-tight">On all orders ₹5,000+ across all categories</p>
           </div>
           <span className="hidden sm:block h-7 w-px bg-white/25 flex-shrink-0" />
-          <p className="hidden sm:block text-tiny text-white/70 leading-tight flex-shrink-0">Fast · Tracked · Doorstep</p>
-          <span className="flex-shrink-0 rounded-full bg-white px-3 py-1 text-tiny font-black text-[#E91E63] shadow-xs">AUTO-APPLIED</span>
+          <p className="hidden sm:block text-tiny text-white/80 leading-tight flex-shrink-0 font-medium">Fast · Tracked · Doorstep</p>
+          <span className="flex-shrink-0 rounded-full bg-white px-3 py-1 text-tiny font-black text-[#E91E63] shadow-md shadow-black/15">AUTO-APPLIED</span>
         </div>
       </div>
 
@@ -417,94 +420,123 @@ export default function HomeClient() {
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
 
-      {/* ═══ HERO BANNER — Clean, Global Standard ═══ */}
+      {/* ═══ HERO BANNER — 2028 Futuristic Cyber Standard ═══ */}
       <Reveal>
-        <div className="mt-3 sm:mt-4 rounded-2xl sm:rounded-3xl overflow-hidden relative group border border-white/10 shadow-2xl gradient-pan" style={{ background: "linear-gradient(135deg, #150726 0%, #2D1B69 50%, #4A2D8A 100%)", backgroundSize: "200% 200%" }}>
-          {/* Magic UI Border Beam — Traveling Laser Glow */}
-          <BorderBeam duration={10} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={1.5} />
-          {/* Ambient Lighting FX */}
-          <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-[#7CB518]/20 blur-3xl animate-pulse" />
-          <div className="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-[#00BCD4]/25 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/2 left-1/3 h-40 w-40 -translate-y-1/2 rounded-full bg-[#F8CB46]/15 blur-2xl" />
+        <div className="mt-3 sm:mt-4 rounded-3xl overflow-hidden relative group border border-white/15 shadow-[0_20px_50px_rgba(21,7,38,0.5)] gradient-pan" style={{ background: "linear-gradient(135deg, #0b0318 0%, #150726 40%, #2D1B69 75%, #4A2D8A 100%)", backgroundSize: "200% 200%" }}>
+          {/* Dual Opposing Traveling Laser Glow Beams */}
+          <BorderBeam duration={7} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={2} />
+          <BorderBeam duration={7} delay={-3.5} reverse={true} colorFrom="#F8CB46" colorTo="#E91E63" borderWidth={2} />
 
-          <div className="relative z-10 p-4 sm:p-7 flex items-center justify-between gap-3">
+          {/* 2028 Ambient Fluid Aurora Mesh & Drifting Orbs */}
+          <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_25%,_rgba(124,181,24,0.35)_0%,_transparent_45%),radial-gradient(circle_at_80%_75%,_rgba(0,188,212,0.35)_0%,_transparent_45%),radial-gradient(circle_at_50%_40%,_rgba(248,203,70,0.25)_0%,_transparent_50%)] animate-pulse" />
+          <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-[#7CB518]/30 blur-3xl animate-pulse" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-[#00BCD4]/35 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/3 h-56 w-56 -translate-y-1/2 rounded-full bg-[#F8CB46]/25 blur-3xl" />
+
+          <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
             <div className="min-w-0 max-w-xl">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 text-tiny font-bold text-white mb-2.5 shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-[#7CB518] animate-ping" />
-                <span className="text-[#F8CB46] font-black tracking-wide">60-MIN SITE DELIVERY</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
+                </span>
+                <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
                 <span className="text-white/40">·</span>
-                <span className="text-white/85">FREE OVER ₹5000</span>
+                <span className="text-white/90">FREE OVER ₹5,000</span>
+                <span className="text-white/40">·</span>
+                <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
               </div>
-              <h1 className="text-white text-title-md sm:text-title-lg font-black leading-tight tracking-tight">
-                Site Material, <span className="text-shimmer text-transparent bg-clip-text bg-gradient-to-r from-white via-[#F8CB46] to-white">On Door</span>
+              <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
+                Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
               </h1>
-              <p className="text-white/80 text-caption sm:text-body-sm mt-1.5 leading-snug">
-                Cement, paints, tiles, electricals &amp; more — delivered in 60 minutes to your site
+              <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
+                Direct factory cement, paints, tiles, electricals &amp; steel — dispatched in 60 minutes with official GST tax invoices
               </p>
-              <Magnetic strength={7}>
-                <Link href="/products" className="mt-3.5 inline-flex items-center gap-2 bg-white text-[#150726] text-caption sm:text-body-sm font-black px-5 sm:px-6 py-2 sm:py-2.5 rounded-full hover:bg-[#F0ECF9] transition-all hover:scale-105 active:scale-95 shadow-[0_4px_24px_rgba(248,203,70,0.30)] cursor-pointer">
-                  Shop Now
-                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-5 flex items-center gap-3">
+                <Magnetic strength={8}>
+                  <Link href="/products" className="btn-shine specular-sheen inline-flex items-center gap-2 bg-gradient-to-r from-white via-[#F7F4FC] to-white text-[#150726] text-caption sm:text-body-sm font-black px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(248,203,70,0.4)] border border-white/60 cursor-pointer group/cta">
+                    Explore Catalog
+                    <ArrowRight className="h-4 w-4 group-hover/cta:translate-x-1.5 transition-transform text-[#2D1B69]" />
+                  </Link>
+                </Magnetic>
+                <Link href="/rfq" className="hidden sm:inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-caption sm:text-body-sm font-bold px-4 py-2.5 sm:py-3 rounded-full border border-white/20 backdrop-blur-md transition-all hover:scale-102">
+                  <span>Bulk RFQ</span>
+                  <ArrowUpRight className="h-3.5 w-3.5 text-[#7CB518]" />
                 </Link>
-              </Magnetic>
+              </div>
             </div>
-            <div className="flex sm:items-center gap-2 flex-shrink-0 pr-0.5">
-              <Parallax strength={12} className="flex-shrink-0">
-                <div className="h-16 w-12 sm:h-28 sm:w-24 rounded-xl sm:rounded-[28px] bg-white p-1 sm:p-2 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500 shadow-[0_16px_36px_rgba(0,0,0,0.35)] ring-2 sm:ring-4 ring-white/50 group-hover:ring-[#7CB518]/60">
-                  <Image src="/products/cement/Ambuja Cement.png" alt="Cement bags" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
-                </div>
-              </Parallax>
-              <div className="hidden sm:block flex-shrink-0">
-                <Parallax strength={26}>
-                  <div className="h-28 w-24 rounded-[28px] bg-white p-2 rotate-[4deg] group-hover:rotate-0 transition-transform duration-500 -ml-4 mt-6 shadow-[0_16px_36px_rgba(0,0,0,0.35)] ring-4 ring-white/50 group-hover:ring-[#00BCD4]/60">
-                    <Image src="/products/painting/Asian Paint.png" alt="Paint buckets" width={96} height={112} loading="lazy" draggable={false} className="h-full w-full object-contain" />
+
+            {/* 3D Levitating Product Stage */}
+            <div className="flex sm:items-center gap-3 sm:gap-4 flex-shrink-0 pr-1">
+              <div className="hidden lg:block flex-shrink-0 mr-1">
+                <Cube3D />
+              </div>
+              <Tilt3D max={18} className="flex-shrink-0">
+                <div className="relative group/p1">
+                  <div className="h-24 w-20 sm:h-36 sm:w-32 rounded-3xl bg-gradient-to-b from-white/95 to-white/85 p-2 sm:p-3 rotate-[-6deg] group-hover/p1:rotate-0 transition-all duration-500 shadow-[0_25px_50px_rgba(0,0,0,0.5)] ring-2 sm:ring-4 ring-white/60 group-hover/p1:ring-[#7CB518] backdrop-blur-md specular-sheen">
+                    <Image src="/products/cement/Ambuja Cement.png" alt="Ambuja Cement" width={128} height={144} loading="lazy" draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
                   </div>
-                </Parallax>
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#150726]/90 border border-[#7CB518]/50 text-tiny font-black text-[#7CB518] shadow-md uppercase tracking-wider">
+                    Cement
+                  </span>
+                </div>
+              </Tilt3D>
+              <div className="hidden sm:block flex-shrink-0">
+                <Tilt3D max={18}>
+                  <div className="relative group/p2 -ml-6 mt-8">
+                    <div className="h-36 w-32 rounded-3xl bg-gradient-to-b from-white/95 to-white/85 p-3 rotate-[6deg] group-hover/p2:rotate-0 transition-all duration-500 shadow-[0_25px_50px_rgba(0,0,0,0.5)] ring-4 ring-white/60 group-hover/p2:ring-[#00BCD4] backdrop-blur-md specular-sheen">
+                      <Image src="/products/painting/Asian Paint.png" alt="Asian Paint" width={128} height={144} loading="lazy" draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
+                    </div>
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#150726]/90 border border-[#00BCD4]/50 text-tiny font-black text-[#00BCD4] shadow-md uppercase tracking-wider">
+                      Paint
+                    </span>
+                  </div>
+                </Tilt3D>
               </div>
             </div>
           </div>
         </div>
       </Reveal>
 
-      {/* ═══ GLOBAL TRUST STRIP — Clean, Professional, Minimal ═══ */}
+      {/* ═══ GLOBAL TRUST STRIP — 2028 Obsidian Elevation Cards ═══ */}
       <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#7CB518] transition-colors">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#7CB518]/15 text-[#7CB518]">
-            <Truck className="h-4.5 w-4.5" />
+        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-0.5 group">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7CB518]/15 text-[#7CB518] border border-[#7CB518]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(124,181,24,0.2)]">
+            <Truck className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">60-Min Site Drop</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate">Express GPS doorstep delivery</p>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">60-Min Site Drop</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Express GPS doorstep delivery</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#F8CB46] transition-colors">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F8CB46]/20 text-[#B45309]">
-            <BadgeCheck className="h-4.5 w-4.5" />
+        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(248,203,70,0.2)] hover:border-[#F8CB46]/70 transition-all duration-300 hover:-translate-y-0.5 group">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8CB46]/20 text-[#B45309] border border-[#F8CB46]/35 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(248,203,70,0.2)]">
+            <BadgeCheck className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">100% Genuine Brands</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate">Direct authorized mill depots</p>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">100% Genuine Brands</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Direct authorized mill depots</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#E91E63] transition-colors">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#E91E63]/15 text-[#E91E63]">
-            <ReceiptIndianRupee className="h-4.5 w-4.5" />
+        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(233,30,99,0.18)] hover:border-[#E91E63]/60 transition-all duration-300 hover:-translate-y-0.5 group">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E91E63]/15 text-[#E91E63] border border-[#E91E63]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(233,30,99,0.2)]">
+            <ReceiptIndianRupee className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">GST Tax Invoice</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate">Instant B2B credit download</p>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">GST Tax Invoice</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Instant B2B credit download</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 rounded-xl sm:rounded-2xl bg-white border border-[#DDD6EE] p-3 shadow-2xs hover:border-[#00BCD4] transition-colors">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#00BCD4]/15 text-[#0097A7]">
-            <Undo2 className="h-4.5 w-4.5" />
+        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(0,188,212,0.18)] hover:border-[#00BCD4]/60 transition-all duration-300 hover:-translate-y-0.5 group">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#00BCD4]/15 text-[#0097A7] border border-[#00BCD4]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(0,188,212,0.2)]">
+            <Undo2 className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-extrabold text-[#150726] leading-tight truncate">7-Day Site Returns</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate">Hassle-free unopened pickup</p>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">7-Day Site Returns</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Hassle-free unopened pickup</p>
           </div>
         </div>
       </div>
@@ -551,7 +583,7 @@ export default function HomeClient() {
         ))}
       </div>
 
-      {/* ═══ CATEGORY GRID — Blinkit-style uniform tiles ═══ */}
+      {/* ═══ CATEGORY GRID — 2028 Specular Perimeter Reflection Tiles ═══ */}
       <Reveal delay={150}>
         <div className="mt-4 sm:mt-5">
           <div className="section-header">
@@ -570,33 +602,39 @@ export default function HomeClient() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex w-full flex-col items-center gap-1 group"
+                  className="flex w-full flex-col items-center gap-1.5 group cursor-pointer"
                 >
                   <div
-                    className={`relative w-full aspect-square rounded-2xl bg-white border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_12px_28px_-8px_rgba(45,27,105,0.18)] group-hover:-translate-y-1 group-hover:scale-105 ${
+                    className={`category-plate-3d transform-3d card-2028 specular-sheen relative w-full aspect-square rounded-2xl bg-gradient-to-b from-white via-[#F7F4FC] to-[#F5F2FC] border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_20px_40px_-6px_rgba(45,27,105,0.28),0_0_25px_-3px_rgba(124,181,24,0.32)] ${
                       mounted ? "animate-fade-up" : "opacity-0"
                     }`}
                     style={{
-                      animationDelay: `${Math.min(i, 12) * 50}ms`,
+                      animationDelay: `${Math.min(i, 12) * 45}ms`,
                     }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = tint; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#DDD6EE"; }}
                   >
+                    {/* 2028 Specular Perimeter Reflection Sheen */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     {img ? (
-                      <Image
-                        src={img}
-                        alt={cat.name}
-                        fill
-                        sizes="(min-width: 1024px) 128px, (min-width: 640px) 96px, 56px"
-                        loading="lazy"
-                        draggable={false}
-                        className="object-contain p-1 sm:p-1.5 animate-fade-in transition-transform duration-500 group-hover:scale-110"
-                      />
+                      <div className="relative h-full w-full layer-3d-pop">
+                        <Image
+                          src={img}
+                          alt={cat.name}
+                          fill
+                          sizes="(min-width: 1024px) 128px, (min-width: 640px) 96px, 56px"
+                          loading="lazy"
+                          draggable={false}
+                          className="object-contain p-1.5 sm:p-2 animate-fade-in transition-transform duration-500 group-hover:scale-115 drop-shadow-[0_8px_14px_rgba(0,0,0,0.12)]"
+                        />
+                      </div>
                     ) : (
-                      <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-110" />
+                      <div className="layer-3d-pop">
+                        <CategoryTileIcon slug={cat.slug} className="h-9 w-9 text-[#2D1B69] transition-transform duration-500 group-hover:scale-115 drop-shadow-[0_8px_14px_rgba(0,0,0,0.12)]" />
+                      </div>
                     )}
                   </div>
-                  <p className="text-micro sm:text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[26px] sm:min-h-[30px] group-hover:text-[#7CB518] transition-colors">{cat.name}</p>
+                  <p className="text-micro sm:text-caption font-bold text-[#150726] text-center leading-tight line-clamp-2 min-h-[26px] sm:min-h-[30px] group-hover:text-[#2D1B69] transition-colors">{cat.name}</p>
                 </Link>
               );
             })}

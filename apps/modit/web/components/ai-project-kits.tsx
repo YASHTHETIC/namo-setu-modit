@@ -193,8 +193,10 @@ export function AiProjectKitsSection() {
             return (
               <div
                 key={kit.id}
-                className="group relative flex flex-col rounded-2xl border border-[#DDD6EE] bg-white p-4 shadow-[0_2px_8px_rgba(26,10,51,0.04)] transition-all duration-300 hover:border-[#2D1B69] hover:shadow-[0_16px_36px_-12px_rgba(45,27,105,0.18)] hover:-translate-y-1 overflow-hidden"
+                className="group relative flex flex-col rounded-3xl border border-[#E8E0F7] bg-white p-4.5 shadow-[0_4px_16px_rgba(26,10,51,0.05)] transition-all duration-300 hover:border-[#7CB518]/60 hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.2),0_0_15px_-3px_rgba(124,181,24,0.25)] hover:-translate-y-1.5 overflow-hidden"
               >
+                {/* 2028 Specular Sheen */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 {/* Header Row */}
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">

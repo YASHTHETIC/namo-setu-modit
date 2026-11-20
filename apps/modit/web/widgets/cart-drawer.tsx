@@ -90,27 +90,27 @@ export function CartDrawer() {
       <button
         aria-label="Close cart"
         onClick={closeDrawer}
-        className="absolute inset-0 bg-[#150726]/60 backdrop-blur-[2px] animate-fade-in"
+        className="absolute inset-0 bg-[#150726]/75 backdrop-blur-sm animate-fade-in"
       />
-      <aside className="absolute top-0 bottom-0 right-0 w-full sm:max-w-md bg-[#F8F6FC] shadow-2xl flex flex-col animate-drawer-in-right">
-        {/* Header — back + My Cart + Share (real-Blinkit layout, dark theme) */}
-        <div className="flex items-center gap-2 bg-[#150726] px-3 py-3 flex-shrink-0">
+      <aside className="absolute top-0 bottom-0 right-0 w-full sm:max-w-md bg-[#F8F6FC] shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col animate-drawer-in-right">
+        {/* Header — back + My Cart + Share (2028 Obsidian Cyber style) */}
+        <div className="flex items-center gap-2 glass-cyber border-b border-white/10 px-4 py-3.5 flex-shrink-0">
           <button
             onClick={closeDrawer}
             aria-label="Back"
-            className="p-1.5 rounded-full text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h2 className="text-body-md font-extrabold text-white flex-1">
-            My Cart {bill.count > 0 && <span className="text-white/50 font-bold">({bill.count})</span>}
+          <h2 className="text-body-md font-black text-white flex-1 tracking-tight">
+            My Cart {bill.count > 0 && <span className="text-[#7CB518] font-black">({bill.count})</span>}
           </h2>
           {items.length > 0 && (
             <button
               onClick={shareCart}
-              className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-caption font-bold text-[#7CB518] hover:bg-white/10 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-caption font-black text-[#7CB518] bg-white/10 hover:bg-white/20 transition-all border border-emerald-400/30 cursor-pointer shadow-xs"
             >
-              <Share2 className="h-4 w-4" /> Share
+              <Share2 className="h-3.5 w-3.5" /> Share
             </button>
           )}
         </div>
@@ -299,21 +299,21 @@ export function CartDrawer() {
               </Link>
             </div>
 
-            {/* Bottom proceed bar — solid green, Blinkit architecture */}
-            <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex-shrink-0">
+            {/* Bottom proceed bar — 2028 Luminous Emerald CTA */}
+            <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex-shrink-0 bg-white/80 backdrop-blur-md border-t border-[#DDD6EE]">
               <Link
                 href={loggedIn ? "/checkout" : "/auth?next=%2Fcheckout"}
                 onClick={closeDrawer}
-                className="btn-shine flex items-center justify-between gap-4 rounded-2xl bg-[#7CB518] px-5 py-3.5 text-white hover:bg-[#6A9C14] transition-all shadow-lg shadow-green-500/30"
+                className="flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] px-5 py-3.5 text-white hover:scale-102 active:scale-98 transition-all shadow-[0_0_25px_rgba(124,181,24,0.4)] border border-emerald-400/40 cursor-pointer"
               >
                 <span>
-                  <span className="block text-body-lg font-extrabold tabular-nums leading-tight">
+                  <span className="block text-body-lg font-black tabular-nums leading-tight drop-shadow-xs">
                     {formatINR2(bill.total)}
                   </span>
-                  <span className="block text-tiny font-bold text-white/70 tracking-wider">TOTAL</span>
+                  <span className="block text-tiny font-black text-white/85 tracking-wider">TOTAL TO PAY</span>
                 </span>
-                <span className="text-body-md font-bold">
-                  {loggedIn ? "Proceed →" : "Login to Proceed →"}
+                <span className="text-body-md font-black flex items-center gap-1">
+                  {loggedIn ? "Proceed to Checkout →" : "Login to Proceed →"}
                 </span>
               </Link>
             </div>

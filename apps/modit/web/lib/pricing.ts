@@ -9,6 +9,8 @@ export interface DisplayProduct extends Product {
   saleName: string | null;
   salePrice: number | null;
   hidden: boolean;
+  defaultVariantId?: string;
+  defaultVariant?: ProductVariant;
 }
 
 export function saleAppliesTo(sale: Sale, product: Product): boolean {
@@ -25,6 +27,154 @@ export function isPaintProduct(p: { name?: string; categorySlug?: string; catego
   const name = (p.name ?? "").toLowerCase();
   if (slug === "painting" || cat.includes("paint")) return true;
   return /\b(paint|emulsion|enamel|distemper|color|colour|varnish|royale|tractor|apex|ace|apcolite|nerolac|berger|asian\s*paints|dulux|primer|stainer)\b/i.test(name);
+}
+
+/**
+ * Extract canonical size tokens from a string.
+ * Examples:
+ *   "Asian Paints Tractor Emulsion 20L" -> ["20l"]
+ *   "Asian Paints Tractor Emulsion 10L" -> ["10l"]
+ *   "ACC Cement 50kg" -> ["50kg"]
+ *   "Fevicol 500g" -> ["500g"]
+ *   "PRINS PVC Conduit Pipe 20 mm" -> ["20mm"]
+ *   "Makita 4 inch Angle Grinder" -> ["4inch"]
+ */
+export function extractSizeTokens(str: string): string[] {
+  if (!str) return [];
+  const normalized = str.toLowerCase();
+  const tokens: string[] = [];
+
+  // 1. Liters / ml: e.g. "20L", "20 l", "20 ltr", "500ml", "1.5L"
+  const lRegex = /\b(\d+(?:\.\d+)?)\s*(?:l|ltr|litre|litres|liter|liters)\b/gi;
+  let m: RegExpExecArray | null;
+  while ((m = lRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}l`);
+  }
+  const mlRegex = /\b(\d+(?:\.\d+)?)\s*(?:ml|millilitre|milliliter)\b/gi;
+  while ((m = mlRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}ml`);
+  }
+
+  // 2. Weight: kg, g
+  const kgRegex = /\b(\d+(?:\.\d+)?)\s*(?:kg|kgs|kilogram|kilograms)\b/gi;
+  while ((m = kgRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}kg`);
+  }
+  const gRegex = /\b(\d+(?:\.\d+)?)\s*(?:g|gm|gms|gram|grams)\b/gi;
+  while ((m = gRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}g`);
+  }
+
+  // 3. Electrical wire gauge: "2.5 sq mm", "1.5 sqmm"
+  const sqRegex = /(\d+(?:\.\d+)?)\s*(?:sq\.?\s*mm|sqmm)/gi;
+  while ((m = sqRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}sqmm`);
+  }
+
+  // 4. Pipe / Tool sizes in inches / mm: 0.75", 1.0", 4 inch, 25mm
+  const inRegex = /(\d+(?:\.\d+)?)\s*(?:"|inch\b|inches\b)/gi;
+  while ((m = inRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}inch`);
+  }
+  const mmRegex = /\b(\d+(?:\.\d+)?)\s*mm\b/gi;
+  while ((m = mmRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseFloat(m[1])}mm`);
+  }
+
+  // 5. Bags / Boxes / Units / Pairs
+  const bagRegex = /\b(\d+)\s*(?:bag|bags)\b/gi;
+  while ((m = bagRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseInt(m[1], 10)}bag`);
+  }
+  const boxRegex = /\b(\d+)\s*(?:box|boxes)\b/gi;
+  while ((m = boxRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseInt(m[1], 10)}box`);
+  }
+  const packRegex = /(?:pack|box)\s*(?:of)?\s*(\d+)/gi;
+  while ((m = packRegex.exec(normalized)) !== null) {
+    tokens.push(`${parseInt(m[1], 10)}pack`);
+  }
+
+  return tokens;
+}
+
+/**
+ * Determine the canonical default variant for a product.
+ * When a product explicitly names a package size (e.g. 20L, 10L, 50kg),
+ * its default variant and active price must correspond to that size,
+ * rather than blindly falling back to the 1L / first variant.
+ */
+export function getDefaultVariant(product: {
+  name?: string;
+  unit?: string;
+  price?: number;
+  variants?: ProductVariant[];
+}): ProductVariant | null {
+  const variants = product.variants;
+  if (!variants || variants.length === 0) return null;
+  if (variants.length === 1) return variants[0];
+
+  const name = product.name || "";
+  const unit = product.unit || "";
+  const pPrice = typeof product.price === "number" ? product.price : 0;
+
+  // 1. Check title size tokens
+  const titleTokens = extractSizeTokens(name);
+  if (titleTokens.length > 0) {
+    for (const token of titleTokens) {
+      const match = variants.find((v) => {
+        const vTokens = [...extractSizeTokens(v.label || ""), ...extractSizeTokens(v.unit || "")];
+        return vTokens.includes(token);
+      });
+      if (match) return match;
+    }
+  }
+
+  // 2. Exact base price match (all generated variants assign price: p to the representative variant)
+  if (pPrice > 0) {
+    const exactPrice = variants.find((v) => Math.abs(v.price - pPrice) < 0.5);
+    if (exactPrice) return exactPrice;
+  }
+
+  // 3. Check unit size tokens
+  const unitTokens = extractSizeTokens(unit);
+  if (unitTokens.length > 0) {
+    for (const token of unitTokens) {
+      const match = variants.find((v) => {
+        const vTokens = [...extractSizeTokens(v.label || ""), ...extractSizeTokens(v.unit || "")];
+        return vTokens.includes(token);
+      });
+      if (match) return match;
+    }
+  }
+
+  // 4. Closest price match
+  if (pPrice > 0) {
+    let best = variants[0];
+    let bestDiff = Math.abs(variants[0].price - pPrice);
+    for (let i = 1; i < variants.length; i++) {
+      const diff = Math.abs(variants[i].price - pPrice);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = variants[i];
+      }
+    }
+    return best;
+  }
+
+  return variants[0];
+}
+
+export function getDefaultVariantId(product: {
+  name?: string;
+  unit?: string;
+  price?: number;
+  variants?: ProductVariant[];
+  defaultVariantId?: string;
+}): string | null {
+  if (product.defaultVariantId) return product.defaultVariantId;
+  const def = getDefaultVariant(product);
+  return def?.id ?? null;
 }
 
 /** Generate practical pack-size and unit options for products without explicit variants. */
@@ -163,9 +313,6 @@ export function getGeneratedVariants(product: Product): ProductVariant[] | undef
  * options/variants, and every paint product has 20 color shades.
  */
 export function resolveProduct(product: Product): DisplayProduct {
-  const price = product.price;
-  const mrp = product.mrp;
-
   const isPaint = isPaintProduct(product);
   let shades = product.shades;
   if (isPaint) {
@@ -185,6 +332,12 @@ export function resolveProduct(product: Product): DisplayProduct {
   const hasShades = Boolean(isPaint || product.hasShades || (shades && shades.length > 0));
 
   const variants = getGeneratedVariants(product);
+  const defaultVar = variants ? getDefaultVariant({ ...product, variants }) : null;
+  const defaultVariantId = defaultVar?.id;
+
+  // The base display price and mrp default to the product's own price or matching default variant
+  const price = defaultVar?.price ?? product.price;
+  const mrp = defaultVar?.mrp ?? product.mrp;
 
   const discount =
     mrp > price ? Math.round(((mrp - price) / mrp) * 100) : product.discount;
@@ -201,6 +354,8 @@ export function resolveProduct(product: Product): DisplayProduct {
     hasShades,
     shades,
     variants,
+    defaultVariantId,
+    defaultVariant: defaultVar ?? undefined,
   };
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartUi } from "@/lib/cart-ui";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
@@ -27,22 +27,23 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   if (dismissedKey === key) return null;
 
   return (
-    <div className={`sticky-cart-bar group/cart ${barHidden ? "bar-hidden" : ""}`}>
-      {/* Dismiss — top-left, clear of the chat bubble on the right */}
+    <div className={`sticky-cart-bar glass-cyber group/cart ${barHidden ? "bar-hidden" : ""}`}>
+      {/* Dismiss button */}
       <button
         onClick={() => setDismissedKey(key)}
         aria-label="Hide cart bar"
-        className="absolute -top-2.5 -left-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#150726] shadow-md transition-transform hover:scale-110 active:scale-95"
+        className="absolute -top-2.5 -left-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[#150726] shadow-md border border-black/10 transition-transform hover:scale-115 active:scale-90 cursor-pointer"
       >
         <X className="h-3.5 w-3.5" />
       </button>
+
       {/* Left side — mini product preview + totals */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {/* Mini product thumbnail */}
         {lastItem && (
-          <div className="h-10 w-10 rounded-xl bg-white/10 border border-white/20 overflow-hidden flex-shrink-0 group-hover/cart:scale-110 transition-transform duration-200">
+          <div className="h-11 w-11 rounded-xl bg-white/10 border border-white/20 overflow-hidden flex-shrink-0 group-hover/cart:scale-105 transition-transform duration-300 shadow-inner">
             {lastItem.product.images?.[0] ? (
-              <Image src={lastItem.product.images[0]} alt="" width={40} height={40} loading="lazy" className="h-full w-full object-cover" />
+              <Image src={lastItem.product.images[0]} alt="" width={44} height={44} loading="lazy" className="h-full w-full object-cover" />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-tiny text-white/40">📦</div>
             )}
@@ -54,25 +55,25 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
               {itemCount} {itemCount === 1 ? "item" : "items"}
             </span>
             <span className="text-white/30">·</span>
-            <span className="text-body-lg font-black text-[#7CB518]">₹{total.toLocaleString("en-IN")}</span>
+            <span className="text-body-lg font-black text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.4)]">
+              ₹{total.toLocaleString("en-IN")}
+            </span>
           </div>
           {saved > 0 && (
-            <span className="text-tiny font-semibold text-[#E91E63]">
-              You&apos;re saving ₹{saved.toLocaleString("en-IN")} 🎉
+            <span className="text-tiny font-bold text-[#F8CB46] drop-shadow-[0_0_6px_rgba(248,203,70,0.3)]">
+              Saving ₹{saved.toLocaleString("en-IN")} 🎉
             </span>
           )}
         </div>
       </div>
 
-      {/* Right side — CTA opens the quick cart drawer (Blinkit-style) */}
+      {/* Right side — CTA opens the quick cart drawer */}
       <button
         onClick={openDrawer}
-        className="btn-shine inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#7CB518] text-white text-body-sm font-bold hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25 flex-shrink-0"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-body-sm font-black hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(124,181,24,0.4)] border border-emerald-400/30 flex-shrink-0 cursor-pointer"
       >
-        View Cart
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
+        <span>View Cart</span>
+        <ArrowRight className="h-4 w-4" />
       </button>
     </div>
   );

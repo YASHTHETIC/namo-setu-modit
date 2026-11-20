@@ -28,22 +28,24 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const stepDown = useCartStore((s) => s.stepDown);
   const items = useCartStore((s) => s.items);
   const live = resolveProduct(product);
+  const defaultVar = live.defaultVariant ?? live.variants?.[0] ?? null;
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
-    product.variants?.[0]?.id ?? null
+    defaultVar?.id ?? null
   );
   const [optionsOpen, setOptionsOpen] = useState(false);
   const tryAdd = useAddToCart();
   const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
   if (live.hidden) return null;
+  const effectiveVariantId = selectedVariantId ?? defaultVar?.id ?? null;
   const existing = items.find(
-    (i) => i.product.id === product.id && (i.variantId ?? null) === selectedVariantId
+    (i) => i.product.id === product.id && (i.variantId ?? null) === effectiveVariantId
   );
   const qty = existing?.quantity ?? 0;
   const optLabel = optionsLabel(live);
 
-  const selectedVariant = selectedVariantId
-    ? live.variants?.find((v) => v.id === selectedVariantId) ?? null
-    : null;
+  const selectedVariant = effectiveVariantId
+    ? live.variants?.find((v) => v.id === effectiveVariantId) ?? defaultVar
+    : defaultVar;
   const activePrice = selectedVariant?.price ?? live.price;
   const activeMrp = selectedVariant?.mrp ?? live.mrp;
 
@@ -58,7 +60,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       setOptionsOpen(true);
       return;
     }
-    const ok = tryAdd(live, 1, selectedVariantId ?? undefined);
+    const ok = tryAdd(live, 1, effectiveVariantId ?? undefined);
     if (!ok) setOptionsOpen(true);
   };
 
@@ -69,14 +71,14 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
       setOptionsOpen(true);
       return;
     }
-    const ok = tryAdd(live, 1, selectedVariantId ?? undefined);
+    const ok = tryAdd(live, 1, effectiveVariantId ?? undefined);
     if (!ok) setOptionsOpen(true);
   };
 
   const handleDecrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    stepDown(product.id, selectedVariantId ?? undefined);
+    stepDown(product.id, effectiveVariantId ?? undefined);
   };
 
   const openOptions = (e: React.MouseEvent) => {
@@ -85,50 +87,60 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
     setOptionsOpen(true);
   };
 
+  const handlePointerMove = (e: React.PointerEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    e.currentTarget.style.setProperty("--glare-x", `${x}%`);
+    e.currentTarget.style.setProperty("--glare-y", `${y}%`);
+  };
+
   return (
     <>
       <Link
         href={productLink(product)}
-        className="bg-white border border-[#E7DEF5] rounded-xl overflow-hidden flex flex-col h-full shadow-[0_1px_2px_rgba(26,10,51,0.05)] hover:shadow-[0_14px_32px_-10px_rgba(45,27,105,0.22)] hover:border-[#2D1B69]/40 hover:-translate-y-1 transition-all duration-300 w-full group group/card"
+        onPointerMove={handlePointerMove}
+        className="card-3d-inner transform-3d bg-white border border-[#E7DEF5] rounded-2xl overflow-hidden flex flex-col h-full shadow-[0_2px_8px_rgba(26,10,51,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.22),0_0_25px_-4px_rgba(124,181,24,0.25)] hover:border-[#7CB518]/60 hover:-translate-y-2 transition-all duration-300 w-full group group/card relative"
       >
-      {/* Image zone — clean & unobstructed with corner discount pill */}
-      <div className="relative bg-[#F7F4FC] aspect-square overflow-hidden p-2">
-        <ImageGuard
-          src={product.images?.[0]}
-          alt={product.name}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
-          draggable={false}
-          className="object-contain p-2 animate-fade-in transition-transform duration-500 group-hover/card:scale-108"
-        />
+      {/* Dynamic Ray-Traced Specular Glare */}
+      <div aria-hidden="true" className="specular-glare-overlay" />
+
+      {/* Image zone — clean & unobstructed with corner discount pill & specular sheen */}
+      <div className="relative bg-gradient-to-b from-[#F7F4FC] to-[#F0ECF9] aspect-square overflow-hidden p-2 transform-3d">
+        <div className="relative h-full w-full layer-3d-pop">
+          <ImageGuard
+            src={product.images?.[0]}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
+            draggable={false}
+            className="object-contain p-2 animate-fade-in transition-transform duration-500 ease-out group-hover/card:scale-110 drop-shadow-[0_10px_15px_rgba(0,0,0,0.12)]"
+          />
+        </div>
         {discount > 0 && (
-          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs border border-white/20">
+          <span className="layer-3d-badge absolute top-2 left-2 z-10 inline-flex items-center rounded-lg bg-[#047857] px-2 py-0.5 text-tiny font-black tracking-tight text-white shadow-sm border border-emerald-400/40 shadow-emerald-700/20">
             {discount}% OFF
           </span>
         )}
-        {/* Futuristic Glass Specular Reflection Sheen */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/25 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
+        {/* 2028 Specular Reflection Sheen */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/35 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-2 right-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-xs hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 shadow-sm border border-black/5 hover:scale-115 active:scale-90 transition-all cursor-pointer backdrop-blur-xs"
         >
-          <svg viewBox="0 0 24 24" className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" className={`h-3.5 w-3.5 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "fill-none text-[#9B8CB5]"}`} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
           </svg>
         </button>
       </div>
 
       {/* Info zone */}
-      <div className="flex flex-col flex-1 gap-0.5 p-2 sm:p-2.5">
+      <div className="flex flex-col flex-1 gap-1 p-2 sm:p-3">
         <div className="flex items-center justify-between gap-1 text-tiny">
-          <p className="flex items-center gap-1 font-semibold text-[#6B5B83]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            60 MINS
+          <p className="flex items-center gap-1.5 font-bold text-[#5C4A7A]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518] animate-pulse" />
+            <span className="tracking-wide text-tiny uppercase font-black text-[#5A8010]">60 MINS</span>
           </p>
           {live.shades && live.shades.length > 0 && (
             <div className="flex items-center -space-x-1" title={`${live.shades.length} shades available`}>
@@ -142,7 +154,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             </div>
           )}
         </div>
-        <h3 className="text-body-sm font-medium text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px]">
+        <h3 className="text-body-sm font-semibold text-[#150726] leading-[1.3] line-clamp-2 min-h-[34px] group-hover/card:text-[#2D1B69] transition-colors">
           {product.name}
         </h3>
         {/* Pack size / Unit selector pill — Blinkit style */}
@@ -151,7 +163,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
             <button
               type="button"
               onClick={openOptions}
-              className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded-md border border-[#EDE7F6] transition-colors cursor-pointer"
             >
               <span>{selectedVariant?.label || product.unit}</span>
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
@@ -169,7 +181,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         {/* Bottom row — price block left, ADD/stepper right */}
         <div className="mt-auto flex items-end justify-between gap-1 pt-1.5 min-w-0">
           <div className="min-w-0 flex-1 flex flex-col justify-end">
-            <span className="text-body-md font-extrabold tracking-tight text-[#150726] tabular-nums leading-tight truncate">
+            <span className="text-body-md font-black tracking-tight text-[#150726] tabular-nums leading-tight truncate">
               ₹{activePrice.toLocaleString("en-IN")}
             </span>
             {activeMrp > activePrice && (
@@ -188,9 +200,9 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 ADD
               </button>
             ) : (
-              <div className="stepper shadow-md shadow-green-500/25">
+              <div className="stepper shadow-md shadow-green-500/35 border border-white/20">
                 <button onClick={handleDecrement} aria-label="Decrease quantity">−</button>
-                <span className="tabular-nums">{qty}</span>
+                <span className="tabular-nums font-black">{qty}</span>
                 <button onClick={handleIncrement} aria-label="Increase quantity">+</button>
               </div>
             )}

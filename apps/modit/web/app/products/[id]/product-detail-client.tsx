@@ -104,6 +104,18 @@ export default function ProductDetailPage({
   const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (product?.defaultVariantId) {
+      setSelectedVariant((prev) => {
+        if (!prev || !product.variants?.some((v) => v.id === prev)) {
+          return product.defaultVariantId ?? null;
+        }
+        return prev;
+      });
+    }
+  }, [product?.id, product?.defaultVariantId, product?.variants]);
+
   const [selectedShade, setSelectedShade] = useState<string | null>("Soft Lilac");
   const [visualizerOpen, setVisualizerOpen] = useState(false);
   const [rfqOpen, setRfqOpen] = useState(false);
@@ -155,6 +167,8 @@ export default function ProductDetailPage({
       .slice(0, 4);
   }, [product, categoryList]);
 
+  const activeVariantId = selectedVariant ?? product?.defaultVariantId ?? null;
+
   const handleAddToCart = useCallback(() => {
     if (!product) return;
     if (product.hasShades && product.shades && product.shades.length > 0 && !selectedShade && !customColorCode) {
@@ -165,10 +179,10 @@ export default function ProductDetailPage({
     }
     setShadeWarning(false);
     const chosenColor = (selectedShade || customColorCode) || undefined;
-    if (!tryAdd(product, quantity, selectedVariant ?? undefined, chosenColor)) return;
+    if (!tryAdd(product, quantity, activeVariantId ?? undefined, chosenColor)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 3000);
-  }, [product, quantity, tryAdd, selectedVariant, selectedShade, customColorCode]);
+  }, [product, quantity, tryAdd, activeVariantId, selectedShade, customColorCode]);
 
   const handleBuyNow = useCallback(() => {
     if (!product) return;
@@ -180,9 +194,9 @@ export default function ProductDetailPage({
     }
     setShadeWarning(false);
     const chosenColor = (selectedShade || customColorCode) || undefined;
-    if (!tryAdd(product, quantity, selectedVariant ?? undefined, chosenColor)) return;
+    if (!tryAdd(product, quantity, activeVariantId ?? undefined, chosenColor)) return;
     window.location.href = "/checkout";
-  }, [product, quantity, tryAdd, selectedVariant, selectedShade, customColorCode]);
+  }, [product, quantity, tryAdd, activeVariantId, selectedShade, customColorCode]);
 
   // Blinkit stepper: current selection's cart qty, adjustable in place.
   const cartLines = useCartStore((s) => s.items);
@@ -193,7 +207,7 @@ export default function ProductDetailPage({
         .filter(
           (i) =>
             i.product.id === product.id &&
-            (i.variantId ?? null) === (selectedVariant ?? null) &&
+            (i.variantId ?? null) === (activeVariantId ?? null) &&
             (i.shade ?? null) === (selectedShade ?? null)
         )
         .reduce((s, i) => s + i.quantity, 0);
@@ -219,9 +233,9 @@ export default function ProductDetailPage({
   }, [product]);
 
   const activeVariant = useMemo(() => {
-    if (!product?.variants || !selectedVariant) return null;
-    return product.variants.find((v) => v.id === selectedVariant) ?? null;
-  }, [product, selectedVariant]);
+    if (!product?.variants || !activeVariantId) return null;
+    return product.variants.find((v) => v.id === activeVariantId) ?? null;
+  }, [product, activeVariantId]);
 
   const displayPrice = activeVariant?.price ?? product?.price ?? 0;
   const displayMrp = activeVariant?.mrp ?? product?.mrp ?? 0;
@@ -502,7 +516,7 @@ export default function ProductDetailPage({
               </h4>
               <div className="flex flex-wrap gap-2">
                 {product.variants.map((variant) => {
-                  const isSelected = selectedVariant === variant.id;
+                  const isSelected = activeVariantId === variant.id;
                   const variantDiscount = variant.mrp > variant.price
                     ? Math.round(((variant.mrp - variant.price) / variant.mrp) * 100)
                     : 0;
@@ -669,14 +683,14 @@ export default function ProductDetailPage({
                 </span>
                 <div className="stepper">
                   <button
-                    onClick={() => product && stepDown(product.id, selectedVariant ?? undefined)}
+                    onClick={() => product && stepDown(product.id, activeVariantId ?? undefined)}
                     aria-label="Decrease quantity"
                   >
                     −
                   </button>
                   <span className="tabular-nums">{inCartQty}</span>
                   <button
-                    onClick={() => product && tryAdd(product, 1, selectedVariant ?? undefined, selectedShade ?? undefined)}
+                    onClick={() => product && tryAdd(product, 1, activeVariantId ?? undefined, selectedShade ?? undefined)}
                     aria-label="Increase quantity"
                   >
                     +
@@ -783,16 +797,16 @@ export default function ProductDetailPage({
         </div>
       </div>
 
-      {/* Mobile sticky add-to-cart bar — docks above the bottom nav (64px + 12px gap) */}
-      <div className="dock-bar fixed left-0 right-0 z-40 bg-white border-t border-[var(--border)] px-4 py-2.5 flex items-center gap-3 lg:hidden shadow-[0_-4px_16px_rgba(26,10,51,0.08)]">
-        <div className="flex-1">
-          <p className="text-micro text-[var(--text-muted)]">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
-          <p className="text-lg font-bold text-[var(--text-primary)]">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>
+      {/* Mobile sticky add-to-cart bar — 2028 Cyber Glass dock */}
+      <div className="dock-bar fixed left-0 right-0 z-40 glass-cyber-light border-t border-white/40 px-4 py-3 flex items-center gap-3 lg:hidden shadow-[0_-12px_32px_rgba(21,7,38,0.14)] backdrop-blur-xl">
+        <div className="flex-1 min-w-0">
+          <p className="text-micro font-bold text-[#6B5B83] uppercase tracking-wider">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
+          <p className="text-body-lg font-black text-[#150726] tabular-nums leading-tight">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>
         </div>
         <button
           onClick={handleAddToCart}
           disabled={areaBlocked}
-          className="flex-1 h-12 rounded-xl bg-[var(--green)] text-white text-body-md font-bold hover:bg-[var(--green-hover)] transition-all active:scale-[0.98] shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 disabled:opacity-40"
+          className="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-body-sm font-black hover:scale-102 transition-all active:scale-95 shadow-[0_0_15px_rgba(124,181,24,0.35)] flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer border border-emerald-400/30"
         >
           {added ? (
             <><CheckCircle2 className="h-5 w-5" /> Added</>
@@ -803,9 +817,9 @@ export default function ProductDetailPage({
         <button
           onClick={handleBuyNow}
           disabled={areaBlocked}
-          className="flex-1 h-12 rounded-xl bg-[var(--brand)] text-white text-body-md font-bold hover:bg-[var(--brand-hover)] transition-all active:scale-[0.98] shadow-lg shadow-purple-900/25 flex items-center justify-center gap-2 disabled:opacity-40"
+          className="flex-1 h-12 rounded-2xl bg-gradient-to-r from-[#2D1B69] to-[#150726] text-white text-body-sm font-black hover:scale-102 transition-all active:scale-95 shadow-[0_0_15px_rgba(45,27,105,0.35)] flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer border border-white/20"
         >
-          <Zap className="h-5 w-5" /> Buy Now
+          <Zap className="h-5 w-5 text-[#F8CB46] fill-[#F8CB46]" /> Buy Now
         </button>
       </div>
 
@@ -957,7 +971,7 @@ export default function ProductDetailPage({
         product={product}
         initialShade={selectedShade}
         initialShadeColor={customColorCode || product.shades?.find((s) => s.name === selectedShade)?.code}
-        selectedVariantId={selectedVariant}
+        selectedVariantId={activeVariantId}
       />
     </div>
   );

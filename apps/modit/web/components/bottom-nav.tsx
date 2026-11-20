@@ -15,9 +15,9 @@ const NAV_ITEMS = [
 ];
 
 /**
- * Bottom tab bar — AMOLED glass in MODIT colors: deep-black frosted bar,
- * soft-white icons, white active tab with a green top tick. Hidden inside
- * the staff panel.
+ * Bottom tab bar — 2028 AMOLED Obsidian Cyber Glass Navigation Dock:
+ * Contoured floating island dock with top laser horizon hairline,
+ * luminous active indicator pod, and tactile spring transitions.
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -30,10 +30,13 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="amoled-glass fixed bottom-0 left-0 right-0 z-50 border-x-0 border-b-0 lg:hidden"
-      style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
+      className="fixed bottom-2 inset-x-3 z-bottomnav mx-auto max-w-md rounded-3xl bg-[#0b0318]/92 backdrop-blur-2xl border border-white/20 lg:hidden shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8),0_0_25px_-5px_rgba(124,181,24,0.25)] overflow-hidden"
+      style={{ paddingBottom: "max(6px, env(safe-area-inset-bottom))" }}
     >
-      <div className="grid grid-cols-4 gap-0 w-full">
+      {/* Top Laser Horizon Hairline */}
+      <div className="h-[1.5px] w-full bg-gradient-to-r from-transparent via-[#7CB518] via-[#00BCD4] to-transparent opacity-85" />
+
+      <div className="grid grid-cols-4 gap-1 w-full px-2 pt-2 pb-1">
         {NAV_ITEMS.map((item) => {
           const href = "isAccount" in item && item.isAccount && loggedIn ? "/dashboard" : item.href;
           const isActive = href === "/" ? currentPath === "/" : currentPath === href || currentPath.startsWith(href + "/");
@@ -43,16 +46,21 @@ export function BottomNav() {
               key={item.label}
               href={href}
               aria-current={isActive ? "page" : undefined}
-              className="flex flex-col items-center gap-1 py-2.5 transition-all duration-200 active:scale-90 relative"
-              style={{ color: highlighted ? "#FFFFFF" : "rgba(255,255,255,0.55)" }}
+              className={`flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl transition-all duration-300 active:scale-90 relative group ${
+                isActive
+                  ? "bg-white/10 text-white shadow-xs border border-white/15"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
+              }`}
             >
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#7CB518] rounded-full shadow-[0_0_8px_rgba(124,181,24,0.8)]" />
+                <span className="absolute -top-[9px] left-1/2 -translate-x-1/2 w-8 h-[2.5px] bg-gradient-to-r from-[#7CB518] to-[#00BCD4] rounded-full shadow-[0_0_12px_#7CB518] animate-pulse" />
               )}
-              <div className="relative">
-                <item.icon className="h-5 w-5" fill={highlighted ? "currentColor" : "none"} strokeWidth={highlighted ? 0 : 2} />
+              <div className={`relative transition-transform duration-200 ${isActive ? "scale-110 drop-shadow-[0_0_10px_rgba(124,181,24,0.7)] text-[#7CB518]" : "group-hover:scale-105"}`}>
+                <item.icon className="h-5 w-5" fill={highlighted ? "currentColor" : "none"} strokeWidth={highlighted ? 0 : 2.2} />
               </div>
-              <span className={`text-tiny ${isActive ? "font-bold" : "font-semibold"}`}>{item.label}</span>
+              <span className={`text-micro tracking-tight ${isActive ? "font-black text-white" : "font-medium text-white/60"}`}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

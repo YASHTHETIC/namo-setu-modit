@@ -55,21 +55,24 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
 
   return (
     <>
-      <div className="group card-lift bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full shadow-[0_1px_3px_rgba(26,10,51,0.06)] hover:shadow-md transition-all">
+      <div className="group card-3d-inner transform-3d bg-white rounded-xl border border-[#EDE7F6] overflow-hidden flex flex-col h-full shadow-[0_1px_3px_rgba(26,10,51,0.06)] hover:shadow-[0_12px_28px_-6px_rgba(45,27,105,0.18)] hover:-translate-y-1.5 transition-all duration-300 relative">
+      {/* 2028 Specular Sheen */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
+
       {/* Image zone — clean & completely unobstructed */}
-      <div className="relative bg-[#F7F4FC] p-2 aspect-square">
-        <Link href={productLink(product)} className="relative block h-full w-full">
+      <div className="relative bg-[#F7F4FC] p-2 aspect-square transform-3d">
+        <Link href={productLink(product)} className="relative block h-full w-full layer-3d-pop">
           <ImageGuard
             src={product.images?.[0]}
             alt={product.name}
             fill
             sizes="50vw"
             draggable={false}
-            className="object-contain p-1 animate-fade-in card3d-img"
+            className="object-contain p-1 animate-fade-in card3d-img drop-shadow-[0_8px_12px_rgba(0,0,0,0.1)] group-hover:scale-108 transition-transform duration-500"
           />
         </Link>
         {discountPct > 0 && (
-          <span className="absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
+          <span className="layer-3d-badge absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
             {discountPct}% OFF
           </span>
         )}
@@ -117,7 +120,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOptionsOpen(true); }}
               className="inline-flex items-center gap-1 text-micro font-bold text-[#2D1B69] hover:text-[#7CB518] bg-[#F7F4FC] hover:bg-[#F0ECF9] px-2 py-0.5 rounded border border-[#EDE7F6] transition-colors cursor-pointer"
             >
-              <span>{product.unit}</span>
+              <span>{product.defaultVariant?.label || product.unit}</span>
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-[#2D1B69]">
                 <polyline points="6 9 12 15 18 9" />
               </svg>

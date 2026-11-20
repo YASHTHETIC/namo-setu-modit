@@ -3839,3 +3839,224 @@ html[data-app-installed="true"] .install-app-cta {
 
 /* Swipe-row action buttons revealed behind cart rows. */
 .swipe-row-content { touch-action: pan-y; }
+
+/* ═══════════════════════════════════════════════
+   FUTURISTIC 2028 UI FX — OBSIDIAN CYBER AESTHETIC
+   ═══════════════════════════════════════════════ */
+
+/* 2028 Multi-layered Frosted Obsidian Glass */
+.glass-cyber {
+  background: linear-gradient(135deg, rgba(21, 7, 38, 0.85) 0%, rgba(11, 3, 24, 0.92) 100%);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-cyber-light {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(221, 214, 238, 0.7);
+  box-shadow: 0 10px 30px -10px rgba(45, 27, 105, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Traveling Specular Reflection Sheen */
+.specular-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.specular-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+.specular-sheen:hover::after {
+  transform: translateX(100%);
+}
+
+/* 2028 Luminous Border Glow */
+.glow-border-green {
+  border: 1px solid rgba(124, 181, 24, 0.35);
+  box-shadow: 0 0 20px -3px rgba(124, 181, 24, 0.25), inset 0 0 12px -2px rgba(124, 181, 24, 0.12);
+}
+.glow-border-cyan {
+  border: 1px solid rgba(0, 188, 212, 0.35);
+  box-shadow: 0 0 20px -3px rgba(0, 188, 212, 0.25), inset 0 0 12px -2px rgba(0, 188, 212, 0.12);
+}
+.glow-border-pink {
+  border: 1px solid rgba(233, 30, 99, 0.35);
+  box-shadow: 0 0 20px -3px rgba(233, 30, 99, 0.25), inset 0 0 12px -2px rgba(233, 30, 99, 0.12);
+}
+
+/* Fluid Aurora Background Mesh */
+.aurora-mesh {
+  background: linear-gradient(135deg, #0b0318 0%, #150726 40%, #2D1B69 80%, #1e0d36 100%);
+  background-size: 200% 200%;
+  animation: auroraWave 12s ease infinite;
+}
+
+/* Futuristic Neon Badge */
+.neon-pill {
+  position: relative;
+  border-radius: 9999px;
+  background: rgba(124, 181, 24, 0.12);
+  border: 1px solid rgba(124, 181, 24, 0.4);
+  color: #7CB518;
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(124, 181, 24, 0.5);
+  box-shadow: 0 0 15px -3px rgba(124, 181, 24, 0.25);
+}
+
+/* Shimmering Holographic Gradient Text */
+.text-holo {
+  background: linear-gradient(135deg, #FFFFFF 0%, #7CB518 40%, #00BCD4 70%, #F8CB46 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: auroraWave 8s linear infinite;
+}
+
+/* Futuristic Card Lift with Dynamic Ambient Halo */
+.card-2028 {
+  background: #FFFFFF;
+  border: 1px solid #E8E0F7;
+  border-radius: 18px;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+.card-2028:hover {
+  transform: translateY(-5px) scale(1.01);
+  border-color: rgba(45, 27, 105, 0.25);
+  box-shadow:
+    0 20px 40px -12px rgba(45, 27, 105, 0.18),
+    0 0 0 1px rgba(124, 181, 24, 0.25);
+}
+
+/* ═══════════════════════════════════════════════
+   PURE CSS 3D TRANSFORMS & HYPERREALISTIC ENGINE
+   ═══════════════════════════════════════════════ */
+
+/* 3D Perspective Utilities */
+.perspective-600 {
+  perspective: 600px;
+}
+.perspective-800 {
+  perspective: 800px;
+}
+.perspective-1000 {
+  perspective: 1000px;
+}
+.perspective-1200 {
+  perspective: 1200px;
+}
+.transform-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* 3D Rotating Showcase Cube */
+.cube-3d-scene {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+.cube-3d-box {
+  transform-style: preserve-3d;
+  animation: cubeSpin 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cube-3d-box:hover {
+  animation-play-state: paused;
+}
+@keyframes cubeSpin {
+  0% {
+    transform: rotateX(-14deg) rotateY(0deg);
+  }
+  25% {
+    transform: rotateX(12deg) rotateY(90deg);
+  }
+  50% {
+    transform: rotateX(-14deg) rotateY(180deg);
+  }
+  75% {
+    transform: rotateX(14deg) rotateY(270deg);
+  }
+  100% {
+    transform: rotateX(-14deg) rotateY(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cube-3d-box {
+    animation: none;
+    transform: rotateX(-10deg) rotateY(25deg);
+  }
+}
+
+/* 3D Card Depth & Spatial Layers */
+.card-3d-container {
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+.card-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+.layer-3d-base {
+  transform: translateZ(0);
+}
+.layer-3d-pop {
+  transform: translateZ(24px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.layer-3d-badge {
+  transform: translateZ(36px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Dynamic Interactive Specular Glare */
+.specular-glare-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    380px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.08) 40%,
+    transparent 75%
+  );
+  z-index: 25;
+}
+.group:hover .specular-glare-overlay,
+.card-3d-inner:hover .specular-glare-overlay {
+  opacity: 1;
+}
+
+/* 3D Isometric Category Plate */
+.category-plate-3d {
+  transform-style: preserve-3d;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.category-plate-3d:hover {
+  transform: translateY(-8px) scale(1.05) rotateX(4deg);
+  box-shadow:
+    0 20px 35px -8px rgba(45, 27, 105, 0.24),
+    0 0 20px -2px rgba(124, 181, 24, 0.28);
+}
+
+

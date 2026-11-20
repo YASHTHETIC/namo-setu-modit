@@ -17,6 +17,7 @@ import {
   Minus,
   Plus,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { useCartStore, getBulkUnitPrice, isBulkApplied, getLiveUnitPrice } from "@/lib/cart-store";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
@@ -80,7 +81,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-[#F8F6FC]">
         {/* Header */}
-        <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
+        <header className={`sticky top-0 z-header bg-[#0b0318]/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
           <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
             <Link href="/" aria-label="Back to home" className="text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="h-5 w-5" />
@@ -89,15 +90,19 @@ export default function CartPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[600px] py-20 text-center">
-          <div className="h-20 w-20 rounded-full bg-[#F0ECF9] flex items-center justify-center mx-auto mb-4">
-            <ShoppingCart className="h-10 w-10 text-[#9B8CB5]" />
+        <div className="mx-auto max-w-[600px] py-20 text-center px-4">
+          <div className="relative h-24 w-24 rounded-3xl bg-gradient-to-br from-[#150726] to-[#2D1B69] border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-cyber-purple">
+            <ShoppingCart className="h-10 w-10 text-[#00BCD4]" />
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00BCD4] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-[#00BCD4]"></span>
+            </span>
           </div>
-          <h2 className="text-title-md font-bold text-[#150726]">Your cart is empty</h2>
-          <p className="mt-2 text-body-sm text-[#9B8CB5]">Add materials to your cart to proceed.</p>
-          <Link href="/products" className="btn-shine mt-5 inline-flex items-center gap-2 bg-[#7CB518] text-white text-body-sm font-bold px-6 py-2.5 rounded-full hover:bg-[#6A9C14] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+          <h2 className="text-title-lg font-extrabold text-[#150726]">Your cart is empty</h2>
+          <p className="mt-2 text-body-sm text-[#9B8CB5]">Add construction materials &amp; tools to your cart to proceed.</p>
+          <Link href="/products" className="btn-shine mt-6 inline-flex items-center gap-2 bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-body-sm font-extrabold px-7 py-3 rounded-xl hover:opacity-95 transition-all shadow-cyber-green hover:scale-105 active:scale-95">
             <ArrowLeft className="h-4 w-4" />
-            Browse Products
+            Browse Catalog
           </Link>
 
           {savedItems.length > 0 && (
@@ -105,13 +110,13 @@ export default function CartPage() {
               <h3 className="text-body-lg font-bold text-[#150726] mb-4">Saved for Later ({savedItems.length})</h3>
               <div className="space-y-3">
                 {savedItems.map((s) => (
-                  <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <ProductThumb src={s.product.images?.[0]} alt={s.product.name} className="h-16 w-16 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                  <div key={s.product.id} className="card-2028 flex items-center gap-3 rounded-2xl border border-[#DDD6EE] bg-white p-3 shadow-xs">
+                    <ProductThumb src={s.product.images?.[0]} alt={s.product.name} className="h-16 w-16 rounded-xl object-contain bg-[#F0ECF9] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
                       <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString("en-IN")}</p>
                     </div>
-                    <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
+                    <button onClick={() => moveToCart(s.product.id)} className="text-caption font-bold text-[#7CB518] hover:underline">Move to Cart</button>
                   </div>
                 ))}
               </div>
@@ -125,35 +130,40 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-[#F8F6FC]">
       {/* Header */}
-      <header className={`sticky top-0 z-50 bg-[#150726]/95 backdrop-blur-md border-b border-white/5 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`sticky top-0 z-header bg-[#0b0318]/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300 ${headerHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="max-w-[1440px] mx-auto flex items-center gap-3 px-4 py-3">
           <Link href="/products" aria-label="Back to products" className="text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <h2 className="text-body-lg font-bold text-white flex-1">Shopping Cart</h2>
+          <div className="flex-1">
+            <h2 className="text-body-lg font-bold text-white flex items-center gap-2">
+              <span>Shopping Cart</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-white/10 text-tiny text-white/80 font-medium">
+                {items.length} item{items.length !== 1 ? "s" : ""}
+              </span>
+            </h2>
+          </div>
           <button onClick={clearCart} className="text-caption font-semibold text-[#E91E63] hover:text-[#C2185B] transition-colors">
             Clear Cart
           </button>
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-4 sm:px-6">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6">
         {/* Breadcrumb */}
-        <div className="mb-4">
-          <Link href="/products" className="inline-flex items-center gap-1.5 text-caption text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">
+        <div className="mb-4 flex items-center justify-between">
+          <Link href="/products" className="inline-flex items-center gap-1.5 text-caption font-semibold text-[#9B8CB5] hover:text-[#2D1B69] transition-colors">
             <ArrowLeft className="h-3 w-3" /> Continue Shopping
           </Link>
-          <h1 className="hidden sm:block text-title-lg font-bold text-[#150726] mt-1">
-            Shopping Cart
-            <span className="ml-2 text-body-lg font-normal text-[#9B8CB5]">
-              ({items.length} item{items.length !== 1 ? "s" : ""})
-            </span>
-          </h1>
+          <div className="hidden sm:flex items-center gap-2 text-micro font-bold text-[#7CB518] bg-[#F0F9E8] px-3 py-1 rounded-full border border-[#7CB518]/25">
+            <Sparkles className="h-3.5 w-3.5 text-[#7CB518]" />
+            <span>Guaranteed Site Delivery</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Cart Items */}
-          <div className="lg:col-span-8 space-y-3">
+          <div className="lg:col-span-8 space-y-3.5">
             {items.map((item, idx) => {
               const resolved = resolveProduct(item.product);
               const basePrice = getLiveUnitPrice(item);
@@ -173,9 +183,9 @@ export default function CartPage() {
                   onRemove={() => removeItem(item.product.id, item.variantId, item.shade)}
                   className="rounded-2xl"
                 >
-                <div className="flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 hover:shadow-md transition-shadow">
+                <div className="card-2028 specular-sheen flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 transition-all hover:border-[#2D1B69]/30">
                   {/* Image */}
-                  <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9]">
+                  <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9] border border-[#DDD6EE]/50">
                     <ProductThumb src={item.product.images?.[0]} alt={item.product.name} className="h-full w-full object-contain" />
                   </Link>
 
@@ -222,12 +232,12 @@ export default function CartPage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-1.5">
+                    <div className="flex flex-wrap items-center gap-2 mt-1.5">
                       {unitMrp > itemPrice && (
                         <span className="text-caption text-[#9B8CB5] line-through">₹{unitMrp.toLocaleString("en-IN")}</span>
                       )}
                       {discount > 0 && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#E91E63]/10 text-tiny font-bold text-[#E91E63]">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-[#E91E63]/10 text-tiny font-bold text-[#E91E63] border border-[#E91E63]/20">
                           {discount}% OFF
                         </span>
                       )}
@@ -248,31 +258,35 @@ export default function CartPage() {
                     <div className="mt-3 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {/* Quantity selector */}
-                        <div className="flex items-center border-2 border-[#DDD6EE] rounded-lg overflow-hidden">
+                        <div className="flex items-center border border-[#DDD6EE] bg-[#F8F6FC] rounded-xl overflow-hidden shadow-xs">
                           <button
                             onClick={() => updateQuantity(item.product.id, Math.max(item.product.moq, item.quantity - 1), item.variantId, item.shade)}
                             disabled={item.quantity <= item.product.moq}
-                            className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="h-9 w-9 flex items-center justify-center text-[#150726] hover:bg-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                             <Minus className="h-3.5 w-3.5" />
                           </button>
-                          <span className="h-10 w-10 flex items-center justify-center text-body-sm font-bold text-[#150726] border-x-2 border-[#DDD6EE] tabular-nums">
+                          <span className="h-9 w-10 flex items-center justify-center text-body-sm font-extrabold text-[#150726] border-x border-[#DDD6EE] bg-white tabular-nums">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.product.id, Math.min(item.product.stockLevel, item.quantity + 1), item.variantId, item.shade)}
-                            className="h-10 w-10 flex items-center justify-center text-[#150726] hover:bg-[#F0ECF9] transition-colors"
+                            className="h-9 w-9 flex items-center justify-center text-[#150726] hover:bg-white transition-colors"
                           >
                             <Plus className="h-3.5 w-3.5" />
                           </button>
                         </div>
 
                         {/* Delivery badge */}
-                        <div className="flex items-center gap-1 text-micro">
+                        <div className="flex items-center gap-1.5 text-micro bg-[#F0F9E8] px-2.5 py-1 rounded-full border border-[#7CB518]/20">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
+                          </span>
                           <Clock className="h-3 w-3 text-[#7CB518]" />
-                          <span className="font-semibold text-[#150726]">Tomorrow</span>
+                          <span className="font-bold text-[#150726]">Tomorrow</span>
                           {item.product.freeDelivery && (
-                            <span className="ml-1 px-1.5 py-0.5 rounded bg-[#7CB518]/10 text-tiny font-bold text-[#7CB518]">FREE</span>
+                            <span className="ml-1 px-1.5 py-0.2 rounded bg-[#7CB518]/20 text-tiny font-black text-[#7CB518]">FREE</span>
                           )}
                         </div>
                       </div>
@@ -280,13 +294,13 @@ export default function CartPage() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => saveForLater(item.product.id)}
-                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-micro font-medium text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-micro font-semibold text-[#9B8CB5] hover:bg-[#F0ECF9] hover:text-[#2D1B69] transition-colors"
                         >
-                          <Heart className="h-3.5 w-3.5" /> Save for later
+                          <Heart className="h-3.5 w-3.5" /> Save
                         </button>
                         <button
                           onClick={() => removeItem(item.product.id, item.variantId, item.shade)}
-                          className="flex items-center gap-1 rounded-lg px-3 py-2 min-h-[36px] text-micro font-medium text-[#E91E63] hover:bg-[#E91E63]/5 transition-colors"
+                          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-micro font-semibold text-[#E91E63] hover:bg-[#E91E63]/10 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Remove
                         </button>
@@ -301,17 +315,17 @@ export default function CartPage() {
 
             {/* Saved for Later */}
             {savedItems.length > 0 && (
-              <div className="mt-6">
+              <div className="mt-8">
                 <h3 className="text-body-md font-bold text-[#150726] mb-3">Saved for Later ({savedItems.length})</h3>
                 <div className="space-y-2">
                   {savedItems.map((s) => (
-                    <div key={s.product.id} className="flex items-center gap-3 rounded-xl border border-[#DDD6EE] bg-white p-3">
-                      <ImageGuard src={s.product.images?.[0]} alt={s.product.name} width={56} height={56} className="h-14 w-14 rounded-lg object-contain bg-[#F0ECF9]" />
+                    <div key={s.product.id} className="card-2028 flex items-center gap-3 rounded-2xl border border-[#DDD6EE] bg-white p-3 shadow-xs">
+                      <ImageGuard src={s.product.images?.[0]} alt={s.product.name} width={56} height={56} className="h-14 w-14 rounded-xl object-contain bg-[#F0ECF9]" />
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
                         <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString("en-IN")}</p>
                       </div>
-                      <button onClick={() => moveToCart(s.product.id)} className="text-caption font-semibold text-[#7CB518] hover:underline">Move to Cart</button>
+                      <button onClick={() => moveToCart(s.product.id)} className="text-caption font-bold text-[#7CB518] hover:underline">Move to Cart</button>
                       <button onClick={() => removeSaved(s.product.id)} className="text-micro font-medium text-[#E91E63] hover:underline">Remove</button>
                     </div>
                   ))}
@@ -324,7 +338,7 @@ export default function CartPage() {
           <div className="lg:col-span-4">
             <div className="sticky top-20 space-y-4">
               {/* Coupon */}
-              <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+              <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
                 <h4 className="flex items-center gap-2 text-body-md font-bold text-[#150726]">
                   <Tag className="h-4 w-4 text-[#2D1B69]" /> Apply Coupon
                 </h4>
@@ -334,33 +348,33 @@ export default function CartPage() {
                     placeholder="Enter code"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    className="h-10 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-body-lg text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all"
+                    className="h-10 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-body-lg text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all font-mono uppercase"
                   />
                   <button
                     onClick={handleApplyCoupon}
                     disabled={!couponCode}
-                    className="h-10 px-5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-10 px-5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
                   >
                     Apply
                   </button>
                 </div>
                 {couponApplied && appliedCoupon && (
-                  <div className="mt-2 flex items-center justify-between gap-1.5 text-caption text-[#7CB518] font-semibold">
-                    <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! You save ₹{couponDiscount.toLocaleString("en-IN")}</span>
-                    <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-micro text-[#9B8CB5] hover:text-red-500 font-bold">Remove</button>
+                  <div className="mt-2.5 flex items-center justify-between gap-1.5 text-caption text-[#7CB518] font-bold bg-[#F0F9E8] px-3 py-1.5 rounded-lg border border-[#7CB518]/25">
+                    <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5" /> {appliedCoupon.code} applied! Save ₹{couponDiscount.toLocaleString("en-IN")}</span>
+                    <button onClick={() => { removeCoupon(); setCouponCode(""); }} className="text-micro text-[#9B8CB5] hover:text-[#E91E63] font-bold">Remove</button>
                   </div>
                 )}
                 {!couponApplied && couponError && (
-                  <p className="mt-2 text-micro text-red-500 font-semibold">{couponError}</p>
+                  <p className="mt-2 text-micro text-[#E91E63] font-semibold">{couponError}</p>
                 )}
                 {!couponApplied && !couponError && (() => {
                   const best = useCouponStore.getState().getBestCoupon(getCartTotal());
                   return best ? (
                     <button
                       onClick={() => setCouponCode(best.code)}
-                      className="mt-2 text-micro font-bold text-[#7CB518] hover:underline"
+                      className="mt-2.5 flex items-center gap-1 text-micro font-bold text-[#7CB518] hover:underline"
                     >
-                      Best offer for you: {best.code} — tap to apply
+                      <Sparkles className="h-3 w-3" /> Best offer for you: {best.code} — tap to apply
                     </button>
                   ) : null;
                 })()}
@@ -368,16 +382,19 @@ export default function CartPage() {
 
               {/* Savings pill — Blinkit bill header */}
               {getCartDiscount() + getBulkSavings() > 0 && (
-                <div className="mb-3 flex items-center justify-between px-4 py-2.5 bg-[#FFF6DE] border border-[#F8CB46] rounded-full">
-                  <p className="text-caption font-bold text-[#150726]">Your total savings</p>
-                  <p className="text-caption font-extrabold text-[#150726] tabular-nums">
+                <div className="flex items-center justify-between px-4 py-3 bg-[#FFF6DE] border border-[#F8CB46] rounded-2xl shadow-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🎉</span>
+                    <p className="text-caption font-bold text-[#150726]">Total Order Savings</p>
+                  </div>
+                  <p className="text-caption font-black text-[#150726] tabular-nums">
                     ₹{(getCartDiscount() + getBulkSavings()).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                   </p>
                 </div>
               )}
 
               {/* Price Details */}
-              <div className="rounded-2xl border border-[#DDD6EE] bg-white p-5">
+              <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
                 <h4 className="text-body-md font-bold text-[#150726]">Price Details</h4>
                 <div className="mt-3 space-y-2.5">
                   <div className="flex justify-between text-body-sm">
@@ -386,17 +403,17 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#7CB518]">Discount</span>
-                    <span className="text-[#7CB518] font-medium">-₹{getCartDiscount().toLocaleString("en-IN")}</span>
+                    <span className="text-[#7CB518] font-bold">-₹{getCartDiscount().toLocaleString("en-IN")}</span>
                   </div>
                   {getBulkSavings() > 0 && (
                     <div className="flex justify-between text-body-sm">
                       <span className="text-[#FF9800]">Bulk quantity savings</span>
-                      <span className="text-[#FF9800] font-medium">-₹{getBulkSavings().toLocaleString("en-IN")}</span>
+                      <span className="text-[#FF9800] font-bold">-₹{getBulkSavings().toLocaleString("en-IN")}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-body-sm">
                     <span className="text-[#9B8CB5]">Delivery</span>
-                    <span className={bill.shipping === 0 ? "text-[#7CB518] font-semibold" : "text-[#150726] font-medium"}>
+                    <span className={bill.shipping === 0 ? "text-[#7CB518] font-bold" : "text-[#150726] font-medium"}>
                       {bill.shipping === 0 ? "FREE" : `₹${bill.shipping}`}
                     </span>
                   </div>
@@ -407,16 +424,16 @@ export default function CartPage() {
                   {couponApplied && (
                     <div className="flex justify-between text-body-sm">
                       <span className="text-[#7CB518]">Coupon Discount</span>
-                      <span className="text-[#7CB518] font-medium">-₹{couponDiscount.toLocaleString("en-IN")}</span>
+                      <span className="text-[#7CB518] font-bold">-₹{couponDiscount.toLocaleString("en-IN")}</span>
                     </div>
                   )}
                   <div className="border-t border-[#DDD6EE] pt-3 flex justify-between items-center">
-                    <span className="text-body-lg font-bold text-[#150726]">Total</span>
+                    <span className="text-body-lg font-extrabold text-[#150726]">Total</span>
                     <div className="text-right">
-                      <span className="text-title-lg font-extrabold text-[#2D1B69]">₹{grandTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
+                      <span className="text-title-lg font-black text-[#2D1B69]">₹{grandTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
                       {getCartDiscount() > 0 && (
-                        <p className="text-micro font-semibold text-[#7CB518] mt-0.5">
-                          You save ₹{getCartDiscount().toLocaleString("en-IN", { maximumFractionDigits: 0 })} on this order
+                        <p className="text-micro font-bold text-[#7CB518] mt-0.5">
+                          You save ₹{getCartDiscount().toLocaleString("en-IN", { maximumFractionDigits: 0 })}
                         </p>
                       )}
                     </div>
@@ -424,29 +441,29 @@ export default function CartPage() {
                 </div>
 
                 {/* Estimated delivery */}
-                <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] px-3 py-2.5">
-                  <Truck className="h-4 w-4 text-[#7CB518]" />
+                <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-[#F0F9E8] border border-[#C5E1A5] px-3.5 py-2.5">
+                  <Truck className="h-4 w-4 text-[#7CB518] flex-shrink-0" />
                   <div>
-                    <p className="text-caption font-semibold text-[#5A8010]">Estimated delivery: Tomorrow</p>
-                    <p className="text-tiny text-[#7CB518]">Express and timed slots available at checkout</p>
+                    <p className="text-caption font-bold text-[#5A8010]">Estimated delivery: Tomorrow</p>
+                    <p className="text-tiny text-[#7CB518]">Express 60-min and timed slots selectable at checkout</p>
                   </div>
                 </div>
 
-                <Link href="/checkout">
-                  <button className="btn-shine mt-4 w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
-                    Place Order
+                <Link href="/checkout" className="block">
+                  <button className="btn-shine specular-sheen mt-5 w-full h-12 rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-body-md font-extrabold shadow-cyber-green transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    Place Order →
                   </button>
                 </Link>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 pt-3 border-t border-[#DDD6EE]/60 space-y-2">
                   <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
-                    <Shield className="h-3.5 w-3.5 text-[#2D1B69]" /> Secure payment — 256-bit SSL
+                    <Shield className="h-3.5 w-3.5 text-[#2D1B69]" /> Secure checkout · 256-bit SSL encrypted
                   </div>
                   <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
                     <Truck className="h-3.5 w-3.5 text-[#7CB518]" /> Free delivery on orders above ₹5,000
                   </div>
                   <div className="flex items-center gap-2 text-micro text-[#9B8CB5]">
-                    <Package className="h-3.5 w-3.5 text-[#00BCD4]" /> 7-day easy returns
+                    <Package className="h-3.5 w-3.5 text-[#00BCD4]" /> 7-day verified item returns
                   </div>
                 </div>
               </div>
@@ -455,15 +472,15 @@ export default function CartPage() {
         </div>
 
         {/* Mobile sticky total — clears the support-chat gutter on the right */}
-        <div className="dock-bar lg:hidden sticky z-40 ml-4 mr-20 mb-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-[#150726] pl-4 pr-2 py-2 shadow-xl">
+        <div className="dock-bar lg:hidden sticky z-sticky ml-4 mr-20 mb-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[#0b0318]/95 backdrop-blur-xl border border-white/10 pl-4 pr-2 py-2.5 shadow-glass-elevated">
             <div className="flex-1 min-w-0">
-              <p className="text-tiny text-white/50">Total</p>
-              <p className="text-body-lg font-extrabold text-white tabular-nums">{formatINR(grandTotal)}</p>
+              <p className="text-tiny text-white/60 uppercase font-semibold">Total Amount</p>
+              <p className="text-body-lg font-black text-white tabular-nums">{formatINR(grandTotal)}</p>
             </div>
             <Link
               href="/checkout"
-              className="rounded-xl bg-[#7CB518] px-5 py-2.5 text-body-sm font-bold text-white flex-shrink-0"
+              className="btn-shine specular-sheen rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] px-5 py-2.5 text-body-sm font-extrabold text-white flex-shrink-0 shadow-cyber-green"
             >
               Order →
             </Link>
