@@ -101,6 +101,7 @@ export default function ProductDetailPage({
   const touchStartX = useRef<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "specs" | "delivery">("details");
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
@@ -181,7 +182,11 @@ export default function ProductDetailPage({
     const chosenColor = (selectedShade || customColorCode) || undefined;
     if (!tryAdd(product, quantity, activeVariantId ?? undefined, chosenColor)) return;
     setAdded(true);
-    setTimeout(() => setAdded(false), 3000);
+    setToastVisible(true);
+    setTimeout(() => {
+      setAdded(false);
+      setToastVisible(false);
+    }, 3000);
   }, [product, quantity, tryAdd, activeVariantId, selectedShade, customColorCode]);
 
   const handleBuyNow = useCallback(() => {
@@ -277,6 +282,13 @@ export default function ProductDetailPage({
 
   return (
     <div className="fx-page mx-auto max-w-[1400px] px-4 py-4 sm:px-6 pb-[152px] lg:pb-4">
+      {/* Add-to-cart toast */}
+      <div className={`cart-toast${toastVisible ? " is-visible" : ""}`} role="status" aria-live="polite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        <span>Added to cart</span>
+      </div>
       {/* Product + BreadcrumbList JSON-LD is rendered by the server page — a
           second client-side copy on the same URL would emit two conflicting
           Product nodes to search engines. */}

@@ -801,6 +801,23 @@ img { display: block; max-width: 100%; }
 
 
 .product-grid > *:nth-child(7) { animation-delay: 300ms; }
+.product-grid > *:nth-child(8) { animation-delay: 350ms; }
+.product-grid > *:nth-child(9) { animation-delay: 400ms; }
+.product-grid > *:nth-child(10) { animation-delay: 450ms; }
+.product-grid > *:nth-child(11) { animation-delay: 500ms; }
+.product-grid > *:nth-child(12) { animation-delay: 550ms; }
+.product-grid > *:nth-child(13) { animation-delay: 600ms; }
+.product-grid > *:nth-child(14) { animation-delay: 650ms; }
+.product-grid > *:nth-child(15) { animation-delay: 700ms; }
+.product-grid > *:nth-child(16) { animation-delay: 750ms; }
+.product-grid > *:nth-child(17) { animation-delay: 800ms; }
+.product-grid > *:nth-child(18) { animation-delay: 850ms; }
+.product-grid > *:nth-child(19) { animation-delay: 900ms; }
+.product-grid > *:nth-child(20) { animation-delay: 950ms; }
+.product-grid > *:nth-child(21) { animation-delay: 1000ms; }
+.product-grid > *:nth-child(22) { animation-delay: 1050ms; }
+.product-grid > *:nth-child(23) { animation-delay: 1100ms; }
+.product-grid > *:nth-child(24) { animation-delay: 1150ms; }
 
 
 
@@ -1688,6 +1705,63 @@ button { touch-action: manipulation; }
 
 
 .product-card .product-price .mrp { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   PDP / CART ENHANCEMENTS — add-to-cart toast, stepper micro-interactions
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* Toast that slides up when an item is added to cart */
+.cart-toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  background: #150726;
+  border: 1px solid #7CB518;
+  color: #fff;
+  font: 700 12px/1 var(--font-app);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 20px rgba(124,181,24,0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s var(--ease-out-expo), opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+.cart-toast.is-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.cart-toast svg { width: 14px; height: 14px; color: #7CB518; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-toast { transition: none; }
+}
+
+/* Quantity stepper micro-interactions */
+.stepper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border: none;
+  background: #F7F4FC;
+  color: #2D1B69;
+  font: 700 16px/1 var(--font-app);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.2s ease;
+}
+.stepper button:active {
+  transform: scale(0.92);
+  background: #EDE7F6;
+}
+.stepper button:hover { background: #F0ECF9; }
+.stepper span { font-variant-numeric: tabular-nums; }
 
 
 

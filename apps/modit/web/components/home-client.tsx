@@ -435,40 +435,48 @@ export default function HomeClient() {
 
           <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
             <div className="min-w-0 max-w-xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
-                </span>
-                <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
-                <span className="text-white/40">·</span>
-                <span className="text-white/90">FREE OVER ₹5,000</span>
-                <span className="text-white/40">·</span>
-                <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
-              </div>
-              <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
-                Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
-              </h1>
-              <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
-                Direct factory cement, paints, tiles, electricals &amp; steel — dispatched in 60 minutes with official GST tax invoices
-              </p>
-              <div className="mt-5 flex items-center gap-3">
-                <Magnetic strength={8}>
-                  <Link href="/products" className="btn-shine specular-sheen inline-flex items-center gap-2 bg-gradient-to-r from-white via-[#F7F4FC] to-white text-[#150726] text-caption sm:text-body-sm font-black px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(248,203,70,0.4)] border border-white/60 cursor-pointer group/cta">
-                    Explore Catalog
-                    <ArrowRight className="h-4 w-4 group-hover/cta:translate-x-1.5 transition-transform text-[#2D1B69]" />
+              <Reveal delay={0}>
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
+                  </span>
+                  <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
+                  <span className="text-white/40">·</span>
+                  <span className="text-white/90">FREE OVER ₹5,000</span>
+                  <span className="text-white/40">·</span>
+                  <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
+                </div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
+                  Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
+                </h1>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
+                  Direct factory cement, paints, tiles, electricals &amp; steel — dispatched in 60 minutes with official GST tax invoices
+                </p>
+              </Reveal>
+              <Reveal delay={240}>
+                <div className="mt-5 flex items-center gap-3">
+                  <Magnetic strength={8}>
+                    <Link href="/products" className="btn-shine specular-sheen inline-flex items-center gap-2 bg-gradient-to-r from-white via-[#F7F4FC] to-white text-[#150726] text-caption sm:text-body-sm font-black px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(248,203,70,0.4)] border border-white/60 cursor-pointer group/cta">
+                      Explore Catalog
+                      <ArrowRight className="h-4 w-4 group-hover/cta:translate-x-1.5 transition-transform text-[#2D1B69]" />
+                    </Link>
+                  </Magnetic>
+                  <Link href="/rfq" className="hidden sm:inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-caption sm:text-body-sm font-bold px-4 py-2.5 sm:py-3 rounded-full border border-white/20 backdrop-blur-md transition-all hover:scale-102">
+                    <span>Bulk RFQ</span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-[#7CB518]" />
                   </Link>
-                </Magnetic>
-                <Link href="/rfq" className="hidden sm:inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-caption sm:text-body-sm font-bold px-4 py-2.5 sm:py-3 rounded-full border border-white/20 backdrop-blur-md transition-all hover:scale-102">
-                  <span>Bulk RFQ</span>
-                  <ArrowUpRight className="h-3.5 w-3.5 text-[#7CB518]" />
-                </Link>
-              </div>
+                </div>
+              </Reveal>
             </div>
 
             {/* 3D Levitating Product Stage */}
             <div className="flex sm:items-center gap-3 sm:gap-4 flex-shrink-0 pr-1">
-              <div className="hidden lg:block flex-shrink-0 mr-1">
+              <div className="hidden md:block flex-shrink-0 mr-1">
                 <Cube3D />
               </div>
               <Tilt3D max={18} className="flex-shrink-0">
@@ -602,7 +610,7 @@ export default function HomeClient() {
                   key={cat.slug}
                   href={`/products?category=${cat.slug}`}
                   prefetch
-                  className="flex w-full flex-col items-center gap-1.5 group cursor-pointer"
+                  className="flex w-full flex-col items-center gap-1.5 group cursor-pointer group-hover:-translate-y-1 transition-transform duration-200"
                 >
                   <div
                     className={`category-plate-3d transform-3d card-2028 specular-sheen relative w-full aspect-square rounded-2xl bg-gradient-to-b from-white via-[#F7F4FC] to-[#F5F2FC] border border-[#DDD6EE] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_20px_40px_-6px_rgba(45,27,105,0.28),0_0_25px_-3px_rgba(124,181,24,0.32)] ${

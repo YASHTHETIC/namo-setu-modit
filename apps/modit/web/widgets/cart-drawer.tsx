@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Trash2, Timer, Share2, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Trash2, Timer, Share2, ArrowLeft, Truck } from "lucide-react";
 
 import { useCartStore } from "@/lib/cart-store";
 import { useCouponStore } from "@/lib/coupon-store";
@@ -140,6 +140,28 @@ export function CartDrawer() {
                   <p className="text-caption font-extrabold text-[#150726] tabular-nums">{formatINR2(bill.savings)}</p>
                 </div>
               )}
+
+              {/* Free delivery progress bar */}
+              <div className="bg-white rounded-2xl border border-[#DDD6EE] p-3 shadow-xs">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <Truck className="h-4 w-4 text-[#7CB518]" />
+                    <span className="text-caption font-bold text-[#150726]">Express Site Delivery</span>
+                  </div>
+                  <span className="text-tiny font-black text-[#7CB518]">
+                    {bill.subtotal >= 5000 ? "FREE" : `₹${Math.max(0, 5000 - bill.subtotal).toLocaleString("en-IN")} away`}
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-[#F0ECF9] overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#7CB518] to-[#5A8010] rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${Math.min(100, (bill.subtotal / 5000) * 100)}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-micro text-[#9B8CB5] text-center font-medium">
+                  {bill.subtotal >= 5000 ? "🎉 Free site delivery unlocked!" : "Free delivery auto-applied on orders above ₹5,000"}
+                </p>
+              </div>
 
               {/* Delivery block */}
               <div className="bg-white rounded-2xl border border-[#DDD6EE] p-3.5 flex items-center gap-3">

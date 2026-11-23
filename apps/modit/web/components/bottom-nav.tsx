@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, Package, User } from "lucide-react";
 import { useAuthReady } from "@/lib/use-auth";
+import { haptic } from "@/lib/haptics";
 
 // Blinkit-app pattern: 4 tabs only. Cart lives in the header (count badge) +
 // the floating view-cart bar — never twice in a tab strip.
@@ -46,6 +47,7 @@ export function BottomNav() {
               key={item.label}
               href={href}
               aria-current={isActive ? "page" : undefined}
+              onClick={() => haptic("tick")}
               className={`flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl transition-all duration-300 active:scale-90 relative group ${
                 isActive
                   ? "bg-white/10 text-white shadow-xs border border-white/15"

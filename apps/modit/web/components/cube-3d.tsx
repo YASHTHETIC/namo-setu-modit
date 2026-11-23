@@ -92,6 +92,34 @@ export function Cube3D() {
     setIsHovered(false);
   }, []);
 
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const touchRotRef = useRef<{ x: number; y: number }>({ x: -14, y: 0 });
+
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    setIsHovered(true);
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStartRef.current) return;
+    const dx = e.touches[0].clientX - touchStartRef.current.x;
+    const dy = e.touches[0].clientY - touchStartRef.current.y;
+    setManualRotation({
+      x: Math.max(-40, Math.min(40, touchRotRef.current.x - dy * 0.4)),
+      y: touchRotRef.current.y + dx * 0.6,
+    });
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (manualRotation) {
+      touchRotRef.current = manualRotation;
+    }
+    setTimeout(() => setIsHovered(false), 2000);
+  }, [manualRotation]);
+
   // Update active face indicator periodically
   useEffect(() => {
     if (isHovered) return;
@@ -116,6 +144,9 @@ export function Cube3D() {
         onPointerMove={handlePointerMove}
         onPointerEnter={() => setIsHovered(true)}
         onPointerLeave={handlePointerLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="cube-3d-scene relative h-[150px] w-[150px] sm:h-[180px] sm:w-[180px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
       >
         {/* Ambient 3D Ground Shadow Ring */}

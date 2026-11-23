@@ -393,6 +393,25 @@ export default function CartPage() {
                 </div>
               )}
 
+              {/* Free delivery progress bar */}
+              <div className="mt-4 rounded-xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-body-sm font-bold text-[#150726]">Free Delivery</h4>
+                  <span className="text-tiny font-bold text-[#7CB518]">
+                    ₹{Math.max(0, 5000 - getCartTotal()).toLocaleString("en-IN")} more
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-[#F0ECF9] overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#7CB518] to-[#5A8010] transition-all duration-700 ease-out"
+                    style={{ width: `${Math.min(100, (getCartTotal() / 5000) * 100)}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-tiny text-[#9B8CB5] text-center">
+                  {bill.shipping === 0 ? "🎉 Free delivery unlocked!" : "Add more items to get free delivery on orders above ₹5,000"}
+                </p>
+              </div>
+
               {/* Price Details */}
               <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
                 <h4 className="text-body-md font-bold text-[#150726]">Price Details</h4>
