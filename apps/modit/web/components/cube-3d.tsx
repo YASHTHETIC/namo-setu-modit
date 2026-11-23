@@ -147,7 +147,7 @@ export function Cube3D() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="cube-3d-scene relative h-[150px] w-[150px] sm:h-[180px] sm:w-[180px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+        className="cube-3d-scene relative h-[150px] w-[150px] sm:h-[180px] sm:w-[180px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-none"
       >
         {/* Ambient 3D Ground Shadow Ring */}
         <div
@@ -157,8 +157,8 @@ export function Cube3D() {
 
         {/* The 3D Cube Container */}
         <div
-          className={`cube-3d-box relative h-[120px] w-[120px] sm:h-[150px] sm:w-[150px] ${
-            isHovered ? "scale-105" : ""
+          className={`cube-3d-box relative h-[150px] w-[150px] scale-[0.88] sm:scale-100 ${
+            isHovered ? "!scale-105" : ""
           }`}
           style={{
             transform: manualRotation

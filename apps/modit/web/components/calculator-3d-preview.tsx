@@ -150,7 +150,7 @@ export function Calculator3DPreview({
 
       {/* 3D Perspective Stage */}
       <div
-        className="relative h-56 w-full flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden perspective-1000"
+        className="relative h-56 w-full flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden perspective-1000 touch-none"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

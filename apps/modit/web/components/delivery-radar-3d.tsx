@@ -18,9 +18,24 @@ export function DeliveryRadar3D({
 }: DeliveryRadar3DProps) {
   const isDelivered = status === "delivered";
   const [pulse, setPulse] = useState(0);
+  const [tilt, setTilt] = useState({ rx: 52, rz: -20 });
 
   // Smooth transit animation position (0 to 1 along route)
   const [transitProgress, setTransitProgress] = useState(0.55);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({
+      rx: 52 - ny * 10,
+      rz: -20 + nx * 12,
+    });
+  };
+
+  const handlePointerLeave = () => {
+    setTilt({ rx: 52, rz: -20 });
+  };
 
   useEffect(() => {
     if (isDelivered) {
@@ -77,11 +92,15 @@ export function DeliveryRadar3D({
       </div>
 
       {/* 3D Isometric Radar Grid Canvas */}
-      <div className="relative h-48 w-full overflow-hidden my-2 flex items-center justify-center perspective-800">
+      <div
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        className="relative h-48 w-full overflow-hidden my-2 flex items-center justify-center perspective-800 cursor-crosshair"
+      >
         <div
-          className="relative w-[300px] h-[200px] transform-3d transition-transform duration-700 select-none"
+          className="relative w-[300px] h-[200px] transform-3d transition-transform duration-150 ease-out select-none"
           style={{
-            transform: "rotateX(52deg) rotateZ(-20deg) scale(0.95)",
+            transform: `rotateX(${tilt.rx}deg) rotateZ(${tilt.rz}deg) scale(0.95)`,
           }}
         >
           {/* Cyber Isometric Floor Grid */}
