@@ -97,19 +97,22 @@ def create_app() -> FastAPI:
     @app.get("/healthz")
     @app.get("/api/v1/healthz")
     async def healthz():
+        import asyncio
         from backend.app.core.database import AsyncSessionLocal
         from backend.app.core.redis import get_redis_client
 
         db_ok = True
         redis_ok = True
         try:
-            async with AsyncSessionLocal() as session:
-                await session.execute(text("SELECT 1"))
+            async def _check_db():
+                async with AsyncSessionLocal() as session:
+                    await session.execute(text("SELECT 1"))
+            await asyncio.wait_for(_check_db(), timeout=1.0)
         except Exception:
             db_ok = False
         try:
             rc = get_redis_client()
-            await rc.ping()
+            await asyncio.wait_for(rc.ping(), timeout=0.5)
         except Exception:
             redis_ok = False
         # Redis is an optimization (rate limiting/caching), not a hard
