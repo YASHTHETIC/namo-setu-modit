@@ -187,14 +187,7 @@ export function Cube3D() {
     setManualRotation(null);
   };
 
-  // Update active face indicator periodically during auto-spin
-  useEffect(() => {
-    if (isHovered || isSnapping) return;
-    const interval = setInterval(() => {
-      setActiveFace((prev) => (prev + 1) % CUBE_FACES.length);
-    }, 3600);
-    return () => clearInterval(interval);
-  }, [isHovered, isSnapping]);
+  // Face indicator remains stable and updates only when user interacts or clicks a chip
 
   // Cube half-dimension: 75px on desktop (150px / 2)
   const tzLg = 75;
@@ -452,7 +445,7 @@ export function Cube3D() {
         <div className="w-full rounded-xl bg-black/60 border border-white/15 p-2 backdrop-blur-md shadow-glass-specular flex items-center justify-between gap-2">
           <div className="min-w-0 flex-1 text-left">
             <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-ping flex-shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-[#00BCD4] shadow-[0_0_8px_#00BCD4] flex-shrink-0" />
               <span className="text-micro font-black text-white truncate">{currentFace.specs.primary}</span>
             </div>
             <p className="text-tiny text-white/70 truncate mt-0.5">{currentFace.specs.secondary}</p>

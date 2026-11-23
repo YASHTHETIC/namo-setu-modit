@@ -385,12 +385,12 @@ export default function HomeClient() {
           </button>
           {nearest && typeof nearest.distance_km === "number" && (
             <span className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-tiny font-bold text-white/80 tabular-nums flex-shrink-0 shadow-xs">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-ping" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] shadow-[0_0_6px_#00BCD4]" />
               {nearest.distance_km < 1 ? `${Math.round(nearest.distance_km * 1000)} m away` : `${nearest.distance_km.toFixed(1)} km away`}
             </span>
           )}
           <div className="ml-auto flex items-center gap-1.5 text-white/60 flex-shrink-0 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
-            <div className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] animate-pulse" />
+            <div className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518]" />
             <span className="text-tiny font-extrabold uppercase tracking-wider text-emerald-400">Live</span>
           </div>
         </div>
@@ -421,62 +421,43 @@ export default function HomeClient() {
       <div className="page-gutter mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6">
       <ActiveOrderBanner />
 
-      {/* ═══ HERO BANNER — 2028 Futuristic Cyber Standard ═══ */}
-      <Reveal>
-        <div className="mt-3 sm:mt-4 rounded-3xl overflow-hidden relative group border border-white/15 shadow-[0_20px_50px_rgba(21,7,38,0.5)] gradient-pan" style={{ background: "linear-gradient(135deg, #0b0318 0%, #150726 40%, #2D1B69 75%, #4A2D8A 100%)", backgroundSize: "200% 200%" }}>
-          {/* Dual Opposing Traveling Laser Glow Beams */}
-          <BorderBeam duration={7} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={2} />
-          <BorderBeam duration={7} delay={-3.5} reverse={true} colorFrom="#F8CB46" colorTo="#E91E63" borderWidth={2} />
+      {/* ═══ HERO BANNER — 2028 Futuristic Cyber Standard (Solid, Non-Blinking) ═══ */}
+      <div className="mt-3 sm:mt-4 rounded-3xl overflow-hidden relative group border border-white/20 shadow-[0_20px_50px_rgba(21,7,38,0.5)]" style={{ background: "linear-gradient(135deg, #0b0318 0%, #150726 40%, #2D1B69 75%, #4A2D8A 100%)" }}>
+        {/* 2028 Ambient Fluid Aurora Mesh & Drifting Orbs (Stable, non-blinking) */}
+        <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_25%,_rgba(124,181,24,0.35)_0%,_transparent_45%),radial-gradient(circle_at_80%_75%,_rgba(0,188,212,0.35)_0%,_transparent_45%),radial-gradient(circle_at_50%_40%,_rgba(248,203,70,0.25)_0%,_transparent_50%)]" />
+        <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-[#7CB518]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-[#00BCD4]/25 blur-3xl" />
+        <div className="pointer-events-none absolute top-1/2 left-1/3 h-56 w-56 -translate-y-1/2 rounded-full bg-[#F8CB46]/20 blur-3xl" />
 
-          {/* 3D Holographic Particle Matrix VFX */}
-          <Particles3DVfx particleCount={36} speed={0.8} />
-
-          {/* 2028 Ambient Fluid Aurora Mesh & Drifting Orbs */}
-          <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_25%,_rgba(124,181,24,0.35)_0%,_transparent_45%),radial-gradient(circle_at_80%_75%,_rgba(0,188,212,0.35)_0%,_transparent_45%),radial-gradient(circle_at_50%_40%,_rgba(248,203,70,0.25)_0%,_transparent_50%)] animate-pulse" />
-          <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-[#7CB518]/30 blur-3xl animate-pulse" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-[#00BCD4]/35 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/2 left-1/3 h-56 w-56 -translate-y-1/2 rounded-full bg-[#F8CB46]/25 blur-3xl" />
-
-          <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
-            <div className="min-w-0 max-w-xl">
-              <Reveal delay={0}>
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
-                  </span>
-                  <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
-                  <span className="text-white/40">·</span>
-                  <span className="text-white/90">FREE OVER ₹5,000</span>
-                  <span className="text-white/40">·</span>
-                  <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
-                </div>
-              </Reveal>
-              <Reveal delay={80}>
-                <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
-                  Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
-                </h1>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
-                  Direct factory cement, paints, tiles, electricals &amp; steel — dispatched in 60 minutes with official GST tax invoices
-                </p>
-              </Reveal>
-              <Reveal delay={240}>
-                <div className="mt-5 flex items-center gap-3">
-                  <Magnetic strength={8}>
-                    <Link href="/products" className="btn-shine specular-sheen inline-flex items-center gap-2 bg-gradient-to-r from-white via-[#F7F4FC] to-white text-[#150726] text-caption sm:text-body-sm font-black px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(248,203,70,0.4)] border border-white/60 cursor-pointer group/cta">
-                      Explore Catalog
-                      <ArrowRight className="h-4 w-4 group-hover/cta:translate-x-1.5 transition-transform text-[#2D1B69]" />
-                    </Link>
-                  </Magnetic>
-                  <Link href="/rfq" className="hidden sm:inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-caption sm:text-body-sm font-bold px-4 py-2.5 sm:py-3 rounded-full border border-white/20 backdrop-blur-md transition-all hover:scale-102">
-                    <span>Bulk RFQ</span>
-                    <ArrowUpRight className="h-3.5 w-3.5 text-[#7CB518]" />
-                  </Link>
-                </div>
-              </Reveal>
+        <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
+          <div className="min-w-0 max-w-xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
+              <span className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] flex-shrink-0" />
+              <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
+              <span className="text-white/40">·</span>
+              <span className="text-white/90">FREE OVER ₹5,000</span>
+              <span className="text-white/40">·</span>
+              <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
             </div>
+            <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
+              Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
+            </h1>
+            <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
+              Direct factory cement, paints, tiles, electricals &amp; steel — dispatched in 60 minutes with official GST tax invoices
+            </p>
+            <div className="mt-5 flex items-center gap-3">
+              <Magnetic strength={8}>
+                <Link href="/products" className="btn-shine specular-sheen inline-flex items-center gap-2 bg-gradient-to-r from-white via-[#F7F4FC] to-white text-[#150726] text-caption sm:text-body-sm font-black px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(248,203,70,0.4)] border border-white/60 cursor-pointer group/cta">
+                  Explore Catalog
+                  <ArrowRight className="h-4 w-4 group-hover/cta:translate-x-1.5 transition-transform text-[#2D1B69]" />
+                </Link>
+              </Magnetic>
+              <Link href="/rfq" className="hidden sm:inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-caption sm:text-body-sm font-bold px-4 py-2.5 sm:py-3 rounded-full border border-white/20 backdrop-blur-md transition-all hover:scale-102">
+                <span>Bulk RFQ</span>
+                <ArrowUpRight className="h-3.5 w-3.5 text-[#7CB518]" />
+              </Link>
+            </div>
+          </div>
 
             {/* 3D Levitating Product Stage */}
             <div className="flex sm:items-center gap-3 sm:gap-4 flex-shrink-0 pr-1">
@@ -508,7 +489,6 @@ export default function HomeClient() {
             </div>
           </div>
         </div>
-      </Reveal>
 
       {/* ═══ GLOBAL TRUST STRIP — 2028 Obsidian Elevation Cards ═══ */}
       <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
