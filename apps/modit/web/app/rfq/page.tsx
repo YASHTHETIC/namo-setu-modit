@@ -9,6 +9,7 @@ import { Plus, FileText, Calendar, X, CheckCircle2, Trophy } from "lucide-react"
 import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, StatusPill } from "@/lib/modit-ui";
 import { useToast } from "@foundation/ui";
 import { PaperListUploader } from "@/components/paper-list-uploader";
+import { Truckload3DSimulator } from "@/components/truckload-3d-simulator";
 
 export default function RFQPage() {
   const toast = useToast();
@@ -65,6 +66,11 @@ export default function RFQPage() {
           <p className="text-[var(--text-secondary)]">Create RFQs, compare supplier quotes, award in one click</p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}><Plus className="h-4 w-4" /> Create RFQ</Button>
+      </div>
+
+      {/* 2028 3D Fleet & Logistics Truckload Simulator */}
+      <div className="mb-8">
+        <Truckload3DSimulator />
       </div>
 
       {isLoading ? (
