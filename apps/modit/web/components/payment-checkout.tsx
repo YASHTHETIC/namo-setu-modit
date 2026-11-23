@@ -333,21 +333,24 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
       )}
 
       {/* Place Order Button */}
-      <div ref={inlinePayRef}>
-      <button
-        onClick={placeHandler}
-        disabled={placeDisabled}
-        className="btn-shine w-full h-12 rounded-xl bg-[#7CB518] text-white text-body-md font-bold hover:bg-[#6A9C14] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {processing ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            Processing...
-          </span>
-        ) : (
-          placeLabel
-        )}
-      </button>
+      <div ref={inlinePayRef} className="relative group/pay">
+        <button
+          onClick={placeHandler}
+          disabled={placeDisabled}
+          className="btn-shine specular-sheen relative w-full h-12 rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-body-md font-black hover:opacity-95 transition-all hover:scale-[1.01] active:scale-[0.98] shadow-cyber-green disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+        >
+          {processing ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Processing...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Shield className="h-4 w-4 text-white" />
+              <span>{placeLabel}</span>
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Trust Badges */}
@@ -361,7 +364,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
           while the inline button above is off-screen, so it can never
           cover the payment options or double the pay button. */}
       {!inlinePayVisible && (
-      <div className="amoled-glass dock-bar lg:hidden fixed left-4 right-4 z-40 rounded-2xl px-4 py-2.5 flex items-center gap-3 border-x-0 border-b-0">
+      <div className="amoled-glass dock-bar lg:hidden fixed left-4 right-4 z-40 rounded-2xl px-4 py-2.5 flex items-center gap-3 border-x-0 border-b-0 shadow-2xl">
         <div className="flex-1 min-w-0">
           <p className="text-tiny text-white/50">Total payable</p>
           <p className="text-body-lg font-extrabold text-white tabular-nums">{formatINR2(total)}</p>
@@ -369,7 +372,7 @@ export function PaymentSection({ total, onPaymentComplete, gstin, shippingAddres
         <button
           onClick={placeHandler}
           disabled={placeDisabled}
-          className="btn-shine rounded-xl bg-[#7CB518] px-5 py-2.5 text-body-sm font-bold text-white flex-shrink-0 disabled:opacity-50"
+          className="btn-shine specular-sheen rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] px-5 py-2.5 text-body-sm font-black text-white flex-shrink-0 disabled:opacity-50 shadow-cyber-green cursor-pointer border border-emerald-400/30"
         >
           {processing ? "…" : paymentMethod === "cod" || paymentMethod === "credit" ? "Order" : "Pay"}
         </button>

@@ -16,6 +16,7 @@ import { useToast } from "@foundation/ui";
 import { ProductThumb } from "@/components/product-thumb";
 import { resolveProduct, isPaintProduct, type DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal } from "@/components/variant-options-modal";
+import { BorderBeam } from "@/components/border-beam";
 
 /**
  * Blinkit-style quick cart drawer (DisplayCartItem architecture, MODIT theme):
@@ -326,15 +327,16 @@ export function CartDrawer() {
               <Link
                 href={loggedIn ? "/checkout" : "/auth?next=%2Fcheckout"}
                 onClick={closeDrawer}
-                className="flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] px-5 py-3.5 text-white hover:scale-102 active:scale-98 transition-all shadow-[0_0_25px_rgba(124,181,24,0.4)] border border-emerald-400/40 cursor-pointer"
+                className="relative overflow-hidden flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] px-5 py-3.5 text-white hover:scale-102 active:scale-98 transition-all shadow-[0_0_25px_rgba(124,181,24,0.4)] border border-emerald-400/40 cursor-pointer"
               >
-                <span>
+                <BorderBeam duration={5} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={1.5} />
+                <span className="relative z-10">
                   <span className="block text-body-lg font-black tabular-nums leading-tight drop-shadow-xs">
                     {formatINR2(bill.total)}
                   </span>
                   <span className="block text-tiny font-black text-white/85 tracking-wider">TOTAL TO PAY</span>
                 </span>
-                <span className="text-body-md font-black flex items-center gap-1">
+                <span className="relative z-10 text-body-md font-black flex items-center gap-1">
                   {loggedIn ? "Proceed to Checkout →" : "Login to Proceed →"}
                 </span>
               </Link>

@@ -10,6 +10,7 @@ import {
   estimatePaint, estimateTiles, estimateConcrete, estimateSteel,
   type ConcreteGrade,
 } from "@/lib/material-math";
+import { Calculator3DPreview } from "@/components/calculator-3d-preview";
 
 type RoomType = "bedroom" | "living" | "kitchen" | "bathroom" | "hall";
 type CalcTab = "paint" | "tiles" | "concrete" | "steel";
@@ -254,6 +255,16 @@ export default function CalculatorPage() {
               </div>
             </div>
 
+            {/* 3D Real-time Spatial Room Model */}
+            <Calculator3DPreview
+              tab="paint"
+              area={area}
+              height={height}
+              coats={coats}
+              wallOnly={wallOnly}
+              primerLitres={paint.primerLitres}
+            />
+
             {/* Results */}
             <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
               <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
@@ -316,6 +327,16 @@ export default function CalculatorPage() {
               </div>
             </div>
 
+            {/* 3D Real-time Spatial Tile Grid */}
+            <Calculator3DPreview
+              tab="tiles"
+              tileArea={tileArea}
+              tileLen={tileLen}
+              tileWid={tileWid}
+              tilesCount={tiles.tileCount}
+              wastage={wastage}
+            />
+
             <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
               <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
@@ -373,6 +394,17 @@ export default function CalculatorPage() {
               </div>
             </div>
 
+            {/* 3D Real-time Spatial Concrete Slab */}
+            <Calculator3DPreview
+              tab="concrete"
+              slabL={slabL}
+              slabW={slabW}
+              slabT={slabT}
+              grade={grade}
+              volumeCuM={Math.round((concrete.wetVolumeCuft / 35.315) * 100) / 100}
+              cementBags={concrete.cementBags}
+            />
+
             <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
               <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-[#7CB518]" /> Estimated Materials HUD
@@ -418,6 +450,15 @@ export default function CalculatorPage() {
               <input id="calc-steel-len" aria-labelledby="calc-steel-len-label" type="number" value={steelLen} onChange={(e) => setSteelLen(Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
               <p className="mt-2 text-tiny text-[#9B8CB5]">Add up all bars, stirrups and laps in running meters.</p>
             </div>
+
+            {/* 3D Real-time Spatial Rebar Model */}
+            <Calculator3DPreview
+              tab="steel"
+              steelDia={steelDia}
+              steelLen={steelLen}
+              weightPerMeter={steel.kgPerMeter}
+              totalWeightKg={steel.totalKg}
+            />
 
             <div className="card-2028 specular-sheen rounded-3xl border border-[#7CB518]/30 bg-gradient-to-br from-[#F0F9E8] to-white p-5 shadow-xs">
               <h3 className="text-body-sm font-black text-[#150726] mb-3.5 flex items-center gap-2">

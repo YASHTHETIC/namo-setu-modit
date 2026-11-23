@@ -183,9 +183,9 @@ export default function CartPage() {
                   onRemove={() => removeItem(item.product.id, item.variantId, item.shade)}
                   className="rounded-2xl"
                 >
-                <div className="card-2028 specular-sheen flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 transition-all hover:border-[#2D1B69]/30">
+                <div className="card-2028 card-3d-inner transform-3d specular-sheen flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 transition-all hover:border-[#2D1B69]/30">
                   {/* Image */}
-                  <Link href={productLink(item.product)} className="relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9] border border-[#DDD6EE]/50">
+                  <Link href={productLink(item.product)} className="layer-3d-pop relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9] border border-[#DDD6EE]/50 shadow-sm">
                     <ProductThumb src={item.product.images?.[0]} alt={item.product.name} className="h-full w-full object-contain" />
                   </Link>
 

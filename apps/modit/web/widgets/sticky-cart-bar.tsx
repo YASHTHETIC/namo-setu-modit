@@ -6,6 +6,7 @@ import { X, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartUi } from "@/lib/cart-ui";
 import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
+import { BorderBeam } from "@/components/border-beam";
 
 interface StickyCartBarProps {
   itemCount: number;
@@ -27,7 +28,12 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
   if (dismissedKey === key) return null;
 
   return (
-    <div className={`sticky-cart-bar glass-cyber group/cart ${barHidden ? "bar-hidden" : ""}`}>
+    <div className={`sticky-cart-bar glass-cyber group/cart relative ${barHidden ? "bar-hidden" : ""}`}>
+      {/* 2028 Traveling Laser Border */}
+      <div className="absolute inset-0 rounded-[20px] overflow-hidden pointer-events-none">
+        <BorderBeam duration={5} colorFrom="#7CB518" colorTo="#F8CB46" borderWidth={1.5} />
+      </div>
+
       {/* Dismiss button */}
       <button
         onClick={() => setDismissedKey(key)}

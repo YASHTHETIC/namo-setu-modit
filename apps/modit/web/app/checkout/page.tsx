@@ -19,6 +19,7 @@ import { PaymentSection } from "@/components/payment-checkout";
 import { ProductThumb } from "@/components/product-thumb";
 import { AddressForm } from "@/components/address-form";
 import { useAuthReady } from "@/lib/use-auth";
+import { BorderBeam } from "@/components/border-beam";
 
 export default function CheckoutPage() {
   const loggedIn = useAuthReady();
@@ -169,7 +170,8 @@ export default function CheckoutPage() {
           </div>
         </header>
         <div className="mx-auto max-w-[640px] py-14 text-center px-4">
-          <div className="card-2028 specular-sheen rounded-3xl border border-[#DDD6EE] bg-white p-8 shadow-xl">
+          <div className="card-2028 specular-sheen rounded-3xl border border-[#DDD6EE] bg-white p-8 shadow-xl relative overflow-hidden">
+            <BorderBeam duration={5} borderWidth={2} colorFrom="#7CB518" colorTo="#00BCD4" />
             <div className="relative h-20 w-20 rounded-full bg-[#7CB518]/15 border border-[#7CB518]/40 flex items-center justify-center mx-auto mb-5 shadow-cyber-green">
               <CheckCircle2 className="h-10 w-10 text-[#7CB518]" />
               <span className="absolute -top-1 -right-1 flex h-4 w-4">
