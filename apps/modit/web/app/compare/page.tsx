@@ -50,13 +50,13 @@ export default function ComparePage() {
           {/* Product headers */}
           <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${items.length}, 1fr)` }}>
             {items.map((product) => (
-              <div key={product.id} className="bg-white rounded-2xl border border-[#DDD6EE] p-4 relative">
-                <button onClick={() => removeFromCompare(product.id)} className="absolute top-2 right-2 p-1 rounded-full bg-[#F0ECF9] text-[#9B8CB5] hover:bg-red-50 hover:text-red-500 transition-all">
+              <div key={product.id} className="card-2028 card-3d-inner transform-3d specular-sheen bg-white rounded-2xl border border-[#DDD6EE] p-4 relative shadow-sm hover:shadow-md transition-all">
+                <button onClick={() => removeFromCompare(product.id)} className="absolute top-2 right-2 z-10 p-1 rounded-full bg-[#F0ECF9] text-[#9B8CB5] hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer">
                   <X className="h-3.5 w-3.5" />
                 </button>
-                <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC]">
-            <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" draggable={false} className="object-contain" />
-          </div>
+                <div className="layer-3d-pop relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC] border border-[#DDD6EE]/50 shadow-inner">
+                  <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" draggable={false} className="object-contain" />
+                </div>
                 <p className="text-tiny font-bold text-[#7CB518] uppercase mt-2">{product.brand}</p>
                 <p className="text-caption font-semibold text-[#150726] line-clamp-2 mt-0.5">{product.name}</p>
                 <div className="flex items-baseline gap-2 mt-2">
@@ -70,7 +70,7 @@ export default function ComparePage() {
                 ) : (
                   <p className="text-micro mt-0.5 invisible" aria-hidden="true">.</p>
                 )}
-                <button onClick={() => addItem(product)} className="mt-3 w-full py-2 rounded-lg bg-[#7CB518] text-white text-micro font-bold hover:bg-[#6A9C14] transition-all">
+                <button onClick={() => addItem(product)} className="btn-shine specular-sheen mt-3 w-full py-2.5 rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-micro font-black hover:scale-102 active:scale-98 transition-all shadow-cyber-green border border-emerald-400/30 cursor-pointer">
                   Add to Cart
                 </button>
               </div>

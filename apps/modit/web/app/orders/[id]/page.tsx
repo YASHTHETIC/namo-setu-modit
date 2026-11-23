@@ -15,6 +15,7 @@ import { downloadInvoiceHtml, type InvoiceItem } from "@/lib/invoice";
 import { ReturnModal } from "@/components/return-modal";
 import { useReturnStore, RETURN_STATUS_LABEL, refundAmount } from "@/lib/return-store";
 import { useToast } from "@foundation/ui";
+import { DeliveryRadar3D } from "@/components/delivery-radar-3d";
 import {
   ArrowLeft, ArrowRight, Package, Truck, CheckCircle2, Clock, MapPin, CreditCard, FileText, Download, RotateCcw, Phone, AlertCircle, Calendar, MessageCircle,
   Star, Navigation, RefreshCcw, Check, XCircle
@@ -491,18 +492,12 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     Open live map <ArrowRight className="h-4 w-4" />
                   </Link>
                 )}
-                {/* Simulated map placeholder */}
-                <div className="mt-3 h-32 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 opacity-20" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 11px), repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 11px)" }} />
-                  <div className="relative flex items-center gap-3">
-                    <div className="h-3 w-3 rounded-full bg-white animate-pulse" />
-                    <div className="w-16 h-0.5 bg-white/30" />
-                    <div className="h-6 w-6 rounded-full bg-[#7CB518] flex items-center justify-center">
-                      <Truck className="h-3 w-3 text-white" />
-                    </div>
-                    <div className="w-16 h-0.5 bg-white/30" />
-                    <div className="h-3 w-3 rounded-full bg-white" />
-                  </div>
+                {/* 2028 GPS Route Telemetry Radar */}
+                <div className="mt-3">
+                  <DeliveryRadar3D
+                    status={order.status}
+                    deliveryNumber={liveDelivery?.delivery_number ?? order.id}
+                  />
                 </div>
               </div>
             </div>

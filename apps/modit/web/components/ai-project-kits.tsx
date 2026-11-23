@@ -193,7 +193,7 @@ export function AiProjectKitsSection() {
             return (
               <div
                 key={kit.id}
-                className="group relative flex flex-col rounded-3xl border border-[#E8E0F7] bg-white p-4.5 shadow-[0_4px_16px_rgba(26,10,51,0.05)] transition-all duration-300 hover:border-[#7CB518]/60 hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.2),0_0_15px_-3px_rgba(124,181,24,0.25)] hover:-translate-y-1.5 overflow-hidden"
+                className="card-2028 card-3d-inner transform-3d group relative flex flex-col rounded-3xl border border-[#E8E0F7] bg-white p-4.5 shadow-[0_4px_16px_rgba(26,10,51,0.05)] transition-all duration-300 hover:border-[#7CB518]/60 hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.2),0_0_15px_-3px_rgba(124,181,24,0.25)] hover:-translate-y-1.5 overflow-hidden"
               >
                 {/* 2028 Specular Sheen */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -221,7 +221,7 @@ export function AiProjectKitsSection() {
                 </div>
 
                 {/* Items Visual Stack */}
-                <div className="my-2.5 flex items-center justify-between rounded-xl bg-[#F7F4FC] px-3 py-2">
+                <div className="my-2.5 flex items-center justify-between rounded-xl bg-[#F7F4FC] px-3 py-2 layer-3d-pop">
                   <div className="flex items-center -space-x-2 overflow-hidden py-0.5">
                     {resolved.resolvedItems.map((item) => (
                       <div

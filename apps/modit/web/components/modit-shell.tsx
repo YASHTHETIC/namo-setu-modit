@@ -36,7 +36,7 @@ import {
 
 import { useCartStore } from "@/lib/cart-store";
 import { productLink } from "@/lib/utils";
-import { categories, type Product } from "@/lib/product-data";
+import { categories, products, type Product } from "@/lib/product-data";
 import { useProducts, useSearchProducts, useCategories } from "@/lib/api-hooks";
 import { useDisplayProducts } from "@/lib/pricing";
 import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
@@ -111,8 +111,8 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   const categoriesList = (apiCategories.length > 0 ? apiCategories : categories) as typeof categories;
 
   const suggestions = useMemo(
-    () => (searchQuery.trim().length >= 1 ? getSearchSuggestions(searchQuery, categoriesList as any, 6) : []),
-    [searchQuery, categoriesList]
+    () => (searchQuery.trim().length >= 1 ? getSearchSuggestions(searchQuery, products, 6) : []),
+    [searchQuery]
   );
 
   const searchRef = useRef<HTMLDivElement>(null);

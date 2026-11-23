@@ -1242,12 +1242,14 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   return (
     <div
       {...longPress}
-      className="card-lift card-spotlight group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
+      className="card-lift card-spotlight card-3d-inner transform-3d group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col hover:border-[#7CB518]/60 hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.22),0_0_25px_-4px_rgba(124,181,24,0.25)] hover:-translate-y-1.5 transition-all duration-300"
       style={{
         border: '1px solid #DDD6EE',
         boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
       }}
     >
+      {/* Specular glare sheen overlay */}
+      <div aria-hidden="true" className="specular-glare-overlay pointer-events-none" />
       {burst > 0 && (
         <span key={burst} className="heart-burst" onAnimationEnd={() => setBurst(0)} aria-hidden="true">
           <Heart className="h-10 w-10" fill="currentColor" strokeWidth={0} />
@@ -1267,7 +1269,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain p-2.5 card3d-img"
+                className="object-contain p-2.5 card3d-img layer-3d-pop drop-shadow-md group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
             <div className="flex h-full items-center justify-center">
@@ -1280,7 +1282,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
         {/* Discount badge — premium modern corner tag */}
         {savingsPercent > 0 && (
-          <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
+          <span className="layer-3d-badge absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs border border-emerald-400/30">
             {savingsPercent}% OFF
           </span>
         )}
