@@ -490,45 +490,69 @@ export default function HomeClient() {
           </div>
         </div>
 
-      {/* ═══ GLOBAL TRUST STRIP — 2028 Obsidian Elevation Cards ═══ */}
-      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-0.5 group">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7CB518]/15 text-[#7CB518] border border-[#7CB518]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(124,181,24,0.2)]">
+      {/* ═══ GLOBAL TRUST STRIP — Ultra-Modern Executive Glassmorphic Matrix ═══ */}
+      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+        {/* Card 1: 60-Min Site Drop */}
+        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-1 group">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#7CB518] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#F0F9E8] to-white border border-[#7CB518]/30 text-[#5A8010] shadow-[0_2px_8px_rgba(124,181,24,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(124,181,24,0.25)] transition-all duration-300">
             <Truck className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">60-Min Site Drop</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Express GPS doorstep delivery</p>
+            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-tiny font-black uppercase tracking-wider text-[#5A8010]">Express</span>
+            </div>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">60-Min Site Drop</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Direct GPS site delivery</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(248,203,70,0.2)] hover:border-[#F8CB46]/70 transition-all duration-300 hover:-translate-y-0.5 group">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8CB46]/20 text-[#B45309] border border-[#F8CB46]/35 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(248,203,70,0.2)]">
+        {/* Card 2: 100% Genuine Brands */}
+        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(248,203,70,0.2)] hover:border-[#F8CB46]/70 transition-all duration-300 hover:-translate-y-1 group">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#F8CB46] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFF6DE] to-white border border-[#F8CB46]/40 text-[#B45309] shadow-[0_2px_8px_rgba(248,203,70,0.18)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(248,203,70,0.28)] transition-all duration-300">
             <BadgeCheck className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">100% Genuine Brands</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Direct authorized mill depots</p>
+            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#F8CB46] shadow-[0_0_6px_#F8CB46]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-tiny font-black uppercase tracking-wider text-[#B45309]">Verified</span>
+            </div>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">100% Genuine Brands</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Direct authorized mill depots</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(233,30,99,0.18)] hover:border-[#E91E63]/60 transition-all duration-300 hover:-translate-y-0.5 group">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E91E63]/15 text-[#E91E63] border border-[#E91E63]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(233,30,99,0.2)]">
+        {/* Card 3: GST Tax Invoices */}
+        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(233,30,99,0.18)] hover:border-[#E91E63]/60 transition-all duration-300 hover:-translate-y-1 group">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#E91E63] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FCE4EC] to-white border border-[#E91E63]/30 text-[#E91E63] shadow-[0_2px_8px_rgba(233,30,99,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(233,30,99,0.25)] transition-all duration-300">
             <ReceiptIndianRupee className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">GST Tax Invoice</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Instant B2B credit download</p>
+            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#E91E63] shadow-[0_0_6px_#E91E63]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-tiny font-black uppercase tracking-wider text-[#E91E63]">ITC Ready</span>
+            </div>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">GST Tax Invoices</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Instant B2B credit claim</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#E8E0F7] p-3.5 shadow-sm hover:shadow-[0_10px_25px_rgba(0,188,212,0.18)] hover:border-[#00BCD4]/60 transition-all duration-300 hover:-translate-y-0.5 group">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#00BCD4]/15 text-[#0097A7] border border-[#00BCD4]/30 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(0,188,212,0.2)]">
+        {/* Card 4: 7-Day Site Returns */}
+        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(0,188,212,0.18)] hover:border-[#00BCD4]/60 transition-all duration-300 hover:-translate-y-1 group">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#00BCD4] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0F7FA] to-white border border-[#00BCD4]/30 text-[#0097A7] shadow-[0_2px_8px_rgba(0,188,212,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(0,188,212,0.25)] transition-all duration-300">
             <Undo2 className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight truncate">7-Day Site Returns</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug truncate mt-0.5">Hassle-free unopened pickup</p>
+            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#00BCD4] shadow-[0_0_6px_#00BCD4]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-tiny font-black uppercase tracking-wider text-[#0097A7]">Assurance</span>
+            </div>
+            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">7-Day Site Returns</h4>
+            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Hassle-free unopened pickup</p>
           </div>
         </div>
       </div>
