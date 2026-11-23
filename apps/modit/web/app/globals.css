@@ -4134,3 +4134,57 @@ html[data-app-installed="true"] .install-app-cta {
 }
 
 
+
+/* ═══════════════════════════════════════════════
+   GOD-LEVEL 3D VFX & HOLOGRAPHIC REFLECTION ENGINE
+   ═══════════════════════════════════════════════ */
+
+.holo-shimmer-3d {
+  position: relative;
+  overflow: hidden;
+}
+.holo-shimmer-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(0, 188, 212, 0.18) 35%,
+    rgba(124, 181, 24, 0.22) 50%,
+    rgba(248, 203, 70, 0.22) 65%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  z-index: 20;
+}
+.group:hover .holo-shimmer-3d::after,
+.holo-shimmer-3d:hover::after {
+  transform: translateX(100%);
+}
+
+@keyframes vfxLaserPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.35), inset 0 0 15px rgba(0, 188, 212, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(124, 181, 24, 0.5), inset 0 0 20px rgba(124, 181, 24, 0.25);
+  }
+}
+.vfx-laser-pulse {
+  animation: vfxLaserPulse 4s ease-in-out infinite;
+}
+
+@keyframes vfxFloat3D {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotateX(4deg);
+  }
+}
+.vfx-float-3d {
+  animation: vfxFloat3D 6s ease-in-out infinite;
+}

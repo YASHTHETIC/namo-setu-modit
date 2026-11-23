@@ -44,6 +44,7 @@ import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
 import { Magnetic } from "@/components/magnetic";
 import { Cube3D } from "@/components/cube-3d";
+import { Particles3DVfx } from "@/components/particles-3d-vfx";
 
 /* ── Ripple button ───────────────────────────────────────────────── */
 function RippleButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -426,6 +427,9 @@ export default function HomeClient() {
           {/* Dual Opposing Traveling Laser Glow Beams */}
           <BorderBeam duration={7} colorFrom="#7CB518" colorTo="#00BCD4" borderWidth={2} />
           <BorderBeam duration={7} delay={-3.5} reverse={true} colorFrom="#F8CB46" colorTo="#E91E63" borderWidth={2} />
+
+          {/* 3D Holographic Particle Matrix VFX */}
+          <Particles3DVfx particleCount={36} speed={0.8} />
 
           {/* 2028 Ambient Fluid Aurora Mesh & Drifting Orbs */}
           <div className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_20%_25%,_rgba(124,181,24,0.35)_0%,_transparent_45%),radial-gradient(circle_at_80%_75%,_rgba(0,188,212,0.35)_0%,_transparent_45%),radial-gradient(circle_at_50%_40%,_rgba(248,203,70,0.25)_0%,_transparent_50%)] animate-pulse" />

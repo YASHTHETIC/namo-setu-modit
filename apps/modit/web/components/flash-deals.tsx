@@ -11,6 +11,7 @@ import { useDisplayProducts } from "@/lib/pricing";
 import { productLink } from "@/lib/utils";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { BorderBeam } from "@/components/border-beam";
+import { Particles3DVfx } from "@/components/particles-3d-vfx";
 
 function DigitalCountdown({ target }: { target: number }) {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -77,6 +78,9 @@ export function FlashDeals() {
         {/* Dual Opposing Traveling Laser Glow Beams */}
         <BorderBeam duration={6} colorFrom="#F8CB46" colorTo="#E91E63" borderWidth={2} />
         <BorderBeam duration={6} delay={-3} reverse={true} colorFrom="#00BCD4" colorTo="#7CB518" borderWidth={2} />
+
+        {/* 3D Holographic Particle Matrix VFX */}
+        <Particles3DVfx particleCount={24} speed={0.6} />
 
         {/* Ambient fluid glow orbs */}
         <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-[#F8CB46]/20 blur-3xl animate-pulse" />
