@@ -476,7 +476,7 @@ export default function HomeClient() {
 
             {/* 3D Levitating Product Stage */}
             <div className="flex sm:items-center gap-3 sm:gap-4 flex-shrink-0 pr-1">
-              <div className="hidden md:block flex-shrink-0 mr-1">
+              <div className="hidden sm:block flex-shrink-0 mr-1">
                 <Cube3D />
               </div>
               <Tilt3D max={18} className="flex-shrink-0">

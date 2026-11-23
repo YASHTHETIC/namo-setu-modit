@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Truck, MapPin, Warehouse, Zap, CheckCircle2, ShieldCheck, Navigation } from "lucide-react";
+import { Truck, MapPin, Warehouse, Zap, CheckCircle2, ShieldCheck, Navigation, Compass, Radio } from "lucide-react";
 
 interface DeliveryRadar3DProps {
   status: string;
@@ -18,12 +18,25 @@ export function DeliveryRadar3D({
 }: DeliveryRadar3DProps) {
   const isDelivered = status === "delivered";
   const [pulse, setPulse] = useState(0);
+  const [cameraMode, setCameraMode] = useState<"isometric" | "topdown" | "chase">("isometric");
   const [tilt, setTilt] = useState({ rx: 52, rz: -20 });
+
+  // Update tilt according to camera mode
+  useEffect(() => {
+    if (cameraMode === "topdown") {
+      setTilt({ rx: 0, rz: 0 });
+    } else if (cameraMode === "chase") {
+      setTilt({ rx: 72, rz: -5 });
+    } else {
+      setTilt({ rx: 52, rz: -20 });
+    }
+  }, [cameraMode]);
 
   // Smooth transit animation position (0 to 1 along route)
   const [transitProgress, setTransitProgress] = useState(0.55);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (cameraMode !== "isometric") return;
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
@@ -34,7 +47,9 @@ export function DeliveryRadar3D({
   };
 
   const handlePointerLeave = () => {
-    setTilt({ rx: 52, rz: -20 });
+    if (cameraMode === "isometric") {
+      setTilt({ rx: 52, rz: -20 });
+    }
   };
 
   useEffect(() => {
@@ -80,25 +95,52 @@ export function DeliveryRadar3D({
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#7CB518]" />
-          </span>
-          <span className="text-micro font-bold text-[#7CB518]">
-            {isDelivered ? "DELIVERED" : "LIVE RADAR"}
-          </span>
+        {/* View Mode Switcher */}
+        <div className="flex items-center gap-1 bg-white/5 p-0.5 rounded-lg border border-white/10">
+          <button
+            type="button"
+            onClick={() => setCameraMode("isometric")}
+            className={`px-2 py-0.5 rounded text-micro font-black transition-all cursor-pointer ${
+              cameraMode === "isometric"
+                ? "bg-[#00BCD4] text-[#0b0318] shadow-xs"
+                : "text-white/70 hover:text-white"
+            }`}
+          >
+            3D Orbit
+          </button>
+          <button
+            type="button"
+            onClick={() => setCameraMode("chase")}
+            className={`px-2 py-0.5 rounded text-micro font-black transition-all cursor-pointer ${
+              cameraMode === "chase"
+                ? "bg-[#7CB518] text-white shadow-xs"
+                : "text-white/70 hover:text-white"
+            }`}
+          >
+            Chase
+          </button>
+          <button
+            type="button"
+            onClick={() => setCameraMode("topdown")}
+            className={`px-2 py-0.5 rounded text-micro font-black transition-all cursor-pointer ${
+              cameraMode === "topdown"
+                ? "bg-[#F8CB46] text-[#0b0318] shadow-xs"
+                : "text-white/70 hover:text-white"
+            }`}
+          >
+            2D
+          </button>
         </div>
       </div>
 
-      {/* 3D Isometric Radar Grid Canvas */}
+      {/* 3D Radar Grid Canvas */}
       <div
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         className="relative h-48 w-full overflow-hidden my-2 flex items-center justify-center perspective-800 cursor-crosshair"
       >
         <div
-          className="relative w-[300px] h-[200px] transform-3d transition-transform duration-150 ease-out select-none"
+          className="relative w-[300px] h-[200px] transform-3d transition-transform duration-300 ease-out select-none"
           style={{
             transform: `rotateX(${tilt.rx}deg) rotateZ(${tilt.rz}deg) scale(0.95)`,
           }}
@@ -145,6 +187,15 @@ export function DeliveryRadar3D({
             <span className="mt-1 px-1.5 py-0.5 rounded text-micro font-bold bg-[#0b0318]/90 text-white border border-white/10 whitespace-nowrap">
               Hub #04
             </span>
+          </div>
+
+          {/* Waypoint Midpoint Marker */}
+          <div
+            className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none"
+            style={{ left: `${p1.x}px`, top: `${p1.y}px` }}
+          >
+            <div className="h-2 w-2 rounded-full bg-[#00BCD4] shadow-[0_0_8px_#00BCD4]" />
+            <span className="mt-0.5 text-micro text-white/50 whitespace-nowrap">NH-48</span>
           </div>
 
           {/* Point B: Destination Jobsite */}
@@ -203,8 +254,19 @@ export function DeliveryRadar3D({
         </div>
       </div>
 
+      {/* Corridor & Satellites Status Strip */}
+      <div className="mb-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-tiny text-white/80">
+        <span className="flex items-center gap-1.5 font-bold">
+          <Radio className="h-3 w-3 text-[#7CB518] animate-pulse" />
+          <span>NavIC GPS Mesh &middot; Corridor: NH-48 Express</span>
+        </span>
+        <span className="text-[#F8CB46] font-black tabular-nums">
+          {isDelivered ? "0 km/h" : "42 km/h"}
+        </span>
+      </div>
+
       {/* Bottom Telemetry Metrics Strip */}
-      <div className="relative z-10 grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-center">
+      <div className="relative z-10 grid grid-cols-3 gap-2 border-t border-white/10 pt-2 text-center">
         <div className="rounded-xl bg-white/5 p-2 border border-white/5">
           <p className="text-micro font-bold text-white/50 uppercase">Distance</p>
           <p className="text-body-sm font-black text-white">

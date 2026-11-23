@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, Box } from "lucide-react";
+import { Sparkles, Box, RotateCw, CheckCircle2 } from "lucide-react";
 
 interface CubeFace {
   name: string;
@@ -12,6 +12,13 @@ interface CubeFace {
   image: string;
   color: string;
   tag: string;
+  rotX: number;
+  rotY: number;
+  specs: {
+    primary: string;
+    secondary: string;
+    metric: string;
+  };
 }
 
 const CUBE_FACES: CubeFace[] = [
@@ -22,6 +29,13 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/cement/Ambuja Cement.png",
     color: "#2D1B69",
     tag: "High Grade",
+    rotX: 0,
+    rotY: 0,
+    specs: {
+      primary: "IS 1489 · 53 Grade OPC",
+      secondary: "High early compressive strength",
+      metric: "53 MPa @ 28d",
+    },
   },
   {
     name: "Asian Paints",
@@ -30,6 +44,13 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/painting/Asian Paint.png",
     color: "#7CB518",
     tag: "Weatherproof",
+    rotX: 0,
+    rotY: 180,
+    specs: {
+      primary: "Tractor Acrylic Emulsion",
+      secondary: "Smooth eggshell matt finish",
+      metric: "140 sq.ft/L",
+    },
   },
   {
     name: "Philips AstraSpot",
@@ -38,6 +59,13 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/lighting/Philips AstraSpot Next LED COB light.webp",
     color: "#00BCD4",
     tag: "COB LED",
+    rotX: 0,
+    rotY: -90,
+    specs: {
+      primary: "COB LED Deep Recessed",
+      secondary: "EyeComfort low glare CRI > 85",
+      metric: "1800 Lumens",
+    },
   },
   {
     name: "Dr. Fixit 101",
@@ -46,6 +74,13 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/tiling/Dr Fixit.png",
     color: "#E91E63",
     tag: "Waterproof",
+    rotX: 0,
+    rotY: 90,
+    specs: {
+      primary: "LW+ Waterproofing Integral",
+      secondary: "Corrosion inhibitor & plasticity",
+      metric: "200ml / bag",
+    },
   },
   {
     name: "Designer Granite",
@@ -54,6 +89,13 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/tiles/Blue-Granite.png",
     color: "#2D1B69",
     tag: "Premium",
+    rotX: -90,
+    rotY: 0,
+    specs: {
+      primary: "Royal Blue Mirror Granite",
+      secondary: "Pre-polished heavy architectural slab",
+      metric: "2.65 g/cm³",
+    },
   },
   {
     name: "Havells FRLS Wire",
@@ -62,22 +104,31 @@ const CUBE_FACES: CubeFace[] = [
     image: "/products/electrical/0020082_havells-25-sq-mm-180-mtr-frls-house-wire_600-Photoroom.png",
     color: "#F8CB46",
     tag: "Fire Resistant",
+    rotX: 90,
+    rotY: 0,
+    specs: {
+      primary: "FRLS Flame Retardant Low Smoke",
+      secondary: "99.97% pure electrolytic copper",
+      metric: "1100V Rated",
+    },
   },
 ];
 
 /**
  * 2028 Pure CSS 3D Revolving Material Showcase Cube.
- * Uses perspective, preserve-3d, rotateX/Y/Z, and translateZ for true hardware-accelerated 3D geometry.
+ * Features 360 orbital auto-spin, pointer parallax, touch-swipe gestures,
+ * interactive face-snap selection, holographic orbital rings, and real-time engineering telemetry HUD.
  */
 export function Cube3D() {
   const [activeFace, setActiveFace] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [manualRotation, setManualRotation] = useState<{ x: number; y: number } | null>(null);
+  const [isSnapping, setIsSnapping] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Desktop subtle pointer parallax tilt on the 3D scene
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isSnapping) return;
     const rect = containerRef.current.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
@@ -85,18 +136,21 @@ export function Cube3D() {
       x: -py * 24,
       y: px * 32,
     });
-  }, []);
+  }, [isSnapping]);
 
   const handlePointerLeave = useCallback(() => {
-    setManualRotation(null);
+    if (!isSnapping) {
+      setManualRotation(null);
+    }
     setIsHovered(false);
-  }, []);
+  }, [isSnapping]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchRotRef = useRef<{ x: number; y: number }>({ x: -14, y: 0 });
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     setIsHovered(true);
+    setIsSnapping(false);
     touchStartRef.current = {
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
@@ -120,20 +174,30 @@ export function Cube3D() {
     setTimeout(() => setIsHovered(false), 2000);
   }, [manualRotation]);
 
-  // Update active face indicator periodically
+  // Snap directly to a face when clicked
+  const snapToFace = (idx: number) => {
+    const face = CUBE_FACES[idx];
+    setIsSnapping(true);
+    setActiveFace(idx);
+    setManualRotation({ x: face.rotX, y: face.rotY });
+  };
+
+  const resumeAutoOrbit = () => {
+    setIsSnapping(false);
+    setManualRotation(null);
+  };
+
+  // Update active face indicator periodically during auto-spin
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || isSnapping) return;
     const interval = setInterval(() => {
       setActiveFace((prev) => (prev + 1) % CUBE_FACES.length);
     }, 3600);
     return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [isHovered, isSnapping]);
 
-  // Cube half-dimension: 60px on mobile, 75px on desktop
-  // Half of cube width (120px / 2 = 60px, 150px / 2 = 75px)
-  const tzSm = 60;
+  // Cube half-dimension: 75px on desktop (150px / 2)
   const tzLg = 75;
-
   const currentFace = CUBE_FACES[activeFace];
 
   return (
@@ -149,17 +213,29 @@ export function Cube3D() {
         onTouchEnd={handleTouchEnd}
         className="cube-3d-scene relative h-[150px] w-[150px] sm:h-[180px] sm:w-[180px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-none"
       >
+        {/* Holographic Orbital Rings */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-4 sm:-inset-6 rounded-full border border-dashed border-[#00BCD4]/30 opacity-60 animate-spin-slow"
+          style={{ transform: "rotateX(75deg) rotateZ(0deg)", animationDuration: "18s" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-8 sm:-inset-10 rounded-full border border-[#7CB518]/25 opacity-40 animate-spin-slow"
+          style={{ transform: "rotateX(75deg) rotateZ(45deg)", animationDuration: "26s", animationDirection: "reverse" }}
+        />
+
         {/* Ambient 3D Ground Shadow Ring */}
         <div
           aria-hidden="true"
-          className="absolute -bottom-6 w-36 h-10 sm:w-44 sm:h-12 rounded-full bg-black/40 blur-xl transition-all duration-500 scale-90"
+          className="absolute -bottom-6 w-36 h-10 sm:w-44 sm:h-12 rounded-full bg-black/50 blur-xl transition-all duration-500 scale-90"
         />
 
         {/* The 3D Cube Container */}
         <div
           className={`cube-3d-box relative h-[150px] w-[150px] scale-[0.88] sm:scale-100 ${
             isHovered ? "!scale-105" : ""
-          }`}
+          } ${isSnapping ? "transition-transform duration-700 ease-out" : ""}`}
           style={{
             transform: manualRotation
               ? `rotateX(${manualRotation.x}deg) rotateY(${manualRotation.y}deg)`
@@ -342,16 +418,52 @@ export function Cube3D() {
         </div>
       </div>
 
-      {/* Interactive 3D HUD Badge */}
-      <div className="mt-2 flex items-center gap-1.5 rounded-full bg-[#150726]/90 border border-white/20 px-3 py-1 shadow-glass-specular backdrop-blur-md">
-        <Box className="h-3 w-3 text-[#00BCD4] animate-spin" style={{ animationDuration: "8s" }} />
-        <Link
-          href={`/products?category=${currentFace.slug}`}
-          className="text-tiny font-black text-white hover:text-[#7CB518] transition-colors flex items-center gap-1 uppercase tracking-wider"
-        >
-          <span>3D {currentFace.category}</span>
-          <span className="text-[#F8CB46]">· {currentFace.tag}</span>
-        </Link>
+      {/* Interactive 3D HUD & Face Snap Controls */}
+      <div className="mt-2.5 flex flex-col items-center gap-1.5 w-full max-w-[290px]">
+        {/* Category Snap Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-1">
+          {CUBE_FACES.map((face, idx) => (
+            <button
+              key={face.slug}
+              type="button"
+              onClick={() => snapToFace(idx)}
+              className={`px-2 py-0.5 rounded-full text-tiny font-black transition-all cursor-pointer ${
+                activeFace === idx && isSnapping
+                  ? "bg-[#7CB518] text-white shadow-cyber-green scale-105"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+              }`}
+            >
+              {face.category}
+            </button>
+          ))}
+          {isSnapping && (
+            <button
+              type="button"
+              onClick={resumeAutoOrbit}
+              className="p-1 rounded-full bg-[#00BCD4]/20 text-[#00BCD4] hover:bg-[#00BCD4]/30 transition-all cursor-pointer"
+              title="Resume Orbit"
+            >
+              <RotateCw className="h-3 w-3" />
+            </button>
+          )}
+        </div>
+
+        {/* Real-Time Engineering Telemetry Spec HUD */}
+        <div className="w-full rounded-xl bg-black/60 border border-white/15 p-2 backdrop-blur-md shadow-glass-specular flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1 text-left">
+            <div className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-ping flex-shrink-0" />
+              <span className="text-micro font-black text-white truncate">{currentFace.specs.primary}</span>
+            </div>
+            <p className="text-tiny text-white/70 truncate mt-0.5">{currentFace.specs.secondary}</p>
+          </div>
+          <Link
+            href={`/products?category=${currentFace.slug}`}
+            className="flex-shrink-0 text-tiny font-black text-[#F8CB46] bg-[#F8CB46]/10 hover:bg-[#F8CB46]/20 px-2 py-1 rounded border border-[#F8CB46]/30 tabular-nums transition-colors"
+          >
+            {currentFace.specs.metric}
+          </Link>
+        </div>
       </div>
     </div>
   );
