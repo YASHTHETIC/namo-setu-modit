@@ -171,13 +171,10 @@ export default function CheckoutPage() {
         </header>
         <div className="mx-auto max-w-[640px] py-14 text-center px-4">
           <div className="card-2028 specular-sheen rounded-3xl border border-[#DDD6EE] bg-white p-8 shadow-xl relative overflow-hidden">
-            <BorderBeam duration={5} borderWidth={2} colorFrom="#7CB518" colorTo="#00BCD4" />
+            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-[#7CB518] via-[#00BCD4] to-[#7CB518]" />
             <div className="relative h-20 w-20 rounded-full bg-[#7CB518]/15 border border-[#7CB518]/40 flex items-center justify-center mx-auto mb-5 shadow-cyber-green">
               <CheckCircle2 className="h-10 w-10 text-[#7CB518]" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-[#7CB518]"></span>
-              </span>
+              <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] ring-2 ring-white" />
             </div>
 
             <h2 className="text-title-lg font-black text-[#150726]">Order Placed Successfully!</h2>

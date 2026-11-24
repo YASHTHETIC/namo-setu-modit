@@ -69,10 +69,7 @@ export function SupportChat() {
         aria-label="Support chat"
         className={`fixed right-4 z-float flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#150726] to-[#2D1B69] text-white shadow-cyber-purple border border-white/20 transition-all hover:scale-105 active:scale-95 ${docked ? "dock-bubble-docked" : "dock-bubble"}`}
       >
-        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#7CB518]"></span>
-        </span>
+        <span className="absolute -top-1 -right-1 flex h-3 w-3 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] ring-2 ring-[#150726]" />
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6 text-[#00BCD4]" />}
       </button>
 
@@ -193,7 +190,7 @@ export function SupportChat() {
                 ))}
                 {postMsg.isPending && (
                   <div className="self-start rounded-2xl bg-white border border-[#DDD6EE]/70 px-3.5 py-2 text-micro text-[#9B8CB5] flex items-center gap-1.5 shadow-xs">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-ping"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]"></span>
                     <span>AI Concierge is typing…</span>
                   </div>
                 )}

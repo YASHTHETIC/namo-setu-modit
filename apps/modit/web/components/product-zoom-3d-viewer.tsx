@@ -241,7 +241,7 @@ export function ProductZoom3DViewer({
 
             {/* Canva Pic 3: Floating Prompt "MOVE TO EXPLORE ↗" */}
             <div className="pointer-events-none absolute top-3.5 left-3.5 z-20 flex items-center gap-1.5 text-tiny font-extrabold uppercase tracking-wider text-white bg-[#150726]/80 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-white/15">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-ping" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
               <span>MOVE TO EXPLORE ↗</span>
             </div>
 

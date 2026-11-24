@@ -93,10 +93,7 @@ export default function CartPage() {
         <div className="mx-auto max-w-[600px] py-20 text-center px-4">
           <div className="relative h-24 w-24 rounded-3xl bg-gradient-to-br from-[#150726] to-[#2D1B69] border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-cyber-purple">
             <ShoppingCart className="h-10 w-10 text-[#00BCD4]" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00BCD4] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-[#00BCD4]"></span>
-            </span>
+            <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#00BCD4] shadow-[0_0_8px_#00BCD4] ring-2 ring-[#150726]" />
           </div>
           <h2 className="text-title-lg font-extrabold text-[#150726]">Your cart is empty</h2>
           <p className="mt-2 text-body-sm text-[#9B8CB5]">Add construction materials &amp; tools to your cart to proceed.</p>
@@ -279,10 +276,7 @@ export default function CartPage() {
 
                         {/* Delivery badge */}
                         <div className="flex items-center gap-1.5 text-micro bg-[#F0F9E8] px-2.5 py-1 rounded-full border border-[#7CB518]/20">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7CB518] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7CB518]"></span>
-                          </span>
+                          <span className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
                           <Clock className="h-3 w-3 text-[#7CB518]" />
                           <span className="font-bold text-[#150726]">Tomorrow</span>
                           {item.product.freeDelivery && (

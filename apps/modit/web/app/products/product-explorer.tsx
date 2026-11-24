@@ -731,10 +731,7 @@ function ProductsContent() {
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
                 {hasActiveFilters && (
-                  <>
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#7CB518] ring-2 ring-white" />
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#7CB518] animate-ping" />
-                  </>
+                  <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[#7CB518] ring-2 ring-white shadow-[0_0_6px_#7CB518]" />
                 )}
               </button>
               <p className="text-sm text-[var(--text-secondary)]">
