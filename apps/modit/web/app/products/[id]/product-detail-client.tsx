@@ -51,9 +51,25 @@ import { resolveProduct } from "@/lib/pricing";
 import { useAdminStore } from "@/lib/admin-store";
 import { useSupplierStore } from "@/lib/supplier-store";
 import { RFQModal } from "@/components/rfq-modal";
+import { ProductCard3D } from "@/components/product-card-3d";
+import { haptic } from "@/lib/haptics";
 import { MessageSquareQuote, Bell } from "lucide-react";
 import { useStockAlertStore } from "@/lib/stock-alert-store";
 import { notifyOrderEvent } from "@/lib/order-notifications";
+
+const CATEGORY_ACCENTS: Record<string, string> = {
+  cement: "#7CB518",
+  painting: "#F8CB46",
+  lighting: "#00BCD4",
+  tiling: "#E91E63",
+  electrical: "#F8CB46",
+  plumbing: "#00BCD4",
+  steel: "#7CB518",
+};
+
+function getCatAccent(slug?: string): string {
+  return (slug && CATEGORY_ACCENTS[slug.toLowerCase()]) || "#7CB518";
+}
 
 /** Stable 32-bit string hash (deterministic shuffle seed — SSR-safe). */
 function hashString(s: string): number {
@@ -128,6 +144,33 @@ export default function ProductDetailPage({
   const [customColorCode, setCustomColorCode] = useState("");
   const [shadeWarning, setShadeWarning] = useState(false);
 
+  /* Ambient shade-preview lighting: hovering a paint shade shifts the page
+     atmospheric accent to that color; leaving restores the category default. */
+  const [ambientAccentOverride, setAmbientAccentOverride] = useState<string | null>(null);
+  const defaultAmbientAccentRef = useRef<string>("#7CB518");
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const catAccent = getCatAccent(product?.categorySlug);
+    defaultAmbientAccentRef.current = catAccent;
+    document.documentElement.style.setProperty("--ambient-accent", catAccent);
+  }, [product?.categorySlug]);
+
+  const handleShadeHover = (hex: string) => {
+    setAmbientAccentOverride(hex);
+    if (typeof document !== "undefined") document.documentElement.style.setProperty("--ambient-accent", hex);
+  };
+  const handleShadeLeave = () => {
+    setAmbientAccentOverride(null);
+    if (typeof document !== "undefined") document.documentElement.style.setProperty("--ambient-accent", defaultAmbientAccentRef.current);
+  };
+
+  const activeShadeHex = useMemo(() => {
+    if (ambientAccentOverride) return ambientAccentOverride;
+    if (customColorCode && customColorCode.length === 7) return customColorCode;
+    const s = product?.shades?.find((sh) => sh.name === selectedShade);
+    return s?.code ?? null;
+  }, [ambientAccentOverride, customColorCode, product?.shades, selectedShade]);
+
   useEffect(() => {
     if (product) addRecentlyViewed(product);
   }, [product, addRecentlyViewed]);
@@ -136,6 +179,25 @@ export default function ProductDetailPage({
   const { pincode: deliveryPincode, serviceable: areaServiceable } = usePincode();
   const requireLogin = useRequireLogin();
   const areaBlocked = Boolean(deliveryPincode) && !areaServiceable;
+
+  /* Spatial sticky buy bar — lifts up from bottom-right once the user
+     scrolls past the hero, with macro tilt + haptic add. Desktop only. */
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onScroll = () => setScrolled(window.scrollY > 320);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleSpatialAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (areaBlocked) return;
+    haptic("success");
+    handleAddToCart();
+  };
 
   // Related/bought-together rails: one small category-scoped query instead
   // of dragging the whole catalog (page_size 2000) into every PDP.
@@ -304,8 +366,14 @@ export default function ProductDetailPage({
       </nav>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-        {/* Left: Image Gallery */}
-        <div className="lg:col-span-5">
+        {/* Left: Image Gallery with Dynamic Ambient Shade Backdrop */}
+        <div className="lg:col-span-5 relative">
+          <div
+            className="pointer-events-none absolute -inset-6 rounded-3xl blur-3xl opacity-25 transition-all duration-700 -z-10"
+            style={{
+              backgroundColor: activeShadeHex || defaultAmbientAccentRef.current,
+            }}
+          />
           <div className="sticky top-24">
             {/* Main Image with Interactive Amazon-style Zoom & 3D Look */}
             <ProductZoom3DViewer
@@ -394,9 +462,9 @@ export default function ProductDetailPage({
               <div className="mb-3 rounded-2xl bg-gradient-to-br from-[#F5F2FC] via-[#EDE8F5] to-[#E0F7FA]/30 border border-[#2D1B69]/15 p-4 sm:p-5 relative overflow-hidden shadow-xs">
                 {/* Decorative Ambient Swatch Aura in Corner */}
                 <div
-                  className="pointer-events-none absolute -right-6 -bottom-6 h-28 w-28 rounded-full blur-2xl opacity-40 transition-all duration-500"
+                  className="pointer-events-none absolute -right-6 -bottom-6 h-36 w-36 rounded-full blur-2xl opacity-45 transition-all duration-500"
                   style={{
-                    backgroundColor: product.shades?.find((s) => s.name === selectedShade)?.code || "#8A6FA0",
+                    backgroundColor: activeShadeHex || defaultAmbientAccentRef.current,
                   }}
                 />
                 <div className="relative z-10">
@@ -582,6 +650,8 @@ export default function ProductDetailPage({
                 onSelectShade={(s) => { setSelectedShade(s); setShadeWarning(false); }}
                 customColorCode={customColorCode}
                 onCustomColorCodeChange={(c) => { setCustomColorCode(c); setShadeWarning(false); }}
+                onShadeHover={handleShadeHover}
+                onShadeLeave={handleShadeLeave}
               />
 
               {/* Canva Pic 3: Product Exposure Button (Launches AI Room Visualizer) */}
@@ -835,6 +905,96 @@ export default function ProductDetailPage({
         </button>
       </div>
 
+      {/* Spatial sticky desktop buy bar — lifts on scroll, macro tilt */}
+      {scrolled && product && !areaBlocked && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden lg:flex items-center gap-3.5 rounded-2xl bg-[#0b0318]/90 backdrop-blur-xl border border-white/20 p-2.5 px-4 shadow-[0_24px_50px_rgba(21,7,38,0.6)] animate-slide-in-up max-w-4xl"
+          style={{
+            boxShadow: `0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px ${defaultAmbientAccentRef.current}40`,
+          }}
+        >
+          {/* Thumbnail */}
+          <div className="relative h-11 w-11 rounded-xl bg-white p-1 flex-shrink-0 shadow-sm overflow-hidden">
+            {product.images[0] ? (
+              <Image src={product.images[0]} alt={product.name} fill sizes="44px" className="object-contain p-0.5" />
+            ) : (
+              <Package className="h-full w-full text-stone-300" />
+            )}
+          </div>
+
+          {/* Details */}
+          <div className="min-w-0 max-w-[280px]">
+            <p className="text-caption font-bold text-white truncate">{product.name}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              {activeVariant && (
+                <span className="text-tiny font-semibold text-white/70 bg-white/10 px-1.5 py-0.2 rounded">
+                  {activeVariant.label}
+                </span>
+              )}
+              {selectedShade && product.hasShades && (
+                <span className="text-tiny font-bold text-[#F8CB46] bg-[#F8CB46]/10 px-1.5 py-0.2 rounded border border-[#F8CB46]/20 truncate">
+                  {selectedShade}
+                </span>
+              )}
+              <span className="text-tiny text-[#7CB518] font-bold">⚡ 60-Min Dispatch</span>
+            </div>
+          </div>
+
+          <span className="h-8 w-px bg-white/15" />
+
+          {/* Price & Quantity Stepper */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center rounded-xl bg-white/10 border border-white/15 p-0.5">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(product.moq || 1, q - 1))}
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Decrease quantity"
+              >
+                <Minus className="h-3.5 w-3.5" />
+              </button>
+              <span className="w-8 text-center text-caption font-bold text-white tabular-nums">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Increase quantity"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <div className="text-right">
+              <p className="text-body-md font-black text-[#7CB518] tabular-nums">
+                ₹{(displayPrice * quantity).toLocaleString("en-IN")}
+              </p>
+              <p className="text-tiny text-white/50">{displayUnit}</p>
+            </div>
+          </div>
+
+          {/* Action CTAs */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleSpatialAdd}
+              disabled={added}
+              className="h-10 px-4 rounded-xl bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-caption font-black flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(124,181,24,0.35)] cursor-pointer"
+            >
+              {added ? (
+                <><CheckCircle2 className="h-4 w-4" /> Added</>
+              ) : (
+                <><ShoppingCart className="h-4 w-4" /> Add to Cart</>
+              )}
+            </button>
+            <button
+              onClick={handleBuyNow}
+              className="h-10 px-4 rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#150726] border border-white/20 text-white text-caption font-black flex items-center gap-1.5 hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+            >
+              <Zap className="h-3.5 w-3.5 text-[#F8CB46] fill-[#F8CB46]" /> Buy Now
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Out of stock substitutes */}
       <div className="mt-4">
         <OutOfStockSubstitutes product={product} />
@@ -919,22 +1079,77 @@ export default function ProductDetailPage({
         </div>
       </div>
 
-      {/* Frequently Bought Together */}
+      {/* Frequently Bought Together — God-Level 3D Spatial Bundle Rail */}
       {frequentlyBought.length > 0 && (
         <Reveal>
-        <div className="mt-10">
-          <h3 className="text-title-md font-bold text-[var(--text-primary)] mb-3">Frequently Bought Together</h3>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 sm:overflow-visible sm:gap-3 lg:grid-cols-4">
-            {frequentlyBought.map((p) => (
-              <Link key={p.id} href={productLink(p)} className="w-[158px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
-                </div>
-                {p.brand && <p className="mt-2 text-micro font-semibold text-[var(--brand)] truncate">{p.brand}</p>}
-                <p className="text-caption font-medium text-[var(--text-primary)] line-clamp-2 min-h-[28px]">{p.name}</p>
-                <p className="mt-1 text-body-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
-              </Link>
-            ))}
+        <div className="mt-10 rounded-3xl bg-gradient-to-b from-[#F7F4FC] to-white border border-[#DDD6EE] p-5 sm:p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-title-md font-black text-[#150726]">Frequently Bought Together</h3>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#7CB518]/15 border border-[#7CB518]/30 px-2 py-0.5 text-tiny font-black text-[#5A8010] uppercase">
+                  ⚡ Site Bundle
+                </span>
+              </div>
+              <p className="text-micro text-[#6B5B83] mt-0.5">Compatible materials frequently ordered by contractors on the same delivery vehicle</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {frequentlyBought.map((p) => {
+              const pAccent = getCatAccent(p.categorySlug);
+              return (
+                <ProductCard3D key={p.id} accent={pAccent} className="h-full">
+                  <div className="p-3 flex flex-col h-full justify-between">
+                    <div>
+                      <Link href={productLink(p)} className="block relative aspect-square rounded-xl bg-white p-2.5 shadow-sm overflow-hidden group/thumb">
+                        <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="(max-width: 640px) 45vw, 240px" draggable={false} className="object-contain p-1 group-hover/thumb:scale-105 transition-transform duration-300" />
+                        {p.discount > 0 && (
+                          <span className="absolute top-2 left-2 rounded-md bg-[#E91E63] text-white text-tiny font-black px-1.5 py-0.5 shadow-xs">
+                            -{p.discount}%
+                          </span>
+                        )}
+                      </Link>
+                      {p.brand && (
+                        <p className="mt-2.5 text-tiny font-black text-[#7CB518] uppercase tracking-wider truncate">
+                          {p.brand}
+                        </p>
+                      )}
+                      <Link href={productLink(p)}>
+                        <p className="text-caption font-bold text-[#150726] line-clamp-2 min-h-[32px] mt-0.5 hover:text-[#2D1B69] transition-colors leading-snug">
+                          {p.name}
+                        </p>
+                      </Link>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-[#DDD6EE]/60 flex items-center justify-between gap-1">
+                      <div>
+                        <p className="text-body-sm font-black text-[#150726]">
+                          ₹{p.price.toLocaleString("en-IN")}
+                        </p>
+                        {p.mrp > p.price && (
+                          <p className="text-tiny text-[#6B5B83] line-through">
+                            ₹{p.mrp.toLocaleString("en-IN")}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          haptic("light");
+                          tryAdd(p);
+                        }}
+                        className="h-8 px-3 rounded-lg bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-tiny font-black flex items-center gap-1 hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer"
+                        title="Add to order"
+                      >
+                        <Plus className="h-3 w-3" /> Add
+                      </button>
+                    </div>
+                  </div>
+                </ProductCard3D>
+              );
+            })}
           </div>
         </div>
         </Reveal>

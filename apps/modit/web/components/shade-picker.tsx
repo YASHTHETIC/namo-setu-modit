@@ -10,9 +10,19 @@ interface ShadePickerProps {
   onSelectShade: (name: string | null) => void;
   customColorCode: string;
   onCustomColorCodeChange: (code: string) => void;
+  onShadeHover?: (hex: string) => void;
+  onShadeLeave?: () => void;
 }
 
-export function ShadePicker({ shades, selectedShade, onSelectShade, customColorCode, onCustomColorCodeChange }: ShadePickerProps) {
+export function ShadePicker({
+  shades,
+  selectedShade,
+  onSelectShade,
+  customColorCode,
+  onCustomColorCodeChange,
+  onShadeHover,
+  onShadeLeave,
+}: ShadePickerProps) {
   const families = useMemo(() => [...new Set(shades.map((s) => s.family))], [shades]);
   const [activeFamily, setActiveFamily] = useState(families[0]);
   const filteredShades = useMemo(() => shades.filter((s) => s.family === activeFamily), [shades, activeFamily]);
@@ -68,6 +78,8 @@ export function ShadePicker({ shades, selectedShade, onSelectShade, customColorC
               key={shade.name}
               type="button"
               onClick={() => onSelectShade(shade.name)}
+              onMouseEnter={() => onShadeHover?.(shade.code)}
+              onMouseLeave={onShadeLeave}
               className={`group/shade relative flex flex-col items-center gap-1.5 rounded-2xl p-2 transition-all cursor-pointer ${
                 isSelected
                   ? "bg-[#F0ECF9] shadow-sm scale-105"
@@ -105,7 +117,11 @@ export function ShadePicker({ shades, selectedShade, onSelectShade, customColorC
               type="text"
               placeholder="E8D5B7"
               value={customColorCode.replace("#", "")}
-              onChange={(e) => onCustomColorCodeChange("#" + e.target.value.replace("#", "").slice(0, 6))}
+              onChange={(e) => {
+                const code = "#" + e.target.value.replace("#", "").slice(0, 6);
+                onCustomColorCodeChange(code);
+                if (code.length === 7) onShadeHover?.(code);
+              }}
               maxLength={7}
               className="w-full h-10 rounded-lg border border-[var(--border)] bg-white pl-7 pr-3 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[var(--brand-100)]"
             />
