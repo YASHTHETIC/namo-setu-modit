@@ -42,7 +42,8 @@ import { useIsStandalone } from "@/lib/pwa";
 import { BorderBeam } from "@/components/border-beam";
 import { Marquee } from "@/components/marquee";
 import { NumberTicker } from "@/components/number-ticker";
-import { Magnetic } from "@/components/magnetic";
+import { Magnetic } from "@/components/magnetic";
+import { NeuralSearch } from "@/components/neural-search";
 import { Cube3D } from "@/components/cube-3d";
 import { Particles3DVfx } from "@/components/particles-3d-vfx";
 
@@ -289,77 +290,10 @@ export default function HomeClient() {
             </button>
           </div>
         </div>
-        {/* Desktop inline search bar with Blinkit-style live autocomplete dropdown */}
-        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block relative">
-          <div className="relative w-full">
-            <div className="flex h-12 items-center rounded-2xl bg-white/95 backdrop-blur-md border border-[#EDE7F6] shadow-sm px-3.5 transition-all focus-within:shadow-[0_0_20px_rgba(124,181,24,0.25)] focus-within:border-[#7CB518]">
-              <Search className="h-4.5 w-4.5 text-[#9B8CB5] flex-shrink-0 mr-2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && searchQuery.trim()) {
-                    handleSearchSubmit(searchQuery);
-                  } else if (e.key === "Escape") {
-                    setSearchQuery("");
-                  }
-                }}
-                placeholder={searchHint}
-                className="h-full flex-1 bg-transparent text-body-md text-[#150726] placeholder:text-[#9B8CB5] focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="p-1 rounded-full text-[#9B8CB5] hover:text-[#150726] hover:bg-[#F0ECF9] transition-colors cursor-pointer mr-1"
-                  aria-label="Clear search"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleSearchSubmit(searchQuery)}
-                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#2D1B69] to-[#1E0D36] hover:from-[#1E0D36] hover:to-[#150726] text-white text-caption font-black transition-all shadow-md shadow-purple-950/30 cursor-pointer hover:scale-102 active:scale-98"
-              >
-                Search
-              </button>
-            </div>
-
-            {/* Desktop Autocomplete Dropdown */}
-            {searchQuery.trim().length >= 1 && desktopSuggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-white/95 backdrop-blur-xl border border-[#EDE7F6] shadow-[0_24px_50px_rgba(21,7,38,0.25)] overflow-hidden animate-slide-down">
-                {desktopSuggestions.map((s) => (
-                  <button
-                    key={s.text}
-                    type="button"
-                    onClick={() => handleSearchSubmit(s.query)}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#F8F6FC] border-b border-[#F0ECF9] last:border-0 transition-colors cursor-pointer"
-                  >
-                    <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
-                      {s.image ? (
-                        <ImageGuard src={s.image} alt={s.text} fill sizes="36px" className="object-contain p-1" />
-                      ) : (
-                        <Search className="h-4 w-4 text-[#9B8CB5]" />
-                      )}
-                    </div>
-                    <p className="truncate text-body-sm font-medium text-[#150726]">
-                      <HighlightedText text={s.text} query={searchQuery} markClassName="font-black text-[#2D1B69]" />
-                    </p>
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => handleSearchSubmit(searchQuery)}
-                  className="flex w-full items-center justify-center gap-1.5 bg-gradient-to-r from-[#F7F4FC] to-[#F0ECF9] hover:from-[#F0ECF9] hover:to-[#E8E0F7] px-4 py-3 text-caption font-extrabold text-[#2D1B69] transition-colors cursor-pointer border-t border-[#EDE7F6]"
-                >
-                  See all results for &ldquo;{searchQuery}&rdquo; <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Desktop inline search bar with Neural AI autocomplete dropdown */}
+        <div className="mx-auto w-full max-w-[1600px] lg:w-[84vw] px-4 sm:px-6 pb-3 hidden sm:block relative">
+          <NeuralSearch className="w-full" />
+        </div>
         {/* Futuristic Laser Horizon Line */}
         <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#7CB518]/60 via-[#00BCD4]/70 to-transparent" />
       </header>

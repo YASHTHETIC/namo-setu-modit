@@ -6,6 +6,7 @@ import { products } from "@/lib/product-data";
 import { safeJsonLd } from "@/lib/utils";
 
 import ProductDetailClient from "./product-detail-client";
+import { AmbientLightingProvider } from "@/lib/ambient-lighting";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -130,7 +131,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbLd) }}
         />
       )}
-      <ProductDetailClient params={params} initialProduct={initialProduct} />
+      <AmbientLightingProvider categorySlug={p.categorySlug ?? undefined}>
+        <ProductDetailClient params={params} initialProduct={initialProduct} />
+      </AmbientLightingProvider>
     </>
   );
 }

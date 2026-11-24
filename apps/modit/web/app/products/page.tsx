@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { categories } from "@/lib/product-data";
 
-import ProductExplorer from "./product-explorer";
+import ProductsPageClient from "./products-page-client";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -60,6 +60,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
-export default function ProductsPage() {
-  return <ProductExplorer />;
+export default function ProductsPage({ searchParams }: PageProps) {
+  return <ProductsPageClient searchParams={searchParams} />;
 }

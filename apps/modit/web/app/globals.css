@@ -156,6 +156,23 @@
   --paint-btn-dark: #5E8E11;
 
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ═════════════════════════════════════════════════════════════════════════════
+     Ambient Category Lighting — per-category atmospheric mood.
+     Populated by useAmbientLighting() on <body>. GPU-cheap CSS vars.
+     Category palette hexes (also used in lib/ambient-lighting.tsx):
+       cement    #0E0A16 #130B1F #7CB518 rgba(124,181,24,0.35) #F0ECF9 #C9B8E8
+       painting  #14081A #1B0C26 #F8CB46 rgba(248,203,70,0.35) #F5F2FC #EDE7F6
+       lighting  #08141A #0C1B26 #00BCD4 rgba(0,188,212,0.35)  #E0F7FA #B2EBF2
+       tiling    #0A1416 #0E1B1F #E91E63 rgba(233,30,99,0.35)  #FCE4EC #F48FB1
+       electrical#1A1008 #24170C #F8CB46 rgba(248,203,70,0.35)  #FFF6DE #F5E3C4
+     ════════════════════════════════════════════════════════════════════════════ */
+  --ambient-bg: #0E0A16;
+  --ambient-surface: #130B1F;
+  --ambient-accent: #7CB518;
+  --ambient-accent-glow: rgba(124,181,24,0.35);
+  --ambient-text: #F0ECF9;
+  --ambient-muted: #C9B8E8;
 }
 
 
@@ -1802,7 +1819,141 @@ button { touch-action: manipulation; }
 
 .product-card .product-delivery .free { color: var(--success); font-weight: 600; }
 
+/* ═══════════════════════════════════════════════════════════════════════════════════════════
+   AMBIENT CATEGORY LIGHTING — body applies per-category atmospheric mood
+   ═══════════════════════════════════════════════════════════════════════════════════════════ */
+body {
+  background-color: var(--ambient-bg, #0E0A16);
+  transition: background-color 900ms var(--ease-out-expo);
+}
+@media (prefers-reduced-motion: reduce) {
+  body { transition: none; }
+}
 
+/* Surface cards inherit ambient surface tone */
+.ambient-surface {
+  background: var(--ambient-surface, #130B1F);
+  border-color: var(--brand-200);
+  transition: background 900ms var(--ease-out-expo), border-color 900ms var(--ease-out-expo);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-surface { transition: none; }
+}
+
+/* Glowing accent ring that breathes with the category color */
+.ambient-glow-ring {
+  position: relative;
+  overflow: hidden;
+}
+.ambient-glow-ring::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  background: radial-gradient(600px circle at 50% 50%, var(--ambient-accent-glow, rgba(124,181,24,0.35)), transparent 70%);
+  opacity: 0;
+  animation: ambientBreathe 5s var(--ease-out-expo) infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+.ambient-glow-ring > * { position: relative; z-index: 1; }
+@keyframes ambientBreathe {
+  from { opacity: 0.35; transform: scale(0.95); }
+  to { opacity: 0.85; transform: scale(1.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-glow-ring::before { animation: none; opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════════
+   SPATIAL PAGE TRANSITIONS — replaced fade with 3D spatial rotation + scale
+   ═══════════════════════════════════════════════════════════════════════════════════════════ */
+.page-in {
+  animation: pageIn var(--dur-slow) var(--ease-out-expo) backwards;
+}
+.page-in-backwards {
+  animation: pageOut var(--dur-slow) var(--ease-out-expo) forwards;
+}
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) rotateX(8deg) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+  }
+}
+@keyframes pageOut {
+  to {
+    opacity: 0;
+    transform: translateY(-18px) rotateX(-6deg) scale(0.99);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-in, .page-in-backwards { animation: none; opacity: 1; transform: none; }
+}
+
+/* Hero heading — spatial scale-in + letter float */
+.hero-title-animate {
+  animation: heroTitleRise 700ms var(--ease-out-expo) backwards;
+}
+@keyframes heroTitleRise {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-animate { animation: none; opacity: 1; transform: none; }
+}
+
+/* 3D product card — macro tilt + depth shadow */
+.product-card-3d {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+  transition: transform var(--dur-med) var(--ease-spring), box-shadow var(--dur-med) var(--ease-out-expo);
+}
+.product-card-3d:hover {
+  transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) scale(1.02);
+  box-shadow: 0 24px 48px -12px rgba(45,27,105,0.22), 0 0 0 1px var(--ambient-accent, #7CB518);
+}
+.product-card-3d:active { transform: perspective(1000px) scale(0.985); }
+.product-card-3d .macro-glint {
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0.06) 55%, transparent 100%);
+  transform: rotate(-30deg) translateX(-150%);
+  transition: transform 1.2s var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 40;
+}
+.product-card-3d:hover .macro-glint {
+  transform: rotate(-30deg) translateX(250%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-card-3d, .product-card-3d:hover { transform: none; box-shadow: none; }
+  .product-card-3d .macro-glint { transition: none; display: none; }
+}
+
+/* Add-to-cart toast — already defined; ensure ambient sync */
+.cart-toast.is-visible {
+  animation: toastSlide 350ms var(--ease-out-expo) forwards;
+}
+@keyframes toastSlide {
+  from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-toast.is-visible { animation: none; opacity: 1; transform: none; }
+}
+
+/* Free delivery bar fill pulse */
+.free-delivery-fill {
+  transition: width 900ms var(--ease-out-expo);
+}
+@media (prefers-reduced-motion: reduce) {
+  .free-delivery-fill { transition: none; }
+}
 
 
 

@@ -40,6 +40,7 @@ import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useLongPress } from "@/lib/use-long-press";
 import { haptic } from "@/lib/haptics";
 import { PullRefreshIndicator } from "@/components/pull-refresh-indicator";
+import { ProductCard3D } from "@/components/product-card-3d";
 
 type SortOption = "relevance" | "price-asc" | "price-desc" | "rating" | "discount" | "newest";
 type ViewMode = "grid" | "list";
@@ -1240,14 +1241,15 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   };
 
   return (
-    <div
-      {...longPress}
-      className="card-lift card-spotlight card-3d-inner transform-3d group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col hover:border-[#7CB518]/60 hover:shadow-[0_20px_40px_-10px_rgba(45,27,105,0.22),0_0_25px_-4px_rgba(124,181,24,0.25)] hover:-translate-y-1.5 transition-all duration-300"
-      style={{
-        border: '1px solid #DDD6EE',
-        boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
-      }}
-    >
+    <ProductCard3D accent={catColor.accent}>
+      <div
+        {...longPress}
+        className="card-lift card-spotlight group relative rounded-2xl bg-white overflow-hidden h-full flex flex-col"
+        style={{
+          border: '1px solid #DDD6EE',
+          boxShadow: '0 1px 3px rgba(26,10,51,0.04)',
+        }}
+      >
       {/* Specular glare sheen overlay */}
       <div aria-hidden="true" className="specular-glare-overlay pointer-events-none" />
       {burst > 0 && (
@@ -1349,7 +1351,8 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         onClose={() => setOptionsOpen(false)}
         product={product as unknown as import("@/lib/pricing").DisplayProduct}
       />
-    </div>
+      </div>
+    </ProductCard3D>
   );
 }
 
