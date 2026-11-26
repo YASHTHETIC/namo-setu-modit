@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, MouseEvent } from "react";
 import Image from "next/image";
-import { Heart, Share2, Check, Package, Sparkles, Box, ZoomIn, Maximize2, RotateCw } from "lucide-react";
+import { Heart, Share2, Check, Package, Box, ZoomIn, Maximize2, RotateCw } from "lucide-react";
 
 interface ProductZoom3DViewerProps {
   images: string[];
@@ -34,8 +34,6 @@ export function ProductZoom3DViewer({
   isPaintProduct = false,
   selectedShadeColor = null,
   selectedShadeName = null,
-  shades,
-  onSelectShade,
 }: ProductZoom3DViewerProps) {
   const [mode, setMode] = useState<"zoom" | "3d">("zoom");
   const [turntable, setTurntable] = useState(false);
@@ -67,7 +65,7 @@ export function ProductZoom3DViewer({
   }, [turntable]);
 
   const activeImage = images[safeImageIndex];
-  const auraColor = selectedShadeColor || (isPaintProduct ? "#FF9800" : "#7CB518");
+  const auraColor = selectedShadeColor || "#7CB518";
 
   // Handle Zoom lens & 3D tilt on mouse move
   const handleMouseMove = useCallback(
@@ -170,22 +168,19 @@ export function ProductZoom3DViewer({
           </button>
         </div>
 
-        {/* Paint aura badge if shade is selected or paint product */}
-        {isPaintProduct && (
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-tiny font-bold text-[#150726] shadow-xs border border-[#EDE7F6]">
+        {/* Selected shade pill */}
+        {selectedShadeName && (
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-tiny font-bold text-[#150726] shadow-xs border border-[#EDE7F6]">
             <span
-              className="h-2.5 w-2.5 rounded-full ring-2 ring-black/10 animate-pulse"
+              className="h-2.5 w-2.5 rounded-full ring-2 ring-black/10"
               style={{ backgroundColor: auraColor }}
             />
-            <span className="truncate max-w-[120px]">
-              {selectedShadeName ? selectedShadeName : "3D Paint View"}
-            </span>
-            <Sparkles className="h-3 w-3 text-amber-500" />
+            <span className="truncate max-w-[140px]">{selectedShadeName}</span>
           </div>
         )}
       </div>
 
-      {/* Main interactive stage */}
+      {/* Main interactive stage — Clean, normal product photo presentation */}
       <div
         ref={containerRef}
         onMouseMove={handleMouseMove}
@@ -207,57 +202,11 @@ export function ProductZoom3DViewer({
           if (Math.abs(dx) < 40 || images.length < 2) return;
           setSelectedImage((i) => (i + (dx < 0 ? 1 : images.length - 1)) % images.length);
         }}
-        className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[#F0ECF9] select-none cursor-crosshair group"
+        className="relative aspect-square overflow-hidden rounded-2xl border border-[#EDE7F6] bg-white select-none cursor-crosshair group shadow-xs"
         style={{
           perspective: 1000,
         }}
       >
-        {/* Canva-style Organic Fluid Paint Splash Shape (from Pic 3) */}
-        {isPaintProduct && (
-          <>
-            <svg
-              viewBox="0 0 400 400"
-              className="pointer-events-none absolute inset-0 m-auto h-[88%] w-[88%] z-0 transition-all duration-700 opacity-85"
-              style={{
-                filter: `drop-shadow(0 20px 35px ${auraColor}40)`,
-              }}
-            >
-              <path
-                d="M 200 40 C 290 30, 360 110, 350 200 C 340 280, 290 360, 190 350 C 90 340, 40 270, 50 180 C 60 90, 110 50, 200 40 Z"
-                fill={auraColor}
-                opacity="0.3"
-              />
-              <path
-                d="M 210 70 C 280 60, 330 130, 320 210 C 310 270, 260 320, 180 310 C 100 300, 70 230, 80 160 C 90 90, 140 80, 210 70 Z"
-                fill={auraColor}
-                opacity="0.55"
-              />
-              {/* Organic splash droplets from Canva design */}
-              <circle cx="75" cy="115" r="15" fill={auraColor} opacity="0.65" />
-              <circle cx="330" cy="125" r="13" fill={auraColor} opacity="0.55" />
-              <circle cx="340" cy="280" r="18" fill={auraColor} opacity="0.7" />
-              <circle cx="85" cy="295" r="16" fill={auraColor} opacity="0.55" />
-            </svg>
-
-            {/* Canva Pic 3: Floating Prompt "MOVE TO EXPLORE ↗" */}
-            <div className="pointer-events-none absolute top-3.5 left-3.5 z-20 flex items-center gap-1.5 text-tiny font-extrabold uppercase tracking-wider text-white bg-[#150726]/80 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-white/15">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
-              <span>MOVE TO EXPLORE ↗</span>
-            </div>
-
-            {/* Canva Pic 3: Floating Standout Finish Badge */}
-            <div className="pointer-events-none absolute top-3.5 right-3.5 z-20 flex items-center gap-2 rounded-2xl bg-white/95 backdrop-blur-md px-3 py-1.5 shadow-lg border border-[#EDE7F6]">
-              <div className="h-6 w-6 rounded-lg bg-[#2D1B69]/10 flex items-center justify-center text-[#2D1B69]">
-                <Sparkles className="h-3.5 w-3.5 text-[#7CB518]" />
-              </div>
-              <div className="text-left">
-                <p className="text-tiny font-black text-[#150726] leading-none">Standout finish</p>
-                <p className="text-micro font-medium text-[#7B6A99] leading-none mt-0.5">Made to impress</p>
-              </div>
-            </div>
-          </>
-        )}
-
         {/* Product image container with 3D or Zoom transforms */}
         <div
           className="relative h-full w-full z-10 transition-transform duration-150 ease-out"
@@ -306,72 +255,6 @@ export function ProductZoom3DViewer({
               }}
             />
           )}
-
-          {/* Erupting Liquid Paint Splash (Manager: "paint bucket se bhr uchal rha h kind of") */}
-          {isPaintProduct && (
-            <svg
-              viewBox="0 0 500 500"
-              className="pointer-events-none absolute inset-0 m-auto h-full w-full z-20 transition-transform duration-500"
-              style={{
-                transform: mode === "3d" ? "translateZ(26px)" : "none",
-                filter: `drop-shadow(0 10px 20px ${auraColor}70)`,
-              }}
-            >
-              <defs>
-                <linearGradient id="pdpSplashGloss" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
-                  <stop offset="50%" stopColor="#ffffff" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="#000000" stopOpacity="0.25" />
-                </linearGradient>
-              </defs>
-
-              {/* Left Erupting Splash Jet — Leaping out from the left rim */}
-              <path
-                d="M 180 180 C 130 160, 70 120, 60 70 C 50 30, 95 30, 110 65 C 125 100, 160 135, 195 165 Z"
-                fill={auraColor}
-                opacity="0.95"
-              />
-              <path
-                d="M 170 170 C 125 150, 75 110, 68 75 C 65 55, 90 45, 102 70 C 112 95, 145 130, 180 155 Z"
-                fill="url(#pdpSplashGloss)"
-                opacity="0.55"
-              />
-
-              {/* Right Erupting Splash Jet — Leaping out from the right rim */}
-              <path
-                d="M 320 180 C 370 160, 430 120, 440 70 C 450 30, 405 30, 390 65 C 375 100, 340 135, 305 165 Z"
-                fill={auraColor}
-                opacity="0.95"
-              />
-              <path
-                d="M 330 170 C 375 150, 425 110, 432 75 C 435 55, 410 45, 398 70 C 388 95, 355 130, 320 155 Z"
-                fill="url(#pdpSplashGloss)"
-                opacity="0.55"
-              />
-
-              {/* Central Paint Wave Crown Bursting Over Front Rim */}
-              <path
-                d="M 175 180 Q 250 150 325 180 Q 250 200 175 180 Z"
-                fill={auraColor}
-                opacity="0.95"
-              />
-              <ellipse cx="250" cy="180" rx="65" ry="10" fill="url(#pdpSplashGloss)" opacity="0.45" />
-
-              {/* Airborne Flying Droplets */}
-              <circle cx="50" cy="45" r="10" fill={auraColor} />
-              <circle cx="85" cy="25" r="7" fill={auraColor} />
-              <circle cx="450" cy="45" r="10" fill={auraColor} />
-              <circle cx="415" cy="25" r="7" fill={auraColor} />
-              <circle cx="250" cy="90" r="12" fill={auraColor} />
-              <circle cx="230" cy="65" r="7" fill={auraColor} />
-              <circle cx="270" cy="70" r="8" fill={auraColor} />
-
-              {/* Droplet highlights */}
-              <circle cx="48" cy="42" r="3" fill="#ffffff" opacity="0.8" />
-              <circle cx="448" cy="42" r="3" fill="#ffffff" opacity="0.8" />
-              <circle cx="248" cy="87" r="4" fill="#ffffff" opacity="0.8" />
-            </svg>
-          )}
         </div>
 
         {/* Floating 3D shadow underneath */}
@@ -412,7 +295,7 @@ export function ProductZoom3DViewer({
             onOpenLightbox();
           }}
           title="Fullscreen view"
-          className="absolute bottom-3 right-12 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95 text-[#2D1B69]"
+          className="absolute bottom-3 right-12 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95 text-[#2D1B69] border border-[#DDD6EE]"
         >
           <Maximize2 className="h-4 w-4" />
         </button>
@@ -458,56 +341,6 @@ export function ProductZoom3DViewer({
           </span>
         )}
       </div>
-
-      {/* Canva Pic 3 Quick Swatch Dock: "Choose your backdrop shade" */}
-      {isPaintProduct && shades && shades.length > 0 && (
-        <div className="mt-3 rounded-2xl bg-white border border-[#EDE7F6] p-3 shadow-xs">
-          <div className="flex items-center justify-between mb-2 px-1">
-            <span className="text-micro font-extrabold uppercase tracking-wider text-[#6B5B83] flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-              Choose backdrop shade
-            </span>
-            <span className="text-micro font-black text-[#2D1B69] bg-[#F0ECF9] px-2.5 py-0.5 rounded-full border border-[#2D1B69]/10">
-              {selectedShadeName || "Soft Lilac"}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1 px-0.5 snap-x">
-            {shades.map((s) => {
-              const isSelected = selectedShadeName === s.name || (!selectedShadeName && s.name === "Soft Lilac");
-              return (
-                <button
-                  key={s.name}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectShade?.(s.name);
-                  }}
-                  title={s.name}
-                  className={`group/swatch relative flex-shrink-0 flex flex-col items-center gap-1 p-1 rounded-xl transition-all cursor-pointer snap-start ${
-                    isSelected ? "bg-[#F0ECF9] scale-105" : "hover:bg-[#F7F4FC]"
-                  }`}
-                >
-                  <div
-                    className={`h-9 w-9 sm:h-10 sm:w-10 rounded-full transition-all duration-300 ${
-                      isSelected
-                        ? "ring-2 ring-[#2D1B69] ring-offset-2 scale-110 shadow-md"
-                        : "border border-black/15 hover:scale-110 shadow-xs"
-                    }`}
-                    style={{
-                      backgroundColor: s.code,
-                      boxShadow: isSelected ? `0 0 14px ${s.code}80` : undefined,
-                    }}
-                  />
-                  <span className="text-micro font-bold text-[#150726] max-w-[58px] truncate leading-none mt-0.5">
-                    {s.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
