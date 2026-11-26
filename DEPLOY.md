@@ -63,7 +63,7 @@ npm install --legacy-peer-deps
 # catalog seeder ONCE; it is idempotent: attaches images, adds missing
 # catalog products (~1,100 total), deactivates SKUs that left the catalog
 # (orders/line-items keep working — they snapshot price and join by id):
-cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog && cd /opt/modit
+PYTHONPATH=. .venv/bin/python -m backend.app.seeders.catalog
 npm run build --workspace=@modit/web
 pm2 restart modit-web modit-api
 pm2 status

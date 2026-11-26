@@ -45,8 +45,7 @@ jobs:
             npm install --legacy-peer-deps --no-audit --no-fund
             npm run build --workspace=@modit/web
             .venv/bin/python -m alembic -c backend/alembic.ini upgrade head
-            cd backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog
-            cd /opt/modit
+            PYTHONPATH=. .venv/bin/python -m backend.app.seeders.catalog
             pm2 restart modit-web modit-api
             sleep 8
       - name: Health gate (fail loudly, do not proceed silently)

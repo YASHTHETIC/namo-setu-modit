@@ -157,3 +157,25 @@ async def test_seed_catalog_async_safe_without_missing_greenlet():
     db_cat = _CatalogSeedFakeDB(users=[admin, buyer, demo], role=role, linked=True)
     stats = await seed.seed_catalog(db_cat, sample)
     assert stats["products_created"] == 1
+
+
+def test_settings_loads_root_env_from_subdirectory(tmp_path, monkeypatch):
+    """Running seeders from backend/ must still load repo-root .env DATABASE_URL."""
+    from pathlib import Path
+    from backend.app.core import config
+
+    assert config._ROOT_ENV == Path(config.__file__).resolve().parents[3] / ".env"
+    assert str(config._ROOT_ENV) in config.Settings.model_config["env_file"]
+
+    root_env = tmp_path / ".env"
+    root_env.write_text(
+        "DATABASE_URL=postgresql+asyncpg://modit:secret@127.0.0.1:5432/modit\n",
+        encoding="utf-8",
+    )
+    sub_dir = tmp_path / "backend"
+    sub_dir.mkdir()
+    monkeypatch.chdir(sub_dir)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+
+    s = config.Settings(_env_file=(str(root_env), ".env"))
+    assert "modit:secret@127.0.0.1:5432/modit" in s.database_url

@@ -7,9 +7,9 @@ validate prices server-side, decrement real inventory, and list via the API.
 Idempotent: re-running updates prices/stock, never duplicates (get-or-create
 on the same unique keys the API enforces).
 
-Run on the server AFTER migrations:
-    cd /opt/modit/backend && PYTHONPATH=".." ../.venv/bin/python -m backend.app.seeders.catalog
-Requires DATABASE_URL in the environment (reads /opt/modit/.env pattern).
+Run on the server AFTER migrations (from repo root so /opt/modit/.env loads):
+    PYTHONPATH=. .venv/bin/python -m backend.app.seeders.catalog
+Works from backend/ too: `backend.app.core.config` resolves repo-root `.env`.
 """
 
 from __future__ import annotations
