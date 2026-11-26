@@ -34,7 +34,7 @@ function perUnitText(price: number, unit: string, unitCode: string): string | nu
  * per-unit rate, price + MRP, discount line, name, rating,
  * delivery time + stock left.
  */
-export function MobileProductCard({ product }: { product: DisplayProduct }) {
+export function MobileProductCard({ product, eager = false }: { product: DisplayProduct; eager?: boolean }) {
   const stepDown = useCartStore((s) => s.stepDown);
   const items = useCartStore((s) => s.items);
   const { wishlisted, toggle: toggleWishlist } = useWishlistToggle(product);
@@ -83,7 +83,9 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                 src={product.images?.[0]}
                 alt={product.name}
                 fill
-                sizes="(max-width: 640px) 50vw, 240px"
+                sizes="(max-width: 640px) 46vw, 240px"
+                loading={eager ? "eager" : "lazy"}
+                quality={85}
                 draggable={false}
                 className="object-contain p-1.5 card3d-img"
               />

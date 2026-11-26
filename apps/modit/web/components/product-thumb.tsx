@@ -30,6 +30,8 @@ export function ImageGuard({
   width,
   height,
   priority,
+  loading,
+  quality = 85,
   draggable,
 }: {
   src?: string | null;
@@ -40,9 +42,12 @@ export function ImageGuard({
   width?: number;
   height?: number;
   priority?: boolean;
+  loading?: "eager" | "lazy";
+  quality?: number;
   draggable?: boolean;
 }) {
-  if (!src) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  if (!src || failedSrc === src) {
     return <PackagePlaceholder alt={alt} fill={fill} className={className} />;
   }
   return (
@@ -54,7 +59,10 @@ export function ImageGuard({
       width={width}
       height={height}
       priority={priority}
+      loading={priority ? undefined : loading}
+      quality={quality}
       draggable={draggable}
+      onError={() => setFailedSrc(src)}
       className={className}
     />
   );
@@ -62,7 +70,8 @@ export function ImageGuard({
 
 /**
  * Product thumbnail that never shows an ugly broken-image + alt-text spill.
- * On missing/failed src it renders a neutral branded tile instead.
+ * Uses Next.js image optimization (AVIF/WebP + responsive sizing) with a
+ * synchronous onError fallback to a branded tile.
  */
 export function ProductThumb({
   src,
@@ -73,9 +82,9 @@ export function ProductThumb({
   alt: string;
   className?: string;
 }) {
-  const [broken, setBroken] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
-  if (!src || broken) {
+  if (!src || failedSrc === src) {
     return (
       <div
         role="img"
@@ -87,20 +96,17 @@ export function ProductThumb({
     );
   }
 
-  const handleImgError = () => setBroken(true);
-
   return (
-    // Plain img tag is deliberate: callers size this via className, and the
-    // onError fallback must fire synchronously to avoid broken-image spill.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={src}
       alt={alt}
-      width={400}
-      height={400}
+      width={160}
+      height={160}
+      sizes="96px"
+      quality={85}
       loading="lazy"
       decoding="async"
-      onError={handleImgError}
+      onError={() => setFailedSrc(src)}
       className={className}
       draggable={false}
     />

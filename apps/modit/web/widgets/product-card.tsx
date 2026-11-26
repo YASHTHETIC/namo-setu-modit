@@ -129,7 +129,8 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
                 src={product.images?.[0]}
                 alt={product.name}
                 fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 300px"
+                sizes="(max-width: 640px) 46vw, (max-width: 1024px) 220px, 240px"
+                quality={85}
                 draggable={false}
                 className="object-contain p-2 animate-fade-in card3d-img"
               />

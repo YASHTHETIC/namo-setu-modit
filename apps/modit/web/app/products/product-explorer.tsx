@@ -932,22 +932,22 @@ function ProductsContent() {
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
               <div className="product-grid grid grid-cols-2 gap-2.5 sm:hidden">
-                {visibleProducts.map((product) => (
-                  <MobileProductCard key={product.id} product={product} />
+                {visibleProducts.map((product, idx) => (
+                  <MobileProductCard key={product.id} product={product} eager={idx < 4} />
                 ))}
               </div>
               {/* Tablet / desktop: respects grid/list view mode */}
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
                   <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-                    {visibleProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} onAddToCart={addItem} />
+                    {visibleProducts.map((product, idx) => (
+                      <ProductCard key={product.id} product={product} onAddToCart={addItem} eager={idx < 4} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {visibleProducts.map((product) => (
-                      <ProductListCard key={product.id} product={product} onAddToCart={addItem} />
+                    {visibleProducts.map((product, idx) => (
+                      <ProductListCard key={product.id} product={product} onAddToCart={addItem} eager={idx < 4} />
                     ))}
                   </div>
                 )}
@@ -1206,7 +1206,7 @@ function GridCompareButton({ product }: { product: Product }) {
   );
 }
 
-function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
+function ProductCard({ product, onAddToCart, eager = false }: { product: Product; onAddToCart: (p: Product, qty?: number) => void; eager?: boolean }) {
   const [added, setAdded] = useState(false);
   const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
@@ -1273,8 +1273,9 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 src={product.images[0]}
                 alt={product.name}
                 fill
-                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 260px"
-                loading="lazy"
+                sizes="(max-width: 640px) 46vw, (max-width: 1280px) 28vw, 260px"
+                loading={eager ? "eager" : "lazy"}
+                quality={85}
                 draggable={false}
                 className="object-contain p-2 card3d-img"
               />
@@ -1367,7 +1368,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   );
 }
 
-function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product, qty?: number) => void }) {
+function ProductListCard({ product, onAddToCart, eager = false }: { product: Product; onAddToCart: (p: Product, qty?: number) => void; eager?: boolean }) {
   const [added, setAdded] = useState(false);
   const tryAdd = useAddToCart();
   const blocked = useAreaBlocked();
@@ -1429,7 +1430,8 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 144px, 176px"
-                loading="lazy"
+                loading={eager ? "eager" : "lazy"}
+                quality={85}
                 draggable={false}
                 className="object-contain p-1.5"
               />

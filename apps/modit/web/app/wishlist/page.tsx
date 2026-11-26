@@ -131,6 +131,7 @@ export default function WishlistPage() {
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      quality={85}
                       loading="lazy"
                       draggable={false}
                       className="object-contain p-2"

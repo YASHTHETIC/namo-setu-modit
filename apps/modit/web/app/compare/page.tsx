@@ -56,7 +56,7 @@ export default function ComparePage() {
                   <X className="h-3.5 w-3.5" />
                 </button>
                 <div className="layer-3d-pop relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC] border border-[#DDD6EE]/50 shadow-inner">
-                  <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" draggable={false} className="object-contain" />
+                  <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" quality={85} draggable={false} className="object-contain" />
                 </div>
                 <p className="text-tiny font-bold text-[#7CB518] uppercase mt-2">{product.brand}</p>
                 <p className="text-caption font-semibold text-[#150726] line-clamp-2 mt-0.5">{product.name}</p>

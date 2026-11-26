@@ -182,6 +182,7 @@ export function FlashDeals() {
                         alt={product.name}
                         fill
                         sizes="(max-width: 640px) 172px, 224px"
+                        quality={85}
                         loading="lazy"
                         draggable={false}
                         className="object-contain p-1.5"

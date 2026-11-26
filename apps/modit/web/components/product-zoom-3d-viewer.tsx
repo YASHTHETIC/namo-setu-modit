@@ -286,6 +286,7 @@ export function ProductZoom3DViewer({
               alt={productName}
               fill
               sizes="(max-width: 1024px) 100vw, 560px"
+              quality={92}
               priority
               draggable={false}
               className="object-contain p-4 drop-shadow-[0_12px_24px_rgba(45,27,105,0.14)]"

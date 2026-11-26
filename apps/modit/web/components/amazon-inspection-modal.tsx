@@ -338,7 +338,8 @@ export function AmazonInspectionModal({
                 src={activeImage}
                 alt={productName}
                 fill
-                sizes="(max-width: 1024px) 100vw, 800px"
+                sizes="(max-width: 1024px) 100vw, 960px"
+                quality={92}
                 priority
                 draggable={false}
                 className="object-contain p-8 drop-shadow-[0_16px_32px_rgba(45,27,105,0.25)]"
