@@ -158,9 +158,9 @@ export default function CartPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-12">
           {/* Cart Items */}
-          <div className="lg:col-span-8 space-y-3.5">
+          <div className="md:col-span-2 lg:col-span-8 space-y-3.5">
             {items.map((item, idx) => {
               const resolved = resolveProduct(item.product);
               const basePrice = getLiveUnitPrice(item);
@@ -329,7 +329,7 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="lg:col-span-4">
+          <div className="md:col-span-1 lg:col-span-4">
             <div className="sticky top-20 space-y-4">
               {/* Coupon */}
               <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">

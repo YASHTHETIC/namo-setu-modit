@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { productLink } from "@/lib/utils";
+import { productLink, formatINR } from "@/lib/utils";
 import { Suspense } from "react";
 import {
   Search,
@@ -938,7 +938,7 @@ function ProductsContent() {
               {/* Desktop / tablet: respects grid/list view mode */}
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
-                  <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                  <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {visibleProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
@@ -1321,12 +1321,12 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         {/* Bottom row — price block left, ADD button right */}
         <div className="mt-auto flex items-end justify-between gap-1 pt-2 min-w-0">
           <div className="min-w-0 flex-1 flex flex-col justify-end">
-            <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight truncate">
-              ₹{product.price.toLocaleString("en-IN")}
+            <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
+              {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums truncate -mt-0.5">
-                ₹{product.mrp.toLocaleString("en-IN")}
+              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums -mt-0.5">
+                {formatINR(product.mrp)}
               </span>
             )}
           </div>

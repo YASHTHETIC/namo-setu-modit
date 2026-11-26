@@ -10,7 +10,7 @@ import { usePincode } from "@/lib/pincode-context";
 import type { DisplayProduct } from "@/lib/pricing";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { useAddToCart } from "@/lib/use-add-to-cart";
-import { productLink } from "@/lib/utils";
+import { productLink, formatINR } from "@/lib/utils";
 
 /** Parse "50kg" / "5 kg" / "20 L" into { qty, label } for per-unit pricing. */
 function parseUnit(unit: string, fallback: string): { qty: number; label: string } | null {
@@ -137,12 +137,12 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         {/* Bottom row: Price on left, ADD button / Stepper on right */}
         <div className="mt-auto flex items-end justify-between gap-1 pt-1.5 min-w-0">
           <div className="min-w-0 flex-1 flex flex-col justify-end">
-            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight truncate">
-              ₹{product.price.toLocaleString("en-IN")}
+            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
+              {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 truncate">
-                ₹{product.mrp.toLocaleString("en-IN")}
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
+                {formatINR(product.mrp)}
               </span>
             )}
           </div>

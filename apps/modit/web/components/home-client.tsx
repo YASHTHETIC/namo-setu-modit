@@ -425,7 +425,7 @@ export default function HomeClient() {
         </div>
 
       {/* ═══ GLOBAL TRUST STRIP — Ultra-Modern Executive Glassmorphic Matrix ═══ */}
-      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+      <div className="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         {/* Card 1: 60-Min Site Drop */}
         <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-1 group">
           <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#7CB518] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -539,7 +539,7 @@ export default function HomeClient() {
           <div className="section-header">
             <h2>Shop by Category</h2>
           </div>
-          <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3.5 lg:grid-cols-8 pb-2 pt-1">
+          <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 sm:gap-3.5 lg:gap-4 pb-2 pt-1">
             {visibleCategories.map((cat, i) => {
               const manual = TILE_IMAGES[cat.slug];
               const fallbackImg = !manual

@@ -365,7 +365,7 @@ export default function ProductDetailPage({
         <span className="text-[var(--text-primary)] font-medium truncate max-w-[40vw] sm:max-w-[320px]" title={product.name}>{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-6 lg:grid-cols-12">
         {/* Left: Image Gallery with Dynamic Ambient Shade Backdrop */}
         <div className="lg:col-span-5 relative">
           <div
@@ -1094,7 +1094,7 @@ export default function ProductDetailPage({
               <p className="text-micro text-[#6B5B83] mt-0.5">Compatible materials frequently ordered by contractors on the same delivery vehicle</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {frequentlyBought.map((p) => {
               const pAccent = getCatAccent(p.categorySlug);
               return (
@@ -1165,7 +1165,7 @@ export default function ProductDetailPage({
               View All →
             </Link>
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 sm:overflow-visible sm:gap-3 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 sm:overflow-visible sm:gap-3">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={productLink(p)} className="w-[150px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
