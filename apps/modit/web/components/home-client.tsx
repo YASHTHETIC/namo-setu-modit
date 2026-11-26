@@ -401,7 +401,7 @@ export default function HomeClient() {
               <Tilt3D max={18} className="flex-shrink-0">
                 <div className="relative group/p1">
                   <div className="h-24 w-20 sm:h-36 sm:w-32 rounded-3xl bg-gradient-to-b from-white/95 to-white/85 p-2 sm:p-3 rotate-[-6deg] group-hover/p1:rotate-0 transition-all duration-500 shadow-[0_25px_50px_rgba(0,0,0,0.5)] ring-2 sm:ring-4 ring-white/60 group-hover/p1:ring-[#7CB518] backdrop-blur-md specular-sheen">
-                    <Image src="/products/cement/Ambuja Cement.png" alt="Ambuja Cement" width={128} height={144} loading="lazy" draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
+                    <Image src="/products/cement/Ambuja Cement.png" alt="Ambuja Cement" width={128} height={144} priority quality={92} draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
                   </div>
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#150726]/90 border border-[#7CB518]/50 text-tiny font-black text-[#7CB518] shadow-md uppercase tracking-wider">
                     Cement
@@ -412,7 +412,7 @@ export default function HomeClient() {
                 <Tilt3D max={18}>
                   <div className="relative group/p2 -ml-6 mt-8">
                     <div className="h-36 w-32 rounded-3xl bg-gradient-to-b from-white/95 to-white/85 p-3 rotate-[6deg] group-hover/p2:rotate-0 transition-all duration-500 shadow-[0_25px_50px_rgba(0,0,0,0.5)] ring-4 ring-white/60 group-hover/p2:ring-[#00BCD4] backdrop-blur-md specular-sheen">
-                      <Image src="/products/painting/Asian Paint.png" alt="Asian Paint" width={128} height={144} loading="lazy" draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
+                      <Image src="/products/painting/Asian Paint.png" alt="Asian Paint" width={128} height={144} priority quality={92} draggable={false} className="h-full w-full object-contain filter drop-shadow-md" />
                     </div>
                     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#150726]/90 border border-[#00BCD4]/50 text-tiny font-black text-[#00BCD4] shadow-md uppercase tracking-wider">
                       Paint

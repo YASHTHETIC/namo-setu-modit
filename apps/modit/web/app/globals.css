@@ -4458,6 +4458,11 @@ html[data-app-installed="true"] .install-app-cta {
   transition: transform 0.45s var(--ease-out-expo), filter 0.45s var(--ease-out-expo);
   filter: drop-shadow(0 8px 16px rgba(21, 7, 38, 0.12));
 }
+.product-image-enhanced img[src*=".jpg" i],
+.product-image-enhanced img[src*=".jpeg" i],
+.product-image-enhanced img[src*=".jfif" i] {
+  mix-blend-mode: multiply;
+}
 .group:hover .product-image-enhanced img,
 .group\/card:hover .product-image-enhanced img {
   animation-play-state: paused;

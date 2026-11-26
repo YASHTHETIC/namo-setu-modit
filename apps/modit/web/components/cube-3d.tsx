@@ -254,7 +254,8 @@ export function Cube3D() {
                 alt={CUBE_FACES[0].name}
                 width={80}
                 height={80}
-                loading="lazy"
+                priority
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
@@ -284,6 +285,7 @@ export function Cube3D() {
                 width={80}
                 height={80}
                 loading="lazy"
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
@@ -313,6 +315,7 @@ export function Cube3D() {
                 width={80}
                 height={80}
                 loading="lazy"
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
@@ -342,6 +345,7 @@ export function Cube3D() {
                 width={80}
                 height={80}
                 loading="lazy"
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
@@ -371,6 +375,7 @@ export function Cube3D() {
                 width={80}
                 height={80}
                 loading="lazy"
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
@@ -400,6 +405,7 @@ export function Cube3D() {
                 width={80}
                 height={80}
                 loading="lazy"
+                quality={85}
                 draggable={false}
                 className="h-full w-full object-contain filter drop-shadow-md"
               />
