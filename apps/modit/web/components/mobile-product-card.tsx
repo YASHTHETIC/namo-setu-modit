@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ImageGuard } from "@/components/product-thumb";
 import Link from "next/link";
-import { Star, Clock, Heart } from "lucide-react";
+import { Star, Clock, Heart, Package } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { usePincode } from "@/lib/pincode-context";
@@ -45,6 +45,15 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
   const { pincode: myPin, serviceable: myAreaOk } = usePincode();
   const blocked = Boolean(myPin) && !myAreaOk;
 
+  const catColorAccent = (() => {
+    const m: Record<string, string> = {
+      cement: "#7CB518", painting: "#F8CB46", lighting: "#00BCD4", tiling: "#E91E63",
+      electrical: "#F8CB46", "hardware-tools": "#607D8B", conduits: "#FF9800",
+    };
+    return m[(product.categorySlug ?? "cement").toLowerCase()] ?? "#7CB518";
+  })();
+  const catColor = { accent: catColorAccent };
+
   const lines = items.filter((i) => i.product.id === product.id);
   const qty = lines.reduce((s, i) => s + i.quantity, 0);
   const stepLine = lines.find((i) => !i.variantId) ?? lines[0];
@@ -59,18 +68,29 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
       {/* 2028 Specular Sheen */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
 
-      {/* Image zone — clean & completely unobstructed */}
-      <div className="relative bg-[#F7F4FC] p-2 aspect-square transform-3d">
-        <Link href={productLink(product)} className="relative block h-full w-full layer-3d-pop">
-          <ImageGuard
-            src={product.images?.[0]}
-            alt={product.name}
-            fill
-            sizes="50vw"
-            draggable={false}
-            className="object-contain p-1 animate-fade-in card3d-img drop-shadow-[0_8px_12px_rgba(0,0,0,0.1)] group-hover:scale-108 transition-transform duration-500"
-          />
-        </Link>
+      {/* Image zone — modern enhanced styling */}
+      <div className="product-image-wrap">
+        <div className="product-image-ring" />
+        <div className="product-image-enhanced">
+          <div className="product-image-shine" />
+          <Link href={productLink(product)} className="relative block h-full w-full layer-3d-pop">
+            {product.images?.[0] ? (
+              <ImageGuard
+                src={product.images?.[0]}
+                alt={product.name}
+                fill
+                sizes="50vw"
+                draggable={false}
+                className="object-contain p-2 card3d-img"
+              />
+            ) : (
+              <div className="product-image-placeholder h-full w-full">
+                <Package className="h-12 w-12" style={{ color: catColor.accent, opacity: 0.5 }} />
+              </div>
+            )}
+          </Link>
+        </div>
+        <div className="product-image-reflection" />
         {discountPct > 0 && (
           <span className="layer-3d-badge absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
             {discountPct}% OFF
@@ -162,7 +182,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                   }
                 }}
                 disabled={blocked}
-                className="btn-shine rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
+                className={`btn-shine btn-add-enhanced rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer`}
               >
                 {blocked ? "N/A" : "ADD"}
               </button>

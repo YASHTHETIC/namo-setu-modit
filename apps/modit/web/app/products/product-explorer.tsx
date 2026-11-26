@@ -25,6 +25,7 @@ import {
   Tag,
   TrendingDown,
   Download,
+  CheckCircle2,
 } from "lucide-react";
 import { Button, Badge, Input, DeliveryBadge, QuantitySelector } from "@/lib/modit-ui";
 import { Reveal } from "@/components/reveal";
@@ -1257,8 +1258,11 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
       {/* Category accent stripe at top */}
       <div className="stripe-shine h-1 w-full" style={{ background: `linear-gradient(90deg, ${catColor.accent}, ${catColor.accent}AA, ${catColor.accent}44)` }} />
 
-      {/* Image */}
-      <div className="relative h-52 overflow-hidden" style={{ background: catColor.bg }}>
+      {/* Image — enhanced with modern attractive styling */}
+      <div className="product-image-wrap">
+        <div className="product-image-ring" />
+        <div className="product-image-enhanced">
+          <div className="product-image-shine" />
           <Link href={productLink(product)} className="absolute inset-0 z-10">
             {product.images[0] ? (
               <Image
@@ -1268,16 +1272,19 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
                 sizes="176px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain p-2.5 card3d-img layer-3d-pop drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+                className="object-contain p-3 card3d-img layer-3d-pop"
               />
             ) : (
-            <div className="flex h-full items-center justify-center">
-              <Package className="h-16 w-16" style={{ color: catColor.accent, opacity: 0.15 }} />
-            </div>
-          )}
-          {/* Bottom gradient overlay */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        </Link>
+              <div className="product-image-placeholder h-full w-full">
+                <Package className="h-14 w-14" style={{ color: catColor.accent, opacity: 0.5 }} />
+              </div>
+            )}
+          </Link>
+        </div>
+        <div className="product-image-reflection" />
+        {/* Bottom gradient overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
 
         {/* Discount badge — premium modern corner tag */}
         {savingsPercent > 0 && (
@@ -1335,9 +1342,13 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
               onClick={handleAdd}
               disabled={blocked}
               title={blocked ? "Not serving your pincode yet" : undefined}
-              className={added ? "rounded-full bg-[#7CB518] text-white px-4 py-1.5 text-xs font-black transition-all disabled:opacity-50" : "btn-add cursor-pointer"}
+              className={`btn-add btn-add-enhanced cursor-pointer ${added ? "added" : ""}`}
             >
-              {added ? "Added ✓" : "ADD"}
+              {added ? (
+                <><CheckCircle2 className="h-4 w-4" /> Added</>
+              ) : (
+                <><ShoppingCart className="h-4 w-4" /> ADD</>
+              )}
             </button>
           </div>
         </div>
@@ -1348,7 +1359,6 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         onClose={() => setOptionsOpen(false)}
         product={product as unknown as import("@/lib/pricing").DisplayProduct}
       />
-      </div>
     </ProductCard3D>
   );
 }
