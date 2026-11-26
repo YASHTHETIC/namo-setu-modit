@@ -24,7 +24,7 @@ const POPULAR_QUERY_PRESETS: { keyword: string; text: string; query: string; ima
   // Cement
   { keyword: "cement", text: "OPC Cement", query: "opc cement", image: "/products/cement/ACC Cement.png" },
   { keyword: "cement", text: "PPC Cement", query: "ppc cement", image: "/products/cement/Ambuja Cement.png" },
-  { keyword: "cement", text: "UltraTech Cement", query: "ultratech cement", image: "/products/cement/UltraTech Cement.png" },
+  { keyword: "cement", text: "UltraTech Cement", query: "ultratech cement", image: "/products/cement/Ultratech Cement.png" },
   { keyword: "cement", text: "ACC Cement", query: "acc cement", image: "/products/cement/ACC Cement.png" },
   { keyword: "cement", text: "Ambuja Cement", query: "ambuja cement", image: "/products/cement/Ambuja Cement.png" },
 

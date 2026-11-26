@@ -20,6 +20,17 @@ function* walk(dir) {
   }
 }
 
+function existsExactCase(publicDir, ref) {
+  const parts = ref.replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
+  let cur = publicDir;
+  for (const part of parts) {
+    if (!fs.existsSync(cur) || !fs.statSync(cur).isDirectory()) return false;
+    if (!fs.readdirSync(cur).includes(part)) return false;
+    cur = path.join(cur, part);
+  }
+  return true;
+}
+
 for (const file of walk(root)) {
   const src = fs.readFileSync(file, "utf8");
   const re = /(["'])(\/products\/[^\n]*?)\1/g;
@@ -32,7 +43,7 @@ for (const file of walk(root)) {
       bad++;
       console.log(`BAD NAME: ${ref}  (${path.relative(root, file)})`);
     }
-    if (!fs.existsSync(path.join(root, "public", ref.replace(/^\//, "")))) {
+    if (!existsExactCase(path.join(root, "public"), ref)) {
       missing++;
       console.log(`MISSING:  ${ref}  (${path.relative(root, file)})`);
     }
