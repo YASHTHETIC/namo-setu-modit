@@ -163,8 +163,9 @@ async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db))
     user = await _load_user_with_roles(db, user.id) or user
 
     session_id = uuid4().hex
-    access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
-    refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
+    claims = {"roles": [role.name for role in user.roles], "sid": session_id}
+    access_token = create_access_token(subject=user.id, extra_claims=claims)
+    refresh_token = create_refresh_token(subject=user.id, extra_claims=claims)
     await _create_session(db, user, refresh_token, session_id=session_id)
 
     refresh_row = RefreshToken(
@@ -197,11 +198,14 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> To
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     if not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    if not user.is_active:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is deactivated")
 
     await _ensure_bootstrap_admin(db, user)
     session_id = uuid4().hex
-    access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
-    refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
+    claims = {"roles": [role.name for role in user.roles], "sid": session_id}
+    access_token = create_access_token(subject=user.id, extra_claims=claims)
+    refresh_token = create_refresh_token(subject=user.id, extra_claims=claims)
     await _create_session(db, user, refresh_token, session_id=session_id)
 
     refresh_row = RefreshToken(
@@ -275,12 +279,15 @@ async def otp_verify(
         await db.commit()
         user = await _load_user_with_roles(db, user.id) or user
     else:
+        if not user.is_active:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is deactivated")
         await _ensure_bootstrap_admin(db, user)
         await db.commit()
 
     session_id = uuid4().hex
-    access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
-    refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
+    claims = {"roles": [role.name for role in user.roles], "sid": session_id}
+    access_token = create_access_token(subject=user.id, extra_claims=claims)
+    refresh_token = create_refresh_token(subject=user.id, extra_claims=claims)
     await _create_session(db, user, refresh_token, session_id=session_id)
 
     refresh_row = RefreshToken(
@@ -327,7 +334,7 @@ async def claim_staff(
             action="modit.staff.claim",
             entity_type="user",
             entity_id=user.id,
-            after={"email": user.email, "name": user.name},
+            after={"email": user.email, "full_name": user.full_name},
         )
         await db.commit()
         return ClaimStaffResponse(claimed=True)
@@ -339,7 +346,10 @@ async def claim_staff(
 
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -> TokenResponse:
-    token_payload = decode_token(payload.refresh_token)
+    try:
+        token_payload = decode_token(payload.refresh_token)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
     if token_payload.get("type") != "refresh":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token type")
 
@@ -350,7 +360,7 @@ async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -
 
     result = await db.execute(select(User).options(selectinload(User.roles)).where(User.id == user_id))
     user = result.scalar_one_or_none()
-    if user is None:
+    if user is None or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token subject")
 
     refresh_hash = hash_token(payload.refresh_token)
@@ -375,8 +385,11 @@ async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -
         if session_row is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session revoked")
 
-    access_token = create_access_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles]})
-    refresh_token = create_refresh_token(subject=user.id, extra_claims={"roles": [role.name for role in user.roles], "sid": session_id})
+    claims: dict = {"roles": [role.name for role in user.roles]}
+    if session_id:
+        claims["sid"] = session_id
+    access_token = create_access_token(subject=user.id, extra_claims=claims)
+    refresh_token = create_refresh_token(subject=user.id, extra_claims=claims)
 
     refresh_row = RefreshToken(
         user_id=user.id,
@@ -402,7 +415,10 @@ async def refresh(payload: RefreshRequest, db: AsyncSession = Depends(get_db)) -
 
 @router.post("/logout")
 async def logout(payload: LogoutRequest, db: AsyncSession = Depends(get_db)) -> dict[str, str]:
-    token_payload = decode_token(payload.refresh_token)
+    try:
+        token_payload = decode_token(payload.refresh_token)
+    except Exception:
+        token_payload = {}
     refresh_hash = hash_token(payload.refresh_token)
     result = await db.execute(select(RefreshToken).where(RefreshToken.token_hash == refresh_hash))
     token_row = result.scalar_one_or_none()
@@ -414,7 +430,7 @@ async def logout(payload: LogoutRequest, db: AsyncSession = Depends(get_db)) -> 
         session_row = session_result.scalar_one_or_none()
         if session_row is not None:
             session_row.is_revoked = True
-        await db.commit()
+    await db.commit()
     return {"detail": "Logged out"}
 
 

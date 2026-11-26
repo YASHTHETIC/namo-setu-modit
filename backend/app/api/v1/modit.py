@@ -54,6 +54,7 @@ from backend.app.models.shared import AnalyticsEvent
 from backend.app.models.user import User
 from backend.app.services.audit_service import create_audit_log
 from backend.app.schemas.modit import (
+    BOQCreate,
     BOQItemCreate,
     BOQItemRead,
     BOQRead,
@@ -612,6 +613,7 @@ async def award_rfq(
     po = PurchaseOrder(
         id=str(uuid4()),
         organization_id=rfq.organization_id,
+        rfq_id=rfq.id,
         order_number=make_modit_reference("PO"),
         status="placed",
         order_date=date.today(),
@@ -1015,7 +1017,9 @@ async def _restore_inventory_for_order(session: AsyncSession, order_id: str) -> 
         if not inv_rows:
             continue
         target = max(inv_rows, key=lambda r: r.quantity_on_hand)
-        target.quantity_on_hand = float(target.quantity_on_hand or 0) + float(item.quantity or 0)
+        target.quantity_on_hand = int(target.quantity_on_hand or 0) + int(round(float(item.quantity or 0)))
+        if target.quantity_on_hand > 0:
+            target.status = InventoryStatus.IN_STOCK.value
 
 
 async def _own_org_ids(session: AsyncSession, user: User) -> list[str]:
@@ -1461,7 +1465,10 @@ async def create_project_endpoint(payload: ProjectCreate, db: AsyncSession = Dep
         own = await _own_org_ids(db, user)
         if org_id and org_id not in own:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not belong to this organization")
-        org_id = org_id or (own[0] if own else None)
+        if not org_id:
+            org_id = own[0] if own else (await get_or_create_personal_org(db, user)).id
+    elif not org_id:
+        org_id = (await get_or_create_personal_org(db, user)).id
     data.pop("project_code", None)
     project = await create_project(db, org_id, **data)
     await db.commit()
@@ -1555,9 +1562,14 @@ async def create_material_request(payload: MaterialRequestCreate, db: AsyncSessi
 
 
 @router.post("/boq", response_model=BOQRead, status_code=status.HTTP_201_CREATED)
-async def create_boq(payload: dict, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQ:
-    """Create a BOQ."""
-    boq = BOQ(**payload)
+async def create_boq(payload: BOQCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQ:
+    """Create a BOQ (project org member or staff)."""
+    project = await db.get(Project, payload.project_id)
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
+    boq = BOQ(**payload.model_dump())
     db.add(boq)
     await db.commit()
     await db.refresh(boq)
@@ -1566,8 +1578,16 @@ async def create_boq(payload: dict, db: AsyncSession = Depends(get_db), user: Us
 
 @router.post("/boq/{boq_id}/items", response_model=BOQItemRead, status_code=status.HTTP_201_CREATED)
 async def create_boq_item(boq_id: str, payload: BOQItemCreate, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> BOQItem:
-    """Add item to BOQ."""
-    item = BOQItem(boq_id=boq_id, **payload.model_dump())
+    """Add item to BOQ (project org member or staff)."""
+    boq = await db.get(BOQ, boq_id)
+    if boq is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="BOQ not found")
+    project = await db.get(Project, boq.project_id)
+    if project is not None and not is_staff(user) and str(project.organization_id) not in await _own_org_ids(db, user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this project")
+    item_data = payload.model_dump()
+    item_data["boq_id"] = boq_id
+    item = BOQItem(**item_data)
     db.add(item)
     await db.commit()
     await db.refresh(item)

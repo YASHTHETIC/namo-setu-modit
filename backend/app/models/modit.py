@@ -574,7 +574,7 @@ class Order(BaseModel):
     __tablename__ = "orders"
     __table_args__ = (
         Index("ix_orders_org_status", "organization_id", "status"),
-        UniqueConstraint("client_reference", name="uq_orders_client_reference"),
+        UniqueConstraint("organization_id", "client_reference", name="uq_orders_org_client_reference"),
     )
 
     organization_id: Mapped[str] = mapped_column(ForeignKey("modit_organizations.id", ondelete="CASCADE"), nullable=False)

@@ -20,7 +20,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from uuid import uuid4
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -129,14 +129,20 @@ async def validate_coupon_db(
     rows: list[dict] = [dict(c) for c in BUILT_IN_COUPONS]
     row_ids: dict[str, str] = {}
     try:
-        result = await session.execute(
-            select(PlatformCoupon).where(
-                PlatformCoupon.is_active.is_(True), PlatformCoupon.deleted_at.is_(None)
-            )
-        )
+        result = await session.execute(select(PlatformCoupon))
         for c in result.scalars().all():
+            code_str = str(getattr(c, "code", "") or "").upper()
+            is_deleted = getattr(c, "deleted_at", None) is not None
+            is_active = bool(getattr(c, "is_active", True))
+            if not code_str:
+                continue
+            if is_deleted or not is_active:
+                # Admin explicitly deactivated/deleted this coupon: override built-in mirror too.
+                rows = [r for r in rows if r["code"] != code_str]
+                row_ids.pop(code_str, None)
+                continue
             normalized = {
-                "code": str(getattr(c, "code", "") or "").upper(),
+                "code": code_str,
                 "type": str(getattr(c, "discount_type", "") or "").lower(),
                 "value": float(getattr(c, "discount_value", 0) or 0),
                 "max": getattr(c, "max_discount", None),
@@ -146,11 +152,11 @@ async def validate_coupon_db(
                 "usage_limit": getattr(c, "usage_limit", None),
                 "used_count": getattr(c, "used_count", 0) or 0,
             }
-            if normalized["code"] and normalized["type"] in ("flat", "percent", "ship"):
+            if normalized["type"] in ("flat", "percent", "ship"):
                 # Admin row wins for its own code; other built-ins remain.
-                rows = [r for r in rows if r["code"] != normalized["code"]]
+                rows = [r for r in rows if r["code"] != code_str]
                 rows.append(normalized)
-                row_ids[normalized["code"]] = getattr(c, "id", None)
+                row_ids[code_str] = getattr(c, "id", None)
     except Exception:
         # Table not migrated yet / read issues → built-ins alone.
         rows = [dict(c) for c in BUILT_IN_COUPONS]
@@ -495,23 +501,35 @@ async def _decrement_inventory(session: AsyncSession, product_id: str, quantity:
         if remaining <= 0:
             break
         take = min(row.quantity_on_hand, remaining)
-        row.quantity_on_hand -= take
+        new_qty = row.quantity_on_hand - take
+        row.quantity_on_hand = int(round(new_qty)) if isinstance(row.quantity_on_hand, int) else new_qty
+        if hasattr(row, "status"):
+            if row.quantity_on_hand <= 0:
+                row.status = "out_of_stock"
+            elif getattr(row, "reorder_level", 0) and row.quantity_on_hand <= row.reorder_level:
+                row.status = "low_stock"
         remaining -= take
 
 
-async def _require_credit_approval(session: AsyncSession, organization_id: str, grand_total: float) -> None:
+async def _require_credit_approval(
+    session: AsyncSession, organization_id: str, grand_total: float, *, deduct: bool = False
+) -> None:
     """Net-30 needs an active credit account covering the order. Fail loudly otherwise."""
     stmt = (
         select(CreditAccount)
         .where(CreditAccount.organization_id == organization_id, CreditAccount.is_active.is_(True))
         .limit(1)
     )
+    if deduct:
+        stmt = stmt.with_for_update()
     account = (await session.execute(stmt)).scalars().first()
     if account is None or float(account.available_credit) < float(grand_total):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Business credit needs approval for this account. Use COD/UPI or contact support@modit.in for Net-30 terms.",
         )
+    if deduct:
+        account.available_credit = float(account.available_credit) - float(grand_total)
 
 
 async def _find_order_by_reference(session: AsyncSession, organization_id: str, ref: str) -> Order | None:
@@ -585,7 +603,7 @@ async def place_checkout_order(
             return await _stored_checkout_response(session, existing)
 
     if str(getattr(payload, "payment_method", "cod") or "cod").lower() == "credit":
-        await _require_credit_approval(session, org_id, computed["grand_total"])
+        await _require_credit_approval(session, org_id, computed["grand_total"], deduct=True)
 
     now = _utcnow()
 
@@ -692,9 +710,11 @@ async def place_checkout_order(
     # have no row — nothing to count).
     coupon_row_id = computed.get("coupon_row_id")
     if coupon_row_id:
-        coupon_row = await session.get(PlatformCoupon, coupon_row_id)
-        if coupon_row is not None:
-            coupon_row.used_count = int(getattr(coupon_row, "used_count", 0) or 0) + 1
+        await session.execute(
+            update(PlatformCoupon)
+            .where(PlatformCoupon.id == coupon_row_id)
+            .values(used_count=PlatformCoupon.used_count + 1)
+        )
 
     # Staff see the order in admin immediately (same transaction).
     await _notify_staff_new_order(session, computed["retail_org"].id, order, computed["grand_total"])

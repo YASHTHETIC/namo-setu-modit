@@ -112,7 +112,9 @@ function QuoteForm({ rfqId, prices, setPrices, quoting, onSubmit }: {
     <div className="mt-3 pt-3 border-t border-[#F0ECF9] space-y-2">
       {items.map((it: any) => (
         <div key={it.product_id} className="flex items-center gap-2">
-          <span className="flex-1 min-w-0 font-mono text-tiny text-[#6B5B83] truncate">{it.product_id.slice(0, 24)}</span>
+          <span className="flex-1 min-w-0 text-tiny font-semibold text-[#150726] truncate">
+            {it.product_name || it.product_id.slice(0, 24)}
+          </span>
           <span className="text-tiny font-bold text-[#150726] whitespace-nowrap">× {it.requested_quantity}</span>
           <input
             type="number"

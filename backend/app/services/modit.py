@@ -58,11 +58,14 @@ from backend.app.models.modit import (
 from backend.app.models.shared import AnalyticsEvent
 from backend.app.models.user import User
 from backend.app.schemas.modit import (
+    BOQRead,
+    ConstructionSiteRead,
     InventoryAnalytics,
     InventoryAlert,
     BrandRead,
     CategoryRead,
     GSTRead,
+    MaterialRequestRead,
     ModitAnalyticsSummary,
     ProductDetailRead,
     ProductRead,
@@ -435,7 +438,7 @@ async def rfq_to_detail(session: AsyncSession, rfq: RFQ) -> RFQDetailRead:
     if product_ids:
         try:
             for pid, name in (
-                await session.execute(select(Product.name).where(Product.id.in_(product_ids)))
+                await session.execute(select(Product.id, Product.name).where(Product.id.in_(product_ids)))
             ).all():
                 item_names[pid] = name
         except Exception:
@@ -513,9 +516,9 @@ async def project_to_detail(session: AsyncSession, project: Project) -> ProjectD
     
     return ProjectDetailRead(
         **ProjectRead.model_validate(project).model_dump(),
-        construction_sites=[ConstructionSite.model_validate(site) for site in project.construction_sites],
-        material_requests=[MaterialRequest.model_validate(req) for req in project.material_requests],
-        boq=[BOQ.model_validate(boq) for boq in project.boq],
+        construction_sites=[ConstructionSiteRead.model_validate(site) for site in project.construction_sites],
+        material_requests=[MaterialRequestRead.model_validate(req) for req in project.material_requests],
+        boq=[BOQRead.model_validate(boq) for boq in project.boq],
     )
 
 
@@ -595,8 +598,9 @@ async def track_analytics_event(session: AsyncSession, user_id: str, event_name:
     event = AnalyticsEvent(
         product_code=ProductCode.MODIT.value,
         user_id=user_id,
+        event_type="custom",
         event_name=event_name,
-        properties_json=json.dumps(properties) if properties else None,
+        payload_json=json.dumps(properties) if properties else None,
     )
     session.add(event)
     return event

@@ -48,7 +48,8 @@ export default function ProductReviewsPage({
         baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
         accessToken: getAccessToken(),
       });
-      return client.request<Product>(`/api/v1/products/${productId}`, { method: "GET" });
+      const data = await client.request<Product>(`/modit/products/${productId}`, { method: "GET" });
+      return data;
     },
     enabled: Boolean(productId),
   });
@@ -60,16 +61,26 @@ export default function ProductReviewsPage({
         baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
         accessToken: getAccessToken(),
       });
-      const data = await client.request<ReviewStats>(
-        `/api/v1/reviews/stats?target_type=product&target_id=${productId}`,
+      const raw = await client.request<
+        ReviewStats & { rating_distribution?: Record<string, number> }
+      >(
+        `/reviews/stats?target_type=product&target_id=${productId}`,
         { method: "GET" }
       );
-      return data;
+      if (Array.isArray(raw.distribution)) return raw;
+      const distMap = raw.rating_distribution ?? {};
+      return {
+        ...raw,
+        distribution: [5, 4, 3, 2, 1].map((stars) => ({
+          stars,
+          count: Number(distMap[String(stars)] ?? distMap[stars as unknown as string] ?? 0),
+        })),
+      };
     },
     enabled: Boolean(productId),
   });
 
-  const maxCount = stats ? Math.max(...stats.distribution.map((d) => d.count), 1) : 1;
+  const maxCount = stats ? Math.max(...(stats.distribution ?? []).map((d) => d.count), 1) : 1;
 
   return (
     <main className="fx-page mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import base64
 import json
 import secrets
 import string
 from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 from uuid import uuid4
 
 import pyotp
+from cryptography.fernet import Fernet, InvalidToken
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -49,6 +52,22 @@ from backend.app.services.email_service import email_service
 
 router = APIRouter()
 settings = get_settings()
+
+
+def _mfa_fernet() -> Fernet:
+    key = base64.urlsafe_b64encode(sha256(settings.jwt_secret_key.encode("utf-8")).digest())
+    return Fernet(key)
+
+
+def _encrypt_mfa_secret(secret: str) -> str:
+    return _mfa_fernet().encrypt(secret.encode("utf-8")).decode("ascii")
+
+
+def _decrypt_mfa_secret(stored: str) -> str | None:
+    try:
+        return _mfa_fernet().decrypt(stored.encode("ascii")).decode("utf-8")
+    except (InvalidToken, ValueError, TypeError):
+        return None
 
 
 def _generate_recovery_codes(count: int = 8) -> list[str]:
@@ -116,7 +135,7 @@ async def forgot_password(
     )
     await db.commit()
 
-    reset_url = f"{settings.frontend_url or 'http://localhost:3000'}/reset-password?token={raw_token}"
+    reset_url = f"{settings.frontend_url or 'http://localhost:3000'}/auth/reset-password?token={raw_token}"
     await email_service.send_password_reset(user.email, reset_url)
 
     return {"detail": "If the email exists, a reset link has been sent"}
@@ -149,12 +168,17 @@ async def reset_password(
     user.password_changed_at = datetime.now(timezone.utc)
     row.used_at = datetime.now(timezone.utc)
 
-    # Revoke all sessions for this user
+    # Revoke all sessions and refresh tokens for this user
     session_result = await db.execute(
         select(UserSession).where(UserSession.user_id == user.id, UserSession.is_revoked.is_(False))
     )
     for s in session_result.scalars().all():
         s.is_revoked = True
+    token_result = await db.execute(
+        select(RefreshToken).where(RefreshToken.user_id == user.id, RefreshToken.revoked.is_(False))
+    )
+    for rt in token_result.scalars().all():
+        rt.revoked = True
 
     await db.commit()
     return {"detail": "Password has been reset"}
@@ -216,7 +240,7 @@ async def send_verification(
     )
     await db.commit()
 
-    verify_url = f"{settings.frontend_url or 'http://localhost:3000'}/verify-email?token={raw_token}"
+    verify_url = f"{settings.frontend_url or 'http://localhost:3000'}/auth/verify-email?token={raw_token}"
     await email_service.send_email_verification(user.email, verify_url)
 
     return {"detail": "Verification email sent"}
@@ -346,12 +370,17 @@ async def change_password(
     user.hashed_password = hash_password(payload.new_password)
     user.password_changed_at = datetime.now(timezone.utc)
 
-    # Revoke all other sessions
+    # Revoke all sessions and refresh tokens
     result = await db.execute(
         select(UserSession).where(UserSession.user_id == user.id, UserSession.is_revoked.is_(False))
     )
     for s in result.scalars().all():
         s.is_revoked = True
+    token_result = await db.execute(
+        select(RefreshToken).where(RefreshToken.user_id == user.id, RefreshToken.revoked.is_(False))
+    )
+    for rt in token_result.scalars().all():
+        rt.revoked = True
 
     await db.commit()
     return {"detail": "Password changed successfully"}
@@ -419,24 +448,32 @@ async def update_profile(
         profile.notification_preferences_json = payload.notification_preferences_json
 
     await db.commit()
-    await db.refresh(user)
+    refreshed_user = (
+        await db.execute(
+            select(User)
+            .options(selectinload(User.profile).selectinload(UserProfile.avatar_media))
+            .where(User.id == user.id)
+        )
+    ).scalar_one_or_none() or user
+    loaded_profile = getattr(refreshed_user, "profile", None) or profile
+    avatar_media = getattr(loaded_profile, "avatar_media", None)
 
     data = {
-        "id": user.id,
-        "email": user.email,
-        "full_name": user.full_name,
-        "is_active": user.is_active,
-        "is_verified": user.is_verified,
-        "email_verified_at": user.email_verified_at,
-        "last_login_at": user.last_login_at,
-        "password_changed_at": user.password_changed_at,
-        "mfa_enabled": user.mfa_enabled,
-        "phone_number": profile.phone_number,
-        "avatar_url": profile.avatar_media.url if profile.avatar_media else None,
-        "preferences_json": profile.preferences_json,
-        "notification_preferences_json": profile.notification_preferences_json,
-        "date_of_birth": profile.date_of_birth,
-        "timezone": profile.timezone,
+        "id": refreshed_user.id,
+        "email": refreshed_user.email,
+        "full_name": refreshed_user.full_name,
+        "is_active": refreshed_user.is_active,
+        "is_verified": refreshed_user.is_verified,
+        "email_verified_at": refreshed_user.email_verified_at,
+        "last_login_at": refreshed_user.last_login_at,
+        "password_changed_at": refreshed_user.password_changed_at,
+        "mfa_enabled": refreshed_user.mfa_enabled,
+        "phone_number": getattr(loaded_profile, "phone_number", None),
+        "avatar_url": avatar_media.url if avatar_media else None,
+        "preferences_json": getattr(loaded_profile, "preferences_json", None),
+        "notification_preferences_json": getattr(loaded_profile, "notification_preferences_json", None),
+        "date_of_birth": getattr(loaded_profile, "date_of_birth", None),
+        "timezone": getattr(loaded_profile, "timezone", None),
     }
     return ProfileRead(**data)
 
@@ -454,7 +491,7 @@ async def enable_2fa(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="2FA is already enabled")
 
     secret = pyotp.random_base32()
-    user.mfa_secret_encrypted = hash_password(secret)
+    user.mfa_secret_encrypted = _encrypt_mfa_secret(secret)
     recovery_codes = _generate_recovery_codes()
     user.mfa_recovery_codes_json = json.dumps([hash_password(c) for c in recovery_codes])
     user.mfa_enabled = True
@@ -487,9 +524,13 @@ async def verify_2fa(
     if not user.mfa_enabled or not user.mfa_secret_encrypted:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="2FA is not enabled")
 
-    totp = pyotp.TOTP(user.mfa_secret_encrypted)
-    if totp.verify(payload.code, valid_window=1):
-        return {"detail": "2FA code verified"}
+    secret = _decrypt_mfa_secret(user.mfa_secret_encrypted)
+    if secret:
+        try:
+            if pyotp.TOTP(secret).verify(payload.code, valid_window=1):
+                return {"detail": "2FA code verified"}
+        except Exception:
+            pass
 
     # Check recovery codes
     if user.mfa_recovery_codes_json:

@@ -317,12 +317,14 @@ function SecurityTab() {
     },
   });
 
+  const [mfaSetup, setMfaSetup] = useState<{ secret: string; recovery_codes: string[] } | null>(null);
   const enable2faMutation = useMutation({
     mutationFn: async () => {
       const client = getClient();
-      return client.request("/auth/2fa/enable", { method: "POST" });
+      return client.request<{ secret: string; recovery_codes: string[] }>("/auth/2fa/enable", { method: "POST" });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setMfaSetup(data);
       queryClient.invalidateQueries({ queryKey: ["modit", "profile"] });
     },
   });
@@ -434,11 +436,25 @@ function SecurityTab() {
         <button
           onClick={() => enable2faMutation.mutate()}
           disabled={enable2faMutation.isPending}
-          className="h-10 rounded-xl border-2 border-[#2D1B69] bg-white text-body-sm font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          className="h-10 px-4 rounded-xl border-2 border-[#2D1B69] bg-white text-body-sm font-bold text-[#2D1B69] hover:bg-[#F0ECF9] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {enable2faMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {enable2faMutation.isPending ? "Enabling..." : "Enable 2FA"}
         </button>
+        {mfaSetup && (
+          <div className="mt-4 rounded-xl border border-[#DDD6EE] bg-[#F8F6FC] p-4 space-y-2">
+            <p className="text-caption font-bold text-[#150726]">Authenticator Setup Key</p>
+            <p className="font-mono text-body-sm font-bold text-[#2D1B69] select-all break-all">{mfaSetup.secret}</p>
+            <p className="text-micro text-[#9B8CB5]">Save your recovery codes in a safe place:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {mfaSetup.recovery_codes.map((code) => (
+                <span key={code} className="rounded bg-white border border-[#DDD6EE] px-2 py-0.5 font-mono text-micro text-[#150726]">
+                  {code}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -446,6 +462,7 @@ function SecurityTab() {
 
 function NotificationsPreferencesTab() {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [prefs, setPrefs] = useState({
     email_notifications: true,
     push_notifications: true,
@@ -460,11 +477,15 @@ function NotificationsPreferencesTab() {
       const client = getClient();
       await client.request("/auth/profile", {
         method: "PUT",
-        body: JSON.stringify({ notification_preferences: prefs }),
+        body: JSON.stringify({ notification_preferences_json: JSON.stringify(prefs) }),
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "profile"] });
+      toast.success("Saved", "Notification preferences updated.");
+    },
+    onError: (err: Error) => {
+      toast.error("Save failed", err.message || "Could not update preferences.");
     },
   });
 

@@ -61,7 +61,9 @@ async def admin_update_user(user_id: str, payload: UserAdminUpdate, db: AsyncSes
 
 @router.post("/admin/users/{user_id}/roles", response_model=StandardResponse[str], dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
 async def assign_roles(user_id: str, payload: UserRolesUpdate, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
-    user = await db.get(User, user_id)
+    user = (
+        await db.execute(select(User).options(selectinload(User.roles)).where(User.id == user_id))
+    ).scalar_one_or_none()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     roles = []
@@ -84,7 +86,9 @@ async def assign_roles(user_id: str, payload: UserRolesUpdate, db: AsyncSession 
 
 @router.patch("/admin/roles/{role_id}", response_model=RoleRead, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
 async def update_role(role_id: str, payload: RoleUpdate, db: AsyncSession = Depends(get_db)) -> RoleRead:
-    role = await db.get(Role, role_id)
+    role = (
+        await db.execute(select(Role).options(selectinload(Role.permissions)).where(Role.id == role_id))
+    ).scalar_one_or_none()
     if role is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     if payload.name is not None:
@@ -92,8 +96,10 @@ async def update_role(role_id: str, payload: RoleUpdate, db: AsyncSession = Depe
     if payload.description is not None:
         role.description = payload.description
     await db.commit()
-    await db.refresh(role)
-    return RoleRead.model_validate(role)
+    loaded = (
+        await db.execute(select(Role).options(selectinload(Role.permissions)).where(Role.id == role_id))
+    ).scalar_one_or_none() or role
+    return RoleRead.model_validate(loaded)
 
 
 @router.patch("/admin/permissions/{permission_id}", response_model=PermissionRead, dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
@@ -112,7 +118,9 @@ async def update_permission(permission_id: str, payload: PermissionUpdate, db: A
 
 @router.post("/admin/roles/{role_id}/permissions", response_model=StandardResponse[str], dependencies=[Depends(require_permission(PermissionName.ROLE_MANAGE))])
 async def assign_permissions(role_id: str, payload: RolePermissionsUpdate, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
-    role = await db.get(Role, role_id)
+    role = (
+        await db.execute(select(Role).options(selectinload(Role.permissions)).where(Role.id == role_id))
+    ).scalar_one_or_none()
     if role is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     permissions = []

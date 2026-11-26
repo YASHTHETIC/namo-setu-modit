@@ -105,19 +105,21 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return int(results[2])
 
     def _cleanup_local(self):
-        now = time.monotonic()
-        if now - self._last_cleanup < 60:
+        now_mono = time.monotonic()
+        if now_mono - self._last_cleanup < 60:
             return
-        self._last_cleanup = now
-        cutoff = now - 60
-        for bucket in self._local_counts.values():
-            bucket.update(
-                {
-                    ip: [t for t in times if t > cutoff]
-                    for ip, times in list(bucket.items())
-                    if any(t > cutoff for t in times)
-                }
-            )
+        self._last_cleanup = now_mono
+        cutoff = time.time() - 60
+        for bucket_name, bucket in list(self._local_counts.items()):
+            cleaned = {
+                ip: fresh
+                for ip, times in bucket.items()
+                if (fresh := [t for t in times if t > cutoff])
+            }
+            if cleaned:
+                self._local_counts[bucket_name] = cleaned
+            else:
+                self._local_counts.pop(bucket_name, None)
 
     def _local_count(self, client_ip: str, now: float, bucket_key: str = "general") -> int:
         bucket = self._local_counts.setdefault(bucket_key, {})
@@ -183,7 +185,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 client_ip,
                 count,
                 limit,
-                "auth" if auth_path else "general",
+                bucket,
             )
             return JSONResponse(
                 status_code=429,

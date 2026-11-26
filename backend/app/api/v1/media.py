@@ -87,6 +87,74 @@ async def list_media(db: AsyncSession = Depends(get_db), user: User = Depends(ge
     return [MediaRead.model_validate(item) for item in result.scalars().all()]
 
 
+@router.get("/media/assets", response_model=MediaListResponse)
+async def list_media_assets(
+    product_code: str | None = Query(default=None),
+    media_type: str | None = Query(default=None),
+    mime_type: str | None = Query(default=None),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> MediaListResponse:
+    query = select(MediaAsset).where(MediaAsset.owner_user_id == user.id)
+    count_query = select(func.count()).select_from(MediaAsset).where(MediaAsset.owner_user_id == user.id)
+
+    if product_code:
+        query = query.where(MediaAsset.product_code == product_code)
+        count_query = count_query.where(MediaAsset.product_code == product_code)
+    if media_type:
+        query = query.where(MediaAsset.media_type == media_type)
+        count_query = count_query.where(MediaAsset.media_type == media_type)
+    if mime_type:
+        query = query.where(MediaAsset.mime_type == mime_type)
+        count_query = count_query.where(MediaAsset.mime_type == mime_type)
+
+    total_result = await db.execute(count_query)
+    total = total_result.scalar() or 0
+
+    query = query.order_by(MediaAsset.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
+    result = await db.execute(query)
+    assets = result.scalars().all()
+
+    return MediaListResponse(
+        assets=[MediaAssetRead.model_validate(a) for a in assets],
+        total=total,
+    )
+
+
+@router.get("/media/documents", response_model=DocumentListResponse)
+async def list_documents(
+    product_code: str | None = Query(default=None),
+    document_type: str | None = Query(default=None),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DocumentListResponse:
+    query = select(DocumentAsset).where(DocumentAsset.owner_user_id == user.id)
+    count_query = select(func.count()).select_from(DocumentAsset).where(DocumentAsset.owner_user_id == user.id)
+
+    if product_code:
+        query = query.where(DocumentAsset.product_code == product_code)
+        count_query = count_query.where(DocumentAsset.product_code == product_code)
+    if document_type:
+        query = query.where(DocumentAsset.document_type == document_type)
+        count_query = count_query.where(DocumentAsset.document_type == document_type)
+
+    total_result = await db.execute(count_query)
+    total = total_result.scalar() or 0
+
+    query = query.order_by(DocumentAsset.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
+    result = await db.execute(query)
+    docs = result.scalars().all()
+
+    return DocumentListResponse(
+        documents=[DocumentRead.model_validate(d) for d in docs],
+        total=total,
+    )
+
+
 @router.get("/media/{media_id}", response_model=MediaRead)
 async def read_media(media_id: str, db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)) -> MediaRead:
     media = await db.get(MediaAsset, media_id)
@@ -127,19 +195,25 @@ async def upload_image_cloudinary(
     transform = None
     if transformation:
         parts = {}
-        for kv in transformation.split(","):
-            if "_" in kv:
-                k, v = kv.split("_", 1)
-                if k == "w":
-                    parts["width"] = int(v)
-                elif k == "h":
-                    parts["height"] = int(v)
-                elif k == "c":
-                    parts["crop"] = v
-                elif k == "q":
-                    parts["quality"] = int(v)
-                elif k == "f":
-                    parts["format"] = v
+        try:
+            for kv in transformation.split(","):
+                if "_" in kv:
+                    k, v = kv.split("_", 1)
+                    if k == "w":
+                        parts["width"] = int(v)
+                    elif k == "h":
+                        parts["height"] = int(v)
+                    elif k == "c":
+                        parts["crop"] = v
+                    elif k == "q":
+                        parts["quality"] = int(v)
+                    elif k == "f":
+                        parts["format"] = v
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid numeric value in transformation parameter",
+            )
         transform = ImageTransformation(**parts) if parts else None
 
     asset = await cloudinary_service.upload_image_to_db(
@@ -285,42 +359,6 @@ async def upload_from_url(
     )
 
 
-@router.get("/media/assets", response_model=MediaListResponse)
-async def list_media_assets(
-    product_code: str | None = Query(default=None),
-    media_type: str | None = Query(default=None),
-    mime_type: str | None = Query(default=None),
-    page: int = Query(default=1, ge=1),
-    page_size: int = Query(default=20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
-) -> MediaListResponse:
-    query = select(MediaAsset).where(MediaAsset.owner_user_id == user.id)
-    count_query = select(func.count()).select_from(MediaAsset).where(MediaAsset.owner_user_id == user.id)
-
-    if product_code:
-        query = query.where(MediaAsset.product_code == product_code)
-        count_query = count_query.where(MediaAsset.product_code == product_code)
-    if media_type:
-        query = query.where(MediaAsset.media_type == media_type)
-        count_query = count_query.where(MediaAsset.media_type == media_type)
-    if mime_type:
-        query = query.where(MediaAsset.mime_type == mime_type)
-        count_query = count_query.where(MediaAsset.mime_type == mime_type)
-
-    total_result = await db.execute(count_query)
-    total = total_result.scalar() or 0
-
-    query = query.order_by(MediaAsset.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
-    result = await db.execute(query)
-    assets = result.scalars().all()
-
-    return MediaListResponse(
-        assets=[MediaAssetRead.model_validate(a) for a in assets],
-        total=total,
-    )
-
-
 @router.delete("/media/{media_id}/cloudinary", response_model=StandardResponse[str])
 async def delete_media_cloudinary(
     media_id: str,
@@ -405,38 +443,6 @@ async def batch_upload_media(
         total=len(files),
         failed=failed,
         errors=errors,
-    )
-
-
-@router.get("/media/documents", response_model=DocumentListResponse)
-async def list_documents(
-    product_code: str | None = Query(default=None),
-    document_type: str | None = Query(default=None),
-    page: int = Query(default=1, ge=1),
-    page_size: int = Query(default=20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_user),
-) -> DocumentListResponse:
-    query = select(DocumentAsset).where(DocumentAsset.owner_user_id == user.id)
-    count_query = select(func.count()).select_from(DocumentAsset).where(DocumentAsset.owner_user_id == user.id)
-
-    if product_code:
-        query = query.where(DocumentAsset.product_code == product_code)
-        count_query = count_query.where(DocumentAsset.product_code == product_code)
-    if document_type:
-        query = query.where(DocumentAsset.document_type == document_type)
-        count_query = count_query.where(DocumentAsset.document_type == document_type)
-
-    total_result = await db.execute(count_query)
-    total = total_result.scalar() or 0
-
-    query = query.order_by(DocumentAsset.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
-    result = await db.execute(query)
-    docs = result.scalars().all()
-
-    return DocumentListResponse(
-        documents=[DocumentRead.model_validate(d) for d in docs],
-        total=total,
     )
 
 

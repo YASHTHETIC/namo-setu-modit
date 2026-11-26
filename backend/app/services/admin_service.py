@@ -43,11 +43,19 @@ class AdminService:
             role.permissions = perms
         self.db.add(role)
         await self.db.commit()
-        await self.db.refresh(role)
-        return await self._role_to_read(role)
+        loaded = (
+            await self.db.execute(
+                select(Role).options(selectinload(Role.permissions)).where(Role.id == role.id)
+            )
+        ).scalar_one_or_none()
+        return await self._role_to_read(loaded or role)
 
     async def update_role(self, role_id: str, name: str | None = None, description: str | None = None, permission_ids: list[str] | None = None) -> RoleRead:
-        role = await self.db.get(Role, role_id)
+        role = (
+            await self.db.execute(
+                select(Role).options(selectinload(Role.permissions)).where(Role.id == role_id)
+            )
+        ).scalar_one_or_none()
         if role is None:
             raise ValueError("Role not found")
         if name is not None:
@@ -63,8 +71,12 @@ class AdminService:
                 perms.append(perm)
             role.permissions = perms
         await self.db.commit()
-        await self.db.refresh(role)
-        return await self._role_to_read(role)
+        loaded = (
+            await self.db.execute(
+                select(Role).options(selectinload(Role.permissions)).where(Role.id == role.id)
+            )
+        ).scalar_one_or_none()
+        return await self._role_to_read(loaded or role)
 
     async def delete_role(self, role_id: str) -> None:
         role = await self.db.get(Role, role_id)

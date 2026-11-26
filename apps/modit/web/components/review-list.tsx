@@ -45,10 +45,11 @@ interface Comment {
 }
 
 interface ReviewsResponse {
-  items: Review[];
+  reviews?: Review[];
+  items?: Review[];
   total: number;
-  page: number;
-  page_size: number;
+  page?: number;
+  page_size?: number;
 }
 
 export function ReviewList({ targetType, targetId }: ReviewListProps) {
@@ -69,11 +70,14 @@ export function ReviewList({ targetType, targetId }: ReviewListProps) {
         page: String(page),
         page_size: String(pageSize),
       });
-      const data = await client.request<ReviewsResponse>(
-        `/api/v1/reviews?${params.toString()}`,
+      const raw = await client.request<ReviewsResponse>(
+        `/reviews?${params.toString()}`,
         { method: "GET" }
       );
-      return data;
+      return {
+        ...raw,
+        items: raw.reviews ?? raw.items ?? [],
+      };
     },
   });
 
@@ -167,7 +171,7 @@ function ReviewCard({
         accessToken: getAccessToken(),
       });
       const method = review.is_liked ? "DELETE" : "POST";
-      await client.request(`/api/v1/reviews/${review.id}/like`, { method });
+      await client.request(`/reviews/${review.id}/like`, { method });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "reviews", targetType, targetId] });
@@ -180,7 +184,7 @@ function ReviewCard({
         baseUrl: env.NEXT_PUBLIC_API_BASE_URL,
         accessToken: getAccessToken(),
       });
-      await client.request(`/api/v1/reviews/${review.id}/comments`, {
+      await client.request(`/reviews/${review.id}/comments`, {
         method: "POST",
         body: JSON.stringify({ body: commentText.trim() }),
       });
@@ -191,20 +195,17 @@ function ReviewCard({
     },
   });
 
-  const initials = review.user_name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+  const authorName = review.user_name || "Customer";
+  const likesCount = review.likes_count ?? 0;
+  const commentsList = review.comments ?? [];
 
   return (
     <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg-card)] p-6 transition-all hover:shadow-md">
       <div className="flex items-start gap-3">
-        <Avatar name={review.user_name} src={review.user_avatar} />
+        <Avatar name={authorName} src={review.user_avatar} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-[var(--text-primary)]">{review.user_name}</span>
+            <span className="text-sm font-semibold text-[var(--text-primary)]">{authorName}</span>
             <span className="text-xs text-[var(--text-muted)]">•</span>
             <span className="text-xs text-[var(--text-muted)]">
               {new Date(review.created_at).toLocaleDateString("en-IN", {
@@ -248,7 +249,7 @@ function ReviewCard({
           <span
             className={review.is_liked ? "font-medium text-[var(--brand)]" : "text-[var(--text-muted)]"}
           >
-            {review.likes_count}
+            {likesCount}
           </span>
         </button>
         <button
@@ -256,16 +257,16 @@ function ReviewCard({
           className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
         >
           <MessageCircle className="h-4 w-4" />
-          <span>{review.comments.length}</span>
+          <span>{commentsList.length}</span>
         </button>
       </div>
 
       {showComments && (
         <div className="mt-3 space-y-3 border-t border-[var(--border-subtle)] pt-3">
-          {review.comments.map((comment) => (
+          {commentsList.map((comment) => (
             <div key={comment.id} className="flex gap-2">
               <Avatar
-                name={comment.user_name}
+                name={comment.user_name || "Customer"}
                 src={comment.user_avatar}
                 size="sm"
               />

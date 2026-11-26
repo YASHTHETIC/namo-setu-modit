@@ -86,7 +86,7 @@ export default function NotificationsPage() {
   const markReadMutation = useMutation({
     mutationFn: async (id: string) => {
       const client = getClient();
-      await client.request(`/api/v1/notifications/${id}/read`, { method: "POST" });
+      await client.request(`/notifications/${id}/read`, { method: "POST" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["modit", "notifications"] });

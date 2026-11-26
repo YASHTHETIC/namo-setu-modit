@@ -9,6 +9,7 @@ from sqlalchemy.orm import selectinload
 from backend.app.models.modit import (
     Brand,
     Category,
+    Organization,
     Product,
     ProductImage,
     SubCategory,
@@ -155,7 +156,7 @@ class SearchService:
             stmt = stmt.where(
                 or_(
                     Supplier.supplier_code.ilike(pattern),
-                    Supplier.organization.has(func.lower(Supplier.organization.property.mapper.c.name).ilike(pattern)),
+                    Supplier.organization.has(Organization.name.ilike(pattern)),
                 )
             )
 

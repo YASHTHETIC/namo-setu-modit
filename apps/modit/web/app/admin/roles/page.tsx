@@ -75,7 +75,11 @@ export default function RolesPage() {
     queryKey: ["modit", "users"],
     queryFn: async () => {
       const client = getClient();
-      return client.request<Array<User & { roles?: { id: string; name: string }[] }>>("/admin/users");
+      const res = await client.request<
+        | Array<User & { roles?: { id: string; name: string }[] }>
+        | { items?: Array<User & { roles?: { id: string; name: string }[] }> }
+      >("/admin/users?page=1&page_size=100");
+      return Array.isArray(res) ? res : (res?.items ?? []);
     },
   });
 

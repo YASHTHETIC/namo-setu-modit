@@ -118,13 +118,13 @@ function mapApiProduct(p: any): HybridProduct {
 }
 
 export async function fetchProductById(id: string): Promise<HybridProduct | null> {
-  const apiData = await apiFetch<any>(`/products/${id}`);
+  const apiData = await apiFetch<any>(`/modit/products/${encodeURIComponent(id)}`);
   if (apiData?.id) return mapApiProduct(apiData);
   return staticGetById(id) || null;
 }
 
 export async function searchProducts(query: string): Promise<HybridProduct[]> {
-  const apiData = await apiFetch<any>(`/products/search?q=${encodeURIComponent(query)}`);
+  const apiData = await apiFetch<any>(`/modit/products?search=${encodeURIComponent(query)}`);
   if (apiData?.items) return apiData.items.map(mapApiProduct);
   return staticSearch(query);
 }

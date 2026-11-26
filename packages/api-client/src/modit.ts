@@ -1114,7 +1114,7 @@ export function createModitApi(client: ApiClient) {
       if (params?.pincode) qs.set("pincode", params.pincode);
       if (params?.segment) qs.set("segment", params.segment);
       const query = qs.toString();
-      return client.request<LayoutResponse>(`${base}/layout/${screen}${query ? `?${query}` : ""}`);
+      return client.request<LayoutResponse>(`/layout/${screen}${query ? `?${query}` : ""}`);
     },
   };
 }

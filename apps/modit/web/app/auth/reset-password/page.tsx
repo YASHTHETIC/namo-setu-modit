@@ -26,7 +26,7 @@ function ResetPasswordForm() {
       if (!token) throw new Error("No reset token provided");
       if (password !== confirmPassword) throw new Error("Passwords do not match");
       const client = createApiClient({ baseUrl: env.NEXT_PUBLIC_API_BASE_URL });
-      await client.request("/auth/reset-password", { method: "POST", body: JSON.stringify({ token, password }) });
+      await client.request("/auth/reset-password", { method: "POST", body: JSON.stringify({ token, new_password: password }) });
     },
     onSuccess: () => setSuccess(true),
     onError: (err: Error) => setError(err.message || "Failed to reset password"),

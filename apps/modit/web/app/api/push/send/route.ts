@@ -15,7 +15,12 @@ async function staffGate(req: Request): Promise<NextResponse | null> {
     return NextResponse.json({ error: "Staff login required" }, { status: 401 });
   }
   try {
-    const res = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}/auth/staff-status`, {
+    const internalOrigin =
+      process.env.MODIT_API_INTERNAL || process.env.MODIT_API_ORIGIN || "http://127.0.0.1:8000";
+    const apiBase = env.NEXT_PUBLIC_API_BASE_URL.startsWith("/")
+      ? `${internalOrigin}${env.NEXT_PUBLIC_API_BASE_URL}`
+      : env.NEXT_PUBLIC_API_BASE_URL;
+    const res = await fetch(`${apiBase}/auth/staff-status`, {
       headers: { Authorization: auth },
       signal: AbortSignal.timeout(8000),
     });

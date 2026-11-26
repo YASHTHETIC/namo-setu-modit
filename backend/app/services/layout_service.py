@@ -174,7 +174,7 @@ async def build_home_layout(
         select(Product)
         .options(selectinload(Product.brand), selectinload(Product.images).selectinload(ProductImage.media))
         .where(Product.is_active == True)  # noqa: E712
-        .order_by(Product.rating.desc().nullslast())
+        .order_by(Product.created_at.desc())
         .limit(10)
     )
     db_products = result.scalars().all()

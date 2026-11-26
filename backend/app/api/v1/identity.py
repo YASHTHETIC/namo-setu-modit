@@ -29,6 +29,7 @@ from backend.app.schemas.platform import (
     PasswordResetConfirmRequest,
     PasswordResetRequest,
     PaginatedResponse,
+    ResendVerificationRequest,
     SessionRead,
     StandardResponse,
     UserAdminUpdate,
@@ -37,6 +38,7 @@ from backend.app.schemas.platform import (
     UserRead,
 )
 from backend.app.services.audit_service import create_audit_log
+from backend.app.services.email_service import email_service
 from backend.app.services.media_service import create_media_asset
 from backend.app.services.notification_service import create_in_app_notification
 
@@ -265,6 +267,8 @@ async def request_password_reset(payload: PasswordResetRequest, db: AsyncSession
         )
         db.add(reset_row)
         await db.commit()
+        reset_url = f"{settings.frontend_url or 'http://localhost:3000'}/auth/reset-password?token={token}"
+        await email_service.send_password_reset(user.email, reset_url)
     return StandardResponse(message="If the account exists, a reset link has been generated.", data="accepted")
 
 
@@ -290,7 +294,7 @@ async def confirm_password_reset(payload: PasswordResetConfirmRequest, db: Async
 
 
 @router.post("/users/email-verification/request", response_model=StandardResponse[str])
-async def request_email_verification(payload: EmailVerificationRequest, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
+async def request_email_verification(payload: ResendVerificationRequest, db: AsyncSession = Depends(get_db)) -> StandardResponse[str]:
     result = await db.execute(select(User).where(User.email == payload.email.lower()))
     user = result.scalar_one_or_none()
     if user is None:
