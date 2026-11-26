@@ -107,7 +107,7 @@ export function ProductRail({
         {products.map((product, i) => (
           <div
             key={product.id}
-            className="w-[160px] sm:w-[185px] md:w-[200px] flex-shrink-0"
+            className="w-[168px] sm:w-[190px] md:w-[206px] lg:w-[216px] flex-shrink-0"
             style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}
           >
             <ProductCard product={product} compact />

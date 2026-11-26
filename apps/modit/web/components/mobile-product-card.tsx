@@ -68,10 +68,14 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
       {/* 2028 Specular Sheen */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
 
-      {/* Image zone — modern enhanced styling */}
-      <div className="product-image-wrap">
+      {/* Image zone — full animated showcase sized to card */}
+      <div
+        className="product-image-wrap aspect-square w-full"
+        style={{ "--cat-accent": catColor.accent } as React.CSSProperties}
+      >
         <div className="product-image-ring" />
-        <div className="product-image-enhanced">
+        <div className="product-image-enhanced p-2">
+          <div className="product-image-glow" />
           <div className="product-image-shine" />
           <Link href={productLink(product)} className="relative block h-full w-full layer-3d-pop">
             {product.images?.[0] ? (
@@ -79,12 +83,12 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                 src={product.images?.[0]}
                 alt={product.name}
                 fill
-                sizes="50vw"
+                sizes="(max-width: 640px) 50vw, 240px"
                 draggable={false}
-                className="object-contain p-2 card3d-img"
+                className="object-contain p-1.5 card3d-img"
               />
             ) : (
-              <div className="product-image-placeholder h-full w-full">
+              <div className="product-image-placeholder h-full w-full rounded-xl">
                 <Package className="h-12 w-12" style={{ color: catColor.accent, opacity: 0.5 }} />
               </div>
             )}
@@ -92,13 +96,13 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         </div>
         <div className="product-image-reflection" />
         {discountPct > 0 && (
-          <span className="layer-3d-badge absolute top-2 left-2 z-10 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
+          <span className="layer-3d-badge absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
             {discountPct}% OFF
           </span>
         )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(); }}
-          className="absolute top-2 right-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
+          className="absolute top-2 right-2 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm"
           aria-label="Wishlist"
         >
           <Heart className={`h-3 w-3 ${wishlisted ? "fill-[#E91E63] text-[#E91E63]" : "text-[#9B8CB5]"}`} />
@@ -133,7 +137,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
         </Link>
 
         {/* Pack size / Unit selector pill — Blinkit style */}
-        <div className="flex items-center gap-1.5 my-0.5">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 my-0.5">
           {optLabel ? (
             <button
               type="button"
@@ -148,26 +152,26 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
           ) : (
             <span className="text-micro text-[#6B5B83] truncate">{product.unit}</span>
           )}
-          {unitRate && <span className="text-micro text-[#9B8CB5]">({unitRate})</span>}
+          {unitRate && <span className="text-micro text-[#9B8CB5] whitespace-nowrap">({unitRate})</span>}
           {product.stockLevel <= 10 && product.stockLevel > 0 && (
-            <span className="text-micro font-bold text-[#E91E63]"> · {product.stockLevel} left</span>
+            <span className="text-micro font-bold text-[#E91E63] whitespace-nowrap"> · {product.stockLevel} left</span>
           )}
         </div>
 
-        {/* Bottom row: Price on left, ADD button / Stepper on right */}
-        <div className="mt-auto flex items-end justify-between gap-1 pt-1.5 min-w-0">
-          <div className="min-w-0 flex-1 flex flex-col justify-end">
-            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight">
+        {/* Bottom row: Full non-truncated price on left, ADD button / Stepper on right */}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-1.5 gap-y-1 pt-1.5 min-w-0">
+          <div className="shrink-0 flex flex-col justify-end">
+            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
               {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5">
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 whitespace-nowrap">
                 {formatINR(product.mrp)}
               </span>
             )}
           </div>
 
-          <div className="flex-shrink-0 pl-1">
+          <div className="ml-auto flex-shrink-0">
             {qty === 0 ? (
               <button
                 onClick={(e) => {
@@ -182,7 +186,7 @@ export function MobileProductCard({ product }: { product: DisplayProduct }) {
                   }
                 }}
                 disabled={blocked}
-                className={`btn-shine btn-add-enhanced rounded-lg bg-white px-3.5 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer`}
+                className="btn-shine btn-add-enhanced rounded-lg bg-white px-3 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer whitespace-nowrap"
               >
                 {blocked ? "N/A" : "ADD"}
               </button>

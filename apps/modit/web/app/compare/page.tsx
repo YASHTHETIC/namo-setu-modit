@@ -6,6 +6,7 @@ import { ArrowLeft, X, Star, Truck, Shield, Package, Trash2 } from "lucide-react
 import { useComparisonStore } from "@/lib/comparison-store";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
+import { formatINR } from "@/lib/utils";
 
 export default function ComparePage() {
   const { items: rawItems, removeFromCompare, clearCompare } = useComparisonStore();
@@ -59,9 +60,9 @@ export default function ComparePage() {
                 </div>
                 <p className="text-tiny font-bold text-[#7CB518] uppercase mt-2">{product.brand}</p>
                 <p className="text-caption font-semibold text-[#150726] line-clamp-2 mt-0.5">{product.name}</p>
-                <div className="flex items-baseline gap-2 mt-2">
-                  <span className="text-body-lg font-extrabold text-[#2D1B69]">₹{product.price.toLocaleString("en-IN")}</span>
-                  {product.mrp > product.price && <span className="text-micro text-[#9B8CB5] line-through">₹{product.mrp.toLocaleString("en-IN")}</span>}
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mt-2">
+                  <span className="text-body-lg font-extrabold text-[#2D1B69] tabular-nums whitespace-nowrap">{formatINR(product.price)}</span>
+                  {product.mrp > product.price && <span className="text-micro text-[#9B8CB5] line-through tabular-nums whitespace-nowrap">{formatINR(product.mrp)}</span>}
                 </div>
                 {product.mrp > product.price ? (
                   <p className="text-micro font-bold text-[#7CB518] mt-0.5">

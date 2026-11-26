@@ -17,7 +17,7 @@ import { ModitLogo } from "@/components/modit-logo";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { FlashDeals } from "@/components/flash-deals";
 import { usePincode } from "@/lib/pincode-context";
-import { onlyDigits, productLink } from "@/lib/utils";
+import { formatINR, onlyDigits, productLink } from "@/lib/utils";
 import { useRotatingText, SEARCH_HINTS } from "@/lib/use-rotating-text";
 import { ProductRail } from "@/widgets/product-rail";
 import { HighlightedText } from "@/components/highlighted-text";
@@ -365,7 +365,7 @@ export default function HomeClient() {
 
         <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
           <div className="min-w-0 max-w-xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
+            <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl sm:rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
               <span className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] flex-shrink-0" />
               <span className="text-[#7CB518] font-black tracking-wider uppercase">DIRECT FACTORY SUPPLY</span>
               <span className="text-white/40">·</span>
@@ -425,7 +425,7 @@ export default function HomeClient() {
         </div>
 
       {/* ═══ GLOBAL TRUST STRIP — Ultra-Modern Executive Glassmorphic Matrix ═══ */}
-      <div className="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         {/* Card 1: 60-Min Site Drop */}
         <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-1 group">
           <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#7CB518] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -1183,13 +1183,13 @@ export default function HomeClient() {
 
       {/* ═══ CART TOAST ═══ */}
       {cartToast && (
-        <div className="cart-toast">
+        <div className="cart-toast is-visible" role="status" aria-live="polite">
           <div className="h-8 w-8 rounded-lg bg-[#7CB518]/20 flex items-center justify-center flex-shrink-0">
             <ShoppingCart className="h-4 w-4 text-[#7CB518]" />
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-caption font-semibold text-white truncate max-w-[180px]">{cartToast.name}</span>
-            <span className="text-tiny text-white/50">Added to cart · ₹{cartToast.price.toLocaleString("en-IN")}</span>
+            <span className="text-tiny text-white/70 whitespace-nowrap">Added to cart · {formatINR(cartToast.price)}</span>
           </div>
           <div className="toast-progress" />
         </div>

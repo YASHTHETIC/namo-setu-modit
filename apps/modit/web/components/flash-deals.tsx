@@ -8,7 +8,7 @@ import { useProducts, type Product } from "@/lib/api-hooks";
 import { useCartStore } from "@/lib/cart-store";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useDisplayProducts } from "@/lib/pricing";
-import { productLink } from "@/lib/utils";
+import { formatINR, productLink } from "@/lib/utils";
 import { VariantOptionsModal, optionsLabel } from "@/components/variant-options-modal";
 import { Particles3DVfx } from "@/components/particles-3d-vfx";
 
@@ -167,23 +167,24 @@ export function FlashDeals() {
             return (
               <div
                 key={product.id}
-                className="w-[180px] sm:w-[220px] flex-shrink-0 snap-start bg-[#0b0318]/80 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
+                className="w-[172px] sm:w-[210px] md:w-[224px] flex-shrink-0 snap-start bg-[#0b0318]/80 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
               >
                 {/* Elevated Uniform Showcase Pad */}
                 <Link
                   href={productLink(product)}
                   className="block relative aspect-square m-2.5 rounded-xl bg-white p-2.5 shadow-sm overflow-hidden group/thumb"
                 >
+                  <div className="product-image-shine" />
                   {product.images[0] ? (
-                    <div className="relative h-full w-full">
+                    <div className="product-image-enhanced">
                       <Image
                         src={product.images[0]}
                         alt={product.name}
                         fill
-                        sizes="(max-width: 640px) 46vw, 200px"
+                        sizes="(max-width: 640px) 172px, 224px"
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-1.5 group-hover/thumb:scale-105 transition-transform duration-300"
+                        className="object-contain p-1.5"
                       />
                     </div>
                   ) : (
@@ -217,13 +218,15 @@ export function FlashDeals() {
 
                   {/* Price & Savings */}
                   <div className="mt-2 flex items-baseline justify-between gap-1">
-                    <div className="flex items-baseline gap-1.5 min-w-0">
-                      <span className="text-body-md font-black text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.35)]">
-                        ₹{product.price.toLocaleString("en-IN")}
+                    <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 min-w-0">
+                      <span className="text-body-md font-black text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.35)] tabular-nums whitespace-nowrap">
+                        {formatINR(product.price)}
                       </span>
-                      <span className="text-tiny text-white/50 line-through">
-                        ₹{product.mrp.toLocaleString("en-IN")}
-                      </span>
+                      {product.mrp > product.price && (
+                        <span className="text-tiny text-white/50 line-through tabular-nums whitespace-nowrap">
+                          {formatINR(product.mrp)}
+                        </span>
+                      )}
                     </div>
                   </div>
 

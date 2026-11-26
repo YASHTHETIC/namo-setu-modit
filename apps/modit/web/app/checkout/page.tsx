@@ -261,8 +261,8 @@ export default function CheckoutPage() {
       </header>
 
       <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-28 sm:px-6 lg:pb-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-8 space-y-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+          <div className="md:col-span-7 lg:col-span-8 space-y-4">
             {/* 1 · Address Section */}
               <Reveal>
               <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
@@ -358,7 +358,7 @@ export default function CheckoutPage() {
                     <Zap className="h-3.5 w-3.5 text-[#7CB518]" />
                     <p className="text-micro font-extrabold text-[#7CB518] uppercase">Express 60-Minute Slots</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5">
                     {slots.filter((s) => s.type === "express").map((s) => {
                       const now = new Date();
                       const hour = now.getHours();
@@ -538,7 +538,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right — Summary */}
-          <div className="lg:col-span-4">
+          <div className="md:col-span-5 lg:col-span-4">
             <div className="sticky top-20 space-y-4">
               {/* Delivery Info */}
               <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">

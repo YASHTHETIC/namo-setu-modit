@@ -18,7 +18,7 @@ import {
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useCartStore } from "@/lib/cart-store";
 import { useDisplayProducts } from "@/lib/pricing";
-import { productLink } from "@/lib/utils";
+import { formatINR, productLink } from "@/lib/utils";
 import { Reveal } from "@/components/reveal";
 import { MobileProductCard } from "@/components/mobile-product-card";
 import { useState } from "react";
@@ -112,31 +112,37 @@ export default function WishlistPage() {
         ))}
       </div>
 
-      <div className="product-grid hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="product-grid hidden gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {items.map((product) => (
           <div
             key={product.id}
-            className="group rounded-xl border border-[#DDD6EE] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+            className="group rounded-xl border border-[#DDD6EE] bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden flex flex-col"
           >
             {/* Image */}
-            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#F0ECF9] via-[#E8E0F7] to-[#F0ECF9]">
-              <Link href={productLink(product)} className="absolute inset-0 z-10">
-                {product.images[0] ? (
-                  <Image
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 400px"
-                    loading="lazy"
-                    draggable={false}
-                    className="object-contain p-2"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <Package className="h-16 w-16 text-[#2D1B69]/20" />
-                  </div>
-                )}
-              </Link>
+            <div className="product-image-wrap aspect-square w-full">
+              <div className="product-image-ring" />
+              <div className="product-image-enhanced p-2">
+                <div className="product-image-glow" />
+                <div className="product-image-shine" />
+                <Link href={productLink(product)} className="relative block h-full w-full z-10">
+                  {product.images[0] ? (
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      loading="lazy"
+                      draggable={false}
+                      className="object-contain p-2"
+                    />
+                  ) : (
+                    <div className="product-image-placeholder h-full w-full rounded-xl">
+                      <Package className="h-16 w-16 text-[#2D1B69]/30" />
+                    </div>
+                  )}
+                </Link>
+              </div>
+              <div className="product-image-reflection" />
               {product.discount > 0 && (
                 <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
                   {product.discount}% OFF
@@ -177,12 +183,12 @@ export default function WishlistPage() {
 
               <div className="mt-3">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl font-extrabold text-[#150726]">
-                    ₹{product.price.toLocaleString("en-IN")}
+                  <span className="text-xl font-extrabold text-[#150726] tabular-nums whitespace-nowrap">
+                    {formatINR(product.price)}
                   </span>
                   {product.mrp > product.price && (
-                    <span className="text-xs text-[#9B8CB5] line-through">
-                      ₹{product.mrp.toLocaleString("en-IN")}
+                    <span className="text-xs text-[#9B8CB5] line-through tabular-nums whitespace-nowrap">
+                      {formatINR(product.mrp)}
                     </span>
                   )}
                 </div>

@@ -1758,27 +1758,39 @@ button { touch-action: manipulation; }
   .cart-toast { transition: none; }
 }
 
-/* Quantity stepper micro-interactions */
+/* Quantity stepper micro-interactions (keeps green pill contrast & compact width) */
 .stepper button {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 28px;
   border: none;
-  background: #F7F4FC;
-  color: #2D1B69;
-  font: 700 16px/1 var(--font-app);
-  border-radius: 8px;
+  background: transparent;
+  color: white;
+  font: 700 14px/1 var(--font-app);
   cursor: pointer;
   transition: transform 0.1s ease, background 0.2s ease;
 }
 .stepper button:active {
-  transform: scale(0.92);
-  background: #EDE7F6;
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.28);
 }
-.stepper button:hover { background: #F0ECF9; }
-.stepper span { font-variant-numeric: tabular-nums; }
+.stepper button:hover { background: rgba(255, 255, 255, 0.2); }
+.stepper span {
+  min-width: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.stepper.stepper-compact button {
+  width: 22px;
+  height: 24px;
+  font-size: 13px;
+}
+.stepper.stepper-compact span {
+  min-width: 18px;
+  font-size: 12px;
+}
 
 
 
@@ -4341,88 +4353,133 @@ html[data-app-installed="true"] .install-app-cta {
 }
 
 /* ═════════════════════════════════════════════════════════════════════════════
-   PRODUCT IMAGE ENHANCEMENT — modern attractive product images
-   Glassmorphism borders, hover zoom + shine, image reflection, premium feel
+   PRODUCT IMAGE ENHANCEMENT — full animated, studio-proportioned product images
+   Category radial glow, continuous 3D float, hover zoom + shine, floor reflection
    ═════════════════════════════════════════════════════════════════════════════ */
 
-/* Enhanced product image container with glassmorphism border */
+/* Enhanced product image container — sized by parent card aspect/height utilities */
 .product-image-wrap {
   position: relative;
   overflow: hidden;
-  border-radius: 1.5rem;
-  background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s var(--ease-out-expo);
+  background: linear-gradient(155deg, #F7F4FC 0%, #FFFFFF 55%, #F0ECF9 100%);
+  border-bottom: 1px solid #EDE7F6;
+  transition: border-color 0.3s var(--ease-out-expo), box-shadow 0.35s var(--ease-out-expo);
 }
-.group:hover .product-image-wrap {
-  transform: translateY(-2px);
-  border-color: var(--ambient-accent, #7CB518);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px var(--ambient-accent, #7CB518);
+.group:hover .product-image-wrap,
+.group\/card:hover .product-image-wrap {
+  border-bottom-color: var(--cat-accent, var(--ambient-accent, #7CB518));
+}
+
+/* Soft ambient category aura behind the product */
+.product-image-glow {
+  position: absolute;
+  inset: 14%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 55%,
+    var(--cat-accent, var(--ambient-accent, #7CB518)) 0%,
+    transparent 70%
+  );
+  opacity: 0.12;
+  filter: blur(18px);
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+  z-index: 1;
+}
+.group:hover .product-image-glow,
+.group\/card:hover .product-image-glow {
+  opacity: 0.28;
+  transform: scale(1.15);
 }
 
 /* Macro shine sweep across product image on hover */
 .product-image-shine {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 40%,
-    rgba(255, 255, 255, 0.15) 60%,
-    transparent 100%
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0.2) 58%,
+    transparent 80%
   );
-  transform: translateX(-100%);
-  transition: transform 0.8s var(--ease-out-expo);
+  transform: translateX(-130%);
+  transition: transform 0.85s var(--ease-out-expo);
   pointer-events: none;
-  z-index: 20;
+  z-index: 15;
 }
-.group:hover .product-image-shine {
-  transform: translateX(200%);
+.group:hover .product-image-shine,
+.group\/card:hover .product-image-shine {
+  transform: translateX(180%);
 }
 
-/* Image reflection at bottom */
+/* Subtle studio pedestal sheen at bottom of image box */
 .product-image-reflection {
   position: absolute;
-  bottom: -60%; left: 0; right: 0;
-  height: 40%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
-  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  bottom: 0;
+  left: 8%;
+  right: 8%;
+  height: 22%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(45, 27, 105, 0.08) 0%, rgba(255, 255, 255, 0.45) 45%, transparent 78%);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s var(--ease-out-expo);
+  opacity: 0.65;
+  transition: opacity 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+  z-index: 2;
 }
-.group:hover .product-image-reflection {
+.group:hover .product-image-reflection,
+.group\/card:hover .product-image-reflection {
   opacity: 1;
+  transform: scaleX(1.06);
 }
 
-/* Enhanced product image — larger, with subtle scale on load */
+/* Enhanced product image — smooth continuous float + dynamic hover zoom */
+@keyframes productImageFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.018);
+  }
+}
+
 .product-image-enhanced {
   position: relative;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center; justify-content: center;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  z-index: 5;
 }
 .product-image-enhanced img {
-  transition: transform 0.5s var(--ease-out-expo);
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.12));
+  will-change: transform;
+  animation: productImageFloat 5.2s ease-in-out infinite;
+  transition: transform 0.45s var(--ease-out-expo), filter 0.45s var(--ease-out-expo);
+  filter: drop-shadow(0 8px 16px rgba(21, 7, 38, 0.12));
 }
-.group:hover .product-image-enhanced img {
-  transform: scale(1.08);
+.group:hover .product-image-enhanced img,
+.group\/card:hover .product-image-enhanced img {
+  animation-play-state: paused;
+  transform: translateY(-4px) scale(1.09);
+  filter: drop-shadow(0 16px 26px rgba(21, 7, 38, 0.2));
 }
 
 /* Modern product image placeholder with shimmer */
 .product-image-placeholder {
   position: relative;
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
   overflow: hidden;
 }
 .product-image-placeholder::before {
   content: "";
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   background: linear-gradient(90deg, #F1F5F9 0%, #FFFFFF 50%, #F1F5F9 100%);
   background-size: 200% 100%;
   animation: placeholderShimmer 1.5s var(--ease-out-expo) infinite;
@@ -4432,26 +4489,30 @@ html[data-app-installed="true"] .install-app-cta {
   100% { background-position: -200% 0; }
 }
 .product-image-placeholder svg {
+  position: relative;
+  z-index: 1;
   color: #94A3B8;
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
-/* Category-colored image ring accent */
+/* Category-colored inner rim accent on hover */
 .product-image-ring {
   position: absolute;
-  inset: -2px;
-  border-radius: 1.5rem;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--ambient-accent, #7CB518), #00BCD4);
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, var(--cat-accent, var(--ambient-accent, #7CB518)), #00BCD4);
   mask-composite: exclude;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s var(--ease-out-expo);
+  z-index: 16;
 }
-.group:hover .product-image-ring {
-  opacity: 1;
+.group:hover .product-image-ring,
+.group\/card:hover .product-image-ring {
+  opacity: 0.85;
 }
 
 /* ADD button — more prominent, better feedback */
@@ -4481,13 +4542,17 @@ html[data-app-installed="true"] .install-app-cta {
 
 /* More prominent add-to-cart toast */
 .cart-toast {
-  min-width: 280px;
+  min-width: 260px;
+  max-width: calc(100vw - 2rem);
   padding: 12px 20px;
 }
 @media (prefers-reduced-motion: reduce) {
   .product-image-wrap, .product-image-wrap:hover { transform: none; transition: none; }
-  .product-image-shine { transition: none; }
+  .product-image-glow { transition: none; }
+  .product-image-shine { transition: none; display: none; }
   .product-image-reflection { transition: none; }
-  .product-image-enhanced img { transition: none; }
+  .product-image-enhanced img { animation: none; transition: none; }
+  .group:hover .product-image-enhanced img,
+  .group\/card:hover .product-image-enhanced img { transform: none; }
   .product-image-ring { transition: none; }
 }

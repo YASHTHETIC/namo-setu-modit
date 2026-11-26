@@ -43,7 +43,7 @@ import { usePincode } from "@/lib/pincode-context";
 import { useRequireLogin } from "@/lib/use-auth";
 import { useAddToCart } from "@/lib/use-add-to-cart";
 import { useCartStore } from "@/lib/cart-store";
-import { productLink } from "@/lib/utils";
+import { formatINR, productLink } from "@/lib/utils";
 import { useWishlistToggle } from "@/lib/use-wishlist-toggle";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { useProduct, useProducts, type Product } from "@/lib/api-hooks";
@@ -365,16 +365,16 @@ export default function ProductDetailPage({
         <span className="text-[var(--text-primary)] font-medium truncate max-w-[40vw] sm:max-w-[320px]" title={product.name}>{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-6 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-6 md:gap-8 md:grid-cols-12">
         {/* Left: Image Gallery with Dynamic Ambient Shade Backdrop */}
-        <div className="lg:col-span-5 relative">
+        <div className="md:col-span-6 lg:col-span-5 relative">
           <div
             className="pointer-events-none absolute -inset-6 rounded-3xl blur-3xl opacity-25 transition-all duration-700 -z-10"
             style={{
               backgroundColor: activeShadeHex || defaultAmbientAccentRef.current,
             }}
           />
-          <div className="sticky top-24">
+          <div className="md:sticky md:top-24">
             {/* Main Image with Interactive Amazon-style Zoom & 3D Look */}
             <ProductZoom3DViewer
               images={product.images}
@@ -454,7 +454,7 @@ export default function ProductDetailPage({
         </div>
 
         {/* Right: Product Info + Buy Box */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="md:col-span-6 lg:col-span-7 space-y-6">
           <Reveal direction="right">
           {/* Brand & Title (Canva Style for Paints from Pic 3) */}
           <div>
@@ -883,7 +883,7 @@ export default function ProductDetailPage({
       <div className="dock-bar fixed left-0 right-0 z-40 glass-cyber-light border-t border-white/40 px-4 py-3 flex items-center gap-3 lg:hidden shadow-[0_-12px_32px_rgba(21,7,38,0.14)] backdrop-blur-xl">
         <div className="flex-1 min-w-0">
           <p className="text-micro font-bold text-[#6B5B83] uppercase tracking-wider">Total ({quantity} {quantity === 1 ? "item" : "items"})</p>
-          <p className="text-body-lg font-black text-[#150726] tabular-nums leading-tight">₹{(displayPrice * quantity).toLocaleString("en-IN")}</p>
+          <p className="text-body-lg font-black text-[#150726] tabular-nums leading-tight whitespace-nowrap">{formatINR(displayPrice * quantity)}</p>
         </div>
         <button
           onClick={handleAddToCart}
@@ -965,8 +965,8 @@ export default function ProductDetailPage({
             </div>
 
             <div className="text-right">
-              <p className="text-body-md font-black text-[#7CB518] tabular-nums">
-                ₹{(displayPrice * quantity).toLocaleString("en-IN")}
+              <p className="text-body-md font-black text-[#7CB518] tabular-nums whitespace-nowrap">
+                {formatINR(displayPrice * quantity)}
               </p>
               <p className="text-tiny text-white/50">{displayUnit}</p>
             </div>
@@ -1101,10 +1101,13 @@ export default function ProductDetailPage({
                 <ProductCard3D key={p.id} accent={pAccent} className="h-full">
                   <div className="p-3 flex flex-col h-full justify-between">
                     <div>
-                      <Link href={productLink(p)} className="block relative aspect-square rounded-xl bg-white p-2.5 shadow-sm overflow-hidden group/thumb">
-                        <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="(max-width: 640px) 45vw, 240px" draggable={false} className="object-contain p-1 group-hover/thumb:scale-105 transition-transform duration-300" />
+                      <Link href={productLink(p)} className="group block product-image-wrap aspect-square rounded-xl p-2 shadow-sm">
+                        <div className="product-image-enhanced">
+                          <div className="product-image-shine" />
+                          <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="(max-width: 640px) 45vw, 240px" draggable={false} className="object-contain p-1" />
+                        </div>
                         {p.discount > 0 && (
-                          <span className="absolute top-2 left-2 rounded-md bg-[#E91E63] text-white text-tiny font-black px-1.5 py-0.5 shadow-xs">
+                          <span className="absolute top-2 left-2 z-20 rounded-md bg-[#E91E63] text-white text-tiny font-black px-1.5 py-0.5 shadow-xs">
                             -{p.discount}%
                           </span>
                         )}
@@ -1121,14 +1124,14 @@ export default function ProductDetailPage({
                       </Link>
                     </div>
 
-                    <div className="mt-3 pt-2.5 border-t border-[#DDD6EE]/60 flex items-center justify-between gap-1">
-                      <div>
-                        <p className="text-body-sm font-black text-[#150726]">
-                          ₹{p.price.toLocaleString("en-IN")}
+                    <div className="mt-3 pt-2.5 border-t border-[#DDD6EE]/60 flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
+                      <div className="shrink-0">
+                        <p className="text-body-sm font-black text-[#150726] tabular-nums whitespace-nowrap">
+                          {formatINR(p.price)}
                         </p>
                         {p.mrp > p.price && (
-                          <p className="text-tiny text-[#6B5B83] line-through">
-                            ₹{p.mrp.toLocaleString("en-IN")}
+                          <p className="text-tiny text-[#6B5B83] line-through tabular-nums whitespace-nowrap">
+                            {formatINR(p.mrp)}
                           </p>
                         )}
                       </div>
@@ -1165,11 +1168,14 @@ export default function ProductDetailPage({
               View All →
             </Link>
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 sm:overflow-visible sm:gap-3">
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1 snap-x sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 sm:overflow-visible sm:gap-3">
             {relatedProducts.map((p) => (
-              <Link key={p.id} href={productLink(p)} className="w-[150px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                <div className="relative aspect-square overflow-hidden rounded-lg bg-[#F0ECF9]">
-                  <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="300px" draggable={false} className="object-contain" />
+              <Link key={p.id} href={productLink(p)} className="group w-[156px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-white p-2 sm:w-auto sm:p-3 transition-all hover:-translate-y-0.5 hover:shadow-md flex flex-col">
+                <div className="product-image-wrap aspect-square rounded-lg p-1.5">
+                  <div className="product-image-enhanced">
+                    <div className="product-image-shine" />
+                    <ImageGuard src={p.images?.[0]} alt={p.name} fill sizes="(max-width: 640px) 156px, 240px" draggable={false} className="object-contain p-1" />
+                  </div>
                 </div>
                 <p className="mt-2 text-micro font-semibold text-[var(--brand)] truncate">{p.brand}</p>
                 <p className="text-caption font-medium text-[var(--text-primary)] line-clamp-2 min-h-[28px]">{p.name}</p>
@@ -1177,7 +1183,12 @@ export default function ProductDetailPage({
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
                   <span className="text-tiny font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
-                <p className="text-body-sm font-bold text-[var(--text-primary)]">₹{p.price.toLocaleString("en-IN")}</p>
+                <div className="mt-auto pt-1 flex items-baseline gap-1.5 flex-wrap">
+                  <p className="text-body-sm font-bold text-[var(--text-primary)] tabular-nums whitespace-nowrap">{formatINR(p.price)}</p>
+                  {p.mrp > p.price && (
+                    <span className="text-tiny text-[var(--text-muted)] line-through tabular-nums whitespace-nowrap">{formatINR(p.mrp)}</span>
+                  )}
+                </div>
               </Link>
             ))}
           </div>

@@ -931,15 +931,15 @@ function ProductsContent() {
           ) : (
             <>
               {/* Mobile: Blinkit-style compact 2-column grid */}
-              <div className="product-grid grid grid-cols-2 gap-2 sm:hidden">
+              <div className="product-grid grid grid-cols-2 gap-2.5 sm:hidden">
                 {visibleProducts.map((product) => (
                   <MobileProductCard key={product.id} product={product} />
                 ))}
               </div>
-              {/* Desktop / tablet: respects grid/list view mode */}
+              {/* Tablet / desktop: respects grid/list view mode */}
               <div className="hidden sm:block">
                 {viewMode === "grid" ? (
-                  <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  <div className="product-grid grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                     {visibleProducts.map((product) => (
                       <ProductCard key={product.id} product={product} onAddToCart={addItem} />
                     ))}
@@ -1258,24 +1258,28 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
       {/* Category accent stripe at top */}
       <div className="stripe-shine h-1 w-full" style={{ background: `linear-gradient(90deg, ${catColor.accent}, ${catColor.accent}AA, ${catColor.accent}44)` }} />
 
-      {/* Image — enhanced with modern attractive styling */}
-      <div className="product-image-wrap">
+      {/* Image — studio animated showcase sized proportionally to card */}
+      <div
+        className="product-image-wrap aspect-square w-full"
+        style={{ "--cat-accent": catColor.accent, background: catColor.bg } as React.CSSProperties}
+      >
         <div className="product-image-ring" />
-        <div className="product-image-enhanced">
+        <div className="product-image-enhanced p-2.5">
+          <div className="product-image-glow" />
           <div className="product-image-shine" />
-          <Link href={productLink(product)} className="absolute inset-0 z-10">
+          <Link href={productLink(product)} className="relative block h-full w-full z-10 layer-3d-pop">
             {product.images[0] ? (
               <Image
                 src={product.images[0]}
                 alt={product.name}
                 fill
-                sizes="176px"
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 260px"
                 loading="lazy"
                 draggable={false}
-                className="object-contain p-3 card3d-img layer-3d-pop"
+                className="object-contain p-2 card3d-img"
               />
             ) : (
-              <div className="product-image-placeholder h-full w-full">
+              <div className="product-image-placeholder h-full w-full rounded-xl">
                 <Package className="h-14 w-14" style={{ color: catColor.accent, opacity: 0.5 }} />
               </div>
             )}
@@ -1283,8 +1287,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         </div>
         <div className="product-image-reflection" />
         {/* Bottom gradient overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
 
         {/* Discount badge — premium modern corner tag */}
         {savingsPercent > 0 && (
@@ -1293,16 +1296,16 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           </span>
         )}
 
-        {/* Delivery time pill — bottom-left */}
-        <div className="absolute bottom-3 left-3 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
+        {/* Delivery time pill — bottom-left of image stage */}
+        <div className="absolute bottom-2.5 left-2.5 z-20 bg-white/95 rounded-full px-2 py-0.5 shadow-sm border border-[#E8E0F7]">
           <span className="text-tiny font-bold text-[#00BCD4]">60 MINS</span>
         </div>
         <GridCompareButton product={product} />
       </div>
 
       {/* Info — Blinkit anatomy: name, unit, bottom price+ADD row */}
-      <div className="p-4 flex-1 flex flex-col">
-        <Link href={`/products/${product.id}`}>
+      <div className="p-3 sm:p-3.5 flex-1 flex flex-col">
+        <Link href={productLink(product)}>
           <h3 className="text-sm font-medium text-[#150726] line-clamp-2 leading-snug min-h-[38px] hover:text-[#2D1B69] transition-colors cursor-pointer">
             {product.name}
           </h3>
@@ -1325,29 +1328,29 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           )}
         </div>
 
-        {/* Bottom row — price block left, ADD button right */}
-        <div className="mt-auto flex items-end justify-between gap-1 pt-2 min-w-0">
-          <div className="min-w-0 flex-1 flex flex-col justify-end">
-            <span className="text-xl font-extrabold text-[#150726] tabular-nums leading-tight">
+        {/* Bottom row — full non-truncated price left, ADD button right */}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1.5 pt-2 min-w-0">
+          <div className="shrink-0 flex flex-col justify-end">
+            <span className="text-base sm:text-lg xl:text-xl font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
               {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums -mt-0.5">
+              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums -mt-0.5 whitespace-nowrap">
                 {formatINR(product.mrp)}
               </span>
             )}
           </div>
-          <div className="flex-shrink-0 pl-1">
+          <div className="ml-auto flex-shrink-0">
             <button
               onClick={handleAdd}
               disabled={blocked}
               title={blocked ? "Not serving your pincode yet" : undefined}
-              className={`btn-add btn-add-enhanced cursor-pointer ${added ? "added" : ""}`}
+              className={`btn-add btn-add-enhanced cursor-pointer whitespace-nowrap !px-3 !py-1.5 gap-1 ${added ? "added" : ""}`}
             >
               {added ? (
-                <><CheckCircle2 className="h-4 w-4" /> Added</>
+                <><CheckCircle2 className="h-3.5 w-3.5" /> Added</>
               ) : (
-                <><ShoppingCart className="h-4 w-4" /> ADD</>
+                <><ShoppingCart className="h-3.5 w-3.5" /> ADD</>
               )}
             </button>
           </div>
@@ -1359,6 +1362,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         onClose={() => setOptionsOpen(false)}
         product={product as unknown as import("@/lib/pricing").DisplayProduct}
       />
+      </div>
     </ProductCard3D>
   );
 }
@@ -1411,24 +1415,32 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
       <div className="w-1.5 flex-shrink-0" style={{ background: `linear-gradient(180deg, ${catColor.accent}, ${catColor.accent}88, ${catColor.accent}44)` }} />
 
       {/* Image */}
-      <div className="relative h-44 w-44 flex-shrink-0 overflow-hidden" style={{ background: catColor.bg }}>
-        <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
-          {product.images[0] ? (
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              sizes="176px"
-              loading="lazy"
-              draggable={false}
-              className="object-contain p-2.5 transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <Package className="h-12 w-12" style={{ color: catColor.accent, opacity: 0.15 }} />
-            </div>
-          )}
-        </Link>
+      <div
+        className="product-image-wrap relative h-40 w-36 sm:h-44 sm:w-44 flex-shrink-0 !border-b-0 border-r border-[#EDE7F6]"
+        style={{ "--cat-accent": catColor.accent, background: catColor.bg } as React.CSSProperties}
+      >
+        <div className="product-image-enhanced p-2">
+          <div className="product-image-glow" />
+          <div className="product-image-shine" />
+          <Link href={productLink(product)} className="relative block h-full w-full z-10">
+            {product.images[0] ? (
+              <Image
+                src={product.images[0]}
+                alt={product.name}
+                fill
+                sizes="(max-width: 640px) 144px, 176px"
+                loading="lazy"
+                draggable={false}
+                className="object-contain p-1.5"
+              />
+            ) : (
+              <div className="product-image-placeholder h-full w-full rounded-xl">
+                <Package className="h-12 w-12" style={{ color: catColor.accent, opacity: 0.5 }} />
+              </div>
+            )}
+          </Link>
+        </div>
+        <div className="product-image-reflection" />
         {savingsPercent > 0 && (
           <span className="absolute top-2 left-2 z-20 inline-flex items-center rounded-md bg-[#047857] px-1.5 py-0.5 text-tiny font-black tracking-tight text-white shadow-xs">
             {savingsPercent}% OFF
@@ -1495,12 +1507,12 @@ function ProductListCard({ product, onAddToCart }: { product: Product; onAddToCa
           </div>
         </div>
 
-        <div className="mt-auto pt-3 flex items-center gap-6">
+        <div className="mt-auto pt-3 flex flex-wrap items-center gap-x-5 gap-y-2.5">
           <div>
             <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="text-2xl font-black text-[var(--text-primary)]">₹{product.price.toLocaleString("en-IN")}</span>
+              <span className="text-xl md:text-2xl font-black text-[var(--text-primary)] tabular-nums whitespace-nowrap">{formatINR(product.price)}</span>
               {product.mrp > product.price && (
-                <span className="text-xs text-[var(--text-muted)] line-through font-medium">₹{product.mrp.toLocaleString("en-IN")}</span>
+                <span className="text-xs text-[var(--text-muted)] line-through font-medium tabular-nums whitespace-nowrap">{formatINR(product.mrp)}</span>
               )}
             </div>
             {product.bulkLabel && (

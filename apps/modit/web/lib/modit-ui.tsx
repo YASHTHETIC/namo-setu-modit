@@ -719,17 +719,17 @@ export function PriceDisplay({
 }) {
   return (
     <div>
-      <div className="flex items-baseline gap-2">
+      <div className="flex items-baseline gap-2 flex-wrap">
         <span
           className={cn(
-            "font-extrabold text-[var(--text-primary)]",
+            "font-extrabold text-[var(--text-primary)] tabular-nums whitespace-nowrap",
             size === "lg" ? "text-2xl" : size === "md" ? "text-lg" : "text-base"
           )}
         >
           ₹{price.toLocaleString("en-IN", { minimumFractionDigits: price % 1 === 0 ? 0 : 2 })}
         </span>
         {mrp && mrp > price && (
-          <span className="text-sm text-[var(--text-muted)] line-through">
+          <span className="text-sm text-[var(--text-muted)] line-through tabular-nums whitespace-nowrap">
             ₹{mrp.toLocaleString("en-IN")}
           </span>
         )}

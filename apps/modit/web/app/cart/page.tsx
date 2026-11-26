@@ -158,9 +158,9 @@ export default function CartPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           {/* Cart Items */}
-          <div className="md:col-span-2 lg:col-span-8 space-y-3.5">
+          <div className="md:col-span-7 lg:col-span-8 space-y-3.5">
             {items.map((item, idx) => {
               const resolved = resolveProduct(item.product);
               const basePrice = getLiveUnitPrice(item);
@@ -252,7 +252,7 @@ export default function CartPage() {
                       <span className="text-micro text-[#9B8CB5]">₹{itemPrice.toLocaleString("en-IN")} each</span>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
                         {/* Quantity selector */}
                         <div className="flex items-center border border-[#DDD6EE] bg-[#F8F6FC] rounded-xl overflow-hidden shadow-xs">
@@ -329,7 +329,7 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="md:col-span-1 lg:col-span-4">
+          <div className="md:col-span-5 lg:col-span-4">
             <div className="sticky top-20 space-y-4">
               {/* Coupon */}
               <div className="card-2028 rounded-2xl border border-[#DDD6EE] bg-white p-5 shadow-xs">
@@ -342,12 +342,12 @@ export default function CartPage() {
                     placeholder="Enter code"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    className="h-10 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-body-lg text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all font-mono uppercase"
+                    className="h-10 min-w-0 flex-1 rounded-xl border-2 border-[#DDD6EE] bg-white px-3 text-body-lg text-[#150726] focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/10 transition-all font-mono uppercase"
                   />
                   <button
                     onClick={handleApplyCoupon}
                     disabled={!couponCode}
-                    className="h-10 px-5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
+                    className="h-10 shrink-0 px-4 sm:px-5 rounded-xl bg-[#2D1B69] text-white text-caption font-bold hover:bg-[#1E1245] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
                   >
                     Apply
                   </button>

@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { products } from "./product-data.ts";
+import { formatINR } from "./utils.ts";
 import {
   resolveProduct,
   isPaintProduct,
@@ -82,5 +85,41 @@ test("resolveProduct provides options for every catalog product", () => {
     );
     const label = optionsLabel(p);
     assert.ok(label, `Product ${p.name} must have an options label so buyers choose their option`);
+  }
+});
+
+test("formatINR formats 2, 3, 4, and 5-digit prices without truncation", () => {
+  assert.equal(formatINR(45), "₹45");
+  assert.equal(formatINR(120), "₹120");
+  assert.equal(formatINR(950), "₹950");
+  assert.equal(formatINR(2400), "₹2,400");
+  assert.equal(formatINR(12500), "₹12,500");
+  assert.equal(formatINR(94550), "₹94,550");
+});
+
+test("product cards never apply CSS truncate to prices and give image wraps explicit sizing", () => {
+  const cardFiles = [
+    path.resolve("app/products/product-explorer.tsx"),
+    path.resolve("components/mobile-product-card.tsx"),
+    path.resolve("widgets/product-card.tsx"),
+  ];
+  for (const file of cardFiles) {
+    const src = fs.readFileSync(file, "utf8");
+    const lines = src.split(/\r?\n/);
+    lines.forEach((line, idx) => {
+      if (line.includes("formatINR(") || line.includes("activePrice.toLocaleString") || line.includes("product.price.toLocaleString")) {
+        const prev = lines[idx - 1] ?? "";
+        assert.ok(
+          !prev.includes("truncate") && !line.includes("truncate"),
+          `${path.basename(file)}:${idx + 1} must not apply 'truncate' to product prices`
+        );
+      }
+      if (line.includes("product-image-wrap") && !line.includes("relative h-40")) {
+        assert.ok(
+          line.includes("aspect-square") || line.includes("h-"),
+          `${path.basename(file)}:${idx + 1} product-image-wrap must have explicit aspect/height sizing`
+        );
+      }
+    });
   }
 });
