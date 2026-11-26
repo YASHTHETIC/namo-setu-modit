@@ -43,7 +43,7 @@ async def test_rate_limit_middleware_returns_429_without_nameerror(monkeypatch):
     assert r2.status_code == 429
 
     # Cleanup evicts wall-clock timestamps older than 60s
-    mw._last_cleanup = 0.0
+    mw._last_cleanup = time.monotonic() - 120
     mw._local_counts["general"]["9.9.9.9"] = [time.time() - 120]
     mw._cleanup_local()
     assert "9.9.9.9" not in mw._local_counts["general"]
@@ -294,3 +294,22 @@ async def test_logout_commits_refresh_revocation_without_sid():
     assert res == {"detail": "Logged out"}
     assert token_row.revoked is True
     assert db.committed is True
+
+
+def test_layout_service_product_images_exist_exact_case():
+    import pathlib
+    import re
+
+    repo_root = pathlib.Path(__file__).resolve().parents[2]
+    src = (repo_root / "backend" / "app" / "services" / "layout_service.py").read_text(encoding="utf-8")
+    pub_dir = repo_root / "apps" / "modit" / "web" / "public"
+    urls = sorted(set(re.findall(r'["\'](/products/[^"\']+)["\']', src)))
+    assert urls, "Expected layout_service.py to reference product images"
+    for url in urls:
+        cur = pub_dir
+        for part in url.strip("/").split("/"):
+            entries = cur.iterdir()
+            assert any(e.name == part for e in entries), f"Missing exact-case asset for {url}"
+            cur = cur / part
+        assert cur.is_file()
+

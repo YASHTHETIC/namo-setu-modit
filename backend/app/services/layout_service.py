@@ -124,11 +124,11 @@ async def build_home_layout(
         "tiles-ceramics": "/products/tiling/Kajaria Adhesives Tiling.png",
         "paint": "/products/painting/Asian Paint.png",
         "waterproofing": "/products/tiling/Dr Fixit.png",
-        "plywood-boards": "/products/painting/Asian Paints Tractor Emulsion, Base White 20 L.png",
+        "plywood-boards": "/products/painting/Asian Paints Tractor Emulsion Base White 20 L.png",
         "fevicol": "/products/tiling/Bostik.png",
-        "electrical": "/products/lighting/download-Photoroom (1).png",
-        "switches": "/products/lighting/Philips EvenGlow LED Strip Light, 5m.webp",
-        "lighting": "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp",
+        "electrical": "/products/lighting/download-Photoroom 1.png",
+        "switches": "/products/lighting/Philips EvenGlow LED Strip Light 5m.webp",
+        "lighting": "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight Round.webp",
         "hardware": "/products/tiling/Roff T1.png",
     }
     category_items = [
@@ -344,11 +344,11 @@ def _get_fallback_categories() -> list[CategoryItem]:
         ("Tiling", "tiles-ceramics", "/products/tiling/Kajaria Adhesives Tiling.png"),
         ("Painting", "paint", "/products/painting/Asian Paint.png"),
         ("Water Proofing", "waterproofing", "/products/tiling/Dr Fixit.png"),
-        ("Plywood, MDF & HDHMR", "plywood-boards", "/products/painting/Asian Paints Tractor Emulsion, Base White 20 L.png"),
+        ("Plywood, MDF & HDHMR", "plywood-boards", "/products/painting/Asian Paints Tractor Emulsion Base White 20 L.png"),
         ("Fevicol", "fevicol", "/products/tiling/Bostik.png"),
-        ("Wires & Cables", "electrical", "/products/lighting/download-Photoroom (1).png"),
-        ("Switches & Sockets", "switches", "/products/lighting/Philips EvenGlow LED Strip Light, 5m.webp"),
-        ("Lighting", "lighting", "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp"),
+        ("Wires & Cables", "electrical", "/products/lighting/download-Photoroom 1.png"),
+        ("Switches & Sockets", "switches", "/products/lighting/Philips EvenGlow LED Strip Light 5m.webp"),
+        ("Lighting", "lighting", "/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight Round.webp"),
         ("Hardware", "hardware", "/products/tiling/Roff T1.png"),
     ]
     return [
@@ -362,9 +362,9 @@ def _get_fallback_products() -> list[ProductSummary]:
     products = [
         ProductSummary(id="cement-ambuja", name="Ambuja Cement 50kg", brand="Ambuja", price=365, mrp=395, discount=8, rating=4.5, review_count=1800, image_url="/products/cement/Ambuja Cement.png", badge="Trusted", delivery_text="Tomorrow"),
         ProductSummary(id="cement-acc", name="ACC Cement 50kg", brand="ACC", price=370, mrp=400, discount=8, rating=4.6, review_count=2100, image_url="/products/cement/ACC Cement.png", badge="Popular", delivery_text="Tomorrow"),
-        ProductSummary(id="paint-asian-apex", name="Asian Paints Apex, Base White", brand="Asian Paints", price=2400, mrp=3100, discount=23, rating=4.6, review_count=4230, image_url="/products/painting/Asian Paints Apex, Base White.png", badge="Bestseller", delivery_text="Tomorrow"),
-        ProductSummary(id="paint-asian-royale", name="Asian Paints Royale Luxury Emulsion", brand="Asian Paints", price=3200, mrp=4000, discount=20, rating=4.7, review_count=3100, image_url="/products/painting/Asian Paints Royale Luxury Emulsion, Base White.png", badge="Premium", delivery_text="Tomorrow"),
+        ProductSummary(id="paint-asian-apex", name="Asian Paints Apex, Base White", brand="Asian Paints", price=2400, mrp=3100, discount=23, rating=4.6, review_count=4230, image_url="/products/painting/Asian Paints Apex Base White.png", badge="Bestseller", delivery_text="Tomorrow"),
+        ProductSummary(id="paint-asian-royale", name="Asian Paints Royale Luxury Emulsion", brand="Asian Paints", price=3200, mrp=4000, discount=20, rating=4.7, review_count=3100, image_url="/products/painting/Asian Paints Royale Luxury Emulsion Base White.png", badge="Premium", delivery_text="Tomorrow"),
         ProductSummary(id="tile-drfixit", name="Dr Fixit Waterproofing", brand="Dr Fixit", price=850, mrp=1100, discount=23, rating=4.6, review_count=2200, image_url="/products/tiling/Dr Fixit.png", badge="Bestseller", delivery_text="Tomorrow"),
-        ProductSummary(id="lighting-philips", name="Philips Ultra Glow LED Downlight", brand="Philips", price=1200, mrp=1500, discount=20, rating=4.5, review_count=1500, image_url="/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight, Round.webp", badge="New", delivery_text="Tomorrow"),
+        ProductSummary(id="lighting-philips", name="Philips Ultra Glow LED Downlight", brand="Philips", price=1200, mrp=1500, discount=20, rating=4.5, review_count=1500, image_url="/products/lighting/Philips Ultra Glow 3-in-1 LED Downlight Round.webp", badge="New", delivery_text="Tomorrow"),
     ]
     return products

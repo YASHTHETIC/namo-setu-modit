@@ -106,7 +106,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     def _cleanup_local(self):
         now_mono = time.monotonic()
-        if now_mono - self._last_cleanup < 60:
+        if self._last_cleanup > 0 and now_mono - self._last_cleanup < 60:
             return
         self._last_cleanup = now_mono
         cutoff = time.time() - 60
