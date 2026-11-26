@@ -202,6 +202,23 @@ async def _get_or_create(session: AsyncSession, model, lookup: dict, defaults: d
     return instance, True
 
 
+async def _ensure_user_role(session: AsyncSession, user: User, role: Role | None) -> None:
+    """Attach *role* to *user* via the link table without touching lazy User.roles."""
+    if role is None:
+        return
+    linked = (
+        await session.execute(
+            select(Role.id)
+            .join(user_roles, user_roles.c.role_id == Role.id)
+            .where(user_roles.c.user_id == user.id, Role.id == role.id)
+        )
+    ).first()
+    if linked is None:
+        await session.execute(
+            user_roles.insert().values(user_id=user.id, role_id=role.id)
+        )
+
+
 async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
     stats = {"products_created": 0, "products_updated": 0, "products_deactivated": 0, "skipped": 0}
 
@@ -239,12 +256,7 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
         {"full_name": "Demo Buyer", "hashed_password": hash_password("Demo@1234"),
          "is_active": True, "is_verified": True},
     )
-    user_roles_list = demo_user.roles or []
-    if (
-        buyer_role
-        and all(getattr(r, "name", None) != "user" for r in user_roles_list)
-    ):
-        demo_user.roles.append(buyer_role)
+    await _ensure_user_role(session, demo_user, buyer_role)
 
     # Dedicated admin account: admin@modit.in / Admin@1234
     admin_user, _ = await _get_or_create(
@@ -252,9 +264,7 @@ async def seed_catalog(session: AsyncSession, items: list[dict]) -> dict:
         {"full_name": "MODIT Admin", "hashed_password": hash_password("Admin@1234"),
          "is_active": True, "is_verified": True},
     )
-    admin_roles_list = admin_user.roles or []
-    if super_admin_role and all(getattr(r, "name", None) != "super_admin" for r in admin_roles_list):
-        admin_user.roles.append(super_admin_role)
+    await _ensure_user_role(session, admin_user, super_admin_role)
     warehouse, _ = await _get_or_create(
         session, Warehouse,
         {"organization_id": org.id, "warehouse_code": WAREHOUSE_CODE},
@@ -381,18 +391,7 @@ async def _seed_demo_supplier(session: AsyncSession, org: Organization) -> None:
         {"full_name": "Demo Supplier", "hashed_password": hash_password("Supplier@1234"),
          "is_active": True, "is_verified": True},
     )
-    # Async-safe role attach (never touches the lazy user.roles collection).
-    linked = (
-        await session.execute(
-            select(Role.id).join(user_roles, user_roles.c.role_id == Role.id).where(
-                user_roles.c.user_id == user.id, Role.id == role.id
-            )
-        )
-    ).first()
-    if linked is None:
-        await session.execute(
-            user_roles.insert().values(user_id=user.id, role_id=role.id)
-        )
+    await _ensure_user_role(session, user, role)
 
     sup, _ = await _get_or_create(
         session, Supplier, {"supplier_code": "SUP-DEMO"},
@@ -439,17 +438,7 @@ async def _seed_demo_personas(session: AsyncSession) -> None:
             {"full_name": full_name, "hashed_password": hash_password("Demo@1234"),
              "is_active": True, "is_verified": True},
         )
-        linked = (
-            await session.execute(
-                select(Role.id).join(user_roles, user_roles.c.role_id == Role.id).where(
-                    user_roles.c.user_id == user.id, Role.id == role.id
-                )
-            )
-        ).first()
-        if linked is None:
-            await session.execute(
-                user_roles.insert().values(user_id=user.id, role_id=role.id)
-            )
+        await _ensure_user_role(session, user, role)
 
 
 async def main() -> None:

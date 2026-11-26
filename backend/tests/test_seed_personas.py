@@ -66,3 +66,37 @@ async def test_seed_demo_personas_never_touches_existing():
     assert [getattr(o, "email", "") for o in db.created] == [
         "contractor@modit.in", "architect@modit.in", "rider@modit.in",
     ]
+
+
+@pytest.mark.asyncio()
+async def test_seed_catalog_async_safe_without_missing_greenlet():
+    """Real AsyncSession run must never raise MissingGreenlet on user role checks."""
+    from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+    from backend.app.core.database import Base
+    import backend.app.models  # noqa: F401
+
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+    sample = [{
+        "name": "Test Cement", "sku": "TEST-SKU-1", "slug": "test-cement",
+        "description": "OPC 53", "brand": "ACC", "brand_slug": "acc",
+        "category": "Cement", "category_slug": "cement",
+        "sub_category": None, "sub_category_slug": None,
+        "unit": "50 kg", "unit_code": "BAG",
+        "images": ["/products/cement/ACC Cement.png"],
+        "price": 380.0, "mrp": 420.0, "gst_rate": 18.0, "gst_code": "GST 18%",
+        "stock": 50, "in_stock": True, "moq": 1,
+    }]
+    async with session_factory() as s:
+        stats1 = await seed.seed_catalog(s, sample)
+        await s.commit()
+    async with session_factory() as s:
+        stats2 = await seed.seed_catalog(s, sample)
+        await s.commit()
+    await engine.dispose()
+
+    assert stats1["products_created"] == 1
+    assert stats2["products_updated"] == 1
