@@ -365,19 +365,19 @@ export default function HomeClient() {
 
         <div className="relative z-10 p-5 sm:p-8 flex items-center justify-between gap-4">
           <div className="min-w-0 max-w-xl">
-            <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl sm:rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular">
-              <span className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] flex-shrink-0" />
-              <span className="text-[#7CB518] font-black tracking-wider uppercase">DIRECT FACTORY SUPPLY</span>
-              <span className="text-white/40">·</span>
-              <span className="text-[#F8CB46] font-black tracking-wider uppercase">BULK WHOLESALE RATES</span>
-              <span className="text-white/40">·</span>
-              <span className="text-[#00BCD4] font-black tracking-wider uppercase">100% GENUINE BRANDS</span>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/25 px-3.5 py-1.5 text-tiny font-black text-white mb-3.5 shadow-glass-specular whitespace-nowrap">
+              <span className="h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] flex-shrink-0" />
+              <span className="text-[#F8CB46] font-black tracking-wider uppercase">60-MIN SITE DROP</span>
+              <span className="text-white/40">·</span>
+              <span className="text-white/90">FREE OVER ₹5,000</span>
+              <span className="text-white/40">·</span>
+              <span className="text-[#00BCD4] font-black uppercase">LIVE GPS</span>
             </div>
             <h1 className="text-white text-title-lg sm:text-display font-black leading-tight tracking-tight">
               Site Material, <span className="text-holo drop-shadow-[0_0_25px_rgba(124,181,24,0.5)]">On Door</span>
             </h1>
-            <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
-              Direct factory cement, paints, tiles, electricals &amp; steel — verified batch allocation with authorized mill warranties &amp; instant GST tax credits
+            <p className="text-white/85 text-caption sm:text-body-md mt-2.5 leading-relaxed">
+              Cement, paints, tiles, electricals &amp; steel delivered direct to your site gate with official GST tax invoices.
             </p>
             <div className="mt-5 flex items-center gap-3">
               <Magnetic strength={8}>
