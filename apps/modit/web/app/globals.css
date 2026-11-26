@@ -4357,13 +4357,26 @@ html[data-app-installed="true"] .install-app-cta {
    Category radial glow, continuous 3D float, hover zoom + shine, floor reflection
    ═════════════════════════════════════════════════════════════════════════════ */
 
-/* Enhanced product image container — sized by parent card aspect/height utilities */
+/* Enhanced product image container ? calibrated 2030 architectural studio stage */
 .product-image-wrap {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(155deg, #F7F4FC 0%, #FFFFFF 55%, #F0ECF9 100%);
+  background:
+    radial-gradient(ellipse 80% 42% at 50% 6%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 48%, transparent 75%),
+    linear-gradient(162deg, #F8F5FD 0%, #FFFFFF 50%, #EFEAF9 100%);
   border-bottom: 1px solid #EDE7F6;
   transition: border-color 0.3s var(--ease-out-expo), box-shadow 0.35s var(--ease-out-expo);
+}
+.product-image-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(45, 27, 105, 0.045) 1px, transparent 1px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
 }
 .group:hover .product-image-wrap,
 .group\/card:hover .product-image-wrap {
@@ -4380,16 +4393,16 @@ html[data-app-installed="true"] .install-app-cta {
     var(--cat-accent, var(--ambient-accent, #7CB518)) 0%,
     transparent 70%
   );
-  opacity: 0.12;
-  filter: blur(18px);
+  opacity: 0.16;
+  filter: blur(20px);
   pointer-events: none;
   transition: opacity 0.4s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
   z-index: 1;
 }
 .group:hover .product-image-glow,
 .group\/card:hover .product-image-glow {
-  opacity: 0.28;
-  transform: scale(1.15);
+  opacity: 0.34;
+  transform: scale(1.18);
 }
 
 /* Macro shine sweep across product image on hover */
@@ -4399,8 +4412,8 @@ html[data-app-installed="true"] .install-app-cta {
   background: linear-gradient(
     115deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.55) 45%,
-    rgba(255, 255, 255, 0.2) 58%,
+    rgba(255, 255, 255, 0.58) 45%,
+    rgba(255, 255, 255, 0.22) 58%,
     transparent 80%
   );
   transform: translateX(-130%);
@@ -4413,16 +4426,19 @@ html[data-app-installed="true"] .install-app-cta {
   transform: translateX(180%);
 }
 
-/* Subtle studio pedestal sheen at bottom of image box */
+/* Sleek 2030 frosted orbital studio pedestal disc at bottom of image box */
 .product-image-reflection {
   position: absolute;
-  bottom: 0;
-  left: 8%;
-  right: 8%;
-  height: 22%;
-  background: radial-gradient(ellipse at 50% 100%, rgba(45, 27, 105, 0.08) 0%, rgba(255, 255, 255, 0.45) 45%, transparent 78%);
+  bottom: 4%;
+  left: 12%;
+  right: 12%;
+  height: 16%;
+  border-radius: 9999px;
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
+  background:
+    radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--cat-accent, #7CB518) 12%, rgba(45, 27, 105, 0.07)) 0%, rgba(255, 255, 255, 0.52) 52%, transparent 80%);
   pointer-events: none;
-  opacity: 0.65;
+  opacity: 0.72;
   transition: opacity 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
   z-index: 2;
 }
@@ -4432,7 +4448,7 @@ html[data-app-installed="true"] .install-app-cta {
   transform: scaleX(1.06);
 }
 
-/* Enhanced product image — smooth continuous float + dynamic hover zoom */
+/* Enhanced product image ? smooth continuous float + dynamic hover zoom */
 @keyframes productImageFloat {
   0%, 100% {
     transform: translateY(0px) scale(1);
@@ -4456,7 +4472,7 @@ html[data-app-installed="true"] .install-app-cta {
   will-change: transform;
   animation: productImageFloat 5.2s ease-in-out infinite;
   transition: transform 0.45s var(--ease-out-expo), filter 0.45s var(--ease-out-expo);
-  filter: drop-shadow(0 8px 16px rgba(21, 7, 38, 0.12));
+  filter: contrast(1.02) saturate(1.04) drop-shadow(0 12px 22px rgba(21, 7, 38, 0.15));
 }
 .product-image-enhanced img[src*=".jpg" i],
 .product-image-enhanced img[src*=".jpeg" i],
@@ -4467,7 +4483,7 @@ html[data-app-installed="true"] .install-app-cta {
 .group\/card:hover .product-image-enhanced img {
   animation-play-state: paused;
   transform: translateY(-4px) scale(1.09);
-  filter: drop-shadow(0 16px 26px rgba(21, 7, 38, 0.2));
+  filter: contrast(1.04) saturate(1.07) drop-shadow(0 18px 28px rgba(21, 7, 38, 0.22));
 }
 
 /* Modern product image placeholder with shimmer */

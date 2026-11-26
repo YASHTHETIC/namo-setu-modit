@@ -289,7 +289,7 @@ export function ProductZoom3DViewer({
               quality={92}
               priority
               draggable={false}
-              className="object-contain p-4 drop-shadow-[0_12px_24px_rgba(45,27,105,0.14)]"
+              className={`object-contain p-4 drop-shadow-[0_12px_24px_rgba(45,27,105,0.14)] ${/\.(jpe?g|jfif)$/i.test(activeImage) ? "mix-blend-multiply" : ""}`}
             />
           ) : (
             <div className="flex h-full items-center justify-center">

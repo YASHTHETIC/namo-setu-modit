@@ -1,4 +1,4 @@
-const CACHE_NAME = "modit-v9";
+const CACHE_NAME = "modit-v10";
 const STATIC_ASSETS = [
   "/manifest.json",
   "/icons/icon-192.png",

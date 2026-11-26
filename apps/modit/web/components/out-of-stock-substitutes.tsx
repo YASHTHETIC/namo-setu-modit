@@ -43,7 +43,7 @@ export function OutOfStockSubstitutes({ product }: OutOfStockSubstitutesProps) {
             key={sub.id}
             className="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-[#DDD6EE] hover:border-[#7CB518] transition-all"
           >
-            <Link href={`/products/${sub.id}`} className="relative h-12 w-12 rounded-lg bg-[#F8F6FC] flex-shrink-0 overflow-hidden">
+            <Link href={`/products/${sub.id}`} className="product-image-enhanced relative h-12 w-12 rounded-lg bg-[#F8F6FC] flex-shrink-0 overflow-hidden">
               <ImageGuard src={sub.images?.[0]} alt={sub.name} fill sizes="48px" draggable={false} className="object-contain" />
             </Link>
             <div className="flex-1 min-w-0">

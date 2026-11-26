@@ -55,7 +55,7 @@ export default function ComparePage() {
                 <button onClick={() => removeFromCompare(product.id)} className="absolute top-2 right-2 z-10 p-1 rounded-full bg-[#F0ECF9] text-[#9B8CB5] hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer">
                   <X className="h-3.5 w-3.5" />
                 </button>
-                <div className="layer-3d-pop relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC] border border-[#DDD6EE]/50 shadow-inner">
+                <div className="layer-3d-pop product-image-enhanced relative w-full aspect-square overflow-hidden rounded-xl bg-[#F8F6FC] border border-[#DDD6EE]/50 shadow-inner">
                   <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="(max-width: 640px) 50vw, 300px" quality={85} draggable={false} className="object-contain" />
                 </div>
                 <p className="text-tiny font-bold text-[#7CB518] uppercase mt-2">{product.brand}</p>

@@ -342,7 +342,7 @@ export function AmazonInspectionModal({
                 quality={92}
                 priority
                 draggable={false}
-                className="object-contain p-8 drop-shadow-[0_16px_32px_rgba(45,27,105,0.25)]"
+                className={`object-contain p-8 drop-shadow-[0_16px_32px_rgba(45,27,105,0.25)] ${/\.(jpe?g|jfif)$/i.test(activeImage) ? "rounded-2xl bg-gradient-to-b from-[#F7F4FC] to-white" : ""}`}
               />
             ) : (
               <Package className="h-32 w-32 text-white/20" />
