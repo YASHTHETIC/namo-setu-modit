@@ -1417,11 +1417,10 @@ function ProductListCard({ product, onAddToCart, eager = false }: { product: Pro
 
       {/* Image */}
       <div
-        className="product-image-wrap relative h-40 w-36 sm:h-44 sm:w-44 flex-shrink-0 !border-b-0 border-r border-[#EDE7F6]"
+        className="product-image-wrap aspect-square relative flex-shrink-0 !border-b-0 border-r border-[#EDE7F6]"
         style={{ "--cat-accent": catColor.accent, background: catColor.bg } as React.CSSProperties}
       >
         <div className="product-image-enhanced p-2">
-          <div className="product-image-glow" />
           <div className="product-image-shine" />
           <Link href={productLink(product)} className="relative block h-full w-full">
             {product.images[0] ? (

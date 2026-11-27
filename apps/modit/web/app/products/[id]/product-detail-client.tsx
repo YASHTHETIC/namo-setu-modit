@@ -414,7 +414,7 @@ export default function ProductDetailPage({
                         : "border-[var(--border)] hover:border-[var(--green)]/50"
                     }`}
                   >
-                    <Image src={img} alt="" width={64} height={64} loading="lazy" className="h-full w-full object-cover" />
+                    <Image src={img} alt="" width={64} height={64} loading="lazy" className="h-full w-full object-contain p-0.5" />
                   </button>
                 ))}
               </div>
