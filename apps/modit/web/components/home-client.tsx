@@ -419,71 +419,91 @@ export default function HomeClient() {
         </div>
       </div>
 
-            {/* ═══ GLOBAL TRUST STRIP — Ultra-Modern Executive Glassmorphic Matrix ═══ */}
-      <div className="mt-3 sm:mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        {/* Card 1: 60-Min Site Drop */}
-        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(124,181,24,0.18)] hover:border-[#7CB518]/60 transition-all duration-300 hover:-translate-y-1 group">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#7CB518] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#F0F9E8] to-white border border-[#7CB518]/30 text-[#5A8010] shadow-[0_2px_8px_rgba(124,181,24,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(124,181,24,0.25)] transition-all duration-300">
-            <Truck className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-tiny font-black uppercase tracking-wider text-[#5A8010]">Express</span>
+      {/* ═══ GLOBAL TRUST STRIP — Single horizontal row across app/mobile, tablet & web ═══ */}
+      <div className="mt-3 sm:mt-4 flex flex-nowrap items-stretch gap-2 overflow-x-auto scrollbar-hide snap-x pb-0.5 lg:grid lg:grid-cols-4 lg:gap-3.5 lg:overflow-visible">
+        {[
+          {
+            badge: "Express",
+            title: "60-Min Site Drop",
+            sub: "Direct GPS site delivery",
+            Icon: Truck,
+            accent: "#7CB518",
+            softBg: "#F0F9E8",
+            labelColor: "#5A8010",
+            borderCls: "border-[#7CB518]/30",
+            shadowStyle: "0 2px 8px rgba(124,181,24,0.15)",
+            hoverBorder: "hover:border-[#7CB518]/60 hover:shadow-[0_12px_28px_rgba(124,181,24,0.18)]",
+          },
+          {
+            badge: "Verified",
+            title: "100% Genuine Brands",
+            sub: "Direct authorized mill depots",
+            Icon: BadgeCheck,
+            accent: "#F8CB46",
+            softBg: "#FFF6DE",
+            labelColor: "#B45309",
+            borderCls: "border-[#F8CB46]/40",
+            shadowStyle: "0 2px 8px rgba(248,203,70,0.18)",
+            hoverBorder: "hover:border-[#F8CB46]/70 hover:shadow-[0_12px_28px_rgba(248,203,70,0.2)]",
+          },
+          {
+            badge: "ITC Ready",
+            title: "GST Tax Invoices",
+            sub: "Instant B2B credit claim",
+            Icon: ReceiptIndianRupee,
+            accent: "#E91E63",
+            softBg: "#FCE4EC",
+            labelColor: "#E91E63",
+            borderCls: "border-[#E91E63]/30",
+            shadowStyle: "0 2px 8px rgba(233,30,99,0.15)",
+            hoverBorder: "hover:border-[#E91E63]/60 hover:shadow-[0_12px_28px_rgba(233,30,99,0.18)]",
+          },
+          {
+            badge: "Assurance",
+            title: "7-Day Site Returns",
+            sub: "Hassle-free unopened pickup",
+            Icon: Undo2,
+            accent: "#00BCD4",
+            softBg: "#E0F7FA",
+            labelColor: "#0097A7",
+            borderCls: "border-[#00BCD4]/30",
+            shadowStyle: "0 2px 8px rgba(0,188,212,0.15)",
+            hoverBorder: "hover:border-[#00BCD4]/60 hover:shadow-[0_12px_28px_rgba(0,188,212,0.18)]",
+          },
+        ].map(({ badge, title, sub, Icon, accent, softBg, labelColor, borderCls, shadowStyle, hoverBorder }) => (
+          <div
+            key={title}
+            className={`shrink-0 snap-start w-[178px] sm:w-[218px] lg:w-auto relative overflow-hidden flex items-center gap-2.5 sm:gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] px-2.5 py-2 sm:p-3.5 lg:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] ${hoverBorder} transition-all duration-300 hover:-translate-y-1 group`}
+          >
+            <div
+              className="absolute top-0 inset-x-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+            />
+            <div
+              className={`relative flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 shrink-0 items-center justify-center rounded-xl border ${borderCls} group-hover:scale-105 transition-all duration-300`}
+              style={{
+                background: `linear-gradient(135deg, ${softBg}, #FFFFFF)`,
+                color: labelColor,
+                boxShadow: shadowStyle,
+              }}
+            >
+              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span
+                className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full"
+                style={{ backgroundColor: accent, boxShadow: `0 0 6px ${accent}` }}
+              />
             </div>
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">60-Min Site Drop</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Direct GPS site delivery</p>
-          </div>
-        </div>
-
-        {/* Card 2: 100% Genuine Brands */}
-        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(248,203,70,0.2)] hover:border-[#F8CB46]/70 transition-all duration-300 hover:-translate-y-1 group">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#F8CB46] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFF6DE] to-white border border-[#F8CB46]/40 text-[#B45309] shadow-[0_2px_8px_rgba(248,203,70,0.18)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(248,203,70,0.28)] transition-all duration-300">
-            <BadgeCheck className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#F8CB46] shadow-[0_0_6px_#F8CB46]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-tiny font-black uppercase tracking-wider text-[#B45309]">Verified</span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-micro sm:text-tiny font-black uppercase tracking-wider leading-none" style={{ color: labelColor }}>
+                {badge}
+              </span>
+              <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight mt-0.5 whitespace-nowrap truncate">
+                {title}
+              </h4>
+              <p className="text-micro text-[#6B5B83] leading-snug mt-0.5 truncate">{sub}</p>
             </div>
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">100% Genuine Brands</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Direct authorized mill depots</p>
           </div>
-        </div>
-
-        {/* Card 3: GST Tax Invoices */}
-        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(233,30,99,0.18)] hover:border-[#E91E63]/60 transition-all duration-300 hover:-translate-y-1 group">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#E91E63] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FCE4EC] to-white border border-[#E91E63]/30 text-[#E91E63] shadow-[0_2px_8px_rgba(233,30,99,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(233,30,99,0.25)] transition-all duration-300">
-            <ReceiptIndianRupee className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#E91E63] shadow-[0_0_6px_#E91E63]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-tiny font-black uppercase tracking-wider text-[#E91E63]">ITC Ready</span>
-            </div>
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">GST Tax Invoices</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Instant B2B credit claim</p>
-          </div>
-        </div>
-
-        {/* Card 4: 7-Day Site Returns */}
-        <div className="relative overflow-hidden flex items-start sm:items-center gap-3 rounded-2xl bg-gradient-to-b from-white via-white to-[#F8F6FC] border border-[#DDD6EE] p-3 sm:p-4 shadow-[0_2px_10px_rgba(21,7,38,0.04)] hover:shadow-[0_12px_28px_rgba(0,188,212,0.18)] hover:border-[#00BCD4]/60 transition-all duration-300 hover:-translate-y-1 group">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#00BCD4] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0F7FA] to-white border border-[#00BCD4]/30 text-[#0097A7] shadow-[0_2px_8px_rgba(0,188,212,0.15)] group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(0,188,212,0.25)] transition-all duration-300">
-            <Undo2 className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-[#00BCD4] shadow-[0_0_6px_#00BCD4]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-tiny font-black uppercase tracking-wider text-[#0097A7]">Assurance</span>
-            </div>
-            <h4 className="text-caption sm:text-body-sm font-black text-[#150726] leading-tight">7-Day Site Returns</h4>
-            <p className="text-micro text-[#6B5B83] leading-snug mt-0.5">Hassle-free unopened pickup</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* ═══ PROMO CARDS — Blinkit solid-color row, Materials on Door edition ═══ */}

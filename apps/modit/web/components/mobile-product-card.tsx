@@ -161,19 +161,19 @@ export function MobileProductCard({ product, eager = false }: { product: Display
         </div>
 
         {/* Bottom row: Full non-truncated price on left, ADD button / Stepper on right */}
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-1.5 gap-y-1 pt-1.5 min-w-0">
-          <div className="shrink-0 flex flex-col justify-end">
-            <span className="text-body-md font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
+        <div className="mt-auto flex items-center justify-between gap-1 pt-1.5 min-w-0 w-full">
+          <div className="min-w-0 min-h-[32px] flex flex-col justify-start">
+            <span className="text-body-sm min-[390px]:text-body-md font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
               {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 whitespace-nowrap">
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums leading-tight whitespace-nowrap">
                 {formatINR(product.mrp)}
               </span>
             )}
           </div>
 
-          <div className="ml-auto flex-shrink-0">
+          <div className="flex-shrink-0">
             {qty === 0 ? (
               <button
                 onClick={(e) => {
@@ -188,7 +188,7 @@ export function MobileProductCard({ product, eager = false }: { product: Display
                   }
                 }}
                 disabled={blocked}
-                className="btn-shine btn-add-enhanced rounded-lg bg-white px-3 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                className="btn-shine btn-add-enhanced rounded-lg bg-white px-2.5 min-[390px]:px-3 py-1 text-caption font-black text-[#2D7B2D] shadow-xs border border-[#2D7B2D]/50 hover:bg-[#2D7B2D] hover:text-white active:scale-95 transition-all disabled:opacity-40 cursor-pointer whitespace-nowrap"
               >
                 {blocked ? "N/A" : "ADD"}
               </button>
@@ -200,7 +200,7 @@ export function MobileProductCard({ product, eager = false }: { product: Display
                     e.stopPropagation();
                     stepDown(product.id, stepLine?.variantId, stepLine?.shade);
                   }}
-                  className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
+                  className="px-1.5 min-[390px]:px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
                   aria-label="Decrease"
                 >
                   −
@@ -211,7 +211,7 @@ export function MobileProductCard({ product, eager = false }: { product: Display
                     e.stopPropagation();
                     if (optLabel) setOptionsOpen(true);
                   }}
-                  className="px-1.5 text-caption font-black tabular-nums min-w-[16px] text-center hover:underline"
+                  className="px-1 min-[390px]:px-1.5 text-caption font-black tabular-nums min-w-[14px] text-center hover:underline"
                   title={optLabel ? "Choose Options / Colours" : undefined}
                 >
                   {qty}
@@ -228,7 +228,7 @@ export function MobileProductCard({ product, eager = false }: { product: Display
                       if (!added) setOptionsOpen(true);
                     }
                   }}
-                  className="px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
+                  className="px-1.5 min-[390px]:px-2 py-1 text-caption font-black leading-none hover:bg-black/10 active:scale-95"
                   aria-label="Increase"
                 >
                   +

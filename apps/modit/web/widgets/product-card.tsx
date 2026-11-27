@@ -201,23 +201,23 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
           )}
         </div>
 
-        {/* Bottom row — full non-truncated price left, ADD/stepper right */}
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-1.5 gap-y-1 pt-1.5 min-w-0">
-          <div className="shrink-0 flex flex-col justify-end">
-            <span className="text-body-md font-black tracking-tight text-[#150726] tabular-nums leading-tight whitespace-nowrap">
+        {/* Bottom row — consistent top-aligned price slot left, single-row ADD/stepper right */}
+        <div className="mt-auto flex items-center justify-between gap-1.5 pt-2 min-w-0 w-full">
+          <div className="min-w-0 min-h-[34px] flex flex-col justify-start">
+            <span className="text-body-sm sm:text-body-md font-black tracking-tight text-[#150726] tabular-nums leading-tight whitespace-nowrap">
               {formatINR(activePrice)}
             </span>
             {activeMrp > activePrice && (
-              <span className="text-micro text-[#9B8CB5] line-through tabular-nums -mt-0.5 whitespace-nowrap">
+              <span className="text-micro text-[#9B8CB5] line-through tabular-nums leading-tight whitespace-nowrap">
                 {formatINR(activeMrp)}
               </span>
             )}
           </div>
-          <div className="ml-auto flex-shrink-0">
+          <div className="flex-shrink-0">
             {qty === 0 ? (
               <button
                 onClick={handleAdd}
-                className={`btn-add btn-add-enhanced cursor-pointer whitespace-nowrap ${compact ? "!px-2.5 !py-1 text-caption font-bold" : ""}`}
+                className={`btn-add btn-add-enhanced cursor-pointer whitespace-nowrap !min-w-0 ${compact ? "!px-2.5 !py-1 text-caption font-bold" : "!px-3 !py-1 text-caption font-bold"}`}
                 aria-label={`Add ${product.name} to cart`}
               >
                 ADD

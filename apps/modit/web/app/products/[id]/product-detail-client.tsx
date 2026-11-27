@@ -1082,7 +1082,7 @@ export default function ProductDetailPage({
       {/* Frequently Bought Together — God-Level 3D Spatial Bundle Rail */}
       {frequentlyBought.length > 0 && (
         <Reveal>
-        <div className="mt-10 rounded-3xl bg-gradient-to-b from-[#F7F4FC] to-white border border-[#DDD6EE] p-5 sm:p-6 shadow-sm">
+        <div className="mt-10 rounded-3xl bg-gradient-to-b from-[#F7F4FC] to-white border border-[#DDD6EE] p-3.5 sm:p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div>
               <div className="flex items-center gap-2">
@@ -1094,12 +1094,12 @@ export default function ProductDetailPage({
               <p className="text-micro text-[#6B5B83] mt-0.5">Compatible materials frequently ordered by contractors on the same delivery vehicle</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {frequentlyBought.map((p) => {
               const pAccent = getCatAccent(p.categorySlug);
               return (
                 <ProductCard3D key={p.id} accent={pAccent} className="h-full">
-                  <div className="p-3 flex flex-col h-full justify-between">
+                  <div className="p-2.5 sm:p-3 flex flex-col flex-1 h-full justify-between">
                     <div>
                       <Link href={productLink(p)} className="group block product-image-wrap aspect-square rounded-xl p-2 shadow-sm">
                         <div className="product-image-enhanced">
@@ -1124,13 +1124,13 @@ export default function ProductDetailPage({
                       </Link>
                     </div>
 
-                    <div className="mt-3 pt-2.5 border-t border-[#DDD6EE]/60 flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
-                      <div className="shrink-0">
-                        <p className="text-body-sm font-black text-[#150726] tabular-nums whitespace-nowrap">
+                    <div className="mt-3 pt-2.5 border-t border-[#DDD6EE]/60 flex items-center justify-between gap-1.5 min-w-0 w-full">
+                      <div className="min-w-0 min-h-[34px] flex flex-col justify-start">
+                        <p className="text-body-sm font-black text-[#150726] tabular-nums leading-tight whitespace-nowrap">
                           {formatINR(p.price)}
                         </p>
                         {p.mrp > p.price && (
-                          <p className="text-tiny text-[#6B5B83] line-through tabular-nums whitespace-nowrap">
+                          <p className="text-tiny text-[#6B5B83] line-through tabular-nums leading-tight whitespace-nowrap">
                             {formatINR(p.mrp)}
                           </p>
                         )}
@@ -1143,7 +1143,7 @@ export default function ProductDetailPage({
                           haptic("light");
                           tryAdd(p);
                         }}
-                        className="h-8 px-3 rounded-lg bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-tiny font-black flex items-center gap-1 hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer"
+                        className="h-7 px-2.5 sm:h-8 sm:px-3 shrink-0 rounded-lg bg-gradient-to-r from-[#7CB518] to-[#5A8010] text-white text-tiny font-black flex items-center gap-1 hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer whitespace-nowrap"
                         title="Add to order"
                       >
                         <Plus className="h-3 w-3" /> Add
@@ -1183,10 +1183,10 @@ export default function ProductDetailPage({
                   <Star className="h-3 w-3 fill-[var(--cyan)] text-[var(--brand)]" />
                   <span className="text-tiny font-bold text-[var(--text-primary)]">{p.rating}</span>
                 </div>
-                <div className="mt-auto pt-1 flex items-baseline gap-1.5 flex-wrap">
-                  <p className="text-body-sm font-bold text-[var(--text-primary)] tabular-nums whitespace-nowrap">{formatINR(p.price)}</p>
+                <div className="mt-auto pt-1.5 min-h-[34px] flex flex-col justify-start min-w-0">
+                  <p className="text-body-sm font-bold text-[var(--text-primary)] leading-tight tabular-nums whitespace-nowrap">{formatINR(p.price)}</p>
                   {p.mrp > p.price && (
-                    <span className="text-tiny text-[var(--text-muted)] line-through tabular-nums whitespace-nowrap">{formatINR(p.mrp)}</span>
+                    <span className="text-tiny text-[var(--text-muted)] line-through leading-tight tabular-nums whitespace-nowrap">{formatINR(p.mrp)}</span>
                   )}
                 </div>
               </Link>

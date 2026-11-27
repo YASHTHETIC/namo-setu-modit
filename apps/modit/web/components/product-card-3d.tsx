@@ -60,7 +60,7 @@ export function ProductCard3D({ children, className = "", accent = "#7CB518", di
       onPointerLeave={handleLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className={`product-card-3d relative overflow-hidden rounded-2xl border border-white/20 bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-300 ${className}`}
+      className={`product-card-3d h-full flex flex-col relative overflow-hidden rounded-2xl border border-white/20 bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-300 ${className}`}
       style={{
         borderColor: hovered ? accent : "transparent",
         boxShadow: hovered

@@ -175,23 +175,23 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell min-h-screen">
       {/* Announcement bar (announce-bar CSS owns vertical padding + notch inset) */}
-      <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center text-xs font-bold tracking-wide">
+      <div className="announce-bar bg-[#150726] text-[#F8CB46] text-center font-bold tracking-wide">
         Materials on Door — enterprise procurement, bulk orders, and 60-minute delivery.
       </div>
 
       <header className={`sticky top-0 z-50 glass-cyber border-b border-white/10 transition-all duration-300 shadow-[0_12px_36px_rgba(0,0,0,0.45)] ${headerHidden ? "-translate-y-full" : "translate-y-0"}`} style={{ paddingTop: "var(--safe-t)" }}>
-        <div className="market-container flex min-h-[56px] sm:min-h-[64px] items-center gap-2 sm:gap-3 px-3 sm:px-0 py-2 sm:py-3">
+        <div className="market-container flex min-h-[56px] sm:min-h-[60px] md:min-h-[64px] lg:min-h-[68px] items-center gap-2 sm:gap-3 md:gap-4 px-3 sm:px-0 py-2 sm:py-2.5 md:py-3">
           <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-3 touch-target group">
-            <ModitLogo light className="h-[36px] sm:h-[42px] w-auto drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform group-hover:scale-105" />
+            <ModitLogo light className="h-[32px] sm:h-[36px] md:h-[40px] lg:h-[44px] w-auto drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform group-hover:scale-105" />
           </Link>
 
           <div className="hidden flex-col justify-center xl:flex" aria-label="Delivery location">
             <LocationMenu />
           </div>
 
-          <div className="hidden flex-1 items-center lg:flex">
+          <div className="hidden flex-1 items-center md:flex">
             <div ref={searchRef} className="relative w-full">
-              <div className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/20 bg-white/95 backdrop-blur-md shadow-sm transition-all focus-within:shadow-[0_0_25px_rgba(124,181,24,0.3)] focus-within:border-[#7CB518]">
+              <div className="flex h-11 md:h-12 lg:h-13 items-center overflow-hidden rounded-2xl border border-white/20 bg-white/95 backdrop-blur-md shadow-sm transition-all focus-within:shadow-[0_0_25px_rgba(124,181,24,0.3)] focus-within:border-[#7CB518]">
                 <div className="pl-4.5 flex items-center pointer-events-none flex-shrink-0">
                   <Search className="h-4.5 w-4.5 text-[#9B8CB5]" />
                 </div>

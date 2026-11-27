@@ -462,6 +462,31 @@ img { display: block; max-width: 100%; }
   --bolt-flash: boltFlash 0.4s ease-out;
 }
 
+/* ═══════════════════════════════════════════════
+   RESPONSIVE TYPOGRAPHY — fluid scaling per device class
+   Mobile (<640): base sizes · Tablet (640-1023): +1-2px · Desktop (1024+): +2-4px
+   Uses clamp() for smooth transitions between breakpoints.
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Fluid type scale — auto-adjusts from mobile → tablet → desktop */
+  --fs-display: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);       /* 24→36px */
+  --fs-title-lg: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);      /* 20→28px */
+  --fs-title-md: clamp(1.063rem, 0.95rem + 0.5vw, 1.375rem);    /* 17→22px */
+  --fs-body-lg: clamp(0.938rem, 0.9rem + 0.2vw, 1.125rem);      /* 15→18px */
+  --fs-body-md: clamp(0.813rem, 0.78rem + 0.15vw, 1rem);        /* 13→16px */
+  --fs-body-sm: clamp(0.75rem, 0.72rem + 0.15vw, 0.938rem);     /* 12→15px */
+  --fs-caption: clamp(0.688rem, 0.66rem + 0.12vw, 0.813rem);    /* 11→13px */
+  --fs-micro: clamp(0.625rem, 0.6rem + 0.12vw, 0.75rem);        /* 10→12px */
+  --fs-tiny: clamp(0.563rem, 0.55rem + 0.1vw, 0.688rem);        /* 9→11px */
+  --fs-button: clamp(0.813rem, 0.78rem + 0.15vw, 1rem);         /* 13→16px */
+
+  /* Fluid spacing — scales proportionally with viewport */
+  --gap-section: clamp(1.5rem, 1rem + 2vw, 3rem);        /* 24→48px */
+  --gap-card: clamp(0.5rem, 0.375rem + 0.5vw, 1rem);     /* 8→16px */
+  --pad-page: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);      /* 12→24px */
+  --pad-card: clamp(0.5rem, 0.375rem + 0.5vw, 1rem);     /* 8→16px */
+}
+
 
 
 
@@ -947,18 +972,26 @@ input:focus:not(:focus-visible) {
 
 
 
-/* Section header with "See all" */
+/* Section header with "See all" — responsive spacing per device */
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 8px;
+  padding: 12px 16px 6px;
 }
 
-/* Phone density: tighter section headers everywhere (rails, brands, flash) */
+/* Tablet+: more breathing room */
+@media (min-width: 640px) {
+  .section-header { padding: 16px 16px 8px; }
+}
+
+/* Desktop: generous spacing */
+@media (min-width: 1024px) {
+  .section-header { padding: 20px 16px 10px; }
+}
+
+/* Phone density: tighter rail spacing */
 @media (max-width: 639px) {
-  .section-header { padding: 12px 16px 6px; }
-  .section-header h2 { font-size: 15px; }
   .scroll-rail { gap: 10px; padding-bottom: 10px; }
 }
 
@@ -974,7 +1007,9 @@ input:focus:not(:focus-visible) {
 
 
 .section-header h2 {
-  font: var(--text-section);
+  font-size: var(--fs-title-md);
+  font-weight: 700;
+  line-height: 1.2;
   color: var(--text);
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -1086,12 +1121,15 @@ input:focus:not(:focus-visible) {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 6px 14px;
+  padding: clamp(5px, 0.4vw + 4px, 8px) clamp(12px, 1vw + 8px, 18px);
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--color-action);
   background: white;
   color: var(--color-action);
-  font: 600 12px/1 var(--font-app);
+  font-family: var(--font-app);
+  font-weight: 600;
+  font-size: var(--fs-caption);
+  line-height: 1;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(124, 181, 24, 0.15);
@@ -1152,7 +1190,10 @@ input:focus:not(:focus-visible) {
   border-radius: var(--radius-pill);
   background: var(--color-action);
   color: white;
-  font: 600 12px/1 var(--font-app);
+  font-family: var(--font-app);
+  font-weight: 600;
+  font-size: var(--fs-caption);
+  line-height: 1;
   overflow: hidden;
   animation: addBounce 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(124, 181, 24, 0.25);
@@ -1173,12 +1214,12 @@ input:focus:not(:focus-visible) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: clamp(28px, 3vw + 20px, 36px);
+  height: clamp(28px, 3vw + 20px, 36px);
   border: none;
   background: transparent;
   color: white;
-  font-size: 14px;
+  font-size: clamp(14px, 0.5vw + 12px, 16px);
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -1812,12 +1853,12 @@ button { touch-action: manipulation; }
   font-variant-numeric: tabular-nums;
 }
 .stepper.stepper-compact button {
-  width: 22px;
+  width: 20px;
   height: 24px;
   font-size: 13px;
 }
 .stepper.stepper-compact span {
-  min-width: 18px;
+  min-width: 16px;
   font-size: 12px;
 }
 
@@ -2228,7 +2269,7 @@ body {
    TYPOGRAPHY
    ═══════════════════════════════════════════════ */
 
-.text-h1 { font-size: clamp(2rem, 3.4vw, 3.35rem); line-height: 1.08; font-weight: 800; letter-spacing: -0.04em; }
+.text-h1 { font-size: clamp(1.5rem, 1rem + 3vw, 3.35rem); line-height: 1.08; font-weight: 800; letter-spacing: -0.04em; }
 
 
 
@@ -2241,7 +2282,7 @@ body {
 
 
 
-.text-h4 { font-size: 1.1rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
+.text-h4 { font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.25rem); line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
 
 
 
@@ -2277,19 +2318,29 @@ body {
 
 
 .market-container {
-  width: calc(100% - 1.25rem);
+  width: 100%;
+  max-width: 1600px;
   margin-inline: auto;
+  padding-inline: var(--pad-page);
 }
 
 @media (min-width: 390px) {
   .market-container {
-    width: calc(100% - 1.5rem);
+    padding-inline: clamp(0.75rem, 2vw, 1.25rem);
   }
 }
 
+/* Tablet: comfortable reading width with balanced gutters */
 @media (min-width: 640px) {
   .market-container {
-    width: min(980px, calc(100% - 2.5rem));
+    padding-inline: clamp(1.25rem, 3vw, 2rem);
+  }
+}
+
+/* Landscape tablet / small desktop */
+@media (min-width: 768px) {
+  .market-container {
+    padding-inline: clamp(1.5rem, 4vw, 2.5rem);
   }
 }
 
@@ -2297,6 +2348,7 @@ body {
 @media (min-width: 1024px) {
   .market-container {
     width: min(1360px, 88vw);
+    padding-inline: 0;
   }
 }
 
@@ -2316,6 +2368,7 @@ body {
   @media (max-width: 639px) {
     .market-container {
       width: calc(100% - 1rem);
+      padding-inline: 0;
     }
   }
 }
@@ -2578,6 +2631,107 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Tablets: slightly larger touch targets for fat-finger comfort */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .touch-target {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE UTILITY CLASSES
+   Auto-adjust layout density per device class
+   ═══════════════════════════════════════════════ */
+
+/* Responsive product grid — auto-fit columns with min/max sizing */
+.product-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-card);
+}
+
+@media (min-width: 480px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.5rem, 1vw, 0.75rem);
+  }
+}
+
+@media (min-width: 640px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.625rem, 1.2vw, 1rem);
+  }
+}
+
+@media (min-width: 768px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.125rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .product-grid-responsive {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Responsive scroll rail — card widths keep price + ADD aligned on one line across viewports */
+.scroll-rail > * {
+  flex: 0 0 auto;
+  display: flex;
+  width: clamp(164px, 44vw, 196px);
+}
+.scroll-rail > * > * {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .scroll-rail > * {
+    width: clamp(188px, 27vw, 222px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .scroll-rail > * {
+    width: clamp(206px, 16vw, 244px);
+  }
+}
+
+/* Responsive announcement bar text */
+.announce-bar {
+  font-size: var(--fs-tiny);
+}
+
+@media (min-width: 640px) {
+  .announce-bar {
+    font-size: var(--fs-caption);
+  }
+}
+
+@media (min-width: 1024px) {
+  .announce-bar {
+    font-size: var(--fs-body-sm);
+  }
 }
 
 
@@ -4574,20 +4728,13 @@ html[data-app-installed="true"] .install-app-cta {
   100% { transform: scale(1); }
 }
 
-/* Responsive fluid typography & touch sizing across Android/iOS/Tablet/Desktop/App */
+/* Responsive fluid typography & touch sizing — small phones (<390px) get
+   tighter density; tablet and desktop scale via --fs-* clamp vars above.
+   Standalone PWA/app gets safe-area bottom padding. */
 @media (max-width: 389px) {
-  .section-header h2 {
-    font-size: 1.05rem;
-  }
   .btn-add {
-    min-width: 56px;
+    min-width: 0;
     padding: 5px 10px;
-    font-size: 11px;
-  }
-}
-@media (min-width: 640px) and (max-width: 1023px) {
-  .section-header h2 {
-    font-size: 1.25rem;
   }
 }
 @media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {

@@ -1329,29 +1329,29 @@ function ProductCard({ product, onAddToCart, eager = false }: { product: Product
           )}
         </div>
 
-        {/* Bottom row — full non-truncated price left, ADD button right */}
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1.5 pt-2 min-w-0">
-          <div className="shrink-0 flex flex-col justify-end">
-            <span className="text-base sm:text-lg xl:text-xl font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
+        {/* Bottom row — aligned single-row price left, ADD button right */}
+        <div className="mt-auto flex items-center justify-between gap-1.5 pt-2 min-w-0 w-full">
+          <div className="min-w-0 min-h-[38px] flex flex-col justify-start">
+            <span className="text-body-md sm:text-body-lg font-extrabold text-[#150726] tabular-nums leading-tight whitespace-nowrap">
               {formatINR(product.price)}
             </span>
             {product.mrp > product.price && (
-              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums -mt-0.5 whitespace-nowrap">
+              <span className="text-tiny text-[#9B8CB5] line-through tabular-nums leading-tight whitespace-nowrap">
                 {formatINR(product.mrp)}
               </span>
             )}
           </div>
-          <div className="ml-auto flex-shrink-0">
+          <div className="flex-shrink-0">
             <button
               onClick={handleAdd}
               disabled={blocked}
               title={blocked ? "Not serving your pincode yet" : undefined}
-              className={`btn-add btn-add-enhanced cursor-pointer whitespace-nowrap !px-3 !py-1.5 gap-1 ${added ? "added" : ""}`}
+              className={`btn-add btn-add-enhanced cursor-pointer whitespace-nowrap !min-w-0 !px-2.5 lg:!px-3 !py-1.5 gap-1 ${added ? "added" : ""}`}
             >
               {added ? (
                 <><CheckCircle2 className="h-3.5 w-3.5" /> Added</>
               ) : (
-                <><ShoppingCart className="h-3.5 w-3.5" /> ADD</>
+                <><ShoppingCart className="h-3.5 w-3.5 hidden xl:inline-block" /> ADD</>
               )}
             </button>
           </div>

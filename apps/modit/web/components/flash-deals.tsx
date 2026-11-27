@@ -167,7 +167,7 @@ export function FlashDeals() {
             return (
               <div
                 key={product.id}
-                className="w-[158px] min-[390px]:w-[172px] sm:w-[204px] md:w-[220px] xl:w-[232px] flex-shrink-0 snap-start bg-[#0b0318]/85 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
+                className="w-[168px] sm:w-[204px] md:w-[220px] xl:w-[232px] flex-shrink-0 flex flex-col snap-start bg-[#0b0318]/85 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
               >
                 {/* Elevated Uniform Frosted Studio Showcase Pad */}
                 <Link
@@ -201,7 +201,7 @@ export function FlashDeals() {
                   )}
                 </Link>
 
-                <div className="p-3 pt-1">
+                <div className="p-3 pt-1 flex-1 flex flex-col">
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span className="text-tiny font-black text-[#7CB518] uppercase tracking-wider truncate">
                       {product.brand}
@@ -217,18 +217,16 @@ export function FlashDeals() {
                     </h3>
                   </Link>
 
-                  {/* Price & Savings */}
-                  <div className="mt-2 flex items-baseline justify-between gap-1">
-                    <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 min-w-0">
-                      <span className="text-body-md font-black text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.35)] tabular-nums whitespace-nowrap">
-                        {formatINR(product.price)}
+                  {/* Price & Savings — fixed height so batch bar and CTA align cleanly across cards */}
+                  <div className="mt-auto pt-2 min-h-[38px] flex flex-col justify-start min-w-0">
+                    <span className="text-body-sm sm:text-body-md font-black text-[#7CB518] drop-shadow-[0_0_8px_rgba(124,181,24,0.35)] tabular-nums leading-tight whitespace-nowrap">
+                      {formatINR(product.price)}
+                    </span>
+                    {product.mrp > product.price && (
+                      <span className="text-tiny text-white/50 line-through tabular-nums leading-tight whitespace-nowrap">
+                        {formatINR(product.mrp)}
                       </span>
-                      {product.mrp > product.price && (
-                        <span className="text-tiny text-white/50 line-through tabular-nums whitespace-nowrap">
-                          {formatINR(product.mrp)}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
 
                   {/* Batch Allocation Progress */}
