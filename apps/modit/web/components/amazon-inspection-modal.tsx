@@ -56,7 +56,7 @@ export function AmazonInspectionModal({
   onAddToCart,
 }: AmazonInspectionModalProps) {
   const [activeIndex, setActiveIndex] = useState(initialImageIndex);
-  const [mode, setMode] = useState<"zoom" | "3d">("zoom");
+  const [mode, setMode] = useState<"zoom" | "3d">("3d");
   const [zoomLevel, setZoomLevel] = useState(2.2);
   const [zoomPos, setZoomPos] = useState<{ x: number; y: number; active: boolean }>({
     x: 50,
@@ -254,14 +254,14 @@ export function AmazonInspectionModal({
           onMouseLeave={handleMouseLeave}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full max-w-2xl aspect-square rounded-3xl overflow-hidden flex items-center justify-center cursor-crosshair border border-white/10 bg-radial from-[#1E0D36] to-[#0A0210] shadow-2xl"
+          className="product-thumb-blend relative w-full max-w-2xl aspect-square rounded-3xl overflow-hidden flex items-center justify-center cursor-crosshair border border-white/25 bg-gradient-to-b from-[#F8F6FC] to-[#F0ECF9] shadow-2xl"
           style={{ perspective: 1200 }}
         >
           
 
           {/* PRODUCT BUCKET IMAGE WITH 3D OR ZOOM TRANSFORM */}
           <div
-            className="relative h-full w-full z-10 flex items-center justify-center transition-transform duration-150 ease-out"
+            className="relative h-full w-full flex items-center justify-center transition-transform duration-150 ease-out"
             style={
               mode === "3d"
                 ? {
@@ -441,7 +441,7 @@ export function AmazonInspectionModal({
               key={i}
               type="button"
               onClick={() => setActiveIndex(i)}
-              className={`h-11 w-11 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex-shrink-0 bg-white/5 ${
+              className={`h-11 w-11 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex-shrink-0 bg-[#F8F6FC] product-thumb-blend ${
                 i === activeIndex
                   ? "border-[#7CB518] scale-105 shadow-md shadow-green-500/30"
                   : "border-white/20 hover:border-white/50 opacity-70 hover:opacity-100"

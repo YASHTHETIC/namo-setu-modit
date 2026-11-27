@@ -47,9 +47,9 @@ export function StickyCartBar({ itemCount, total }: StickyCartBarProps) {
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {/* Mini product thumbnail */}
         {lastItem && (
-          <div className="h-11 w-11 rounded-xl bg-white/10 border border-white/20 overflow-hidden flex-shrink-0 group-hover/cart:scale-105 transition-transform duration-300 shadow-inner">
+          <div className="product-thumb-blend h-11 w-11 rounded-xl bg-[#F8F6FC] border border-white/25 overflow-hidden p-0.5 flex items-center justify-center flex-shrink-0 group-hover/cart:scale-105 transition-transform duration-300 shadow-inner">
             {lastItem.product.images?.[0] ? (
-              <Image src={lastItem.product.images[0]} alt="" width={44} height={44} loading="lazy" className="h-full w-full object-cover" />
+              <Image src={lastItem.product.images[0]} alt="" width={44} height={44} loading="lazy" className="h-full w-full object-contain" />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-tiny text-white/40">📦</div>
             )}

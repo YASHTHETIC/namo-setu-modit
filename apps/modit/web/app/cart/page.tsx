@@ -182,7 +182,7 @@ export default function CartPage() {
                 >
                 <div className="card-2028 card-3d-inner transform-3d specular-sheen flex gap-4 rounded-2xl border border-[#DDD6EE] bg-white p-4 transition-all hover:border-[#2D1B69]/30">
                   {/* Image */}
-                  <Link href={productLink(item.product)} className="layer-3d-pop relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9] border border-[#DDD6EE]/50 shadow-sm">
+                  <Link href={productLink(item.product)} className="product-thumb-blend relative h-20 w-20 sm:h-28 sm:w-28 flex-shrink-0 overflow-hidden rounded-xl bg-[#F0ECF9] border border-[#DDD6EE]/50 shadow-sm p-1 flex items-center justify-center">
                     <ProductThumb src={item.product.images?.[0]} alt={item.product.name} className="h-full w-full object-contain" />
                   </Link>
 
@@ -314,7 +314,9 @@ export default function CartPage() {
                 <div className="space-y-2">
                   {savedItems.map((s) => (
                     <div key={s.product.id} className="card-2028 flex items-center gap-3 rounded-2xl border border-[#DDD6EE] bg-white p-3 shadow-xs">
-                      <ImageGuard src={s.product.images?.[0]} alt={s.product.name} width={56} height={56} className="h-14 w-14 rounded-xl object-contain bg-[#F0ECF9]" />
+                      <div className="product-thumb-blend h-14 w-14 rounded-xl bg-[#F0ECF9] overflow-hidden p-1 flex-shrink-0 flex items-center justify-center">
+                        <ImageGuard src={s.product.images?.[0]} alt={s.product.name} width={56} height={56} className="h-full w-full object-contain" />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-semibold text-[#150726] truncate">{s.product.name}</p>
                         <p className="text-body-md font-bold text-[#150726]">₹{s.product.price.toLocaleString("en-IN")}</p>

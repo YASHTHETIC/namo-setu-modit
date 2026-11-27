@@ -49,12 +49,13 @@ export function PhoneVerificationModal() {
       /* ignore */
     }
 
-    // Trigger on installed standalone PWA or mobile storefront after initial render
+    // Trigger only on Home landing or installed standalone app so category/tool workflows aren't interrupted
+    const onHome = currentPath === "/";
     const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || isStandalone());
-    if (isMobile) {
+    if (isMobile && (onHome || isStandalone())) {
       const timer = setTimeout(() => {
         setOpen(true);
-      }, 1200);
+      }, 2400);
       return () => clearTimeout(timer);
     }
   }, [loggedIn, pathname]);
@@ -146,7 +147,7 @@ export function PhoneVerificationModal() {
       onClick={handleDismiss}
     >
       <div
-        className="w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl bg-white p-6 shadow-2xl animate-[scaleIn_0.2s_ease-out] max-h-[92dvh] overflow-y-auto"
+        className="relative z-10 w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl bg-white border-t border-[#DDD6EE] sm:border p-6 pb-[calc(var(--nav-h)+1.25rem)] sm:pb-6 shadow-2xl max-h-[92dvh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

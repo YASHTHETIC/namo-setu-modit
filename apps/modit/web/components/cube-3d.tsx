@@ -418,34 +418,35 @@ export function Cube3D() {
       </div>
 
       {/* Interactive 3D HUD & Face Snap Controls */}
-      <div className="mt-2.5 flex flex-col items-center gap-1.5 w-full max-w-[290px]">
-        {/* Category Snap Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-1">
+      <div className="mt-2.5 flex flex-col items-center gap-1.5 w-full max-w-[300px]">
+        {/* Category Snap Pills — balanced 3x2 grid so zero orphan pills */}
+        <div className="grid grid-cols-3 gap-1 w-full">
           {CUBE_FACES.map((face, idx) => (
             <button
               key={face.slug}
               type="button"
               onClick={() => snapToFace(idx)}
-              className={`px-2 py-0.5 rounded-full text-tiny font-black transition-all cursor-pointer ${
+              className={`px-2 py-1 rounded-full text-tiny font-black transition-all cursor-pointer truncate ${
                 activeFace === idx && isSnapping
-                  ? "bg-[#7CB518] text-white shadow-cyber-green scale-105"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                  ? "bg-[#7CB518] text-white shadow-cyber-green scale-[1.03]"
+                  : "bg-white/10 text-white/85 hover:bg-white/20 hover:text-white"
               }`}
             >
               {face.category}
             </button>
           ))}
-          {isSnapping && (
-            <button
-              type="button"
-              onClick={resumeAutoOrbit}
-              className="p-1 rounded-full bg-[#00BCD4]/20 text-[#00BCD4] hover:bg-[#00BCD4]/30 transition-all cursor-pointer"
-              title="Resume Orbit"
-            >
-              <RotateCw className="h-3 w-3" />
-            </button>
-          )}
         </div>
+        {isSnapping && (
+          <button
+            type="button"
+            onClick={resumeAutoOrbit}
+            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#00BCD4]/20 text-[#00BCD4] hover:bg-[#00BCD4]/30 text-tiny font-bold transition-all cursor-pointer"
+            title="Resume Orbit"
+          >
+            <RotateCw className="h-3 w-3" />
+            Resume Auto-Orbit
+          </button>
+        )}
 
         {/* Real-Time Engineering Telemetry Spec HUD */}
         <div className="w-full rounded-xl bg-black/60 border border-white/15 p-2 backdrop-blur-md shadow-glass-specular flex items-center justify-between gap-2">

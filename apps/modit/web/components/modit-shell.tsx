@@ -303,9 +303,9 @@ export function ModitShell({ children }: { children: React.ReactNode }) {
                               highlightIdx === idx ? "bg-[#F0ECF9]" : "hover:bg-[#F8F6FC]"
                             }`}
                           >
-                            <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
+                            <div className="product-thumb-blend relative h-8 w-8 overflow-hidden rounded-lg bg-[#F7F4FC] border border-[#EDE7F6] flex-shrink-0 flex items-center justify-center">
                               {s.image ? (
-                                <ImageGuard src={s.image} alt={s.text} fill sizes="32px" draggable={false} className="object-contain p-0.5" />
+                                <ImageGuard src={s.image} alt={s.text} width={32} height={32} loading="eager" draggable={false} className="h-full w-full object-contain p-0.5" />
                               ) : (
                                 <Search className="h-4 w-4 text-[#9B8CB5]" />
                               )}
@@ -516,8 +516,8 @@ className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-wh
                       onClick={() => { setShowSearch(false); setSearchQuery(""); }}
                       className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-white/5"
                     >
-                      <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-white/10 flex-shrink-0">
-                        <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="40px" draggable={false} className="object-contain" />
+                      <div className="product-thumb-blend relative h-10 w-10 overflow-hidden rounded-lg bg-[#F8F6FC] p-0.5 flex-shrink-0 flex items-center justify-center">
+                        <ImageGuard src={product.images?.[0]} alt={product.name} fill sizes="40px" draggable={false} className="object-contain p-0.5" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="truncate text-body-sm font-semibold text-white">

@@ -167,25 +167,25 @@ export function FlashDeals() {
             return (
               <div
                 key={product.id}
-                className="w-[172px] sm:w-[210px] md:w-[224px] flex-shrink-0 snap-start bg-[#0b0318]/80 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
+                className="w-[158px] min-[390px]:w-[172px] sm:w-[204px] md:w-[220px] xl:w-[232px] flex-shrink-0 snap-start bg-[#0b0318]/85 backdrop-blur-xl border border-white/15 rounded-2xl overflow-hidden hover:border-[#F8CB46]/80 hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.6)] hover:-translate-y-1.5 transition-all duration-300 group specular-sheen"
               >
-                {/* Elevated Uniform Showcase Pad */}
+                {/* Elevated Uniform Frosted Studio Showcase Pad */}
                 <Link
                   href={productLink(product)}
-                  className="block relative aspect-square m-2.5 rounded-xl bg-white p-2.5 shadow-sm overflow-hidden group/thumb"
+                  className="product-thumb-blend block relative aspect-square m-2 sm:m-2.5 rounded-xl bg-[#F8F6FC] p-2 sm:p-2.5 shadow-sm overflow-hidden group/thumb"
                 >
                   <div className="product-image-shine" />
                   {product.images[0] ? (
-                    <div className="product-image-enhanced">
+                    <div className="h-full w-full flex items-center justify-center">
                       <Image
                         src={product.images[0]}
                         alt={product.name}
                         fill
-                        sizes="(max-width: 640px) 172px, 224px"
+                        sizes="(max-width: 640px) 172px, 232px"
                         quality={85}
                         loading="lazy"
                         draggable={false}
-                        className="object-contain p-1.5"
+                        className="object-contain p-1.5 transition-transform duration-300 group-hover/thumb:scale-105"
                       />
                     </div>
                   ) : (

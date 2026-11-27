@@ -338,6 +338,7 @@ export function useRFQs(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.rfqs(organizationId),
     queryFn: () => getModitApi().listRFQs(organizationId),
+    enabled: typeof window !== "undefined" && Boolean(getAccessToken()),
     ...fastQueryOpts,
   });
 }
@@ -727,6 +728,7 @@ export function useProjects(organizationId?: string) {
   return useQuery({
     queryKey: moditKeys.projects(organizationId),
     queryFn: () => getModitApi().listProjects(organizationId),
+    enabled: typeof window !== "undefined" && Boolean(getAccessToken()),
     ...fastQueryOpts,
   });
 }

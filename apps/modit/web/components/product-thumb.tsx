@@ -100,11 +100,11 @@ export function ProductThumb({
     <Image
       src={src}
       alt={alt}
-      width={160}
-      height={160}
+      width={128}
+      height={128}
       sizes="96px"
-      quality={85}
-      loading="lazy"
+      quality={75}
+      loading="eager"
       decoding="async"
       onError={() => setFailedSrc(src)}
       className={className}

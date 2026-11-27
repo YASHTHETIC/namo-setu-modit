@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, MouseEvent } from "react";
 import Image from "next/image";
-import { Heart, Share2, Check, Package, Box, ZoomIn, Maximize2, RotateCw } from "lucide-react";
+import { Heart, Share2, Check, Package, RotateCw, Maximize2 } from "lucide-react";
 
 interface ProductZoom3DViewerProps {
   images: string[];
@@ -31,80 +31,66 @@ export function ProductZoom3DViewer({
   shared,
   handleShare,
   onOpenLightbox,
-  isPaintProduct = false,
   selectedShadeColor = null,
   selectedShadeName = null,
 }: ProductZoom3DViewerProps) {
-  const [mode, setMode] = useState<"zoom" | "3d">("zoom");
-  const [turntable, setTurntable] = useState(false);
-  const [zoomPos, setZoomPos] = useState<{ x: number; y: number; active: boolean }>({
-    x: 50,
-    y: 50,
-    active: false,
-  });
+  const [revolve, setRevolve] = useState(false);
   const [tilt, setTilt] = useState<{ rx: number; ry: number }>({ rx: 0, ry: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
 
-  // Turntable smooth 3D auto-spin animation loop
+  // Smooth 3D auto-revolve loop
   useEffect(() => {
-    if (!turntable) return;
+    if (!revolve) return;
     let animId: number;
     let angle = 0;
     const spin = () => {
       angle = (angle + 1.2) % 360;
       const rad = (angle * Math.PI) / 180;
       setTilt({
-        rx: Math.sin(rad) * 9,
-        ry: Math.sin(rad * 0.5) * 24,
+        rx: Math.sin(rad) * 8,
+        ry: Math.sin(rad * 0.7) * 22,
       });
       animId = requestAnimationFrame(spin);
     };
     animId = requestAnimationFrame(spin);
     return () => cancelAnimationFrame(animId);
-  }, [turntable]);
+  }, [revolve]);
 
   const activeImage = images[safeImageIndex];
   const auraColor = selectedShadeColor || "#7CB518";
 
-  // Handle Zoom lens & 3D tilt on mouse move
+  // 3D Tilt calculation on mouse move (crystal clear, no zoom/scale)
   const handleMouseMove = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       if (!containerRef.current) return;
+      if (revolve) setRevolve(false);
       const rect = containerRef.current.getBoundingClientRect();
       const clientX = e.clientX - rect.left;
       const clientY = e.clientY - rect.top;
 
-      const px = Math.max(0, Math.min(100, (clientX / rect.width) * 100));
-      const py = Math.max(0, Math.min(100, (clientY / rect.height) * 100));
-
-      if (mode === "zoom") {
-        setZoomPos({ x: px, y: py, active: true });
-      } else {
-        if (turntable) setTurntable(false);
-        // 3D Tilt calculation: max +/- 18 degrees
-        const normX = (clientX / rect.width) * 2 - 1; // -1 to 1
-        const normY = (clientY / rect.height) * 2 - 1; // -1 to 1
-        setTilt({
-          rx: -normY * 16,
-          ry: normX * 18,
-        });
-      }
+      // 3D Tilt: max +/- 16 deg X, +/- 18 deg Y
+      const normX = (clientX / rect.width) * 2 - 1; // -1 to 1
+      const normY = (clientY / rect.height) * 2 - 1; // -1 to 1
+      setTilt({
+        rx: -normY * 16,
+        ry: normX * 18,
+      });
     },
-    [mode, turntable]
+    [revolve]
   );
 
   const handleMouseLeave = useCallback(() => {
-    setZoomPos((prev) => ({ ...prev, active: false }));
-    if (!turntable) {
+    if (!revolve) {
       setTilt({ rx: 0, ry: 0 });
     }
-  }, [turntable]);
+  }, [revolve]);
 
+  // Touch handling for mobile & tablet
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
-      if (mode !== "3d" || !containerRef.current || e.touches.length === 0) return;
-      if (turntable) setTurntable(false);
+      if (!containerRef.current || e.touches.length === 0) return;
+      if (revolve) setRevolve(false);
       const rect = containerRef.current.getBoundingClientRect();
       const touch = e.touches[0];
       const clientX = touch.clientX - rect.left;
@@ -112,63 +98,32 @@ export function ProductZoom3DViewer({
       const normX = Math.max(-1, Math.min(1, (clientX / rect.width) * 2 - 1));
       const normY = Math.max(-1, Math.min(1, (clientY / rect.height) * 2 - 1));
       setTilt({
-        rx: -normY * 18,
-        ry: normX * 22,
+        rx: -normY * 16,
+        ry: normX * 18,
       });
     },
-    [mode, turntable]
+    [revolve]
   );
 
   return (
     <div className="relative">
-      {/* Top mode switch toolbar */}
+      {/* Top 3D Control Bar: 3D Revolve toggle + Selected shade indicator */}
       <div className="flex items-center justify-between mb-2 px-1">
-        <div className="inline-flex items-center rounded-xl bg-[#F0ECF9] p-1 gap-1 border border-[#DDD6EE]/60 text-micro font-bold shadow-xs">
-          <button
-            onClick={() => setMode("zoom")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-              mode === "zoom"
-                ? "bg-white text-[#2D1B69] shadow-xs"
-                : "text-[#6B5B83] hover:text-[#2D1B69]"
-            }`}
-            title="Amazon-style hover zoom lens"
-          >
-            <ZoomIn className="h-3.5 w-3.5 text-[#7CB518]" />
-            Zoom
-          </button>
-          <button
-            onClick={() => {
-              setTurntable(false);
-              setMode("3d");
-            }}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-              mode === "3d" && !turntable
-                ? "bg-white text-[#2D1B69] shadow-xs"
-                : "text-[#6B5B83] hover:text-[#2D1B69]"
-            }`}
-            title="3D interactive tilt & perspective"
-          >
-            <Box className="h-3.5 w-3.5 text-[#00BCD4]" />
-            3D Look
-          </button>
-          <button
-            onClick={() => {
-              setMode("3d");
-              setTurntable((prev) => !prev);
-            }}
-            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-all ${
-              turntable
-                ? "bg-white text-[#E91E63] shadow-xs font-black"
-                : "text-[#6B5B83] hover:text-[#2D1B69]"
-            }`}
-            title="360° Studio Turntable"
-          >
-            <RotateCw className={`h-3 w-3 text-[#E91E63] ${turntable ? "animate-spin" : ""}`} />
-            360° Spin
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setRevolve((r) => !r)}
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-tiny font-bold transition-all shadow-xs border cursor-pointer ${
+            revolve
+              ? "bg-[#2D1B69] text-white border-[#2D1B69] shadow-md shadow-purple-900/20"
+              : "bg-white text-[#2D1B69] border-[#EDE7F6] hover:border-[#7CB518]"
+          }`}
+          title="Toggle 3D product revolve"
+          aria-pressed={revolve}
+        >
+          <RotateCw className={`h-3.5 w-3.5 text-[#7CB518] ${revolve ? "animate-spin" : ""}`} />
+          <span>{revolve ? "Revolving 3D" : "3D Revolve"}</span>
+        </button>
 
-        {/* Selected shade pill */}
         {selectedShadeName && (
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-tiny font-bold text-[#150726] shadow-xs border border-[#EDE7F6]">
             <span
@@ -180,20 +135,18 @@ export function ProductZoom3DViewer({
         )}
       </div>
 
-      {/* Main interactive stage — Clean, normal product photo presentation */}
+      {/* Main 3D Stage — Crystal Clear Product, Smooth 3D Revolve/Tilt, Zero Auto-Zoom */}
       <div
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onClick={() => {
-          if (!zoomPos.active) onOpenLightbox();
-        }}
+        onClick={onOpenLightbox}
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0].clientX;
         }}
         onTouchMove={handleTouchMove}
         onTouchEnd={(e) => {
-          if (mode === "3d") {
+          if (!revolve) {
             setTilt({ rx: 0, ry: 0 });
           }
           if (touchStartX.current === null) return;
@@ -202,32 +155,22 @@ export function ProductZoom3DViewer({
           if (Math.abs(dx) < 40 || images.length < 2) return;
           setSelectedImage((i) => (i + (dx < 0 ? 1 : images.length - 1)) % images.length);
         }}
-        className="relative aspect-square overflow-hidden rounded-2xl border border-[#EDE7F6] bg-white select-none cursor-crosshair group shadow-xs"
+        className="product-thumb-blend relative aspect-square overflow-hidden rounded-2xl border border-[#EDE7F6] bg-[#F8F6FC] select-none cursor-grab active:cursor-grabbing group shadow-xs hover:border-[#7CB518]/60 transition-colors"
         style={{
-          perspective: 1000,
+          perspective: 1200,
         }}
       >
-        {/* Product image container with 3D or Zoom transforms */}
+        {/* Crystal Clear 3D Product Stage (no zoom, pure 100% scale) */}
         <div
-          className="relative h-full w-full z-10 transition-transform duration-150 ease-out"
-          style={
-            mode === "3d"
-              ? {
-                  transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale3d(1.04, 1.04, 1.04)`,
-                  transformStyle: "preserve-3d",
-                  transition: "transform 0.1s ease-out",
-                }
-              : mode === "zoom" && zoomPos.active
-              ? {
-                  transform: "scale(2.2)",
-                  transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                  transition: "transform 0.08s ease-out",
-                }
-              : {
-                  transform: "scale(1)",
-                  transition: "transform 0.25s ease-out",
-                }
-          }
+          className="relative h-full w-full"
+          style={{
+            transform:
+              tilt.rx !== 0 || tilt.ry !== 0
+                ? `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`
+                : undefined,
+            transformStyle: tilt.rx !== 0 || tilt.ry !== 0 ? "preserve-3d" : undefined,
+            transition: revolve ? "none" : "transform 0.15s ease-out",
+          }}
         >
           {activeImage ? (
             <Image
@@ -238,7 +181,7 @@ export function ProductZoom3DViewer({
               quality={92}
               priority
               draggable={false}
-              className="object-contain p-4 drop-shadow-[0_12px_24px_rgba(45,27,105,0.14)]"
+              className="object-contain p-4 sm:p-6 drop-shadow-[0_12px_24px_rgba(45,27,105,0.14)]"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -246,56 +189,38 @@ export function ProductZoom3DViewer({
             </div>
           )}
 
-          {/* 3D Specular Sheen Highlight */}
-          {mode === "3d" && (
-            <div
-              className="pointer-events-none absolute inset-0 rounded-2xl opacity-40 transition-opacity"
-              style={{
-                background: `linear-gradient(${135 + tilt.ry * 2}deg, rgba(255,255,255,0.45) 0%, transparent 60%)`,
-              }}
-            />
-          )}
-        </div>
-
-        {/* Floating 3D shadow underneath */}
-        {mode === "3d" && (
+          {/* 3D Specular Lighting Glint */}
           <div
-            className="pointer-events-none absolute bottom-4 left-1/2 h-8 w-3/4 -translate-x-1/2 rounded-full blur-md bg-black/15 transition-transform duration-100"
+            className="pointer-events-none absolute inset-0 rounded-2xl opacity-30 transition-opacity"
             style={{
-              transform: `translateX(-50%) translate(${tilt.ry * -1.5}px, ${tilt.rx * 0.8}px) scale(${1 - Math.abs(tilt.rx) * 0.01})`,
+              background: `linear-gradient(${135 + tilt.ry * 2}deg, rgba(255,255,255,0.4) 0%, transparent 60%)`,
             }}
           />
-        )}
+        </div>
 
-        {/* Amazon Zoom overlay lens hint */}
-        {mode === "zoom" && !zoomPos.active && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-full bg-[#150726]/85 backdrop-blur-md px-3 py-1.5 text-tiny font-mono text-white/90 shadow-md border border-white/15 opacity-90 group-hover:opacity-100 transition-opacity">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] animate-pulse" />
-            <span className="font-sans font-bold">ULTRA ZOOM</span>
-            <span className="text-white/30">|</span>
-            <span className="font-sans text-white/70">Hover to inspect</span>
-          </div>
-        )}
+        {/* Dynamic 3D depth shadow underneath */}
+        <div
+          className="pointer-events-none absolute bottom-4 left-1/2 h-6 w-3/4 -translate-x-1/2 rounded-full blur-md bg-black/15 transition-transform duration-100"
+          style={{
+            transform: `translateX(-50%) translate(${tilt.ry * -1.2}px, ${tilt.rx * 0.6}px) scale(${1 - Math.abs(tilt.rx) * 0.01})`,
+          }}
+        />
 
-        {mode === "3d" && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-full bg-[#150726]/85 backdrop-blur-md px-3 py-1.5 text-tiny font-mono text-white/90 shadow-md border border-white/15">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#00BCD4] animate-pulse" />
-            <span className="font-sans font-bold text-[#00BCD4]">3D LOOK</span>
-            <span className="text-white/30">|</span>
-            <span>X: {Math.round(tilt.rx)}°</span>
-            <span className="text-white/30">|</span>
-            <span>Y: {Math.round(tilt.ry)}°</span>
-          </div>
-        )}
+        {/* 3D Interactive Badge (subtle, non-intrusive) */}
+        <div className="pointer-events-none absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-full bg-[#150726]/75 backdrop-blur-md px-2.5 py-1 text-micro font-bold text-white/90 shadow-sm border border-white/10 opacity-75 group-hover:opacity-100 transition-opacity">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#7CB518] shadow-[0_0_6px_#7CB518]" />
+          <span>3D VIEW</span>
+        </div>
 
-        {/* Fullscreen button */}
+        {/* Fullscreen / Lightbox inspection button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             onOpenLightbox();
           }}
-          title="Fullscreen view"
-          className="absolute bottom-3 right-12 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95 text-[#2D1B69] border border-[#DDD6EE]"
+          title="Full inspection view"
+          aria-label="Full inspection view"
+          className="absolute bottom-3 right-12 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white active:scale-95 text-[#2D1B69] border border-[#DDD6EE] cursor-pointer"
         >
           <Maximize2 className="h-4 w-4" />
         </button>
@@ -308,7 +233,8 @@ export function ProductZoom3DViewer({
               toggleWishlist();
             }}
             title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 ${
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className={`flex h-10 w-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all active:scale-90 cursor-pointer ${
               wishlisted
                 ? "bg-[#FCE4EC] text-[#E91E63]"
                 : "bg-white/90 text-[var(--text-secondary)] hover:text-[#E91E63]"
@@ -322,7 +248,8 @@ export function ProductZoom3DViewer({
               handleShare();
             }}
             title="Share this product"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[var(--text-secondary)] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90"
+            aria-label="Share this product"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[var(--text-secondary)] shadow-md backdrop-blur-sm transition-all hover:text-[#2D1B69] active:scale-90 cursor-pointer"
           >
             {shared ? <Check className="h-5 w-5 text-[#7CB518]" /> : <Share2 className="h-5 w-5" />}
           </button>

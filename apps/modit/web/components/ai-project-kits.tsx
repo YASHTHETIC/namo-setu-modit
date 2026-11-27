@@ -226,7 +226,7 @@ export function AiProjectKitsSection() {
                     {resolved.resolvedItems.map((item) => (
                       <div
                         key={item.product.id}
-                        className="relative h-9 w-9 rounded-full bg-white border border-[#DDD6EE] p-1 shadow-2xs shrink-0"
+                        className="product-thumb-blend relative h-9 w-9 rounded-full bg-[#F8F6FC] border border-[#DDD6EE] p-1 shadow-2xs shrink-0 overflow-hidden"
                         title={`${item.product.name} (${item.quantity}×)`}
                       >
                         {item.product.images?.[0] ? (
@@ -358,7 +358,7 @@ export function AiProjectKitsSection() {
                     </div>
 
                     {/* Thumbnail */}
-                    <div className="relative h-12 w-12 rounded-lg bg-white border border-[#DDD6EE] p-1 flex-shrink-0">
+                    <div className="product-thumb-blend relative h-12 w-12 rounded-lg bg-[#F8F6FC] border border-[#DDD6EE] p-1 flex-shrink-0 overflow-hidden">
                       {item.product.images?.[0] ? (
                         <Image
                           src={item.product.images[0]}

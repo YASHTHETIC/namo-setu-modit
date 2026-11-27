@@ -67,14 +67,14 @@ export function SupportChat() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Support chat"
-        className={`fixed right-4 z-float flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#150726] to-[#2D1B69] text-white shadow-cyber-purple border border-white/20 transition-all hover:scale-105 active:scale-95 ${docked ? "dock-bubble-docked" : "dock-bubble"}`}
+        className={`fixed right-3 sm:right-4 z-float flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#150726] to-[#2D1B69] text-white shadow-cyber-purple border border-white/20 transition-all hover:scale-105 active:scale-95 ${docked ? "dock-bubble-docked" : "dock-bubble"}`}
       >
         <span className="absolute -top-1 -right-1 flex h-3 w-3 rounded-full bg-[#7CB518] shadow-[0_0_8px_#7CB518] ring-2 ring-[#150726]" />
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6 text-[#00BCD4]" />}
+        {open ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-[#00BCD4]" />}
       </button>
 
       {open && (
-        <div className={`fixed right-4 z-float flex h-[460px] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-white/15 bg-white/95 backdrop-blur-2xl shadow-glass-elevated transition-all ${docked ? "dock-chat-open" : "dock-chat"}`}>
+        <div className={`fixed right-3 sm:right-4 z-float flex h-[min(460px,calc(100dvh-10rem))] w-[min(24rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-3xl border border-white/15 bg-white/95 backdrop-blur-2xl shadow-glass-elevated transition-all ${docked ? "dock-chat-open" : "dock-chat"}`}>
           <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#0b0318] via-[#150726] to-[#2D1B69] px-4 py-3.5 text-white border-b border-white/10">
             {activeId && (
               <button onClick={() => setActiveId(null)} aria-label="Back to threads" className="p-1 rounded-lg hover:bg-white/10 transition-colors">

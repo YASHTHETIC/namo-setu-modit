@@ -31,7 +31,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed bottom-2 inset-x-3 z-bottomnav mx-auto max-w-md rounded-3xl bg-[#0b0318]/92 backdrop-blur-2xl border border-white/20 lg:hidden shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8),0_0_25px_-5px_rgba(124,181,24,0.25)] overflow-hidden"
+      className="fixed bottom-2 inset-x-2 sm:inset-x-4 z-bottomnav mx-auto max-w-md sm:max-w-lg rounded-2xl sm:rounded-3xl bg-[#0b0318]/95 backdrop-blur-2xl border border-white/20 lg:hidden shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8),0_0_25px_-5px_rgba(124,181,24,0.25)] overflow-hidden pb-[env(safe-area-inset-bottom,0px)]"
       style={{ paddingBottom: "max(6px, env(safe-area-inset-bottom))" }}
     >
       {/* Top Laser Horizon Hairline */}

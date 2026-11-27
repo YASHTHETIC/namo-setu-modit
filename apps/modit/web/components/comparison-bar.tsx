@@ -23,7 +23,9 @@ export function ComparisonBar() {
           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
             {items.map((product) => (
               <div key={product.id} className="relative flex-shrink-0">
-                <ImageGuard src={product.images?.[0]} alt={product.name} width={40} height={40} className="h-10 w-10 rounded-lg object-cover bg-white/10 border border-white/20" />
+                <div className="product-thumb-blend h-10 w-10 rounded-lg bg-[#F8F6FC] border border-white/25 overflow-hidden p-0.5 flex items-center justify-center">
+                  <ImageGuard src={product.images?.[0]} alt={product.name} width={40} height={40} className="h-full w-full object-contain" />
+                </div>
                 <button
                   onClick={() => removeFromCompare(product.id)}
                   className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#E91E63] flex items-center justify-center"

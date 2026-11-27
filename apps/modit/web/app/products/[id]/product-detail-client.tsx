@@ -556,7 +556,7 @@ export default function ProductDetailPage({
               mrp={displayMrp}
               discount={displayDiscount}
               bulkPrice={activeVariant?.bulkPrice ?? product.bulkPrice}
-              bulkLabel={activeVariant ? `Bulk: ₹${activeVariant.bulkPrice?.toLocaleString("en-IN")} at ${activeVariant.bulkMinQty}+` : product.bulkLabel}
+              bulkLabel={activeVariant ? (activeVariant.bulkPrice != null && activeVariant.bulkMinQty != null ? `Bulk: ₹${activeVariant.bulkPrice.toLocaleString("en-IN")} at ${activeVariant.bulkMinQty}+` : undefined) : product.bulkLabel}
               unit={displayUnit}
               size="lg"
             />

@@ -145,7 +145,7 @@ export default function CalculatorPage() {
             <div className="flex-1 min-w-0">
               <h1 className="text-title-md font-black text-white flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-[#00BCD4]" />
-                <span>2028 Material Estimator</span>
+                <span>Material Estimator</span>
                 <span className="text-tiny font-bold text-[#7CB518] bg-[#7CB518]/20 px-2 py-0.5 rounded-full border border-[#7CB518]/30">
                   Precision AI
                 </span>

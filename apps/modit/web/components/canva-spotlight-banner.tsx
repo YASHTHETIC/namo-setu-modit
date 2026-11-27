@@ -170,7 +170,7 @@ export function CanvaSpotlightBanner() {
                 </div>
 
                 {/* Canva Standout Finish Badge */}
-                <div className="pointer-events-none absolute top-3 right-3 z-20 flex items-center gap-1.5 rounded-xl bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-md border border-[#EDE7F6]">
+                <div className="pointer-events-none absolute bottom-3 right-3 z-20 hidden min-[380px]:flex items-center gap-1.5 rounded-xl bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-md border border-[#EDE7F6]">
                   <Sparkles className="h-3.5 w-3.5 text-[#7CB518]" />
                   <div className="text-left">
                     <p className="text-tiny font-black text-[#150726] leading-none">Standout finish</p>
@@ -203,7 +203,7 @@ export function CanvaSpotlightBanner() {
                   <circle cx="85" cy="295" r="15" fill={activeShade.code} opacity="0.65" />
                 </svg>
 
-                {/* 3D Tilting Bucket Image with Erupting Splash */}
+                {/* 3D Tilting Bucket Image with Background Erupting Splash */}
                 <div
                   className="relative h-44 sm:h-56 w-44 sm:w-56 z-10 transition-transform duration-100 ease-out"
                   style={{
@@ -211,22 +211,12 @@ export function CanvaSpotlightBanner() {
                     transformStyle: "preserve-3d",
                   }}
                 >
-                  <Image
-                    src="/products/painting/Asian Paint.png"
-                    alt="Asian Paint 3D Bucket"
-                    fill
-                    sizes="240px"
-                    priority
-                    draggable={false}
-                    className="object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
-                  />
-
-                  {/* Erupting Liquid Paint Splash Jets */}
+                  {/* Erupting Liquid Paint Splash Jets — framed behind bucket lid */}
                   <svg
                     viewBox="0 0 500 500"
-                    className="pointer-events-none absolute inset-0 m-auto h-full w-full z-20"
+                    className="pointer-events-none absolute inset-0 m-auto h-full w-full -z-10"
                     style={{
-                      transform: "translateZ(24px)",
+                      transform: "translateZ(-16px) translateY(8px)",
                       filter: `drop-shadow(0 10px 18px ${activeShade.code}80)`,
                     }}
                   >
@@ -249,6 +239,16 @@ export function CanvaSpotlightBanner() {
                     <circle cx="48" cy="42" r="3" fill="#ffffff" opacity="0.8" />
                     <circle cx="448" cy="42" r="3" fill="#ffffff" opacity="0.8" />
                   </svg>
+
+                  <Image
+                    src="/products/painting/Asian Paint.png"
+                    alt="Asian Paint 3D Bucket"
+                    fill
+                    sizes="240px"
+                    priority
+                    draggable={false}
+                    className="object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
+                  />
                 </div>
 
                 {/* 3D Telemetry HUD Pill */}

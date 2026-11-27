@@ -756,7 +756,7 @@ function ProductsContent() {
                 <option value="discount">Discount</option>
               </select>
 
-              <div className="hidden items-center rounded-xl border sm:flex border-[#DDD6EE]">
+              <div className="hidden items-center overflow-hidden rounded-xl border bg-white sm:flex border-[#DDD6EE]">
                 <button
                   onClick={() => setViewMode("grid")}
                   className="p-2 transition-all"
@@ -1267,7 +1267,7 @@ function ProductCard({ product, onAddToCart, eager = false }: { product: Product
         <div className="product-image-enhanced p-2.5">
           <div className="product-image-glow" />
           <div className="product-image-shine" />
-          <Link href={productLink(product)} className="relative block h-full w-full z-10 layer-3d-pop">
+          <Link href={productLink(product)} className="relative block h-full w-full">
             {product.images[0] ? (
               <Image
                 src={product.images[0]}
@@ -1423,7 +1423,7 @@ function ProductListCard({ product, onAddToCart, eager = false }: { product: Pro
         <div className="product-image-enhanced p-2">
           <div className="product-image-glow" />
           <div className="product-image-shine" />
-          <Link href={productLink(product)} className="relative block h-full w-full z-10">
+          <Link href={productLink(product)} className="relative block h-full w-full">
             {product.images[0] ? (
               <Image
                 src={product.images[0]}

@@ -191,15 +191,18 @@ export function CartDrawer() {
                   const mrp = variant?.mrp ?? item.product.mrp;
                   return (
                     <div key={key} className="flex gap-3">
-                      <ProductThumb
-                        src={item.product.images?.[0]}
-                        alt={item.product.name}
-                        className="h-16 w-16 rounded-xl object-contain bg-[#F0ECF9] flex-shrink-0"
-                      />
+                      <div className="product-thumb-blend h-16 w-16 rounded-xl bg-[#F0ECF9] flex-shrink-0 overflow-hidden flex items-center justify-center p-1">
+                        <ProductThumb
+                          src={item.product.images?.[0]}
+                          alt={item.product.name}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-caption font-semibold text-[#150726] leading-snug line-clamp-2">{item.product.name}</p>
                         <p className="text-micro text-[#9B8CB5] mt-0.5">
-                          {item.product.unit}
+                          {variant ? `${variant.label} · ${variant.unit}` : item.product.unit}
+                          {item.shade ? ` · ${item.shade}` : ""}
                         </p>
                         {item.shade ? (
                           <div className="mt-1 flex items-center gap-1.5">

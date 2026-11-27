@@ -87,7 +87,7 @@ export function DeliveryRadar3D({
           </div>
           <div>
             <span className="text-micro font-black tracking-wider text-[#00BCD4] uppercase">
-              2028 GPS Telemetry Radar
+              Live GPS Telemetry Radar
             </span>
             <p className="text-tiny font-bold text-white/90">
               {deliveryNumber ? `Unit #${deliveryNumber}` : "Express Fleet Link"}

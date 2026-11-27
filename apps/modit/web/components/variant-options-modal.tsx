@@ -279,7 +279,9 @@ export function VariantOptionsModal({ open, onClose, product }: VariantOptionsMo
                 return (
                   <div key={v.id} className={`flex items-center gap-3 rounded-xl border p-3 hover:border-[#7CB518]/40 transition-colors ${isDefault ? "border-[#2D1B69]/30 bg-[#F7F4FC]" : "border-[#F0ECF9] bg-white"}`}>
                     {product.images[0] && (
-                      <Image src={product.images[0]} alt={v.label} width={44} height={44} loading="lazy" className="h-11 w-11 rounded-lg object-contain bg-[#F0ECF9] flex-shrink-0" />
+                      <div className="product-thumb-blend h-11 w-11 rounded-lg bg-[#F0ECF9] flex-shrink-0 overflow-hidden p-0.5 flex items-center justify-center">
+                        <Image src={product.images[0]} alt={v.label} width={48} height={48} sizes="48px" quality={75} loading="eager" className="h-full w-full object-contain" />
+                      </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-body-sm font-bold text-[#150726]">

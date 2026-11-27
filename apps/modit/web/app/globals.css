@@ -201,27 +201,44 @@
    edge-to-edge chin from animating these bars every scroll (perf guidance).
    ═══════════════════════════════════════════════ */
 :root {
-  --nav-h: 56px;
+  --nav-h: 64px;
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-max-b: env(safe-area-max-inset-bottom, env(safe-area-inset-bottom, 0px));
   --chrome-nav: calc(var(--nav-h) + var(--safe-max-b));
-  --chrome-bar: calc(var(--chrome-nav) + 20px);
+  --chrome-bar: calc(var(--chrome-nav) + 16px);
   --chrome-stack: calc(var(--chrome-bar) + 64px);
-  --chrome-top: calc(var(--chrome-bar) + 140px);
+  --chrome-top: calc(var(--chrome-bar) + 136px);
+}
+
+/* Desktop hides BottomNav (`lg:hidden`), so clear bottom-nav offset */
+@media (min-width: 1024px) {
+  :root {
+    --nav-h: 0px;
+    --chrome-nav: 0px;
+    --chrome-bar: 20px;
+    --chrome-stack: 88px;
+    --chrome-top: 152px;
+  }
 }
 
 /* Docked action band (view-cart bar, product buy bar, checkout pay bar) */
-.dock-bar { bottom: calc(var(--chrome-nav) + 20px); }
+.dock-bar { bottom: calc(var(--chrome-nav) + 16px); }
 
 /* Floating secondary bands stacked above a docked bar */
 .dock-compare { bottom: var(--chrome-stack); }
 
-/* Support chat positions */
-.dock-bubble { bottom: calc(var(--chrome-bar) + 4px); }
+/* Support chat positions — clear BottomNav on mobile/tablet, compact corner on desktop */
+.dock-bubble { bottom: calc(var(--chrome-bar) + 6px); }
 .dock-bubble-docked { bottom: calc(var(--chrome-bar) + 84px); }
 .dock-chat { bottom: calc(var(--chrome-bar) + 68px); }
 .dock-chat-open { bottom: var(--chrome-top); }
+@media (min-width: 1024px) {
+  .dock-bubble { bottom: 24px; }
+  .dock-bubble-docked { bottom: 96px; }
+  .dock-chat { bottom: 92px; }
+  .dock-chat-open { bottom: 164px; }
+}
 
 
 
@@ -234,7 +251,32 @@
 
 
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  font-size: 14.5px;
+}
+
+@media (min-width: 390px) {
+  html { font-size: 15.5px; }
+}
+@media (min-width: 640px) {
+  html { font-size: 16px; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  html { font-size: 15.5px; }
+}
+@media (min-width: 1280px) {
+  html { font-size: 16px; }
+}
+@media (min-width: 1600px) {
+  html { font-size: 16.5px; }
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+  html {
+    overscroll-behavior-y: contain;
+  }
+}
 
 
 
@@ -522,25 +564,7 @@ img { display: block; max-width: 100%; }
 
 
 
-/* Cart toast notification */
-.cart-toast {
-  position: fixed;
-  bottom: calc(var(--chrome-stack) + 0px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  background: #150726;
-  color: white;
-  border-radius: 14px;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 32px rgba(21, 7, 38, 0.3);
-  animation: cartToastSlide 2.5s ease-in-out forwards;
-  pointer-events: none;
-  border: 1px solid rgba(124, 181, 24, 0.3);
-}
+/* Legacy .cart-toast top anchor unified below at line 1749 */
 
 
 
@@ -1730,23 +1754,28 @@ button { touch-action: manipulation; }
 /* Toast that slides up when an item is added to cart */
 .cart-toast {
   position: fixed;
-  top: 16px;
+  top: max(16px, calc(var(--safe-t) + 12px));
+  bottom: auto;
   left: 50%;
-  transform: translateX(-50%) translateY(-20px);
+  transform: translateX(-50%) translateY(-18px);
   z-index: 1000;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 2rem));
+  height: auto;
   padding: 10px 16px;
-  border-radius: 9999px;
+  overflow: hidden;
+  border-radius: 16px;
   background: #150726;
-  border: 1px solid #7CB518;
+  border: 1px solid rgba(124, 181, 24, 0.45);
   color: #fff;
-  font: 700 12px/1 var(--font-app);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 20px rgba(124,181,24,0.25);
+  font: 700 12px/1.25 var(--font-app);
+  box-shadow: 0 12px 32px rgba(21, 7, 38, 0.35), 0 0 20px rgba(124, 181, 24, 0.25);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.3s var(--ease-out-expo), opacity 0.3s ease;
+  transition: transform 0.28s var(--ease-out-expo), opacity 0.25s ease;
   will-change: transform, opacity;
 }
 .cart-toast.is-visible {
@@ -2248,16 +2277,46 @@ body {
 
 
 .market-container {
-  width: min(1600px, calc(100% - 2rem));
+  width: calc(100% - 1.25rem);
   margin-inline: auto;
 }
 
-/* Desktop side-space like Blinkit: content column = 84vw capped at 1600
-   (≈9vw gutters at any laptop width/scaling). Phones & tablets <1024 keep
-   the full-bleed 16px-gutter layout above. */
+@media (min-width: 390px) {
+  .market-container {
+    width: calc(100% - 1.5rem);
+  }
+}
+
+@media (min-width: 640px) {
+  .market-container {
+    width: min(980px, calc(100% - 2.5rem));
+  }
+}
+
+/* Desktop side-space: balanced Blinkit/pro-catalog proportions from laptop to 4K */
 @media (min-width: 1024px) {
   .market-container {
-    width: min(1600px, 84vw);
+    width: min(1360px, 88vw);
+  }
+}
+
+@media (min-width: 1280px) {
+  .market-container {
+    width: min(1560px, 86vw);
+  }
+}
+
+@media (min-width: 1600px) {
+  .market-container {
+    width: min(1720px, 84vw);
+  }
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  @media (max-width: 639px) {
+    .market-container {
+      width: calc(100% - 1rem);
+    }
   }
 }
 
@@ -4166,7 +4225,7 @@ html[data-app-installed="true"] .install-app-cta {
 }
 
 /* Futuristic Card Lift with Dynamic Ambient Halo */
-.card-2028 {
+:where(.card-2028) {
   background: #FFFFFF;
   border: 1px solid #E8E0F7;
   border-radius: 18px;
@@ -4284,13 +4343,12 @@ html[data-app-installed="true"] .install-app-cta {
   opacity: 1;
 }
 
-/* 3D Isometric Category Plate */
+/* Isometric Category Plate (keep flat transform-style so JPEG blend-mode dissolves cleanly) */
 .category-plate-3d {
-  transform-style: preserve-3d;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .category-plate-3d:hover {
-  transform: translateY(-8px) scale(1.05) rotateX(4deg);
+  transform: translateY(-6px) scale(1.03);
   box-shadow:
     0 20px 35px -8px rgba(45, 27, 105, 0.24),
     0 0 20px -2px rgba(124, 181, 24, 0.28);
@@ -4357,13 +4415,35 @@ html[data-app-installed="true"] .install-app-cta {
    Pure white staging, subtle hover scale, natural product fidelity
    ═════════════════════════════════════════════════════════════════════════════ */
 
-/* Enhanced product image container — clean studio showcase */
+/* Enhanced product image container — clean frosted studio showcase */
 .product-image-wrap {
   position: relative;
   overflow: hidden;
-  background: #FFFFFF;
+  isolation: isolate;
+  background: radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F7F4FC 70%, #EFEAF8 100%);
   border-bottom: 1px solid #EDE7F6;
   transition: border-color 0.3s var(--ease-out-expo), box-shadow 0.35s var(--ease-out-expo);
+}
+/* Ensure nested 3D/z-index helpers inside image containers never isolate mix-blend-mode away from the studio stage */
+.product-image-wrap .layer-3d-pop,
+.product-image-wrap .product-image-enhanced,
+.product-image-wrap .product-image-enhanced > a,
+.product-image-wrap .product-image-enhanced > div,
+.category-plate-3d .layer-3d-pop {
+  transform: none;
+  transform-style: flat;
+  z-index: auto;
+}
+.product-image-wrap img[src*=".jpg" i],
+.product-image-wrap img[src*=".jpeg" i],
+.product-image-wrap img[src*=".jfif" i],
+.product-thumb-blend img[src*=".jpg" i],
+.product-thumb-blend img[src*=".jpeg" i],
+.product-thumb-blend img[src*=".jfif" i] {
+  mix-blend-mode: multiply;
+}
+.product-thumb-blend {
+  isolation: isolate;
 }
 .group:hover .product-image-wrap,
 .group\/card:hover .product-image-wrap {
@@ -4494,11 +4574,26 @@ html[data-app-installed="true"] .install-app-cta {
   100% { transform: scale(1); }
 }
 
-/* More prominent add-to-cart toast */
-.cart-toast {
-  min-width: 260px;
-  max-width: calc(100vw - 2rem);
-  padding: 12px 20px;
+/* Responsive fluid typography & touch sizing across Android/iOS/Tablet/Desktop/App */
+@media (max-width: 389px) {
+  .section-header h2 {
+    font-size: 1.05rem;
+  }
+  .btn-add {
+    min-width: 56px;
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+}
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .product-image-wrap, .product-image-wrap:hover { transform: none; transition: none; }

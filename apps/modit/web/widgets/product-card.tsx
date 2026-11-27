@@ -116,7 +116,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
 
       {/* Image zone — animated studio showcase sized to card */}
       <div
-        className="product-image-wrap aspect-square w-full transform-3d"
+        className="product-image-wrap aspect-square w-full"
         style={{ "--cat-accent": catAccent } as React.CSSProperties}
       >
         <div className="product-image-ring" />

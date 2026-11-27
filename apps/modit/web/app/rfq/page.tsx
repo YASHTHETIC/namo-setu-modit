@@ -13,7 +13,7 @@ import { Truckload3DSimulator } from "@/components/truckload-3d-simulator";
 
 export default function RFQPage() {
   const toast = useToast();
-  const { data: me } = useCurrentUser();
+  const { data: me, loggedIn } = useCurrentUser();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newRFQ, setNewRFQ] = useState({ notes: "", due_date: "" });
   const [itemDrafts, setItemDrafts] = useState<Array<{ product_id: string; requested_quantity: number; name?: string }>>([]);
@@ -73,7 +73,19 @@ export default function RFQPage() {
         <Truckload3DSimulator />
       </div>
 
-      {isLoading ? (
+      {!loggedIn ? (
+        <Card className="p-6 text-center">
+          <FileText className="mx-auto mb-2.5 h-8 w-8 text-[#2D1B69]" />
+          <p className="text-body-md font-bold text-[var(--text-primary)]">Sign in to view &amp; submit bulk RFQs</p>
+          <p className="mt-1 text-caption text-[var(--text-muted)]">Request custom trade pricing, manage contractor tenders, and compare supplier quotes in one place.</p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2.5">
+            <Link href="/login">
+              <Button>Sign In to Continue</Button>
+            </Link>
+            <Button variant="secondary" onClick={() => setShowCreateModal(true)}>Preview RFQ Form</Button>
+          </div>
+        </Card>
+      ) : isLoading ? (
         <LoadingSpinner />
       ) : isError ? (
         <Card className="p-6 text-center">

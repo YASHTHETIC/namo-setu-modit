@@ -96,12 +96,12 @@ export function NeuralSearch({ className = "", placeholder = "Search materials, 
     <div className={`relative w-full ${className}`}>
       {/* Input */}
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7CB518] pointer-events-none">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10 text-[#2D1B69]/75 pointer-events-none">
           <Search className="h-4 w-4" />
         </div>
         <input
           ref={inputRef}
-          type="search"
+          type="text"
           placeholder={placeholder}
           value={query}
           onChange={(e) => {
@@ -115,7 +115,7 @@ export function NeuralSearch({ className = "", placeholder = "Search materials, 
             setTimeout(() => setFocused(false), 150);
           }}
           onKeyDown={handleKeyDown}
-          className="w-full pl-10 pr-8 py-3 sm:py-3.5 rounded-2xl border border-white/30 bg-white/80 backdrop-blur text-[#150726] font-bold placeholder:text-[#9B8CB5]/70 focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/20 transition-all shadow-lg"
+          className="w-full pl-10 pr-9 py-2.5 sm:py-3.5 rounded-2xl border border-white/30 bg-white/95 backdrop-blur text-[#150726] font-bold placeholder:text-[#9B8CB5]/80 focus:outline-none focus:border-[#7CB518] focus:ring-2 focus:ring-[#7CB518]/25 transition-all shadow-lg"
           autoComplete="off"
           spellCheck={false}
         />
@@ -128,7 +128,8 @@ export function NeuralSearch({ className = "", placeholder = "Search materials, 
               setHighlighted(-1);
               inputRef.current?.blur();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8CB5] hover:text-[#E91E63] transition-colors"
+            aria-label="Clear search"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8CB5] hover:text-[#E91E63] transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -140,9 +141,9 @@ export function NeuralSearch({ className = "", placeholder = "Search materials, 
         <ul
           ref={dropdownRef}
           role="listbox"
-          className="absolute z-50 mt-1 w-full rounded-2xl border border-white/20 bg-white/90 backdrop-blur-xl shadow-[0_24px_48px_-16px_rgba(0,0,0,0.35)] overflow-hidden max-h-[420px] overflow-y-auto"
+          className="absolute z-50 mt-1.5 w-full rounded-2xl border border-[#DDD6EE] bg-white shadow-[0_24px_48px_-12px_rgba(21,7,38,0.28)] overflow-hidden max-h-[60vh] sm:max-h-[420px] overflow-y-auto"
         >
-          <li className="px-4 py-2.5 border-b border-white/10 bg-white/5">
+          <li className="px-4 py-2 border-b border-[#F0ECF9] bg-[#F8F6FC]">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-[#F8CB46]" />
               <span className="text-tiny font-black text-[#2D1B69] uppercase tracking-wider">Neural matches</span>
@@ -155,19 +156,19 @@ export function NeuralSearch({ className = "", placeholder = "Search materials, 
               aria-selected={highlighted === i}
               onMouseEnter={() => setHighlighted(i)}
               onClick={() => selectSuggestion(s)}
-              className={`px-4 py-3 cursor-pointer border-b border-white/5 last:border-0 transition-all ${
+              className={`px-3.5 sm:px-4 py-2.5 sm:py-3 cursor-pointer border-b border-[#F0ECF9] last:border-0 transition-all ${
                 highlighted === i
                   ? "bg-[#F0ECF9] text-[#2D1B69] font-black"
-                  : "text-[#150726]/90 hover:bg-white/50 hover:text-[#2D1B69]"
+                  : "text-[#150726] hover:bg-[#F8F6FC] hover:text-[#2D1B69]"
               }`}
             >
               <div className="flex items-center gap-3">
                 {s.image ? (
-                  <div className="relative h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden border border-white/20 bg-[#F0ECF9]">
-                    <Image src={s.image} alt={s.text} fill className="object-cover" sizes="40px" loading="lazy" />
+                  <div className="product-thumb-blend relative h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden border border-[#EDE7F6] bg-[#F8F6FC] flex items-center justify-center">
+                    <Image src={s.image} alt={s.text} width={40} height={40} sizes="48px" className="h-full w-full object-contain p-0.5" loading="eager" />
                   </div>
                 ) : (
-                  <div className="h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center border border-white/20 bg-[#F0ECF9] text-[#7CB518] font-black">
+                  <div className="h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center border border-[#EDE7F6] bg-[#F0ECF9] text-[#7CB518] font-black">
                     <Package className="h-5 w-5" />
                   </div>
                 )}

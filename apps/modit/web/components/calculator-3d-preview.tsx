@@ -321,8 +321,8 @@ export function Calculator3DPreview({
                 }}
               >
                 <span
-                  className={`text-micro font-extrabold px-2 py-0.5 rounded shadow-xs rotate-90 ${
-                    blueprintMode ? "bg-[#00BCD4] text-[#0b0318]" : "bg-white/80 text-[#150726]"
+                  className={`text-micro font-extrabold px-2 py-0.5 rounded shadow-xs whitespace-nowrap ${
+                    blueprintMode ? "bg-[#00BCD4] text-[#0b0318]" : "bg-white/90 text-[#150726]"
                   }`}
                 >
                   Left Wall
@@ -348,8 +348,8 @@ export function Calculator3DPreview({
                 }}
               >
                 <span
-                  className={`text-micro font-extrabold px-2 py-0.5 rounded shadow-xs -rotate-90 ${
-                    blueprintMode ? "bg-[#00BCD4] text-[#0b0318]" : "bg-white/80 text-[#150726]"
+                  className={`text-micro font-extrabold px-2 py-0.5 rounded shadow-xs whitespace-nowrap ${
+                    blueprintMode ? "bg-[#00BCD4] text-[#0b0318]" : "bg-white/90 text-[#150726]"
                   }`}
                 >
                   Right Wall

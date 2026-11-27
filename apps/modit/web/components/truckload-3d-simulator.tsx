@@ -121,7 +121,7 @@ export function Truckload3DSimulator({
           </div>
           <div>
             <span className="text-micro font-black tracking-wider text-[#7CB518] uppercase">
-              2028 Smart Logistics Engine
+              Smart Logistics Engine
             </span>
             <h3 className="text-title-md font-black tracking-tight text-white flex items-center gap-2">
               <span>3D Fleet &amp; Truckload Simulator</span>

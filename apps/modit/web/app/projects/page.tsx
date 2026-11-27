@@ -9,7 +9,7 @@ import { Button, Input, Textarea, Card, EmptyState, LoadingSpinner, FormRow, Sta
 export default function ProjectsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: "", notes: "", budget_amount: "" });
-  const { data: projects, isLoading, isError } = useProjects();
+  const { data: projects } = useProjects();
   const createProject = useCreateProject();
   const requireLogin = useRequireLogin();
   const fallbackProjects = [
